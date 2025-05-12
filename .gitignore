@@ -11,6 +11,8 @@ glib-2.0/
 pavucontrol.ini
 pulse/
 yazi/
+assets/
+
 
 # Ignore logs and other temporary files
 *.log
