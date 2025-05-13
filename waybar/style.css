@@ -95,21 +95,12 @@ window#waybar {
     padding-left: 0;
 }
 
-#custom-power_btn:hover,
-#custom-weather,
 #custom-updater,
 #custom-system,
-#custom-clipboard:hover,
-#clock:hover,
-#cpu:hover,
-#memory:hover,
 #disk:hover,
-#temperature:hover,
-#network:hover,
 #tray:hover,
-#pulseaudio:hover,
 #idle_inhibitor:hover {
-    background: rgba(26, 27, 38, 0.624);
+    background: rgba(26, 27, 38, 0.3);
 }
 
 #custom-updater {
@@ -120,3 +111,76 @@ window#waybar {
     padding: 0 15px;
     margin-right: 10px;
 }
+
+/* Force horizontal layout for groups */
+#group-sysinfo,
+#group-temperature {
+    padding: 0;
+    margin: 0;
+}
+
+#group-sysinfo>box,
+#group-temperature>box {
+    background: transparent;
+    border-radius: 15px;
+    margin: 0;
+    padding: 0 5px;
+}
+
+/* Style child modules in groups */
+#group-sysinfo>box>*,
+#group-temperature>box>* {
+    margin: 0;
+    padding: 0 10px;
+    background: rgba(26, 27, 38, 0.3);
+    border-radius: 0;
+}
+
+/* Remove right margin/padding for seamless grouping */
+#group-sysinfo>box>*:not(:last-child),
+#group-temperature>box>*:not(:last-child) {
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Smooth transitions for drawers */
+.group-temperature {
+    transition: all 0.5s ease-out;
+}
+
+/* Child modules in the drawer */
+.group-temperature > box {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+/* Style the right-group container */
+#group-right {
+    background: transparent;
+    border-radius: 15px;
+    padding: 0;
+    margin: 0;
+}
+
+/* Hover effect for the ENTIRE right group */
+#group-right:hover > box {
+    background: rgba(26, 27, 38, 0.3);  /* Your desired hover color */
+    border-radius: 15px;
+}
+
+/* Adjust child module spacing */
+#group-right > box > * {
+    margin: 0;
+    padding: 0 10px;
+    border-radius: 0;
+}
+/* Target the entire right-side container */
+.modules-right {
+    background: transparent;
+    border-radius: 15px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for ALL right modules */
+.modules-right:hover {
+    background: rgba(26, 27, 38, 0.3); /* Your hover color */
+}
+
+

@@ -30,26 +30,25 @@
         }
     },
     "group/sysinfo": {
+        "orientation": "horizontal",
         "format": " System Info",
-        "tooltip": true,
-        "click-to-reveal": true,
-        "expand-left": true,
         "modules": [
             "pulseaudio#microphone",
-            "network",
-            "subgroup/temperature"
-        ]
+            "group/temperature"        ]
     },
-    "subgroup/temperature": {
-        "format": " {temperatureC}°C",
-        "tooltip": true,
-        "click-to-reveal": true,
-        "expand-left": true,
+    "group/temperature": {
+        "orientation": "horizontal",
+        "drawer": {
+            "transition-duration": 700,
+            "children-class": "not-power",
+            "transition-left-to-right": false
+        },
         "modules": [
+            "temperature",
             "cpu",
-            "memory",
-            "disk"
-        ]
+            "memory"
+        ],
+        "on-click": "toggle"
     },
     "custom/system": {
         "format": "",
@@ -62,11 +61,6 @@
     "memory": {
         "format": "  {}%",
         "tooltip": true
-    },
-    "disk": {
-        "interval": 30,
-        "format": "Only {percentage_free}% remaining on {path}",
-        "path": "/"
     },
     "temperature": {
         "interval": 10,
@@ -118,8 +112,6 @@
         "on-scroll-down": "pamixer --default-source -d 5",
         "scroll-step": 5
     },
-
-
     "custom/updater": {
         "format": "{}",
         "tooltip": true
