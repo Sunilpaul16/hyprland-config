@@ -29,56 +29,47 @@
             "3": []
         }
     },
-    "group/sysinfo": {
-        "orientation": "horizontal",
-        "format": " System Info",
-        "modules": [
-            "pulseaudio#microphone",
-            "group/temperature"        ]
-    },
     "group/temperature": {
         "orientation": "horizontal",
         "drawer": {
-            "transition-duration": 700,
-            "children-class": "not-power",
+            "transition-duration": 900,
+            "children-class": "temperature",
+            "click-to-reveal": true,
             "transition-left-to-right": false
         },
         "modules": [
             "temperature",
             "cpu",
             "memory"
-        ],
-        "on-click": "toggle"
+        ]
     },
-    "custom/system": {
-        "format": "",
-        "tooltip-format": "system info\n\nLeft-click to check system info"
+    "group/audio": {
+        "orientation": "horizontal",
+        "drawer": {
+            "transition-duration": 900,
+            "transition-left-to-right": false
+        },
+        "modules": [
+            "pulseaudio",
+            "pulseaudio#microphone"
+        ]
     },
     "cpu": {
-        "format": "  {usage}%",
+        "interval": 10,
+        "format": " {usage}%",
         "tooltip": true
     },
     "memory": {
-        "format": "  {}%",
+        "interval": 10,
+        "format": " {}%",
         "tooltip": true
     },
     "temperature": {
         "interval": 10,
         "hwmon-path": "/sys/devices/platform/coretemp.0/hwmon/hwmon4/temp1_input",
-        "critical-threshold": 100,
+        "critical-threshold": 90,
         "format-critical": " {temperatureC}",
         "format": " {temperatureC}°C"
-    },
-    "hyprland/workspace": {
-        "disable-scroll": true,
-        "all-outputs": true,
-        "warp-on-scroll": false,
-        "format": "{name}",
-        "format-icons": {
-            "urgent": "",
-            "active": "",
-            "default": ""
-        }
     },
     "pulseaudio": {
         "format": "{icon}  {volume}%",
@@ -100,10 +91,10 @@
                 ""
             ]
         },
-        "on-click": "pavucontrol"
+        "on-click-right": "pavucontrol"
     },
     "pulseaudio#microphone": {
-        "format": "  {format_source}",
+        "format": " {format_source}",
         "format-source": "{volume}%",
         "format-source-muted": "0%",
         "on-click": "pamixer --default-source -t",
@@ -113,7 +104,7 @@
         "scroll-step": 5
     },
     "custom/updater": {
-        "format": "{}",
+        "format": " {}",
         "tooltip": true
     },
     "network": {

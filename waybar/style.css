@@ -1,43 +1,40 @@
 * {
-    font-family: "JetBrainsMono Nerd Font", "SpaceMono Nerd Font", "otf-font-awesome", "feather";
-    font-size: 16px;
+    font-family: "JetBrainsMono Nerd Font", "SpaceMono Nerd Font";
+    font-size: 15px;
     font-weight: bold;
     border: none;
-    min-height: 0;
     border-radius: 0;
-    transition: background-color .3s ease-out;
 }
 
 window#waybar {
     background: rgba(44, 44, 44, 0.428);
     color: #c0caf5;
-    transition: background-color .5s;
 }
 
 .modules-left,
 .modules-center,
 .modules-right {
-    font-size: 16px;
-    padding: 0 10px;
+    padding: 0 12px;
     margin: 3px 0;
     border-radius: 15px;
 }
 
 .modules-left {
     margin-left: 12px;
+    background: rgba(26, 27, 38, 0.3);
 }
 
 .modules-right {
     margin-right: 12px;
 }
 
+/* Workspaces */
 #workspaces button {
     background: transparent;
-    font-weight: 900;
     font-size: 13pt;
     color: #c0caf5;
-    border: none;
     border-radius: 15px;
+    padding: 0 5px;
 }
 
 #workspaces button.active {
@@ -46,141 +43,70 @@ window#waybar {
 
 #workspaces button:hover {
     background: #11111b;
-    color: #cdd6f4;
 }
 
+/* Modules styling */
 #clock,
-#cpu,
-#memory,
-#disk,
-#temperature,
 #network,
-#pulseaudio,
-#custom-media,
 #custom-power_btn,
 #tray,
-#mpd {
-    padding: 0 10px;
+#cpu,
+#pulseaudio,
+#memory,
+#temperature,
+#microphone {
+    padding: 0 5px;
     border-radius: 15px;
-    color: #fbff00;
 }
 
+/* Module-specific colors */
+#clock {
+    color: #e5c913;
+}
+
+#cpu {
+    color: #95f405;
+}
+
+#memory {
+    color: #05a0f4;
+}
+
+#pulseaudio {
+    color: #f40505;
+}
+
+#pulseaudio.microphone {
+    color: #39e712;
+}
+
+#custom-power_btn {
+    color: #ff6961;
+}
+
+#custom-updater {
+    color: #f405b8;
+}
+
+#temperature,
+#microphone {
+    color: #ff79c6;
+}
+
+/* Custom icon button */
 #custom-arch {
     margin-left: 5px;
     padding: 0 10px;
     font-size: 25px;
-    transition: color .5s;
+    color: inherit;
 }
 
 #custom-arch:hover {
     color: #1793d1;
 }
 
-#clock {
-    margin: 0 10px;
-    padding: 0 20px;
+/* Drawer transitions */
+#group-temperature,
+#group-audio {
+    transition: all 0.3s ease;
 }
-
-
-#pulseaudio {
-    border-radius: 15px 0 0 15px;
-    margin-left: 20px;
-    padding-left: 15px;
-}
-
-#pulseaudio.microphone {
-    border-radius: 0 15px 15px 0;
-    margin-left: 0;
-    padding-right: 15px;
-    padding-left: 0;
-}
-
-#custom-updater,
-#custom-system,
-#disk:hover,
-#tray:hover,
-#idle_inhibitor:hover {
-    background: rgba(26, 27, 38, 0.3);
-}
-
-#custom-updater {
-    background: transparent;
-    font-size: 16px;
-    border: none;
-    border-radius: 15px;
-    padding: 0 15px;
-    margin-right: 10px;
-}
-
-/* Force horizontal layout for groups */
-#group-sysinfo,
-#group-temperature {
-    padding: 0;
-    margin: 0;
-}
-
-#group-sysinfo>box,
-#group-temperature>box {
-    background: transparent;
-    border-radius: 15px;
-    margin: 0;
-    padding: 0 5px;
-}
-
-/* Style child modules in groups */
-#group-sysinfo>box>*,
-#group-temperature>box>* {
-    margin: 0;
-    padding: 0 10px;
-    background: rgba(26, 27, 38, 0.3);
-    border-radius: 0;
-}
-
-/* Remove right margin/padding for seamless grouping */
-#group-sysinfo>box>*:not(:last-child),
-#group-temperature>box>*:not(:last-child) {
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Smooth transitions for drawers */
-.group-temperature {
-    transition: all 0.5s ease-out;
-}
-
-/* Child modules in the drawer */
-.group-temperature > box {
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-/* Style the right-group container */
-#group-right {
-    background: transparent;
-    border-radius: 15px;
-    padding: 0;
-    margin: 0;
-}
-
-/* Hover effect for the ENTIRE right group */
-#group-right:hover > box {
-    background: rgba(26, 27, 38, 0.3);  /* Your desired hover color */
-    border-radius: 15px;
-}
-
-/* Adjust child module spacing */
-#group-right > box > * {
-    margin: 0;
-    padding: 0 10px;
-    border-radius: 0;
-}
-/* Target the entire right-side container */
-.modules-right {
-    background: transparent;
-    border-radius: 15px;
-    transition: background-color 0.3s ease;
-}
-
-/* Hover effect for ALL right modules */
-.modules-right:hover {
-    background: rgba(26, 27, 38, 0.3); /* Your hover color */
-}
-
-
