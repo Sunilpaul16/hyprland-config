@@ -13,10 +13,9 @@ yazi/
 qtvirtualkeyboard/
 systemd/
 steam/
-.zsh/.oh-my-zsh/
-.zsh/.zsh_history
-.zsh/.z
-
+zsh/.oh-my-zsh/
+zsh/.zsh_history
+zsh/.z
 
 # Ignore logs and other temporary files
 *.log
