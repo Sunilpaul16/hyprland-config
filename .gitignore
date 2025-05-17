@@ -12,6 +12,7 @@ pavucontrol.ini
 yazi/
 qtvirtualkeyboard/
 systemd/
+steam/
 
 # Ignore logs and other temporary files
 *.log
