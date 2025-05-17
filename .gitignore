@@ -13,7 +13,8 @@ yazi/
 qtvirtualkeyboard/
 systemd/
 steam/
-
+user-dirs.dirs/
+user-dirs.locale/
 
 # Ignore logs and other temporary files
 *.log
