@@ -1,0 +1,20 @@
+ags/node_modules
+ags/scss/_musicmaterial.scss
+ags/scss/_musicwal.scss
+ags/scss/_material.scss
+diagnose.result
+ii_ags.log
+cache
+Code/
+google-chrome/
+dfonf/
+gemini_history.json
+goa-1.0/
+gtk-3.0/
+ibus/
+mimeapps.list/
+procps/
+
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
