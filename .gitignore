@@ -1,0 +1,11 @@
+# Ignore swap and backup files
+*.swp
+*.bak
+*.tmp
+
+# Ignore compiled files or caches if any
+.cache/
+*.pyc
+
+# Ignore secrets or local overrides if needed
+secrets.*
