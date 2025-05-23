@@ -15,7 +15,7 @@ ibus/
 mimeapps.list/
 procps/
 discord/
-dconf
+dconf/
 ags/user_options.jsonc
 # Ignore Python cache files
 __pycache__/
