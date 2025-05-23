@@ -2,15 +2,48 @@
 
 set -e
 
+# Add at the top after set -e
+echo "🚀 Setting up custom Arch Linux environment..."
+echo "This will install Hyprland and dependencies, then copy dotfiles."
+read -p "Continue? (y/N): " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Setup cancelled."
+    exit 1
+fi
+
 echo "==> Updating system packages..."
 sudo pacman -Syu --noconfirm
 
+
+# Clone the dotfiles repo if not already present
+REPO_DIR="$HOME/dot-hyprland"
+if [ ! -d "$REPO_DIR" ]; then
+  git clone https://github.com/Sunilpaul16/dot-hyprland.git "$REPO_DIR"
+fi
+
+# Copy config folders into ~/.config
+mkdir -p ~/.config
+cp -r "$REPO_DIR"/{ags,hypr,Kvantum,fuzzel,kitty,wlogout} ~/.config/
+
+# Optional: copy additional files to appropriate locations
+cp "$REPO_DIR"/pavucontrol.ini ~/.config/
+cp "$REPO_DIR"/code-flags.conf ~/.config/
+cp "$REPO_DIR"/thorium-flags.conf ~/.config/
+
+echo "Configs copied successfully."
+
 # Function to install a package only if it's not already installed
 install_pkg() {
+    local category="$1"
+    shift
     for pkg in "$@"; do
-        if ! pacman -Q "$pkg" &>/dev/null; then
-            echo "==> Installing $pkg"
-            yay -S --noconfirm "$pkg"
+        if ! pacman -Qi "$pkg" &>/dev/null; then
+            echo "==> Installing $pkg ($category)"
+            if ! yay -S --noconfirm "$pkg"; then
+                echo "❌ Failed to install $pkg"
+                return 1
+            fi
         else
             echo "--> $pkg is already installed. Skipping."
         fi
@@ -30,7 +63,7 @@ echo "==> Installing Theme/fonts..."
 install_pkg adw-gtk-theme-git qt5ct qt6ct qt5-wayland fontconfig \
   ttf-readex-pro ttf-jetbrains-mono-nerd ttf-material-symbols-variable-git \
   ttf-space-mono-nerd ttf-rubik-vf ttf-gabarito-git \
-  fish foot starship kvantum kvantum-qt5
+  kitty zsh kvantum kvantum-qt5
 
 echo "==> Installing GNOME support..."
 install_pkg polkit-gnome gnome-keyring gnome-control-center networkmanager
@@ -43,7 +76,7 @@ install_pkg hyprutils hyprpicker hyprlang hypridle hyprland-qt-support hyprland-
   hyprlock xdg-desktop-portal-hyprland hyprcursor hyprwayland-scanner hyprland
 
 echo "==> Installing Widgets..."
-install_pkg dart-sass hypridle hyprutils hyprlock wlogout wl-clipboard hyprpicker \
+install_pkg dart-sass wlogout wl-clipboard \
   nm-connection-editor better-control-git
 
 echo "==> Installing Screen Capture tools..."
