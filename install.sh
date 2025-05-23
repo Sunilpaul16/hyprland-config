@@ -33,6 +33,11 @@ cp "$REPO_DIR"/thorium-flags.conf ~/.config/
 
 echo "Configs copied successfully."
 
+if ! command -v yay &> /dev/null; then
+    echo "❌ yay is required but not installed. Please install yay first."
+    exit 1
+fi
+
 # Function to install a package only if it's not already installed
 install_pkg() {
     local category="$1"
@@ -51,41 +56,44 @@ install_pkg() {
 }
 
 echo "==> Installing Audio dependencies..."
-install_pkg pavucontrol wireplumber libdbusmenu-gtk3 playerctl swww
+install_pkg "Audio" pavucontrol wireplumber libdbusmenu-gtk3 playerctl swww
 
 echo "==> Installing Backlight dependencies..."
-install_pkg brightnessctl ddcutil
+install_pkg "Backlight" brightnessctl ddcutil
 
 echo "==> Installing Basic tools..."
-install_pkg axel bc coreutils cliphist cmake curl fuzzel rsync wget ripgrep jq npm meson typescript gjs xdg-user-dirs
+install_pkg "Basic tools" axel bc coreutils cliphist cmake curl fuzzel rsync wget ripgrep jq npm meson typescript gjs xdg-user-dirs
 
 echo "==> Installing Theme/fonts..."
-install_pkg adw-gtk-theme-git qt5ct qt6ct qt5-wayland fontconfig \
+install_pkg "Theme/fonts" adw-gtk-theme-git qt5ct qt6ct qt5-wayland fontconfig \
   ttf-readex-pro ttf-jetbrains-mono-nerd ttf-material-symbols-variable-git \
   ttf-space-mono-nerd ttf-rubik-vf ttf-gabarito-git \
   kitty zsh kvantum kvantum-qt5
 
 echo "==> Installing GNOME support..."
-install_pkg polkit-gnome gnome-keyring gnome-control-center networkmanager
+install_pkg "GNOME" polkit-gnome gnome-keyring gnome-control-center networkmanager
 
 echo "==> Installing GTK dependencies..."
-install_pkg webp-pixbuf-loader gtk-layer-shell gtk3 gtksourceview3 gobject-introspection upower yad ydotool xdg-user-dirs-gtk
+install_pkg "GTK" webp-pixbuf-loader gtk-layer-shell gtk3 gtksourceview3 gobject-introspection upower yad ydotool xdg-user-dirs-gtk
 
 echo "==> Installing Hyprland..."
-install_pkg hyprutils hyprpicker hyprlang hypridle hyprland-qt-support hyprland-qtutils \
+install_pkg "Hyprland" hyprutils hyprpicker hyprlang hypridle hyprland-qt-support hyprland-qtutils \
   hyprlock xdg-desktop-portal-hyprland hyprcursor hyprwayland-scanner hyprland
 
 echo "==> Installing Widgets..."
-install_pkg dart-sass wlogout wl-clipboard \
+install_pkg "Widgets" dart-sass wlogout wl-clipboard \
   nm-connection-editor better-control-git
 
 echo "==> Installing Screen Capture tools..."
-install_pkg swappy wf-recorder grim tesseract tesseract-data-eng slurp
+install_pkg "Screen Capture" swappy wf-recorder grim tesseract tesseract-data-eng slurp
 
 echo "==> Installing Python-related tools..."
-install_pkg clang uv gtk4 libadwaita libsoup3 libportal-gtk4 gobject-introspection sassc
+install_pkg "Python-related" clang uv gtk4 libadwaita libsoup3 libportal-gtk4 gobject-introspection sassc
 
 echo "==> Installing Portal support..."
-install_pkg xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland
+install_pkg "Portal" xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland
 
 echo "✅ All dependencies installed."
+echo ""
+echo "🎉 Setup complete! Your Hyprland environment is ready."
+echo "💡 You may want to reboot or log out and back in to ensure everything works properly."
