@@ -17,6 +17,10 @@ procps/
 discord/
 dconf/
 ags/user_options.jsonc
+vlc/
+gtk-4.0/
+Kvantum/
+ags/theme/
 # Ignore Python cache files
 __pycache__/
 *.py[cod]
