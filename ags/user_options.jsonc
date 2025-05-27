@@ -21,14 +21,14 @@
                 "apis",
                 "tools"
             ],
-            "defaultPage": "tools",
             "apis": {
                 "order": [
                     "gemini",
                     "gpt"
                 ],
                 "defaultPage": "gpt"
-            }
+            },
+            "defaultPage": "apis"
         },
         "image": {
             "allowNsfw": true
@@ -52,7 +52,7 @@
         "preferredUnit": "C"
     },
     "overview": {
-        "scale": 0.15,
+        "scale": 0.16,
         "numOfRows": 2,
         "numOfCols": 4,
         "wsNumScale": 0.08,
@@ -65,5 +65,14 @@
         "settings": "XDG_CURRENT_DESKTOP=\"gnome\" gnome-control-center",
         "taskManager": "gnome-usage",
         "terminal": "kitty"
+    },
+    "bar": {
+        "modes": [
+            "focus",
+            "normal"
+        ]
+    },
+    "monitors": {
+        "scaleMethod": "gdk"
     }
 }

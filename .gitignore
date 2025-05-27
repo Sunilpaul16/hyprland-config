@@ -18,11 +18,13 @@ discord/
 dconf/
 vlc/
 gtk-4.0/
+qt6ct/
+qt5ct/
 Kvantum/
 ags/assets/themes/
 gnome-session/
 glib-2.0/
-
+.gsd-keyboard.settings-ported
 # Ignore Python cache files
 __pycache__/
 *.py[cod]
