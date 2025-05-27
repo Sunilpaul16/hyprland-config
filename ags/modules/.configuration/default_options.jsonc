@@ -55,7 +55,7 @@
     },
     "bar": {
         // Whether to show Swap and CPU usage when there's media. RAM is always shown.
-        "alwaysShowFullResources": false, 
+        "alwaysShowFullResources": false,
         // Array of bar modes for each monitor. Hit Ctrl+Alt+Slash to cycle.
         // Modes: "normal", "focus" (workspace indicator only), "nothing"
         // Example for four monitors: ["normal", "focus", "normal", "nothing"]
@@ -256,7 +256,7 @@
         // Modifiers: Shift Ctrl Alt Hyper Meta
         // See https://docs.gtk.org/gdk3/index.html#constants for keys (listed as KEY_key)
         // You can assign multiple keybinds for the same action. Just split them with a comma
-        // Example: "Ctrl+Page_Down, ctrl+Tab" 
+        // Example: "Ctrl+Page_Down, ctrl+Tab"
         "overview": {
             "altMoveLeft": "Ctrl+B",
             "altMoveRight": "Ctrl+F",
