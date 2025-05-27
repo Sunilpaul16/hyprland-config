@@ -21,6 +21,9 @@ vlc/
 gtk-4.0/
 Kvantum/
 ags/assets/theme/
+gnome-session/
+glib-2.0/
+
 # Ignore Python cache files
 __pycache__/
 *.py[cod]
