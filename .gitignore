@@ -20,7 +20,7 @@ ags/user_options.jsonc
 vlc/
 gtk-4.0/
 Kvantum/
-ags/theme/
+ags/assets/theme/
 # Ignore Python cache files
 __pycache__/
 *.py[cod]
