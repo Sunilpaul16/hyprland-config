@@ -25,6 +25,7 @@ ags/assets/themes/
 gnome-session/
 glib-2.0/
 .gsd-keyboard.settings-ported
+fuzzel/
 # Ignore Python cache files
 __pycache__/
 *.py[cod]
