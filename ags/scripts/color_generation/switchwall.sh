@@ -2,6 +2,8 @@
 
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 CONFIG_DIR="$XDG_CONFIG_HOME/ags"
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}"
+mkdir -p "$CACHE_DIR/user/generated"  # Ensure directory exists
 
 THUMBNAIL_DIR="/tmp/mpvpaper_thumbnails"
 CUSTOM_DIR="$XDG_CONFIG_HOME/hypr/custom"
@@ -12,6 +14,7 @@ VIDEO_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=
 
 mkdir -p "$THUMBNAIL_DIR"
 mkdir -p "$RESTORE_SCRIPT_DIR"
+
 
 is_video() {
 	local extension="${1##*.}"
@@ -87,19 +90,24 @@ switch() {
 
 		local video_path=$1
 
-		for monitor in DP-2 DP-3; do
+		monitors=$(hyprctl monitors -j | jq -r '.[] | .name')
 
-		mpvpaper -o "$VIDEO_OPTS" "$monitor" "$video_path" &
-		sleep 0.1
-
+		for monitor in $monitors; do
+			mpvpaper -o "$VIDEO_OPTS" "$monitor" "$video_path" &
+			sleep 0.1
 		done
 
-		# We take the first frame of video to colorgen
-		thumbnail="$THUMBNAIL_DIR/$(basename "$imgpath").jpg"
+		# We take the first frame of video to colorgen and swww
+		thumbnail="$CACHE_DIR"/user/generated/mpvpaper_thumbnail.jpg
 		ffmpeg -y -i "$imgpath" -vframes 1 "$thumbnail" 2>/dev/null
 
 		if [ -f "$thumbnail" ]; then
+			# Apply swww wallpaper using the thumbnail
+			swww img "$thumbnail" --transition-step 100 --transition-fps 120 \
+				--transition-type grow --transition-angle 30 --transition-duration 1 \
+				--transition-pos "$cursorposx, $cursorposy_inverted"
 			"$CONFIG_DIR"/scripts/color_generation/colorgen.sh "$thumbnail" --apply --smart
+
 			create_restore_script "$video_path"
 		else
 			echo "Cannot create image to colorgen"
@@ -107,16 +115,14 @@ switch() {
 	else
 		# agsv1 run-js "wallpaper.set('')"
 		# sleep 0.1 && agsv1 run-js "wallpaper.set('${imgpath}')" &
-	for monitor in DP-2 DP-3; do
-	swww img --output "$monitor" "$imgpath" --transition-step 100 --transition-fps 120 \
-		--transition-type grow --transition-angle 30 --transition-duration 1 \
-		--transition-pos "$cursorposx, $cursorposy_inverted"
-		done
+		swww img "$imgpath" --transition-step 100 --transition-fps 120 \
+			--transition-type grow --transition-angle 30 --transition-duration 1 \
+			--transition-pos "$cursorposx, $cursorposy_inverted"
 
 		"$CONFIG_DIR"/scripts/color_generation/colorgen.sh "$imgpath" --apply --smart
 		remove_restore
 	fi
-}
+}\
 
 if [ "$1" == "--noswitch" ]; then
 	if pgrep -f mpvpaper > /dev/null; then

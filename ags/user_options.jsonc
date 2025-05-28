@@ -73,6 +73,6 @@
         ]
     },
     "monitors": {
-        "scaleMethod": "gdk"
+        "scaleMethod": "division"
     }
 }
