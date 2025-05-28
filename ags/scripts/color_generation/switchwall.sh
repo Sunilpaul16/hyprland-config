@@ -12,6 +12,10 @@ RESTORE_SCRIPT="$RESTORE_SCRIPT_DIR/__restore_video_wallpaper.sh"
 
 VIDEO_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 video-align-x=0.5 video-align-y=0.5"
 
+# Hardcoded monitor names
+MONITOR_1="DP-3"
+MONITOR_2="DP-2"
+
 mkdir -p "$THUMBNAIL_DIR"
 mkdir -p "$RESTORE_SCRIPT_DIR"
 
@@ -36,7 +40,7 @@ create_restore_script() {
 
 pkill -f -9 mpvpaper
 
-for monitor in \$(hyprctl monitors -j | jq -r '.[] | .name'); do
+for monitor in $MONITOR_1 $MONITOR_2; do
 	mpvpaper -o "$VIDEO_OPTS" "\$monitor" "$video_path" &
 	sleep 0.1
 done
@@ -55,14 +59,39 @@ EOF
 	mv "$RESTORE_SCRIPT.tmp" "$RESTORE_SCRIPT"
 }
 
+apply_wallpaper() {
+	local imgpath=$1
+	local target=$2
+
+	case "$target" in
+		"$MONITOR_1")
+			echo "Applying wallpaper to $MONITOR_1"
+			swww img "$imgpath" --outputs "$MONITOR_1" --transition-step 100 --transition-fps 120 \
+				--transition-type grow --transition-angle 30 --transition-duration 1
+			ags run-js "wallpaper.set('$imgpath', 0)" 2>/dev/null || true
+			;;
+		"$MONITOR_2")
+			echo "Applying wallpaper to $MONITOR_2"
+			swww img "$imgpath" --outputs "$MONITOR_2" --transition-step 100 --transition-fps 120 \
+				--transition-type grow --transition-angle 30 --transition-duration 1
+			ags run-js "wallpaper.set('$imgpath', 1)" 2>/dev/null || true
+			;;
+		"both")
+			echo "Applying wallpaper to both monitors"
+			swww img "$imgpath" --transition-step 100 --transition-fps 120 \
+				--transition-type grow --transition-angle 30 --transition-duration 1
+			ags run-js "wallpaper.set('$imgpath', -1)" 2>/dev/null || true
+			;;
+		*)
+			echo "Invalid target: $target. Use $MONITOR_1, $MONITOR_2, or both"
+			return 1
+			;;
+	esac
+}
+
 switch() {
 	imgpath=$1
-	read scale screenx screeny screensizey < <(hyprctl monitors -j | jq '.[] | select(.focused) | .scale, .x, .y, .height' | xargs)
-	cursorposx=$(hyprctl cursorpos -j | jq '.x' 2>/dev/null) || cursorposx=960
-	cursorposx=$(bc <<< "scale=0; ($cursorposx - $screenx) * $scale / 1")
-	cursorposy=$(hyprctl cursorpos -j | jq '.y' 2>/dev/null) || cursorposy=540
-	cursorposy=$(bc <<< "scale=0; ($cursorposy - $screeny) * $scale / 1")
-	cursorposy_inverted=$((screensizey - cursorposy))
+	target=${2:-"both"}  # Default to both if no target specified
 
 	if [ "$imgpath" == '' ]; then
 		echo 'Aborted'
@@ -90,9 +119,8 @@ switch() {
 
 		local video_path=$1
 
-		monitors=$(hyprctl monitors -j | jq -r '.[] | .name')
-
-		for monitor in $monitors; do
+		# Apply video to both monitors
+		for monitor in $MONITOR_1 $MONITOR_2; do
 			mpvpaper -o "$VIDEO_OPTS" "$monitor" "$video_path" &
 			sleep 0.1
 		done
@@ -102,40 +130,71 @@ switch() {
 		ffmpeg -y -i "$imgpath" -vframes 1 "$thumbnail" 2>/dev/null
 
 		if [ -f "$thumbnail" ]; then
-			# Apply swww wallpaper using the thumbnail
-			swww img "$thumbnail" --transition-step 100 --transition-fps 120 \
-				--transition-type grow --transition-angle 30 --transition-duration 1 \
-				--transition-pos "$cursorposx, $cursorposy_inverted"
+			# For videos, apply thumbnail to both monitors
+			apply_wallpaper "$thumbnail" "both"
 			"$CONFIG_DIR"/scripts/color_generation/colorgen.sh "$thumbnail" --apply --smart
-
 			create_restore_script "$video_path"
 		else
 			echo "Cannot create image to colorgen"
 		fi
 	else
-		# agsv1 run-js "wallpaper.set('')"
-		# sleep 0.1 && agsv1 run-js "wallpaper.set('${imgpath}')" &
-		swww img "$imgpath" --transition-step 100 --transition-fps 120 \
-			--transition-type grow --transition-angle 30 --transition-duration 1 \
-			--transition-pos "$cursorposx, $cursorposy_inverted"
-
+		# Handle static images with per-monitor support
+		apply_wallpaper "$imgpath" "$target"
 		"$CONFIG_DIR"/scripts/color_generation/colorgen.sh "$imgpath" --apply --smart
 		remove_restore
 	fi
-}\
+}
 
 if [ "$1" == "--noswitch" ]; then
 	if pgrep -f mpvpaper > /dev/null; then
 		imgpath=$(ps -eo cmd | grep mpvpaper | grep -v grep | awk '{for(i=NF;i>0;i--) if($i!~/^-/) {print $i; break}}')
 	else
 		imgpath=$(swww query | awk -F 'image: ' '{print $2}')
-		# imgpath=$(agsv1 run-js 'wallpaper.get(0)')
 	fi
+elif [[ "$1" ]] && [[ "$2" ]]; then
+	# Two arguments: wallpaper path and monitor target
+	switch "$1" "$2"
 elif [[ "$1" ]]; then
-	switch "$1"
+	# One argument: wallpaper path (apply to both monitors by default)
+	switch "$1" "both"
 else
-	# Select and set image (hyprland)
-
+	# Select wallpaper and monitor
 	cd "$(xdg-user-dir PICTURES)/Wallpapers" || cd "$(xdg-user-dir PICTURES)" || return 1
-	switch "$(yad --width 1200 --height 800 --file --add-preview --large-preview --title='Choose wallpaper')"
+
+	# Step 1: Select wallpaper
+	selected_wallpaper=$(yad --width 1200 --height 800 --file --add-preview --large-preview --title='Choose wallpaper')
+
+	if [ -z "$selected_wallpaper" ]; then
+		echo "No wallpaper selected"
+		exit 0
+	fi
+
+	# Step 2: Select monitor
+		selected_monitor=$(yad --width 450 --height 300 --center --list --radiolist --title='Select Monitor' \
+		--text="Apply wallpaper to:" \
+		--column="Select" --column="Monitor" --column="Description" \
+		TRUE "DP-3" "Primary Monitor (Left)" \
+		FALSE "DP-2" "Secondary Monitor (Right)" \
+		FALSE "both" "Both Monitors")
+	if [ -z "$selected_monitor" ]; then
+		echo "No monitor selected"
+		exit 0
+	fi
+
+	# Parse selection and apply
+	case "$selected_monitor" in
+		*"DP-3"*)
+			switch "$selected_wallpaper" "$MONITOR_1"
+			;;
+		*"DP-2"*)
+			switch "$selected_wallpaper" "$MONITOR_2"
+			;;
+		*"Both"*)
+			switch "$selected_wallpaper" "both"
+			;;
+		*)
+			echo "Invalid selection"
+			exit 1
+			;;
+	esac
 fi
