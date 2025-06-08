@@ -31,18 +31,19 @@
             "defaultPage": "apis"
         },
         "image": {
-            "allowNsfw": true
+            "allowNsfw": false
         },
         "calendar": {
-            "expandByDefault": false
+            "expandByDefault": true
         }
     },
     "animations": {
         "choreographyDelay": 35
     },
     "ai": {
+        "defaultGPTProvider": "openrouter",
         "safety": false,
-        "defaultGPTProvider": "openai"
+        "enhancements": false
     },
     "workspaces": {
         "shown": 8

@@ -11,4 +11,5 @@ export const quickLaunchItems = [
         "name": "Discord + Youtube + Github",
         "command": "xdg-open 'https://discord.com/app' && xdg-open 'https://youtube.com/' && xdg-open 'https://github.com/' &"
     },
+    { "name": "Steam Store", "command": "xdg-open 'steam://store' &" }
 ]
