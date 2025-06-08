@@ -37,9 +37,7 @@
             "expandByDefault": true
         }
     },
-    "animations": {
-        "choreographyDelay": 35
-    },
+    "animations": {},
     "ai": {
         "defaultGPTProvider": "openrouter",
         "safety": false,
