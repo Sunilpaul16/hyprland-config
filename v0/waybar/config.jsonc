@@ -1,0 +1,24 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 42,
+  "spacing": 4,
+  "modules-left": [
+    "custom/arch",
+    "tray",
+    "hyprland/workspaces"
+  ],
+  "modules-center": [
+    "hyprland/window"
+  ],
+  "modules-right": [
+    "custom/updater",
+    "group/audio",
+    "group/temperature",
+    "clock",
+    "custom/power_btn"
+  ],
+  "include": [
+    "~/.config/waybar/modules.json"
+  ]
+}

@@ -1,0 +1,14 @@
+[Default Applications]
+text/html=google-chrome.desktop
+x-scheme-handler/http=google-chrome.desktop
+x-scheme-handler/https=google-chrome.desktop
+x-scheme-handler/about=google-chrome.desktop
+x-scheme-handler/unknown=google-chrome.desktop
+text/plain=code.desktop
+inode/directory=nautilus.desktop
+application/x-gnome-saved-search=nautilus.desktop
+text/css=code.desktop
+
+[Added Associations]
+text/css=code.desktop;
+text/plain=code.desktop;
