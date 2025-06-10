@@ -1,0 +1,20 @@
+Code/
+google-chrome/
+dfonf/
+gemini_history.json
+gtk-3.0/
+ibus/
+procps/
+discord/
+dconf/
+vlc/
+gtk-4.0/
+qt6ct/
+qt5ct/
+Kvantum/
+ags/assets/themes/
+.gsd-keyboard.settings-ported
+fuzzel/
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
