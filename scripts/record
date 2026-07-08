@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# Screen recording via wf-recorder. No state file/singleton -- the running
+# wf-recorder process itself is the state (same model end-4's record.sh uses):
+# `record region`/`record full` starts a recording if none is running, or
+# stops whatever is running if one already is. `record stop` is an explicit,
+# unconditional stop (used by the bar indicator's click handler, which has no
+# reason to pass an arbitrary start-mode just to mean "stop").
+set -euo pipefail
+
+usage() {
+    echo "usage: record <region|full|stop> [--sound]" >&2
+    exit 1
+}
+
+MODE="${1:-}"
+SOUND=false
+[[ "${2:-}" == "--sound" ]] && SOUND=true
+
+case "$MODE" in
+    region|full|stop) ;;
+    *) usage ;;
+esac
+
+for bin in wf-recorder pactl notify-send; do
+    command -v "$bin" >/dev/null || { echo "record: missing required binary: $bin" >&2; exit 1; }
+done
+if [[ "$MODE" == region ]] && ! command -v slurp >/dev/null; then
+    echo "record: region mode requires slurp, which isn't installed" >&2
+    exit 1
+fi
+
+is_recording() { pgrep -x wf-recorder >/dev/null; }
+
+stop_recording() {
+    pkill -INT -x wf-recorder
+    notify-send -a record "Recording stopped" || true
+}
+
+if [[ "$MODE" == stop ]]; then
+    is_recording && stop_recording
+    exit 0
+fi
+
+if is_recording; then
+    stop_recording
+    exit 0
+fi
+
+SAVE_DIR="$HOME/Videos"
+mkdir -p "$SAVE_DIR"
+OUTFILE="$SAVE_DIR/Recording_$(date +%Y-%m-%d_%H.%M.%S).mp4"
+
+args=(--pixel-format yuv420p -f "$OUTFILE")
+
+if [[ "$MODE" == region ]]; then
+    region="$(slurp)" || { notify-send -a record "Recording cancelled" "No region selected" || true; exit 0; }
+    [[ -z "$region" ]] && { notify-send -a record "Recording cancelled" "No region selected" || true; exit 0; }
+    args+=(-g "$region")
+else
+    mon="$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')"
+    args+=(-o "$mon")
+fi
+
+if $SOUND; then
+    sink="$(pactl get-default-sink)"
+    args+=(-a "${sink}.monitor")
+fi
+
+wf-recorder "${args[@]}" >"$SAVE_DIR/.wf-recorder.log" 2>&1 &
+disown
+notify-send -a record "Recording started" "$OUTFILE" || true

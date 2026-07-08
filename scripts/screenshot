@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# Screenshot: region or fullscreen, optionally piped through swappy to annotate
+# before saving. Region geometry comes from slurp (interactive drag-select) --
+# no ImageMagick crop step needed since grim -g already crops to exactly that
+# rectangle. Always copies to clipboard; always saves a timestamped file.
+set -euo pipefail
+
+usage() {
+    echo "usage: screenshot <region|full> [--edit]" >&2
+    exit 1
+}
+
+MODE="${1:-}"
+EDIT=false
+[[ "${2:-}" == "--edit" ]] && EDIT=true
+
+case "$MODE" in
+    region|full) ;;
+    *) usage ;;
+esac
+
+for bin in grim slurp wl-copy jq notify-send; do
+    command -v "$bin" >/dev/null || { echo "screenshot: missing required binary: $bin" >&2; exit 1; }
+done
+if $EDIT && ! command -v swappy >/dev/null; then
+    echo "screenshot: --edit requires swappy, which isn't installed" >&2
+    exit 1
+fi
+
+SAVE_DIR="$HOME/Pictures/Screenshots"
+
+if [[ "$MODE" == region ]]; then
+    region="$(slurp)" || exit 0   # Esc pressed -> silent no-op, no file, no notification
+    [[ -z "$region" ]] && exit 0
+else
+    mon="$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')"
+fi
+
+mkdir -p "$SAVE_DIR"
+OUTFILE="$SAVE_DIR/Screenshot_$(date +%Y-%m-%d_%H.%M.%S).png"
+
+capture() {
+    # $1 = output file, or "-" for stdout
+    if [[ "$MODE" == region ]]; then
+        grim -g "$region" "$1"
+    else
+        grim -o "$mon" "$1"
+    fi
+}
+
+if $EDIT; then
+    capture - | swappy -f - -o "$OUTFILE"
+    [[ -s "$OUTFILE" ]] || exit 0   # closed swappy without saving -> nothing to copy/notify
+    wl-copy < "$OUTFILE"
+    notify-send -a screenshot -i "$OUTFILE" "Screenshot saved (edited)" "$OUTFILE" || true
+else
+    capture "$OUTFILE"
+    wl-copy < "$OUTFILE"
+    notify-send -a screenshot -i "$OUTFILE" "Screenshot saved" "$OUTFILE" || true
+fi
