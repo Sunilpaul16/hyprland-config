@@ -1,0 +1,32 @@
+# zsh runtime state / history (never commit shell history)
+zsh/.zsh_history
+zsh/.zcompdump*
+zsh/.z
+
+# caches / compiled / generated junk
+__pycache__/
+*.pyc
+*.pyo
+.cache/
+*.qmlc
+*.jsc
+
+# scratch / temp
+*.tmp
+*.swp
+*~
+
+# secrets / credentials — belt and suspenders alongside the explicit grep scan
+*.env
+.env*
+*token*
+*secret*
+*apikey*
+*api_key*
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+*.p12
+*.pfx
+zsh/oh-my-zsh/
