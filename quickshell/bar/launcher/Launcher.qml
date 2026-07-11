@@ -42,7 +42,6 @@ PanelWindow {
     // desktop keeps working normally while the overlay is closed.
     WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-    // Click-outside-to-dismiss.
     MouseArea {
         anchors.fill: parent
         onClicked: LauncherState.open = false

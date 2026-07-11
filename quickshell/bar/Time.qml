@@ -3,14 +3,13 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Ported from caelestia-shell's services/Time.qml. Same shape (SystemClock-
-// driven reactive properties, no polling), minus everything that came from
-// the Caelestia plugin: `enabled`/`date`/`hours`/`minutes`/`seconds` below
-// are genuine Quickshell.SystemClock properties (confirmed in
-// quickshell-core.qmltypes), not plugin-supplied, so they carry over as-is.
-// `use12Hour` replaces upstream's `GlobalConfig.services.useTwelveHourClock`
-// — a plain property instead of a config-file-backed one, since this config
-// has no Config/Tokens system to read from.
+// Ported from caelestia-shell's Time.qml -- SystemClock-driven reactive
+// properties, no polling. `enabled`/`date`/`hours`/`minutes`/`seconds` are
+// genuine Quickshell.SystemClock properties (confirmed in
+// quickshell-core.qmltypes), not caelestia-plugin-supplied, so they carry
+// over as-is. `use12Hour` is a plain property replacing upstream's
+// config-file-backed `GlobalConfig.services.useTwelveHourClock`, since this
+// config has no Config/Tokens system.
 Singleton {
     id: root
 

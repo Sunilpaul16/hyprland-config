@@ -9,11 +9,9 @@ import Quickshell.Hyprland
 // each reflecting that workspace's real occupied/active state wherever it
 // actually lives.
 //
-// Styled after end-4's bar workspaces (ii/modules/ii/bar/Workspaces.qml):
-// three stacked layers (occupied-background pills, a sliding active
-// highlight, then icons/numbers/click targets on top) instead of one
-// Rectangle per pill that just recolors in place. Pill width isn't uniform
-// any more, though — a workspace with multiple distinct apps open widens to
+// End-4-style three stacked layers (occupied-background pills, a sliding
+// active highlight, then icons/numbers/click targets on top). Pill width
+// isn't uniform -- a workspace with multiple distinct apps open widens to
 // fit up to `maxIconsPerSlot` icons plus a "+N" overflow badge, so all three
 // layers key off `slotLayout`'s precomputed per-slot x/width rather than a
 // fixed `index * cell` grid.
@@ -247,7 +245,7 @@ Item {
                 // Every slot is clickable, including ones the *other*
                 // monitor owns — confirmed via hyprctl that this dispatch
                 // already focuses the right monitor and warps the cursor
-                // there on its own (see task 3).
+                // there on its own.
                 onClicked: Hyprland.dispatch(`hl.dsp.focus({ workspace = ${modelData.ws.id} })`)
             }
         }

@@ -3,11 +3,10 @@ import Quickshell
 import "../"
 
 // Multi-mode launcher content: app search (default), a ">"-prefixed command
-// list, and the wallpaper carousel — all sharing one search field and one
-// results area, styled after caelestia's Content.qml/ContentList.qml routing.
+// list, and the wallpaper carousel, caelestia-style routing.
 //
 // The mode isn't a separate stored flag — it's derived from the search
-// text's prefix, same as caelestia does it:
+// text's prefix:
 //   - no ">" prefix           -> "apps"
 //   - ">wallpaper" prefix     -> "wallpaper"
 //   - ">clip" prefix          -> "clip" (clipboard history, see Cliphist.qml)

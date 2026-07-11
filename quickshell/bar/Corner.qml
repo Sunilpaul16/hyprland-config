@@ -7,11 +7,10 @@ import QtQuick.Shapes
 // "hug" bar look like it curves smoothly into the content area below,
 // instead of a hard 90° step.
 //
-// Reimplemented from scratch using the same QtQuick.Shapes technique as
-// end-4's modules/common/widgets/RoundCorner.qml (not importing it — this
-// is our own file). The exact arc math (which way the curve bulges, which
-// direction it sweeps) is easy to get subtly mirrored/wrong, so this was
-// verified empirically against a screenshot before being wired into the bar.
+// Reimplemented from scratch, same QtQuick.Shapes technique as end-4's
+// RoundCorner.qml -- the arc math (which way it bulges/sweeps) is easy to
+// get subtly mirrored/wrong, so this was verified empirically against a
+// screenshot before being wired in.
 Item {
     id: root
     property color color: "black"

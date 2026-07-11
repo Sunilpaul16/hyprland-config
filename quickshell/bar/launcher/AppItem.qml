@@ -3,9 +3,9 @@ import Quickshell
 import Quickshell.Widgets
 import "../"
 
-// One row in the app-search results list: icon, name, comment underneath —
-// styled after caelestia's items/AppItem.qml layout, using our own Colors.qml
-// instead of their Caelestia.Config token/palette system.
+// One row in the app-search results list, styled after caelestia's
+// AppItem.qml layout with our own Colors.qml instead of their token/palette
+// system.
 Item {
     id: root
 

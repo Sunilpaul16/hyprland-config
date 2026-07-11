@@ -1,12 +1,12 @@
 import QtQuick
 import "../"
 
-// One carousel cell. The delegate's own Item is a fixed-size pitch slot (so
-// ListView positions cells at a constant spacing); the visible card inside is
-// anchored to the row's shared bottom baseline and grows + lifts above that
-// baseline when it's the current item, while neighbors stay small and flush
-// with the baseline — matching caelestia's PathView scale/raise effect, just
-// done with plain anchors/width/height animation instead of a curved path.
+// One carousel cell: the delegate's own Item is a fixed-size pitch slot (so
+// ListView positions cells at a constant spacing); the visible card inside
+// is anchored to the row's shared bottom baseline and grows + lifts above it
+// when current, matching caelestia's PathView scale/raise effect with plain
+// anchors/width/height animation instead of a curved path.
+//
 // Reacts to Wallpapers' thumbnailReady signal so a video's thumbnail pops in
 // once ffmpeg finishes, without the row needing to re-scan or re-query.
 Item {

@@ -3,18 +3,14 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 
-// Volume OSD: bar + percentage + mute state, shown briefly on the
-// focused monitor when the default sink's volume/mute changes. Placement
-// is centered-bottom rather than caelestia's slide-in-from-the-right-
-// sidebar strip (modules/osd/Wrapper.qml) -- that placement is anchored to
-// their sidebar/session layout, which this bar-only config has no
-// equivalent of; centered-bottom is the natural fit for a horizontal-bar
-// setup with no sidebar to dock against, and matches the common desktop
-// volume-OSD convention (GNOME/KDE both do bottom-center or similar).
+// Volume OSD: bar + percentage + mute state, shown briefly on the focused
+// monitor when the default sink's volume/mute changes. Centered-bottom
+// (not caelestia's sidebar slide-in -- this config has no sidebar to dock
+// against) matches the common GNOME/KDE bottom-center convention.
 //
 // Same per-monitor/focused-only pattern as Launcher.qml/Cheatsheet.qml, but
-// with no keyboard focus at all (WlrKeyboardFocus.None) -- this is a purely
-// passive indicator, nothing to type into or click.
+// with no keyboard focus at all (WlrKeyboardFocus.None) -- purely passive,
+// nothing to type into or click.
 PanelWindow {
     id: root
     property var screen

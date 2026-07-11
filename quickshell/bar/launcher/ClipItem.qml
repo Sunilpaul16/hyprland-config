@@ -8,12 +8,10 @@ import "../"
 // (icon slot + highlight rectangle + Colors.qml theming) but up to 3 wrapped
 // lines instead of AppItem's single name line, since clipboard snippets
 // often need more than one line to tell apart. Text entries keep the 📋
-// glyph; image entries get a real thumbnail instead of a placeholder glyph,
-// decoded lazily -- same pattern as end-4's CliphistImage.qml: decode into
-// Cliphist.decodeDir the moment this row mounts, delete the file the moment
-// it unmounts. No caching across mounts, on purpose (see Cliphist.qml) --
-// scrolling back re-decodes, but that keeps the scratch dir from ever
-// accumulating regardless of how much history gets scrolled through.
+// glyph; image entries get a real thumbnail, decoded lazily like end-4's
+// CliphistImage.qml -- decode into Cliphist.decodeDir on mount, delete on
+// unmount, no caching across mounts (see Cliphist.qml) so the scratch dir
+// never accumulates regardless of how much history gets scrolled through.
 //
 // A third shape (modelData.isAction, see Content.qml's clipActionRow) is a
 // single synthetic row for "/token" actions like "/clear" -- no entry/icon

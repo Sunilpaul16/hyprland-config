@@ -4,14 +4,11 @@ import Quickshell
 import Quickshell.Io
 import "launcher/fuzzysort.js" as Fuzzy
 
-// Trimmed port of end-4's dots-hyprland services/Cliphist.qml, stripped of
-// everything that isn't the clipboard history itself: no work-safety blur
-// (that's a whole separate Network service + config-driven keyword list),
-// no Levenshtein sloppy-matcher toggle -- query() below reuses
-// launcher/fuzzysort.js the same way Apps.qml/Commands.qml do, not a second
-// matcher), no superpaste/ydotool auto-paste chaining, no Translation
-// wrappers. Prefixes/paths are plain string literals since this config has
-// no Config.qml to back them.
+// Trimmed port of end-4's dots-hyprland Cliphist.qml -- no work-safety blur,
+// no Levenshtein sloppy-matcher (query() below reuses launcher/fuzzysort.js
+// the same way Apps.qml/Commands.qml do), no superpaste/ydotool chaining, no
+// Translation wrappers. Prefixes/paths are plain string literals since this
+// config has no Config.qml to back them.
 //
 // Capture itself isn't this file's job: `wl-paste --watch cliphist store`
 // already runs as a standing exec-once in ~/.config/hypr/execs.lua
@@ -25,7 +22,7 @@ import "launcher/fuzzysort.js" as Fuzzy
 // write-notify property that only reacts to `Quickshell.clipboardText = ...`
 // from inside this same process, and its initial value is "" even when the
 // real system clipboard already has content. So there's nothing to debounce
-// -- refresh() is just exposed for whatever mounts this (chunk 2's launcher
+// -- refresh() is just exposed for whatever mounts this (the launcher's clip
 // mode calls it on open, same as CheatsheetState does for Binds.qml). If
 // live/background refresh is ever wanted, the real fix is end-4's approach:
 // have execs.lua's watcher chain `&& qs -c bar ipc call cliphist update`
@@ -38,7 +35,6 @@ Singleton {
 
     // Same detection end-4 uses -- `cliphist list` prints image entries as
     // "<id>\t[[ binary data <W>x<H> <mime> ]]" instead of a text preview.
-    // Just a tag for now; decoding a preview image is chunk 3's job.
     function entryIsImage(entry) {
         return /^\d+\t\[\[.*binary data.*\d+x\d+.*\]\]$/.test(entry);
     }

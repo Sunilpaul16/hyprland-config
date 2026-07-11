@@ -1,11 +1,10 @@
 import QtQuick
 import "../"
 
-// Grouped keybind columns, styled after end-4's CheatsheetKeybinds.qml: a
-// Flow set to TopToBottom with its height pinned to the Flickable's, so
-// each category stacks downward until it runs out of vertical room, then
-// wraps into a new column to the right -- horizontal scroll/fade only,
-// no per-column vertical scrolling needed.
+// Grouped keybind columns, end-4-style: Flow.TopToBottom with height pinned
+// to the Flickable's, so a category wraps into a new column once it runs
+// out of vertical room -- horizontal scroll/fade only, no per-column
+// vertical scroll needed.
 Item {
     id: root
 

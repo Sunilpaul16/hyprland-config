@@ -3,11 +3,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Pipewire
 
-// Trimmed port of end-4/caelestia's services/Audio.qml, stripped to just
-// what the volume OSD needs: current sink's volume + mute state. No
-// sources/streams/sink-switching/toast-on-device-change -- this repo has
-// no Config/Tokens/Toaster to drive those with, and the OSD only cares
-// about the default output.
+// Trimmed port of end-4/caelestia's Audio.qml -- just volume + mute state,
+// no sources/streams/sink-switching/toasts.
 //
 // Route taken: Quickshell.Services.Pipewire, not a wpctl polling loop.
 // Checked first: the module is installed (/usr/lib/qt6/qml/Quickshell/

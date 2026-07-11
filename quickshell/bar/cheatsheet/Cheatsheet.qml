@@ -4,18 +4,10 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../"
 
-// Keybind cheatsheet overlay. Same per-monitor/focused-monitor-only pattern
-// as launcher/Launcher.qml: one instance per screen (see shell.qml), but
-// only the instance on the currently focused monitor ever actually shows
-// itself.
-//
-// Structurally this is end-4's cheatsheet (ii/modules/ii/cheatsheet/
-// Cheatsheet.qml) minus everything that doesn't apply here: no tabs/pages
-// (single content area — this config has no periodic-table Easter egg to
-// make a second tab for), no GlobalFocusGrab/Persistent services (this bar
-// has neither; click-outside + Escape, and WlrLayershell.keyboardFocus for
-// grabbing input, are the same primitives launcher/Launcher.qml already
-// uses to do the equivalent job).
+// Keybind cheatsheet overlay, adapted from end-4's cheatsheet -- same
+// per-monitor/focused-only pattern as launcher/Launcher.qml, no tabs/pages,
+// no GlobalFocusGrab/Persistent (click-outside + Escape + WlrLayershell
+// keyboard focus cover the same job).
 PanelWindow {
     id: root
 
@@ -46,7 +38,6 @@ PanelWindow {
     WlrLayershell.namespace: "quickshell-cheatsheet"
     WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-    // Click-outside-to-dismiss.
     MouseArea {
         anchors.fill: parent
         onClicked: CheatsheetState.open = false

@@ -4,11 +4,6 @@ import "launcher"
 import "cheatsheet"
 
 // Entry point — this is what `qs -c bar` loads.
-//
-// Quickshell.screens is a plain list of the compositor's outputs (DP-3,
-// DP-2 here). Variants instantiates one delegate per model item and keeps
-// it in sync if outputs are added/removed; `modelData` is the item itself
-// (a Qt Screen) for each delegate.
 ShellRoot {
     Variants {
         model: Quickshell.screens

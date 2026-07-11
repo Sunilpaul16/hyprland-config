@@ -3,9 +3,8 @@ import Quickshell
 import Quickshell.Widgets
 import Quickshell.Hyprland
 
-// Focused-window icon + title, styled after ~/shell's ActiveWindow.qml
-// (read-only reference) but stripped down to just the title -- their
-// hover-popout is a whole separate feature this doesn't attempt.
+// Focused-window icon + title, adapted from caelestia's ActiveWindow.qml --
+// title only, no hover-popout.
 //
 // Per-monitor last-active, via LastActive.qml -- see that file's header for
 // why a real per-monitor "last focused window" isn't a native Hyprland

@@ -1,10 +1,8 @@
 import QtQuick
 import "../"
 
-// A rounded pill background wrapping one piece of bar content — styled
-// after end-4's BarGroup.qml (ii/modules/ii/bar/BarGroup.qml): a themed
-// rounded Rectangle, slightly shorter than the bar's own full content
-// height, with the wrapped content centered inside.
+// A rounded pill background wrapping one piece of bar content, styled after
+// end-4's BarGroup.qml.
 //
 // Aliases to `inner.data` (not `inner.children`) since `data` is the
 // generic "reparent anything, visual or not" property — the standard QML

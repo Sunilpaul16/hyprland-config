@@ -3,16 +3,11 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 
-// One PanelWindow per monitor (see shell.qml). PanelWindow is Quickshell's
-// wrapper around the Wayland layer-shell protocol — it's what actually puts
-// pixels in a strip Hyprland reserves screen space for, rather than a normal
-// application window.
+// One PanelWindow per monitor (see shell.qml).
 //
-// Styled after end-4's "hug" cornerStyle (Config.qml: cornerStyle 0): the
-// bar itself is a plain flush rectangle — full width, no margin, no radius,
-// no gap from the screen edge — and the illusion of a rounded transition
-// into the content area below comes from two small Corner shapes sitting
-// right underneath its bottom corners, not from rounding the bar itself.
+// Styled after end-4's "hug" bar (Config.qml cornerStyle 0): a flush
+// rectangle with square corners; the rounded-transition illusion comes from
+// separate Corner shapes below it, not from rounding the bar itself.
 PanelWindow {
     id: bar
 
@@ -25,10 +20,8 @@ PanelWindow {
         right: true
     }
 
-    // Taller than the bar content alone — the extra `cornerSize` at the
-    // bottom is where the Corner decorators live. Only barContentHeight is
-    // reserved as exclusive space (below), so windows can sit right under
-    // the mostly-transparent decorator strip, same as end-4's hug bar does.
+    // Includes cornerSize so windows can sit under the transparent decorator
+    // strip below — only barContentHeight is reserved as exclusive space.
     implicitHeight: barContentHeight + cornerSize
     exclusiveZone: barContentHeight
     color: "transparent"
@@ -36,12 +29,9 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.namespace: "quickshell-bar"
 
-    // The bar itself: flush, full-width, square corners. Three zones —
-    // left/center/right — styled after end-4's grouped-pill bar layout
-    // (ii/modules/ii/bar/BarContent.qml): the center zone is anchored to
-    // this Rectangle's own horizontal center, not packed into a shared row
-    // with the side zones, so it stays truly centered no matter how wide
-    // the left/right content ends up being.
+    // Three zones (left/center/right), end-4-style grouped pills — center
+    // is anchored to this Rectangle's own horizontal center (not a shared
+    // row) so it stays truly centered regardless of side-zone width.
     Rectangle {
         id: content
         anchors { top: parent.top; left: parent.left; right: parent.right }
@@ -64,7 +54,6 @@ PanelWindow {
             }
         }
 
-        // CENTER zone.
         SectionPill {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -74,7 +63,6 @@ PanelWindow {
             }
         }
 
-        // RIGHT zone.
         RowLayout {
             anchors.right: parent.right
             anchors.rightMargin: 14
