@@ -6,14 +6,14 @@ import QtQuick
 // [templates.quickshell_bar_colors]. The hand-written fallback this
 // overwrites lives at ~/.config/quickshell/bar/Colors.qml.
 QtObject {
-    readonly property color background: "#0f1512"
-    readonly property color surface: "#1b211e"
-    readonly property color primary: "#8bd6b5"
+    readonly property color background: "#111318"
+    readonly property color surface: "#1d2024"
+    readonly property color primary: "#a3c9fe"
     // Named `text`/`textMuted`, not `onSurface`/`onSurfaceVariant` — QML
     // reserves "on<Capital>" property names for signal handlers.
-    readonly property color text: "#dee4df"
-    readonly property color textMuted: "#bfc9c2"
-    readonly property color outline: "#89938d"
+    readonly property color text: "#e1e2e8"
+    readonly property color textMuted: "#c3c6cf"
+    readonly property color outline: "#8d9199"
     // Error / destructive roles (M3 error, onError, errorContainer,
     // onErrorContainer). Same on<Capital> rename as text/textMuted above:
     // the two foreground colors become textOnError/textOnErrorContainer.
