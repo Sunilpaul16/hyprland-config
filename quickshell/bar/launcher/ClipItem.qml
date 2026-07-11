@@ -15,9 +15,9 @@ import "../"
 //
 // A third shape (modelData.isAction, see Content.qml's clipActionRow) is a
 // single synthetic row for "/token" actions like "/clear" -- no entry/icon
-// glyph/thumbnail logic applies to it, just its own icon+label, styled
-// outlined/dimmer rather than the normal primary-fill selection highlight
-// since Colors.qml has no dedicated error/warning tone to borrow instead.
+// glyph/thumbnail logic applies to it, just its own icon+label. Since
+// "/clear" is destructive it's error-tinted (Colors.error border + label),
+// keeping the understated outline treatment rather than a primary fill.
 Item {
     id: root
 
@@ -73,7 +73,7 @@ Item {
         radius: 10
         color: root.isAction ? (root.isCurrent ? Colors.surface : "transparent") : (root.isCurrent ? Colors.primary : "transparent")
         border.width: root.isAction ? 1 : 0
-        border.color: Colors.outline
+        border.color: root.isAction ? Colors.error : Colors.outline
 
         Behavior on color { ColorAnimation { duration: 120 } }
 
@@ -126,7 +126,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 width: parent.width - iconSlot.width - parent.spacing
                 text: root.isAction ? root.modelData.label : root.modelData.text
-                color: root.isAction ? Colors.text : (root.isCurrent ? Colors.background : Colors.text)
+                color: root.isAction ? Colors.error : (root.isCurrent ? Colors.background : Colors.text)
                 font.pixelSize: 13
                 font.bold: root.isAction
                 wrapMode: Text.WordWrap

@@ -14,4 +14,11 @@ QtObject {
     readonly property color text: "#{{colors.on_surface.default.hex_stripped}}"
     readonly property color textMuted: "#{{colors.on_surface_variant.default.hex_stripped}}"
     readonly property color outline: "#{{colors.outline.default.hex_stripped}}"
+    // Error / destructive roles (M3 error, onError, errorContainer,
+    // onErrorContainer). Same on<Capital> rename as text/textMuted above:
+    // the two foreground colors become textOnError/textOnErrorContainer.
+    readonly property color error: "#{{colors.error.default.hex_stripped}}"
+    readonly property color textOnError: "#{{colors.on_error.default.hex_stripped}}"
+    readonly property color errorContainer: "#{{colors.error_container.default.hex_stripped}}"
+    readonly property color textOnErrorContainer: "#{{colors.on_error_container.default.hex_stripped}}"
 }

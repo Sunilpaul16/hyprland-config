@@ -14,4 +14,11 @@ QtObject {
     readonly property color text: "#dee4df"
     readonly property color textMuted: "#bfc9c2"
     readonly property color outline: "#89938d"
+    // Error / destructive roles (M3 error, onError, errorContainer,
+    // onErrorContainer). Same on<Capital> rename as text/textMuted above:
+    // the two foreground colors become textOnError/textOnErrorContainer.
+    readonly property color error: "#ffb4ab"
+    readonly property color textOnError: "#690005"
+    readonly property color errorContainer: "#93000a"
+    readonly property color textOnErrorContainer: "#ffdad6"
 }
