@@ -41,4 +41,15 @@ ShellRoot {
             screen: modelData
         }
     }
+
+    // Volume OSD, one per monitor, same focused-only pattern -- but purely
+    // reactive to Audio.volume/Audio.muted, no IPC toggle to open it.
+    Variants {
+        model: Quickshell.screens
+
+        VolumeOsd {
+            property var modelData
+            screen: modelData
+        }
+    }
 }
