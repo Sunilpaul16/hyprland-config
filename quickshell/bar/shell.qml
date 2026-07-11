@@ -47,4 +47,15 @@ ShellRoot {
             screen: modelData
         }
     }
+
+    // Notification popup stack (top-right), one per monitor, focused-only.
+    // Driven by the Notifs D-Bus service; see NotifPopups.qml / Notif.qml.
+    Variants {
+        model: Quickshell.screens
+
+        NotifPopups {
+            property var modelData
+            screen: modelData
+        }
+    }
 }
