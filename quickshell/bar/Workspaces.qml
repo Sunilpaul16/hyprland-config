@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Widgets
 import Quickshell.Hyprland
 
+// Workspaces widget
 Item {
     id: root
     property var screen
@@ -13,6 +14,7 @@ Item {
 
     readonly property int minSlots: 4
 
+    // Build display slots (real + placeholder)
     readonly property var displaySlots: {
         const maxId = Math.max(root.minSlots, ...root.allWorkspaces.map(ws => ws.id), 0);
         const slots = [];
@@ -48,6 +50,7 @@ Item {
     readonly property int iconSize: Math.round(pillSize * 0.62)
     readonly property int iconGap: 2
 
+    // Compute per-slot layout (width, icons)
     readonly property var slotLayout: {
         let x = 0;
         const layout = [];
@@ -74,6 +77,7 @@ Item {
     implicitWidth: slotLayout.length > 0 ? (slotLayout[slotLayout.length - 1].x + slotLayout[slotLayout.length - 1].width) : 0
     implicitHeight: pillSize
 
+    // Occupied-slot backgrounds
     Repeater {
         model: root.slotLayout
 
@@ -94,6 +98,7 @@ Item {
         }
     }
 
+    // Active workspace highlight
     Rectangle {
         id: highlight
         visible: root.activeIndex >= 0
@@ -110,6 +115,7 @@ Item {
         Behavior on width { NumberAnimation { duration: 200; easing.type: Easing.OutSine } }
     }
 
+    // Slot content (icons or number)
     Repeater {
         model: root.slotLayout
 

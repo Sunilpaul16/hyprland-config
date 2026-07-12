@@ -1,6 +1,7 @@
 import QtQuick
 import "../"
 
+// Pill container
 Item {
     id: root
 
@@ -11,6 +12,7 @@ Item {
     implicitWidth: inner.childrenRect.width + horizontalPadding * 2
     implicitHeight: pillHeight
 
+    // Background
     Rectangle {
         anchors.fill: parent
         radius: height / 2

@@ -5,6 +5,7 @@ import Qt5Compat.GraphicalEffects
 import "../"
 
 
+// Clipboard list item
 Item {
     id: root
 
@@ -33,6 +34,7 @@ Item {
     }
 
 
+    // Decode entry thumbnail
     Process {
         id: decodeProc
         command: ["bash", "-c", `[ -f '${root.thumbPath}' ] || ${Cliphist.cliphistBinary} decode > '${root.thumbPath}'`]
@@ -49,6 +51,7 @@ Item {
         }
     }
 
+    // Row background
     Rectangle {
         anchors.fill: parent
         anchors.margins: 2
@@ -59,12 +62,14 @@ Item {
 
         Behavior on color { ColorAnimation { duration: 120 } }
 
+        // Icon/thumbnail + text
         Row {
             anchors.fill: parent
             anchors.leftMargin: 12
             anchors.rightMargin: 12
             spacing: 12
 
+            // Icon/thumbnail slot
             Item {
                 id: iconSlot
                 anchors.verticalCenter: parent.verticalCenter
@@ -118,6 +123,7 @@ Item {
         }
     }
 
+    // Click to activate, shift-click to delete
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton

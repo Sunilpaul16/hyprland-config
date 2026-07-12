@@ -6,6 +6,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 
 
+// Notification popup window
 PanelWindow {
     id: root
 
@@ -38,6 +39,7 @@ PanelWindow {
         item: stack
     }
 
+    // Popup stack container
     Item {
         id: stack
 
@@ -50,6 +52,7 @@ PanelWindow {
         height: Math.min(list.contentHeight, root.height - root.topGap - root.sideGap)
         clip: true
 
+        // Popup list
         ListView {
             id: list
 
@@ -73,6 +76,7 @@ PanelWindow {
         }
     }
 
+    // Per-notification wrapper (handles remove animation)
     component Wrapper: Item {
         id: wrapper
 
@@ -91,6 +95,7 @@ PanelWindow {
 
         ListView.onRemove: removeAnim.start()
 
+        // Remove animation
         SequentialAnimation {
             id: removeAnim
 

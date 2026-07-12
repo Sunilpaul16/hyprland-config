@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Widgets
 import "../"
 
+// App list item
 Item {
     id: root
 
@@ -14,6 +15,7 @@ Item {
 
     signal activated
 
+    // Row background
     Rectangle {
         anchors.fill: parent
         anchors.margins: 2
@@ -22,6 +24,7 @@ Item {
 
         Behavior on color { ColorAnimation { duration: 120 } }
 
+        // Icon + name/comment
         Row {
             anchors.fill: parent
             anchors.leftMargin: 12
@@ -60,6 +63,7 @@ Item {
         }
     }
 
+    // Activate on tap
     TapHandler {
         onTapped: root.activated()
     }

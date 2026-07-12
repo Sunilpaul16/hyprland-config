@@ -4,6 +4,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../"
 
+// Cheatsheet overlay window
 PanelWindow {
     id: root
 
@@ -31,21 +32,25 @@ PanelWindow {
     WlrLayershell.namespace: "quickshell-cheatsheet"
     WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
+    // Click outside to close
     MouseArea {
         anchors.fill: parent
         onClicked: CheatsheetState.open = false
     }
 
+    // Focus scope
     Item {
         anchors.fill: parent
         focus: root.active
         Keys.onEscapePressed: CheatsheetState.open = false
 
+        // Absorb clicks on panel
         MouseArea {
             anchors.fill: panel
             onClicked: {}
         }
 
+        // Panel
         Rectangle {
             id: panel
             anchors.centerIn: parent

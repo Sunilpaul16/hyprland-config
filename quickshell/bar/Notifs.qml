@@ -6,12 +6,14 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Notifications
 
+// Notification list singleton
 Singleton {
     id: root
 
     property list<Notif> list: []
     readonly property list<Notif> popups: list.filter(n => n.popup && !n.closed)
 
+    // Notification server
     NotificationServer {
         id: server
 
@@ -32,6 +34,7 @@ Singleton {
         }
     }
 
+    // IPC handler
     IpcHandler {
         target: "notifs"
 

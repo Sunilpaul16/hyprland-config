@@ -2,6 +2,7 @@ import QtQuick
 import "../"
 
 
+// Wallpaper list item
 Item {
     id: root
 
@@ -16,6 +17,7 @@ Item {
     signal activated
     signal hoverActivated
 
+    // Refresh thumbnail when ready
     Connections {
         target: Wallpapers
         function onThumbnailReady(path) {
@@ -26,6 +28,7 @@ Item {
         }
     }
 
+    // Thumbnail card
     Rectangle {
         id: card
 
@@ -63,10 +66,12 @@ Item {
         }
     }
 
+    // Hover to preview
     HoverHandler {
         onHoveredChanged: if (hovered) root.hoverActivated()
     }
 
+    // Activate on tap
     TapHandler {
         onTapped: root.activated()
     }

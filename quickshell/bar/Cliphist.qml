@@ -5,6 +5,7 @@ import Quickshell.Io
 import "launcher/fuzzysort.js" as Fuzzy
 
 
+// Clipboard history singleton
 Singleton {
     id: root
 
@@ -65,11 +66,13 @@ Singleton {
         wipeDecodeDirProc.running = true;
     }
 
+    // Reset decode scratch dir
     Process {
         id: wipeDecodeDirProc
         command: ["bash", "-c", `rm -rf '${root.decodeDir}'; mkdir -p '${root.decodeDir}'`]
     }
 
+    // List clipboard entries
     Process {
         id: listProc
         property list<string> buffer: []
@@ -87,6 +90,7 @@ Singleton {
         }
     }
 
+    // Copy entry to clipboard
     Process {
         id: copyProc
         property string pendingEntry: ""
@@ -97,6 +101,7 @@ Singleton {
         }
     }
 
+    // Delete entry
     Process {
         id: deleteProc
         property string pendingEntry: ""
@@ -108,6 +113,7 @@ Singleton {
         onExited: root.refresh()
     }
 
+    // Wipe clipboard history
     Process {
         id: wipeProc
         command: [root.cliphistBinary, "wipe"]

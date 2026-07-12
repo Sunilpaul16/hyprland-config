@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import "fuzzysort.js" as Fuzzy
 
+// Wallpaper list singleton
 Singleton {
     id: root
 
@@ -33,6 +34,7 @@ Singleton {
 
     Component.onCompleted: scanProc.running = true
 
+    // Scan wallpaper directory
     Process {
         id: scanProc
         command: ["find", root.wallpaperDir, "-maxdepth", "1", "-type", "f", "(",
@@ -66,6 +68,7 @@ Singleton {
         proc.running = true;
     }
 
+    // Video thumbnail generator
     Component {
         id: thumbGenComponent
 

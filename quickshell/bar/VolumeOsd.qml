@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 
+// Volume OSD window
 PanelWindow {
     id: root
     property var screen
@@ -13,6 +14,7 @@ PanelWindow {
     readonly property bool active: root.triggered && root.isFocusedScreen
 
     property bool startupGraceOver: false
+    // Startup grace period
     Timer {
         interval: 1000
         running: true
@@ -39,6 +41,7 @@ PanelWindow {
     WlrLayershell.namespace: "quickshell-volume-osd"
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
+    // Show on volume change
     Connections {
         target: Audio
         function onVolumeChanged() {
@@ -55,6 +58,7 @@ PanelWindow {
         }
     }
 
+    // Auto-hide timer
     Timer {
         id: hideTimer
         interval: 1500
@@ -71,6 +75,7 @@ PanelWindow {
         return "\u{1F50A}"; // full volume speaker
     }
 
+    // OSD card
     Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
@@ -87,6 +92,7 @@ PanelWindow {
         implicitWidth: row.implicitWidth + 28
         implicitHeight: 44
 
+        // Icon + bar + percent
         Row {
             id: row
             anchors.centerIn: parent
@@ -98,6 +104,7 @@ PanelWindow {
                 font.pixelSize: 18
             }
 
+            // Volume bar
             Rectangle {
                 id: track
                 anchors.verticalCenter: parent.verticalCenter

@@ -4,6 +4,7 @@ import Quickshell.Widgets
 import Quickshell.Services.Notifications
 
 
+// Notification card
 Rectangle {
     id: card
 
@@ -38,6 +39,7 @@ Rectangle {
     }
 
 
+    // Accent bar
     Rectangle {
         anchors.left: parent.left
         anchors.top: parent.top
@@ -48,6 +50,7 @@ Rectangle {
         color: card.accent
     }
 
+    // Click to invoke action
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton | Qt.MiddleButton
@@ -62,6 +65,7 @@ Rectangle {
         }
     }
 
+    // Content
     Column {
         id: layout
         anchors.left: parent.left
@@ -72,6 +76,7 @@ Rectangle {
         anchors.topMargin: 12
         spacing: 8
 
+        // Icon + text
         Row {
             width: parent.width
             spacing: 12
@@ -152,6 +157,7 @@ Rectangle {
             }
         }
 
+        // Action buttons
         Row {
             width: parent.width
             spacing: 8
@@ -194,6 +200,7 @@ Rectangle {
         }
     }
 
+    // Close button
     Rectangle {
         anchors.top: parent.top
         anchors.right: parent.right

@@ -4,6 +4,7 @@ import Quickshell
 import "fuzzysort.js" as Fuzzy
 
 
+// Launcher commands singleton
 Singleton {
     id: root
 

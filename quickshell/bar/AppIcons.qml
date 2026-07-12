@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 
 
+// Icon resolution singleton
 Singleton {
     id: root
     readonly property var desktopEntries: DesktopEntries.applications.values

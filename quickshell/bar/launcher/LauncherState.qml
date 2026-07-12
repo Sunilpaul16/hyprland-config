@@ -4,12 +4,14 @@ import Quickshell
 import Quickshell.Io
 
 
+// Launcher open/close state
 Singleton {
     id: root
 
     property bool open: false
     property string pendingText: ""
 
+    // Open in each mode
     function openApps(): void {
         if (root.open) {
             root.open = false;
@@ -37,6 +39,7 @@ Singleton {
         root.open = true;
     }
 
+    // IPC handler
     IpcHandler {
         target: "launcher"
 

@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
+// Clock singleton
 Singleton {
     id: root
 

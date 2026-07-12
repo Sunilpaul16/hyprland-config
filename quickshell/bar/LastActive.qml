@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 
+// Per-monitor last-active-window tracking
 Singleton {
     id: root
 
@@ -21,6 +22,7 @@ Singleton {
 
     Component.onCompleted: root.record()
 
+    // Update on active window change
     Connections {
         target: Hyprland
         function onActiveToplevelChanged() {

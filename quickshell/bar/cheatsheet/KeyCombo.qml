@@ -1,6 +1,7 @@
 import QtQuick
 import "../"
 
+// Key combo widget
 Row {
     id: root
 
@@ -8,6 +9,7 @@ Row {
 
     spacing: 4
 
+    // Special key display labels
     readonly property var keyLabels: ({
         "Grave": "`",
         "Slash": "/",
@@ -46,6 +48,7 @@ Row {
     readonly property var mods: modNames(rowData.modmask)
     readonly property string mainKey: rowData.isRange ? `${rowData.keys[0]}-${rowData.keys[1]}` : (keyLabels[rowData.keys[0]] ?? rowData.keys[0])
 
+    // Modifier keys
     Repeater {
         model: root.mods
 

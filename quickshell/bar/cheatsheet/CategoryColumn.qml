@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../"
 
+// Category column
 Column {
     id: root
 
@@ -18,6 +19,7 @@ Column {
         font.bold: true
     }
 
+    // Bind rows
     Column {
         spacing: 6
 

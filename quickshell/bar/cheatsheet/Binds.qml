@@ -3,11 +3,13 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
+// Keybind data singleton
 Singleton {
     id: root
 
     property var binds: []
 
+    // Group binds by description into display rows
     readonly property var rows: {
         const order = [];
         const groups = new Map();
@@ -51,6 +53,7 @@ Singleton {
 
     readonly property var categoryOrder: ["Window", "Workspace", "App", "Launcher", "Screenshot", "Record", "Media", "System", "Screen"]
 
+    // Ordered category list
     readonly property var categories: {
         const seen = new Set(root.rows.map(r => r.category));
         const known = root.categoryOrder.filter(c => seen.has(c));
@@ -66,6 +69,7 @@ Singleton {
         getBinds.running = true;
     }
 
+    // Fetch binds from hyprctl
     Process {
         id: getBinds
         command: ["hyprctl", "binds", "-j"]

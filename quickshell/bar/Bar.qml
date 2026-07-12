@@ -4,12 +4,14 @@ import Quickshell
 import Quickshell.Wayland
 
 
+// Bar window
 PanelWindow {
     id: bar
 
     readonly property int barContentHeight: 40
     readonly property int cornerSize: 14
 
+    // Positioning
     anchors {
         top: true
         left: true
@@ -21,11 +23,13 @@ PanelWindow {
     color: "transparent"
     WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.namespace: "quickshell-bar"
+    // Bar content
     Rectangle {
         id: content
         anchors { top: parent.top; left: parent.left; right: parent.right }
         height: bar.barContentHeight
         color: Colors.background
+        // Active window pill
         SectionPill {
             anchors.left: parent.left
             anchors.leftMargin: 14
@@ -38,6 +42,7 @@ PanelWindow {
             }
         }
 
+        // Workspaces pill
         SectionPill {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -47,6 +52,7 @@ PanelWindow {
             }
         }
 
+        // Right-side widgets
         RowLayout {
             anchors.right: parent.right
             anchors.rightMargin: 14
@@ -64,6 +70,7 @@ PanelWindow {
             }
         }
     }
+    // Round decorators
     Corner {
         anchors { top: content.bottom; left: parent.left }
         size: bar.cornerSize

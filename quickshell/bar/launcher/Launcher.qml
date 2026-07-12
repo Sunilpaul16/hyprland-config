@@ -4,6 +4,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../"
 
+// Launcher overlay window
 PanelWindow {
     id: root
 
@@ -31,6 +32,7 @@ PanelWindow {
     WlrLayershell.namespace: "quickshell-launcher"
     WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
+    // Click outside to close
     MouseArea {
         anchors.fill: parent
         onClicked: LauncherState.open = false

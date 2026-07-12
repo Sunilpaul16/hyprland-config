@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell.Services.Notifications
 
 
+// Notification model
 QtObject {
     id: notif
 
@@ -31,6 +32,7 @@ QtObject {
 
     readonly property bool critical: urgency === NotificationUrgency.Critical
 
+    // Auto-dismiss timer
     readonly property Timer timer: Timer {
         running: notif.popup && !notif.closed && !notif.critical && !notif.hovered
         interval: notif.expireTimeout > 0 ? notif.expireTimeout : 5000
@@ -38,6 +40,7 @@ QtObject {
     }
 
 
+    // Sync from Notification service
     readonly property Connections conn: Connections {
         target: notif.notification
 

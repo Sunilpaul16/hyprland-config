@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 
+// Recording indicator widget
 Item {
     id: root
 
@@ -14,6 +15,7 @@ Item {
     implicitWidth: visible ? row.implicitWidth : 0
     implicitHeight: row.implicitHeight
 
+    // Poll + tick
     Timer {
         interval: 1000
         running: true
@@ -26,6 +28,7 @@ Item {
         }
     }
 
+    // Poll for wf-recorder
     Process {
         id: pollProc
         command: ["pgrep", "-x", "wf-recorder"]
@@ -39,11 +42,13 @@ Item {
         }
     }
 
+    // Dot + timer label
     RowLayout {
         id: row
         anchors.verticalCenter: parent.verticalCenter
         spacing: 6
 
+        // Blinking dot
         Rectangle {
             id: dot
             Layout.alignment: Qt.AlignVCenter
@@ -72,6 +77,7 @@ Item {
         }
     }
 
+    // Click to stop recording
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor

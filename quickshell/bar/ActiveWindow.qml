@@ -4,6 +4,7 @@ import Quickshell.Widgets
 import Quickshell.Hyprland
 
 
+// Active window widget
 Item {
     id: root
     property var screen
@@ -24,6 +25,7 @@ Item {
     implicitWidth: visible ? row.implicitWidth : 0
     implicitHeight: row.implicitHeight
 
+    // Icon + title
     Row {
         id: row
         spacing: 8

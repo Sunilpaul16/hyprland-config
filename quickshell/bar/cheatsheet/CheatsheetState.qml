@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
+// Cheatsheet open/close state
 Singleton {
     id: root
 
@@ -14,6 +15,7 @@ Singleton {
         root.open = !root.open;
     }
 
+    // IPC handler
     IpcHandler {
         target: "cheatsheet"
 

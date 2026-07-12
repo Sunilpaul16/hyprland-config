@@ -4,6 +4,7 @@ import "launcher"
 import "cheatsheet"
 
 ShellRoot {
+    // For each monitor: bar
     Variants {
         model: Quickshell.screens
 
@@ -13,6 +14,7 @@ ShellRoot {
         }
     }
 
+    // For each monitor: launcher
     Variants {
         model: Quickshell.screens
 
@@ -22,6 +24,7 @@ ShellRoot {
         }
     }
 
+    // For each monitor: cheatsheet
     Variants {
         model: Quickshell.screens
 
@@ -31,6 +34,7 @@ ShellRoot {
         }
     }
 
+    // For each monitor: volume OSD
     Variants {
         model: Quickshell.screens
 
@@ -40,6 +44,7 @@ ShellRoot {
         }
     }
 
+    // For each monitor: notification popups
     Variants {
         model: Quickshell.screens
 

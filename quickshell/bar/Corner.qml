@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Shapes
 
+// Corner decorator
 Item {
     id: root
     property color color: "black"
@@ -13,6 +14,7 @@ Item {
 
     readonly property bool isLeft: corner === "topLeft"
 
+    // Quarter-circle mask
     Shape {
         anchors.fill: parent
         preferredRendererType: Shape.CurveRenderer

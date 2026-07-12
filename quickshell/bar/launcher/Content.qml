@@ -3,6 +3,7 @@ import Quickshell
 import "../"
 
 
+// Launcher content
 Item {
     id: content
 
@@ -92,6 +93,7 @@ Item {
     Behavior on implicitWidth { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
     Behavior on implicitHeight { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
 
+    // Actions per mode
     function launchApp(entry): void {
         if (!entry)
             return;
@@ -158,6 +160,7 @@ Item {
         applyDebounce.restart();
     }
 
+    // Panel background
     Rectangle {
         anchors.fill: parent
         radius: 24
@@ -165,10 +168,12 @@ Item {
         border.width: 1
         border.color: Colors.outline
 
+        // Absorb clicks
         MouseArea {
             anchors.fill: parent
         }
 
+        // Results area
         Item {
             id: resultsArea
             anchors.top: parent.top
@@ -178,10 +183,12 @@ Item {
             anchors.margins: content.panelPad
             anchors.bottomMargin: content.searchGap
 
+            // Wallpaper mode
             Item {
                 anchors.fill: parent
                 visible: content.mode === "wallpaper"
 
+                // Wallpaper carousel
                 ListView {
                     id: row
 
@@ -224,6 +231,7 @@ Item {
                 }
             }
 
+            // App/command/clip results list
             ListView {
                 id: verticalList
 
@@ -241,6 +249,7 @@ Item {
 
                 delegate: content.mode === "commands" ? commandItemComponent : (content.mode === "clip" ? clipItemComponent : appItemComponent)
 
+                // Delegate factories per mode
                 Component {
                     id: appItemComponent
                     AppItem {
@@ -270,6 +279,7 @@ Item {
                 }
             }
 
+            // Empty state
             Text {
                 anchors.centerIn: parent
                 visible: content.currentModeResults.length === 0
@@ -279,6 +289,7 @@ Item {
             }
         }
 
+        // Search bar
         Rectangle {
             id: searchBg
 
@@ -309,6 +320,7 @@ Item {
                 opacity: 0.6
             }
 
+            // Search input
             TextInput {
                 id: input
 
@@ -353,6 +365,7 @@ Item {
         }
     }
 
+    // Sync from launcher state on open
     Connections {
         target: LauncherState
         function onOpenChanged() {
