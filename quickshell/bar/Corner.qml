@@ -20,28 +20,30 @@ Item {
         preferredRendererType: Shape.CurveRenderer
 
         ShapePath {
+            id: shapePath
             fillColor: root.color
             strokeWidth: 0
 
             startX: root.isLeft ? 0 : root.size
             startY: 0
 
-
+            // moveToStart:false + matching startAngle per corner (mirrors
+            // end-4/dots-hyprland's RoundCorner.qml) is required here —
+            // without it the default moveToStart:true jump plus a second
+            // redundant PathLine produced a self-intersecting crescent
+            // instead of a clean wedge, most visible on the right corner.
             PathAngleArc {
+                moveToStart: false
                 centerX: root.isLeft ? root.size : 0
                 centerY: root.size
                 radiusX: root.size
                 radiusY: root.size
-                startAngle: root.isLeft ? 180 : 0
-                sweepAngle: root.isLeft ? 90 : -90
+                startAngle: root.isLeft ? 180 : -90
+                sweepAngle: 90
             }
             PathLine {
-                x: root.isLeft ? 0 : root.size
-                y: root.size
-            }
-            PathLine {
-                x: root.isLeft ? 0 : root.size
-                y: 0
+                x: shapePath.startX
+                y: shapePath.startY
             }
         }
     }
