@@ -18,8 +18,8 @@ Rectangle {
     readonly property bool hasAppIcon: modelData.appIcon.length > 0
     readonly property string timeStr: Qt.formatDateTime(modelData.time, "hh:mm")
 
-    implicitHeight: content.implicitHeight + 24
-    radius: 20
+    implicitHeight: content.implicitHeight + 20
+    radius: 14
     color: Colors.surface
     border.width: modelData.critical ? 1 : 0
     border.color: Colors.error
@@ -64,18 +64,18 @@ Rectangle {
     // Content
     Item {
         id: content
-        anchors { left: parent.left; right: parent.right; top: parent.top; margins: 12 }
+        anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
         implicitHeight: Math.max(iconSlot.height, appNameText.height + headerCol.implicitHeight)
 
         // Reserve room for chevron (always) + close button (expanded only)
-        readonly property int actionsReserve: card.modelData.expanded ? 48 : 26
+        readonly property int actionsReserve: card.modelData.expanded ? 44 : 24
 
         // Icon
         Rectangle {
             id: iconSlot
-            width: 32
-            height: 32
-            radius: 16
+            width: 26
+            height: 26
+            radius: 13
             color: card.modelData.critical ? Colors.error : Colors.background
             clip: true
             anchors.left: parent.left
@@ -92,18 +92,22 @@ Rectangle {
 
             IconImage {
                 anchors.centerIn: parent
-                width: 18
-                height: 18
+                width: 15
+                height: 15
                 visible: !card.hasImage && card.hasAppIcon
                 asynchronous: true
                 source: card.hasAppIcon ? Quickshell.iconPath(card.modelData.appIcon, "dialog-information") : ""
             }
 
+            // Flat monochrome fallback glyph, not a colorful emoji
             Text {
                 anchors.centerIn: parent
+                anchors.verticalCenterOffset: -1
                 visible: !card.hasImage && !card.hasAppIcon
-                text: "\u{1F514}" // bell
-                font.pixelSize: 14
+                text: "i"
+                color: card.modelData.critical ? Colors.textOnError : Colors.primary
+                font.pixelSize: 13
+                font.bold: true
             }
         }
 
@@ -114,7 +118,7 @@ Rectangle {
             anchors.right: parent.right
             anchors.rightMargin: content.actionsReserve
             anchors.top: parent.top
-            anchors.leftMargin: 10
+            anchors.leftMargin: 8
             visible: card.modelData.expanded && card.modelData.appName.length > 0
             height: visible ? implicitHeight : 0
             text: card.modelData.appName
@@ -129,8 +133,8 @@ Rectangle {
             anchors.right: parent.right
             anchors.rightMargin: content.actionsReserve
             anchors.top: appNameText.bottom
-            anchors.leftMargin: 10
-            spacing: 3
+            anchors.leftMargin: 8
+            spacing: 2
 
             // Summary · time
             Row {
@@ -225,10 +229,10 @@ Rectangle {
             id: closeBtn
             anchors.right: chevron.left
             anchors.top: parent.top
-            anchors.rightMargin: 4
-            width: 18
-            height: 18
-            radius: 9
+            anchors.rightMargin: 2
+            width: 16
+            height: 16
+            radius: 8
             visible: card.modelData.expanded
             color: closeArea.containsMouse ? Colors.outline : "transparent"
 
@@ -255,8 +259,8 @@ Rectangle {
             id: chevron
             anchors.right: parent.right
             anchors.top: parent.top
-            width: 20
-            height: 20
+            width: 18
+            height: 18
 
             Text {
                 anchors.centerIn: parent
