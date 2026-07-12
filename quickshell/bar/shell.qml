@@ -53,4 +53,14 @@ ShellRoot {
             screen: modelData
         }
     }
+
+    // For each monitor: session/power screen
+    Variants {
+        model: Quickshell.screens
+
+        SessionScreen {
+            property var modelData
+            screen: modelData
+        }
+    }
 }

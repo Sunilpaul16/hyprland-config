@@ -68,6 +68,13 @@ PanelWindow {
 
                 Clock {}
             }
+
+            SectionPill {
+                Layout.alignment: Qt.AlignVCenter
+                horizontalPadding: 8
+
+                SessionButton {}
+            }
         }
     }
     // Round decorators
