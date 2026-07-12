@@ -2,25 +2,7 @@
 ---- KEYBINDINGS ----
 ---------------------
 
--- Description convention for the Quickshell cheatsheet (see
--- ~/.config/quickshell/bar/Cheatsheet.qml), read via `hyprctl binds -j`:
--- every bind gets a "Category: label" description, lowercase after the
--- colon, categories kept few and reused (Window, Workspace, App, Launcher,
--- Media, System, plus the pre-existing Screenshot/Record/Screen).
---
--- Loop-generated binds that repeat across a key range (the workspace
--- switch/move-to loop below) all share one literal description containing
--- "<N>" instead of the real number for each iteration (e.g. "Workspace:
--- switch <N>") -- the cheatsheet groups binds with an identical description
--- into a single row and renders the actual key range itself (e.g. "Super +
--- 1-0"). This only makes sense for a genuine ordered key sequence though:
--- non-numeric same-description groups (e.g. the two audio play/pause keys
--- below) are left as separate rows rather than collapsed into a nonsense
--- range.
---
--- XF86MonBrightness{Up,Down} are annotated for completeness but are likely
--- dead binds on this desktop (two external monitors, no internal backlight)
--- -- may get excluded from the sheet.
+
 
 local mainMod = "SUPER"
 

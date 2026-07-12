@@ -2,8 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import "../"
 
-// One category's worth of bind rows -- title + a KeyCombo/label pair per
-// row, sourced from Binds.rowsFor (see Binds.qml for how rows get grouped).
 Column {
     id: root
 

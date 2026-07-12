@@ -1,11 +1,6 @@
 import QtQuick
 import "../"
 
-// Renders one bind row's key combo as a row of KeyCap chips, e.g.
-// [Super] + [Shift] + [Q]. modmask bit positions match Hyprland's own
-// encoding (confirmed against this config's actual `hyprctl binds -j`
-// output: 64 = Super, 65 = Super+Shift, 72 = Super+Alt, 73 =
-// Super+Alt+Shift), same mapping end-4 uses in CheatsheetKeybindsCategory.qml.
 Row {
     id: root
 
@@ -13,9 +8,6 @@ Row {
 
     spacing: 4
 
-    // Raw hyprctl key names -> what's actually printed on the chip. Only
-    // the keys that appear anywhere in this config's keybinds.lua are
-    // listed -- anything else falls back to its raw name unchanged.
     readonly property var keyLabels: ({
         "Grave": "`",
         "Slash": "/",

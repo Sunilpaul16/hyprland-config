@@ -3,21 +3,6 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Parses `hyprctl binds -j` into cheatsheet rows. Run once when the overlay
-// opens (see Connections below), not polled -- keybinds only change on a
-// config reload, which isn't a normal-operation event worth watching for
-// continuously (unlike Workspaces.qml's genuinely live Hyprland data).
-//
-// Every bind in ~/.config/hypr/keybinds.lua now carries a "Category: label"
-// description (see the convention comment at that file's top). Two things
-// happen here beyond a straight parse:
-//   - category/label are split out of "Category: label" once per bind.
-//   - binds that share an identical description are grouped; if that
-//     group's keys are exactly a digit sequence (the workspace switch/
-//     move-to loop's "<N>" placeholder description), it collapses into one
-//     row spanning the key range. Any other same-description group (e.g.
-//     the two play/pause keys) is left as separate individual rows --
-//     collapsing non-numeric keys into a "range" wouldn't mean anything.
 Singleton {
     id: root
 
@@ -64,8 +49,6 @@ Singleton {
         return result;
     }
 
-    // Category display order -- known ones first (roughly most-used to
-    // least), anything unexpected falls back to alphabetical after them.
     readonly property var categoryOrder: ["Window", "Workspace", "App", "Launcher", "Screenshot", "Record", "Media", "System", "Screen"]
 
     readonly property var categories: {

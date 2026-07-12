@@ -3,36 +3,15 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 
-// Volume OSD: bar + percentage + mute state, shown briefly on the focused
-// monitor when the default sink's volume/mute changes. Centered-bottom
-// (not caelestia's sidebar slide-in -- this config has no sidebar to dock
-// against) matches the common GNOME/KDE bottom-center convention.
-//
-// Same per-monitor/focused-only pattern as Launcher.qml/Cheatsheet.qml, but
-// with no keyboard focus at all (WlrKeyboardFocus.None) -- purely passive,
-// nothing to type into or click.
 PanelWindow {
     id: root
     property var screen
 
     readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
 
-    // Only true once a real onVolumeChanged/onMutedChanged fires -- never
-    // set from the initial Audio.volume/Audio.muted binding evaluation
-    // itself, so nothing shows just because the window came into being.
     property bool triggered: false
     readonly property bool active: root.triggered && root.isFocusedScreen
 
-    // Startup grace: Pipewire.defaultAudioSink resolves asynchronously
-    // after the shell starts (same lesson as DesktopEntries/Hyprland.
-    // toplevels elsewhere in this config) -- its `.audio.volume`/`.muted`
-    // can genuinely change value once during that initial settle, which
-    // would otherwise fire onVolumeChanged/onMutedChanged and pop the OSD
-    // up right at startup. Real user-driven changes don't happen in the
-    // first second of the shell's life, so anything reported before this
-    // flag flips is startup noise, not a real change -- confirmed this
-    // trap is real by testing without the guard first (see verification
-    // notes).
     property bool startupGraceOver: false
     Timer {
         interval: 1000

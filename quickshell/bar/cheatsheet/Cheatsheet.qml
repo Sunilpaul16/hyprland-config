@@ -4,19 +4,12 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../"
 
-// Keybind cheatsheet overlay, adapted from end-4's cheatsheet -- same
-// per-monitor/focused-only pattern as launcher/Launcher.qml, no tabs/pages,
-// no GlobalFocusGrab/Persistent (click-outside + Escape + WlrLayershell
-// keyboard focus cover the same job).
 PanelWindow {
     id: root
 
     readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
     readonly property bool active: CheatsheetState.open && root.isFocusedScreen
 
-    // Fade in/out rather than snap, same trick as Launcher.qml's
-    // showProgress: the window must stay mapped for the whole fade, so
-    // `visible` is driven by showProgress, not `active` directly.
     property real showProgress: active ? 1 : 0
 
     Behavior on showProgress {
@@ -43,17 +36,11 @@ PanelWindow {
         onClicked: CheatsheetState.open = false
     }
 
-    // Escape-to-dismiss. No text field to hang Keys.onEscapePressed off of
-    // here (unlike launcher/Content.qml's search input), so a plain
-    // focus-scoped Item takes that role instead — it only actually has
-    // keyboard focus while the window holds WlrKeyboardFocus.Exclusive.
     Item {
         anchors.fill: parent
         focus: root.active
         Keys.onEscapePressed: CheatsheetState.open = false
 
-        // Swallow clicks landing on the panel itself so they don't fall
-        // through to the click-outside MouseArea behind it.
         MouseArea {
             anchors.fill: panel
             onClicked: {}

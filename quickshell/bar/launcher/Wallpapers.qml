@@ -4,10 +4,6 @@ import Quickshell
 import Quickshell.Io
 import "fuzzysort.js" as Fuzzy
 
-// Scans the wallpaper folder once at startup and answers fuzzy-filtered
-// queries for Content.qml's search field. Thumbnails for video wallpapers
-// are generated lazily (once per file, cached by content hash of the path)
-// since there's no cheap way to preview a video frame without decoding it.
 Singleton {
     id: root
 
@@ -15,9 +11,6 @@ Singleton {
     readonly property string thumbCacheDir: Quickshell.env("HOME") + "/.cache/wallpaper-thumbs"
     readonly property var videoExtensions: ["mp4", "webm", "mkv"]
 
-    // [{ name, path, isVideo, thumbPath }, ...] — thumbPath is the file to
-    // hand to Image: the wallpaper itself for images, a generated frame for
-    // videos (may not exist on disk yet — see thumbnailReady below).
     property var list: []
 
     signal thumbnailReady(string path)
@@ -27,10 +20,6 @@ Singleton {
         return videoExtensions.includes(ext);
     }
 
-    // Empty search returns everything in scan order; otherwise fuzzy-match
-    // filenames. Kept as the one entry point Content.qml calls, so a future
-    // app-search mode can live behind the same shape without Content needing
-    // to know about Wallpapers directly.
     function query(search: string): var {
         const trimmed = search.trim();
         if (!trimmed)
@@ -77,8 +66,6 @@ Singleton {
         proc.running = true;
     }
 
-    // One-shot Process per video, created on demand (createObject) rather
-    // than a fixed pool since there's no bound on how many videos exist.
     Component {
         id: thumbGenComponent
 

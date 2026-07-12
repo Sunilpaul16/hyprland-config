@@ -4,20 +4,7 @@ import Quickshell.Io
 import Qt5Compat.GraphicalEffects
 import "../"
 
-// One row in the ">clip" clipboard-history list -- same chrome as AppItem
-// (icon slot + highlight rectangle + Colors.qml theming) but up to 3 wrapped
-// lines instead of AppItem's single name line, since clipboard snippets
-// often need more than one line to tell apart. Text entries keep the 📋
-// glyph; image entries get a real thumbnail, decoded lazily like end-4's
-// CliphistImage.qml -- decode into Cliphist.decodeDir on mount, delete on
-// unmount, no caching across mounts (see Cliphist.qml) so the scratch dir
-// never accumulates regardless of how much history gets scrolled through.
-//
-// A third shape (modelData.isAction, see Content.qml's clipActionRow) is a
-// single synthetic row for "/token" actions like "/clear" -- no entry/icon
-// glyph/thumbnail logic applies to it, just its own icon+label. Since
-// "/clear" is destructive it's error-tinted (Colors.error border + label),
-// keeping the understated outline treatment rather than a primary fill.
+
 Item {
     id: root
 
@@ -45,12 +32,7 @@ Item {
             Quickshell.execDetached(["bash", "-c", `rm -f '${root.thumbPath}'`]);
     }
 
-    // Stdin goes straight to the child (Process.write), same as
-    // Cliphist.qml's copy()/deleteEntry() -- and `stdinEnabled` must go
-    // true->write->false around it or `cliphist decode` hangs waiting for
-    // EOF forever (see Cliphist.qml's header comment). This Process only
-    // ever runs once per mount, so no need to reset stdinEnabled back to
-    // true before running like the reusable singleton Processes do.
+
     Process {
         id: decodeProc
         command: ["bash", "-c", `[ -f '${root.thumbPath}' ] || ${Cliphist.cliphistBinary} decode > '${root.thumbPath}'`]

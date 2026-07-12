@@ -3,15 +3,7 @@ import Quickshell
 import Quickshell.Widgets
 import Quickshell.Services.Notifications
 
-// One notification popup card. Adapted from caelestia's Notification.qml but
-// collapsed-only (no drag-to-expand/dismiss gestures, no progress ring, no
-// markdown/link handling — those are a later chunk) and re-themed onto
-// Colors.qml. Layout: app icon or image, app name + summary + body, an accent
-// keyed to urgency (critical = Colors.error), optional action buttons.
-//
-// Lock lifecycle (see Notif.qml): lock on appear, unlock on destroy. This card
-// is what keeps its Notif alive through the slide-out, so the Notification is
-// never destroyed mid-animation.
+
 Rectangle {
     id: card
 
@@ -27,10 +19,7 @@ Rectangle {
     border.width: modelData.critical ? 1 : 0
     border.color: Colors.error
 
-    // Slide in from the right on appear; lock immediately so the Notif can't be
-    // torn down before this card is done animating. The slide-out on removal is
-    // driven by the ListView wrapper (see NotifPopups.qml), which overrides this
-    // Behavior for the duration of the exit animation.
+
     x: width
     Component.onCompleted: {
         x = 0;
@@ -42,13 +31,13 @@ Rectangle {
         NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
     }
 
-    // Pause the auto-dismiss timer while hovered (Notif.timer reads this).
+
     HoverHandler {
         id: hover
         onHoveredChanged: card.modelData.hovered = hovered
     }
 
-    // Urgency accent strip down the left edge.
+
     Rectangle {
         anchors.left: parent.left
         anchors.top: parent.top
@@ -59,9 +48,6 @@ Rectangle {
         color: card.accent
     }
 
-    // Body click: if the notification has exactly one action, clicking the card
-    // invokes it (caelestia's touch). Middle-click dismisses. Declared before
-    // the buttons so their own MouseAreas sit on top and consume their clicks.
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton | Qt.MiddleButton
@@ -90,8 +76,6 @@ Rectangle {
             width: parent.width
             spacing: 12
 
-            // Icon slot: notification image if present, else the app icon, else
-            // a bell fallback.
             Item {
                 width: 44
                 height: 44
@@ -127,7 +111,7 @@ Rectangle {
                 }
             }
 
-            // Text column takes the rest of the row width, minus the icon.
+
             Column {
                 width: parent.width - 44 - parent.spacing
                 spacing: 2
@@ -168,9 +152,6 @@ Rectangle {
             }
         }
 
-        // Action buttons, if any. Invoking a (non-resident) action makes the
-        // server close the notification, which flows back through Notif.close()
-        // via onClosed — so no manual dismiss needed here.
         Row {
             width: parent.width
             spacing: 8
@@ -213,7 +194,6 @@ Rectangle {
         }
     }
 
-    // Close (X) button, top-right, on top of the body MouseArea.
     Rectangle {
         anchors.top: parent.top
         anchors.right: parent.right

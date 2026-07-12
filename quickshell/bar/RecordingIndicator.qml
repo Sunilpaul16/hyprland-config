@@ -3,10 +3,6 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 
-// Only visible while `wf-recorder` is running (polled via pgrep, since there's
-// no recording-state singleton -- the running process itself is the state,
-// same model ~/.local/bin/record uses). A pulsing red dot + mm:ss elapsed,
-// click to stop.
 Item {
     id: root
 

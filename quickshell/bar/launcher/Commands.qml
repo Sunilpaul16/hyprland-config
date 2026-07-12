@@ -3,13 +3,7 @@ import QtQuick
 import Quickshell
 import "fuzzysort.js" as Fuzzy
 
-// The list shown when the search text starts with ">" (see Content.qml's
-// `mode` property). Each entry is a mode you can switch the launcher into —
-// selecting one rewrites the search text to `>{mode} `, which Content.qml's
-// mode computation then picks up reactively. Add more commands here as more
-// modes are built (e.g. a future "power" or "calc" entry); nothing else in
-// Content.qml needs to change to support a new one, as long as there's a
-// results area registered for that mode.
+
 Singleton {
     id: root
 

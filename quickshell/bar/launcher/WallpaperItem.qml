@@ -1,14 +1,7 @@
 import QtQuick
 import "../"
 
-// One carousel cell: the delegate's own Item is a fixed-size pitch slot (so
-// ListView positions cells at a constant spacing); the visible card inside
-// is anchored to the row's shared bottom baseline and grows + lifts above it
-// when current, matching caelestia's PathView scale/raise effect with plain
-// anchors/width/height animation instead of a curved path.
-//
-// Reacts to Wallpapers' thumbnailReady signal so a video's thumbnail pops in
-// once ffmpeg finishes, without the row needing to re-scan or re-query.
+
 Item {
     id: root
 
@@ -17,9 +10,6 @@ Item {
 
     readonly property bool isCurrent: ListView.isCurrentItem
 
-    // Fixed pitch: this is what ListView uses for cell spacing/positioning.
-    // The card inside is allowed to visually grow past this width when
-    // current — that's fine, it just overlaps into the neighbors' margin.
     width: 150
     height: ListView.view.height
 

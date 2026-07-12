@@ -1,30 +1,6 @@
 .pragma library
 
-/*
-https://github.com/farzher/fuzzysort
 
-MIT License
-
-Copyright (c) 2018 Stephen Kamenar
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
 
 var single =  (search, target) => {
     if(!search || !target) return NULL
@@ -109,8 +85,7 @@ var go = (search, targets, options) => {
         tmpResults[keyI] = algorithm(preparedSearch, target, /*allowSpaces=*/false, /*allowPartialMatch=*/containsSpace)
         if(tmpResults[keyI] === NULL) { tmpResults[keyI] = noTarget; continue }
 
-        // todo: this seems weird and wrong. like what if our first match wasn't good. this should just replace it instead of averaging with it
-        // if our second match isn't good we ignore it instead of averaging with it
+
         if(containsSpace) for(let i=0; i<preparedSearch.spaceSearches.length; i++) {
             if(allowPartialMatchScores[i] > -1000) {
             if(keysSpacesBestScores[i] > NEGATIVE_INFINITY) {
@@ -137,8 +112,6 @@ var go = (search, targets, options) => {
         var score = 0
         for(let i=0; i<preparedSearch.spaceSearches.length; i++) score += keysSpacesBestScores[i]
         } else {
-        // todo could rewrite this scoring to be more similar to when there's spaces
-        // if we match multiple keys give us bonus points
         var score = NEGATIVE_INFINITY
         for(let i=0; i<keysLen; i++) {
             var result = objResults[i]
@@ -188,8 +161,6 @@ var go = (search, targets, options) => {
 }
 
 
-// this is written as 1 function instead of 2 for minification. perf seems fine ...
-// except when minified. the perf is very slow
 var highlight = (result, open='<b>', close='</b>') => {
     var callback = typeof open === 'function' ? open : undefined
 
@@ -249,10 +220,7 @@ var prepare = (target) => {
 var cleanup = () => { preparedCache.clear(); preparedSearchCache.clear() }
 
 
-// Below this point is only internal code
-// Below this point is only internal code
-// Below this point is only internal code
-// Below this point is only internal code
+
 
 
 class Result {
@@ -410,9 +378,6 @@ var algorithm = (preparedSearch, prepared, allowSpaces=false, allowPartialMatch=
     if(nextBeginningIndexes === NULL) nextBeginningIndexes = prepared._nextBeginningIndexes = prepareNextBeginningIndexes(prepared.target)
     targetI = matchesSimple[0]===0 ? 0 : nextBeginningIndexes[matchesSimple[0]-1]
 
-    // Our target string successfully matched all characters in sequence!
-    // Let's try a more advanced and strict test to improve the score
-    // only count it as a match if it's consecutive or a beginning character!
     var backtrackCount = 0
     if(targetI !== targetLen) for(;;) {
     if(targetI >= targetLen) {
@@ -452,9 +417,6 @@ var algorithm = (preparedSearch, prepared, allowSpaces=false, allowPartialMatch=
     }
     }
 
-    // tally up the score & keep track of matches for highlighting later
-    // if it's a simple match, we'll switch to a substring match if a substring exists
-    // if it's a strict match, we'll switch to a substring match only if that's a better score
 
     var calculateScore = matches => {
     var score = 0
@@ -472,7 +434,6 @@ var algorithm = (preparedSearch, prepared, allowSpaces=false, allowPartialMatch=
     if(!successStrict) {
         score *= 1000
     } else {
-        // successStrict on a target with too many beginning indexes loses points for being a bad target
         var uniqueBeginningIndexes = 1
         for(var i = nextBeginningIndexes[0]; i < targetLen; i=nextBeginningIndexes[i]) ++uniqueBeginningIndexes
 
@@ -490,7 +451,7 @@ var algorithm = (preparedSearch, prepared, allowSpaces=false, allowPartialMatch=
     }
 
     if(!successStrict) {
-    if(isSubstring) for(var i=0; i<searchLen; ++i) matchesSimple[i] = substringIndex+i // at this point it's safe to overwrite matchehsSimple with substr matches
+    if(isSubstring) for(var i=0; i<searchLen; ++i) matchesSimple[i] = substringIndex+i
     var matchesBest = matchesSimple
     var score = calculateScore(matchesBest)
     } else {

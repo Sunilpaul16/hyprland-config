@@ -1,10 +1,6 @@
 import QtQuick
 import "../"
 
-// Grouped keybind columns, end-4-style: Flow.TopToBottom with height pinned
-// to the Flickable's, so a category wraps into a new column once it runs
-// out of vertical room -- horizontal scroll/fade only, no per-column
-// vertical scroll needed.
 Item {
     id: root
 
@@ -33,10 +29,6 @@ Item {
         }
     }
 
-    // Faint edge fades so a column getting cut off by the Flickable's
-    // horizontal scroll reads as "more content", not a clipping glitch --
-    // same idea as end-4's ScrollEdgeFade, done here as two plain gradient
-    // Rectangles since that widget isn't part of this bar config.
     Rectangle {
         anchors { left: parent.left; top: parent.top; bottom: parent.bottom }
         width: 24

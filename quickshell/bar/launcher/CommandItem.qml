@@ -1,10 +1,6 @@
 import QtQuick
 import "../"
 
-// One row in the ">" command list: an emoji glyph in place of a real app
-// icon (no MaterialIcon-style font is set up in this project), name, and
-// description underneath — same shape as AppItem so switching between the
-// two modes doesn't jump around visually.
 Item {
     id: root
 

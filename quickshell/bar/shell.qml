@@ -3,7 +3,6 @@ import Quickshell
 import "launcher"
 import "cheatsheet"
 
-// Entry point — this is what `qs -c bar` loads.
 ShellRoot {
     Variants {
         model: Quickshell.screens
@@ -14,9 +13,6 @@ ShellRoot {
         }
     }
 
-    // Multi-mode launcher overlay (apps / ">" commands / wallpaper), one per
-    // monitor (only the focused one ever shows itself — see Launcher.qml).
-    // Opened via `qs -c bar ipc call launcher openApps` or `openWallpaper`.
     Variants {
         model: Quickshell.screens
 
@@ -26,8 +22,6 @@ ShellRoot {
         }
     }
 
-    // Keybind cheatsheet overlay, one per monitor, same focused-only pattern
-    // as the launcher above. Opened via `qs -c bar ipc call cheatsheet toggle`.
     Variants {
         model: Quickshell.screens
 
@@ -37,8 +31,6 @@ ShellRoot {
         }
     }
 
-    // Volume OSD, one per monitor, same focused-only pattern -- but purely
-    // reactive to Audio.volume/Audio.muted, no IPC toggle to open it.
     Variants {
         model: Quickshell.screens
 
@@ -48,8 +40,6 @@ ShellRoot {
         }
     }
 
-    // Notification popup stack (top-right), one per monitor, focused-only.
-    // Driven by the Notifs D-Bus service; see NotifPopups.qml / Notif.qml.
     Variants {
         model: Quickshell.screens
 

@@ -3,9 +3,6 @@ import Quickshell
 import Quickshell.Widgets
 import "../"
 
-// One row in the app-search results list, styled after caelestia's
-// AppItem.qml layout with our own Colors.qml instead of their token/palette
-// system.
 Item {
     id: root
 

@@ -1,9 +1,6 @@
 import QtQuick
 import "../"
 
-// One keycap-style chip -- themed like Workspaces.qml's pills (Colors.surface
-// fill, rounded, Colors.text label) rather than a flat text label, so a key
-// combo reads visually distinct from its description next to it.
 Rectangle {
     id: root
 
