@@ -16,7 +16,7 @@
 #
 # --preview: only swap the displayed wallpaper (mpvpaper), skip matugen/
 # kitty/gtk/hyprctl-reload entirely. Needed because the full pipeline
-# regenerates ~/.config/quickshell/bar/Colors.qml, which lives inside the
+# regenerates ~/.config/quickshell/shell/services/Colors.qml, which lives inside the
 # directory Quickshell hot-reloads on any change — running the full pipeline
 # on every hover/arrow-key tick while browsing the wallpaper picker would
 # reset the whole quickshell config (closing the picker) after the very

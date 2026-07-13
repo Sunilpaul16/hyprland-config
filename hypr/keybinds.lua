@@ -16,14 +16,12 @@ hl.bind(mainMod .. " + P", hl.dsp.window.pseudo(), { description = "Window: togg
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"), { description = "Window: toggle split direction" })
 
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(browser), { description = "App: browser" })
--- Fallback if the launcher's own clip mode is ever unavailable:
--- hl.dsp.exec_cmd("sh -c 'cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'")
-hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("qs -c bar ipc call launcher openClip"), { description = "Launcher: clipboard history" })
+hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("qs -c shell ipc call launcher openClip"), { description = "Launcher: clipboard history" })
 hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"), { description = "System: lock screen" })
-hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("qs -c bar ipc call launcher openApps"), { description = "Launcher: apps" })
-hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("qs -c bar ipc call launcher openWallpaper"), { description = "Launcher: wallpaper" })
+hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("qs -c shell ipc call launcher openApps"), { description = "Launcher: apps" })
+hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("qs -c shell ipc call launcher openWallpaper"), { description = "Launcher: wallpaper" })
 hl.bind(mainMod .. " + C", hl.dsp.exec_cmd(codeEditor), { description = "App: code editor" })
-hl.bind(mainMod .. " + Slash", hl.dsp.exec_cmd("qs -c bar ipc call cheatsheet toggle"), { description = "Launcher: keybind cheatsheet" })
+hl.bind(mainMod .. " + Slash", hl.dsp.exec_cmd("qs -c shell ipc call cheatsheet toggle"), { description = "Launcher: keybind cheatsheet" })
 
 
 -- Screenshots
@@ -60,12 +58,6 @@ hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }), { descr
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true, description = "Window: drag with mouse" })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true, description = "Window: resize with mouse" })
 
--- Volume and brightness
--- wpctl auto-mutes when volume is lowered to exactly 0 (or an earlier
--- explicit mute is still set); raising it back up doesn't clear that flag
--- on its own, so a plain 5%+ would leave audio silently muted at a
--- nonzero volume. Unmuting first ensures "volume up" always means "I want
--- to hear this again", not just "the slider moved".
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true, description = "Media: volume up" })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true, description = "Media: volume down" })
 hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true, description = "Media: mute" })

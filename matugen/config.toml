@@ -38,11 +38,11 @@ output_path = '~/.config/gtk-3.0/gtk.css'
 input_path = '~/.config/matugen/templates/gtk-4.0/gtk.css'
 output_path = '~/.config/gtk-4.0/gtk.css'
 
-# Our own from-scratch quickshell bar (~/.config/quickshell/bar/), NOT
+# Our own from-scratch quickshell shell (~/.config/quickshell/shell/), NOT
 # end-4's ii shell — see [templates.m3colors] below for that, still deferred.
-[templates.quickshell_bar_colors]
-input_path = '~/.config/matugen/templates/quickshell-bar/Colors.qml'
-output_path = '~/.config/quickshell/bar/Colors.qml'
+[templates.quickshell_shell_colors]
+input_path = '~/.config/matugen/templates/quickshell-shell/Colors.qml'
+output_path = '~/.config/quickshell/shell/services/Colors.qml'
 
 # --- Add when/if end-4's full ii shell is ever adopted ----------------------
 # [templates.m3colors]
