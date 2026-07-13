@@ -16,6 +16,9 @@ __pycache__/
 *.swp
 *~
 
+# local Claude Code project instructions — not published
+CLAUDE.md
+
 # secrets / credentials — belt and suspenders alongside the explicit grep scan
 *.env
 .env*
