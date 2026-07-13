@@ -63,4 +63,14 @@ ShellRoot {
             screen: modelData
         }
     }
+
+    // For each monitor: media popup
+    Variants {
+        model: Quickshell.screens
+
+        MediaPopup {
+            property var modelData
+            screen: modelData
+        }
+    }
 }

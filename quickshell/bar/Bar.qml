@@ -65,6 +65,13 @@ PanelWindow {
 
             SectionPill {
                 Layout.alignment: Qt.AlignVCenter
+                visible: Media.hasPlayer
+
+                MediaButton {}
+            }
+
+            SectionPill {
+                Layout.alignment: Qt.AlignVCenter
 
                 Clock {}
             }
