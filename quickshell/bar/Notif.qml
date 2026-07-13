@@ -32,11 +32,12 @@ QtObject {
 
     readonly property bool critical: urgency === NotificationUrgency.Critical
 
-    // Auto-dismiss timer
+    // Auto-dismiss timer — only hides the toast popup; the notification
+    // itself stays in Notifs.list (history) until explicitly cleared
     readonly property Timer timer: Timer {
         running: notif.popup && !notif.closed && !notif.critical && !notif.hovered
         interval: notif.expireTimeout > 0 ? notif.expireTimeout : 5000
-        onTriggered: notif.close()
+        onTriggered: notif.popup = false
     }
 
 

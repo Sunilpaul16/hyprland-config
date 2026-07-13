@@ -73,4 +73,14 @@ ShellRoot {
             screen: modelData
         }
     }
+
+    // For each monitor: notification history panel
+    Variants {
+        model: Quickshell.screens
+
+        NotifPanel {
+            property var modelData
+            screen: modelData
+        }
+    }
 }

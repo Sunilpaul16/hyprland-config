@@ -13,6 +13,11 @@ Singleton {
     property list<Notif> list: []
     readonly property list<Notif> popups: list.filter(n => n.popup && !n.closed)
 
+    function clearAll(): void {
+        for (const n of root.list.slice())
+            n.close();
+    }
+
     // Notification server
     NotificationServer {
         id: server
@@ -39,8 +44,7 @@ Singleton {
         target: "notifs"
 
         function clear(): void {
-            for (const n of root.list.slice())
-                n.close();
+            root.clearAll();
         }
     }
 
