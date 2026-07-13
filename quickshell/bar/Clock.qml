@@ -1,16 +1,34 @@
 import QtQuick
 
-
 Item {
-    implicitWidth: label.implicitWidth
-    implicitHeight: label.implicitHeight
+    implicitWidth: row.implicitWidth
+    implicitHeight: row.implicitHeight
 
-    Text {
-        id: label
+    Row {
+        id: row
         anchors.centerIn: parent
-        text: Time.timeStr
-        color: Colors.text
-        font.pixelSize: 16
-        font.bold: true
+        spacing: 6
+
+        Text {
+            anchors.verticalCenter: parent.verticalCenter
+            text: Time.timeStr
+            color: Colors.text
+            font.pixelSize: 16
+            font.bold: true
+        }
+
+        Text {
+            anchors.verticalCenter: parent.verticalCenter
+            text: "·"
+            color: Colors.textMuted
+            font.pixelSize: 14
+        }
+
+        Text {
+            anchors.verticalCenter: parent.verticalCenter
+            text: Time.dateStr
+            color: Colors.textMuted
+            font.pixelSize: 13
+        }
     }
 }
