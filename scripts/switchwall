@@ -31,6 +31,10 @@ VENV_PYTHON="$HOME/.local/state/quickshell/.venv/bin/python3"
 COLORGEN_DIR="$HOME/.config/matugen/colorgen"
 CACHE_DIR="$HOME/.cache/matugen"
 KITTY_THEME_OUT="$HOME/.config/kitty/theme.conf"
+# Last-confirmed wallpaper path, replayed by hypr/execs.lua on login via
+# `switchwall --preview` (mpvpaper only) since mpvpaper doesn't survive a
+# session restart but the matugen-generated theme files already do.
+STATE_FILE="$HOME/.local/state/quickshell/current_wallpaper"
 # Same mpv options end-4's switchwall.sh uses for video wallpapers; reused
 # as-is for static images too (mpv holds a single looped frame fine).
 MPV_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 video-align-x=0.5 video-align-y=0.5 load-scripts=no"
@@ -78,6 +82,9 @@ if $PREVIEW; then
     echo "switchwall: preview only ($wallpaper)"
     exit 0
 fi
+
+mkdir -p "$(dirname "$STATE_FILE")"
+printf '%s' "$wallpaper" > "$STATE_FILE"
 
 # --- 2. Color source: extract a frame if it's a video -----------------------
 colorsource="$wallpaper"

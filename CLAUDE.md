@@ -1,0 +1,67 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## What this is
+
+A hand-built Hyprland + Quickshell desktop config, developed from scratch (not a fork of any upstream shell). `~/.config` contains many unrelated third-party app config dirs (browsers, Discord, Obsidian, etc.) — those are out of scope. The actual "codebase" is:
+
+- `quickshell/bar/` — the Quickshell bar, launcher, and overlays (QML). This is where almost all development happens.
+- `hypr/` — Hyprland compositor config, written in **Lua**, not the classic `hyprland.conf` format.
+- `matugen/` — wallpaper-driven Material You theming pipeline (templates + a Python color-gen script).
+- `kitty/`, `fuzzel/`, `btop/` — terminal/launcher/monitor app configs, themed by the matugen pipeline.
+- `zsh/` — `ZDOTDIR` (set via `~/.zshenv`), i.e. `.zshrc`, `.p10k.zsh` live here, not in `$HOME`.
+- `~/.local/bin/switchwall`, `screenshot`, `record` — standalone scripts the setup depends on.
+
+This tree is mirrored into a separate git repo at `~/hyprland-config` for version control (`~/.config` itself is not a git repo). When changes here are meant to be committed, copy the changed files into `~/hyprland-config` preserving relative paths and commit there — don't expect `git` commands to work directly inside `~/.config`.
+
+Two **read-only reference repos** exist elsewhere and get mined for ideas/architecture, never edited as part of this project's work: `~/dots-hyprland` (end-4/dots-hyprland, the full "ii" shell) and `~/shell` (caelestia-dots/shell). Both have their own `ANALYSIS.md`/`FEATURES.md` docs tracking which of their features have been ported here — keep those checklists current when porting something (mark done items with a note on what was adapted vs. skipped, not a straight copy).
+
+## Verifying changes
+
+There's no build step — Quickshell hot-reloads QML on file change, and Hyprland's Lua config takes effect via `hyprctl reload`.
+
+- **Syntax-check QML without touching the live bar**: `cd ~/.config/quickshell/bar && qs -p .` (or `qs -p <file>` for a single throwaway script). This is the standard way to validate a change or prototype a reactive binding before wiring it into the real config — a `qs -p` process is a **separate Quickshell engine** and cannot see the live bar's running singletons (`Colors`, `Audio`, `LastActive`, etc.), so it's only useful for syntax/logic checks in isolation, not for observing the live bar's actual state.
+- **Reload the live bar**: `pkill -x qs; qs -n -c bar >/tmp/qs-bar.log 2>&1 &` (background it, then `tail`/`grep` the log for errors). To inspect the *running* bar's reactive state (not just check for crashes), temporarily add a `console.log` inside the real component, restart, and grep the log — a separate `qs -p` script won't see it.
+- **Reload Hyprland config**: `hyprctl reload`.
+- **Screenshot verification**: `grim -g "<x,y w x h>" out.png`. `DP-3` is unrotated (`0,0 2560x1440`). `DP-2` is physically rotated (`transform = 3` in `hypr/general.lua`) — its **logical** geometry for `grim` is `2560,-560 1440x2560` (portrait), not the raw `2560x1440` mode. Using the wrong geometry silently captures the wrong region and looks like "nothing rendered" when it's actually just a bad crop.
+- Toggling an overlay from the CLI: `qs -c bar ipc call <target> <function>` (e.g. `launcher openApps`, `cheatsheet toggle`) — every IPC-driven overlay in this bar follows this same convention.
+- Notification testing gotcha: a **foreground** `notify-send -A ...` (blocking, waiting on an action) sends a client-side `CloseNotification` when it's disrupted, so cards appear to vanish mid-test — that's `notify-send`'s lifecycle, not a bug in the popup code. Use `notify-send ... &` (or real senders) for stacking/persistence tests. Synthetic clicks for action-invocation tests use `ydotool` (`YDOTOOL_SOCKET=/run/user/1001/.ydotool_socket`, needs `ydotoold` running) and must account for this setup's ~2× absolute-coordinate mapping: to click layout pixel (X,Y), feed `--absolute` (X/2, Y/2), verify with `hyprctl cursorpos`.
+
+## Architecture
+
+### Hyprland Lua config (`hypr/`)
+
+Entry point is `hyprland.lua`, which just `require()`s the rest in a fixed order (monitors/input/look-and-feel → autostart → window rules → matugen-generated colors → keybinds). This is a **custom Lua-based Hyprland build**, not stock Hyprland config syntax:
+
+- Dispatchers are Lua expressions/tables, not classic dispatcher strings: `hl.dsp.focus({ workspace = 2 })`, not `"workspace 2"`. `hyprctl dispatch "workspace 2"` or `hyprctl dispatch closewindow address:0x...` (the classic colon-syntax) **fail** with a Lua parse error on this build — always use the `hl.dsp.*` table form, checking `keybinds.lua` for the exact shape of an existing equivalent bind before improvising a new dispatcher call.
+- Monitors: `DP-3` at `0,0` (unrotated, primary), `DP-2` at `2560,-560` with `transform = 3` (270°, portrait). Workspace 1 is pinned to DP-3 (default), workspace 2 to DP-2; workspaces 3+ are unbound/dynamic.
+- `keybinds.lua`: every bind carries a `{ description = "Category: label" }` option, consumed by the bar's cheatsheet (`cheatsheet/Binds.qml` reads `hyprctl binds -j`). Loop-generated binds (the workspace-switch `for i = 1, 10` loop) share one literal `"Workspace: switch <N>"`-style description across all iterations so the cheatsheet can collapse them into a single row instead of ten.
+
+### Quickshell bar (`quickshell/bar/`)
+
+`shell.qml` is the entry point (`qs -c bar` loads it). One `Bar` `PanelWindow` is instantiated per monitor via `Variants { model: Quickshell.screens }`; every other overlay (launcher, cheatsheet, volume OSD) follows the same per-monitor `Variants` + focused-monitor-only pattern, checking `Hyprland.monitorFor(screen) === Hyprland.focusedMonitor` before actually showing itself.
+
+**Module system**: there are no `qmldir` files. Quickshell synthesizes one per directory at runtime — files in the same directory are auto-importable with no `import` statement; reaching a *parent* directory's types from a subdirectory (e.g. `launcher/` or `cheatsheet/` reaching `Colors.qml` in `bar/`) needs an explicit `import "../"`.
+
+**Singletons** (`pragma Singleton`) are the shared-state/shared-logic mechanism throughout — e.g. `Colors.qml` (theme), `Time.qml`, `Audio.qml`, `Cliphist.qml`, `AppIcons.qml` (icon resolution shared between the workspace pills and the active-window widget), `LastActive.qml` (per-monitor focus tracking). When two widgets need the same lookup/state, factor it into a singleton rather than duplicating logic per-widget.
+
+**Reactive bindings, not polling**: services here wrap real Quickshell reactive sources — `Quickshell.Hyprland` (workspaces, toplevels, monitors), `Quickshell.Services.Pipewire` (`Pipewire.defaultAudioSink`, confirmed available and preferred over a `wpctl` polling loop), `Quickshell.DesktopEntries`. Two recurring correctness traps when writing this kind of binding:
+- A `property var` holding a plain JS object/array (e.g. a per-monitor tracking map) must be **reassigned**, not mutated in place, or the QML property-change notification never fires: `const next = Object.assign({}, root.map); next[key] = val; root.map = next;`, not `root.map[key] = val`.
+- `Process` objects with `stdinEnabled: true` (e.g. piping into `cliphist decode`/`delete`) need `stdinEnabled` flipped back to `true` before each run and explicitly back to `false` right after `write()` — the child reads stdin until EOF, which only arrives when `stdinEnabled` goes false; skipping this makes the process hang silently forever.
+- Reactive properties that come from services with async startup population (`Quickshell.Hyprland`, `Pipewire.defaultAudioSink`, `DesktopEntries`) can fire their own "changed" signal once during that initial settle — anything that should only react to *real* subsequent changes (e.g. the volume OSD showing on volume change) needs a short startup-grace guard so it doesn't fire from the initial population.
+- Layer-shell binding loop: driving a `PanelWindow`'s `visible` off `isFocusedScreen` (or anything derived from `screen`) loops — unmapping the window nulls `screen`, which recomputes the condition. Keep the window mapped (`visible: true`) and gate the *content/model* on focus instead; an empty model → 0-height stack → empty `mask` is invisible and click-through all the same (see `NotifPopups.qml`).
+- Animated-removal teardown: a synchronous `destroy()` reached from a delegate's `Component.onDestruction` (e.g. unlock → close → destroy) nulls `modelData` while child bindings are still tearing down, throwing a burst of `TypeError: … of null`. Defer the teardown one tick with `Qt.callLater(() => obj.destroy())`. Separately, during a `ListView` `delayRemove` exit animation the delegate outlives its model row so `modelData` nulls mid-fade — capture the model item into a stable `property` (set from the last non-null `modelData`) and drive the card off that, else the card blanks as it slides out (both in `Notif.qml` / `NotifPopups.qml`).
+- `Shapes`/`ShapePath`/`PathAngleArc` corner geometry (`Corner.qml`, the bar's rounded-bottom-corner decoration): `PathAngleArc`'s `moveToStart` defaults to `true`, which jumps to the arc's start point without drawing a connecting line — combined with a naive `startX`/`startY` + trailing `PathLine`s, this produces a self-intersecting crescent instead of a filled quarter-circle wedge. Fix is `moveToStart: false` (draw a line into the arc's start first) plus a single closing `PathLine` back to the path's own `startX`/`startY`, not a pair of independent edge lines.
+
+**Session/power screen** (`SessionState.qml`, `SessionScreen.qml`, `SessionContent.qml`, `SessionActionButton.qml`, `SessionButton.qml`): bar pill → `SessionState` singleton (`open` bool + `session` `IpcHandler`, same `qs -c bar ipc call session toggle` convention as the launcher/cheatsheet) → `SessionScreen` `PanelWindow` overlay, built on the same pattern as `Cheatsheet` (per-monitor `Variants`, `isFocusedScreen` + fade, `WlrLayer.Overlay`, click-outside `MouseArea`, `Keys.onEscapePressed`). `SessionContent.qml` holds the 4 actions (Lock/Logout/Reboot/Shutdown) as a data array, each with the exact command string mirrored from `hypr/keybinds.lua` (`hyprlock`; `hyprshutdown` if present else `hyprctl dispatch 'hl.dsp.exit()'`; `systemctl reboot`/`poweroff`) — keep these in sync with `keybinds.lua` if that file's commands ever change, don't invent new ones. Logout/Reboot/Shutdown require a second Yes/Cancel confirm click (`SessionActionButton.qml`'s crossfade between normal and confirm state); Lock fires immediately. Never trigger Reboot/Shutdown/Logout to "test" this — verify the confirm UI and the command string only.
+
+**Notification card** (`NotifCard.qml`): collapsed-by-default compact layout (icon, "summary · time", one-line elided body, chevron) that expands on chevron click to show app name, full wrapped body, action buttons, and a close button — driven off `modelData.expanded`, a plain bool property on `Notif.qml` (not a separate UI-state singleton). Modeled visually on caelestia-dots/shell's `modules/notifications/Notification.qml`, but deliberately reimplemented in plain QML against this repo's own `Colors.qml` — no porting of caelestia's `Caelestia.Components`/`Tokens` plugin framework. Keep it that way if restyling further: match the *look*, not the dependency stack.
+
+**Clock** (`Clock.qml` + `Time.qml`): `Time.qml` singleton exposes `dateStr` (`Qt.formatDateTime(..., "ddd, MMM d")`) alongside the existing `timeStr`; `Clock.qml` lays both out in a `Row` (bold time, muted "·" separator, muted date) rather than a single centered `Text`. This is a deliberately scoped-down subset of end-4's `ClockWidget.qml` — no hover popup with uptime/todos (that's a separate, not-yet-requested feature).
+
+### Theming pipeline
+
+`~/.local/bin/switchwall <wallpaper>` is the orchestrator: sets the wallpaper via `mpvpaper` on both monitors, then runs `matugen image <file> --source-color-index 0 --mode dark` (driven by `matugen/config.toml`, which renders templates into `hypr/colors.lua`, `hypr/hyprlock/colors.conf`, `fuzzel/fuzzel_theme.ini`, `gtk-3.0`/`gtk-4.0` css, and **`quickshell/bar/Colors.qml`**), then a separate `materialyoucolor`-based Python step for kitty's 16-color ANSI terminal palette (matugen's Material You role set can't produce that on its own), then `hyprctl reload` + `pkill -SIGUSR1 kitty`.
+
+`Colors.qml` is machine-generated by this pipeline and gets clobbered on every `switchwall` run — treat edits to it as temporary/for-testing only. `switchwall --preview` exists specifically so the wallpaper picker in the launcher can live-preview without regenerating `Colors.qml` mid-browse (that file lives inside the directory Quickshell hot-reloads, so regenerating it on every hover would reset the whole shell).
