@@ -83,4 +83,14 @@ ShellRoot {
             screen: modelData
         }
     }
+
+    // For each monitor: tray context-menu popup
+    Variants {
+        model: Quickshell.screens
+
+        TrayMenu {
+            property var modelData
+            screen: modelData
+        }
+    }
 }

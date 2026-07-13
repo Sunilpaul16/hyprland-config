@@ -72,6 +72,15 @@ PanelWindow {
 
             SectionPill {
                 Layout.alignment: Qt.AlignVCenter
+                visible: tray.hasItems
+
+                Tray {
+                    id: tray
+                }
+            }
+
+            SectionPill {
+                Layout.alignment: Qt.AlignVCenter
 
                 Clock {}
             }
