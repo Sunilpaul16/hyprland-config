@@ -35,6 +35,7 @@ Item {
     readonly property var commandResults: Commands.query(commandQuery)
     readonly property var wallpaperResults: Wallpapers.query(wallpaperQuery)
 
+    // Clip special actions (e.g. /clear)
     readonly property var clipActions: ({
         "/clear": {
             icon: "\u{1F5D1}\u{FE0F}",
@@ -64,6 +65,7 @@ Item {
     readonly property var currentModeResults: mode === "wallpaper" ? wallpaperResults : (mode === "commands" ? commandResults : (mode === "clip" ? clipResults : appResults))
 
 
+    // Panel sizing constants
     readonly property int panelPad: 20
     readonly property int searchGap: 14
     readonly property int searchHeight: 48
@@ -150,6 +152,7 @@ Item {
             content.confirmSelection(content.wallpaperResults[row.currentIndex]);
     }
 
+    // Debounced wallpaper preview
     Timer {
         id: applyDebounce
         interval: 300

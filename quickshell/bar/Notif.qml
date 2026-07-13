@@ -58,6 +58,7 @@ QtObject {
     }
 
 
+    // Map DBus actions to plain objects
     function mapActions(): var {
         return notification.actions.map(a => ({
             identifier: a.identifier,
@@ -66,6 +67,7 @@ QtObject {
         }));
     }
 
+    // Ref-counted lock & close (prevents destroy mid-animation)
     function lock(item: Item): void {
         locks.add(item);
     }
@@ -86,6 +88,7 @@ QtObject {
         }
     }
 
+    // Initial snapshot from Notification
     Component.onCompleted: {
         if (!notification)
             return;

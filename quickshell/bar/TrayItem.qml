@@ -34,6 +34,7 @@ Item {
         Behavior on opacity { NumberAnimation { duration: 120 } }
     }
 
+    // Left-click activate, right-click menu
     MouseArea {
         id: hoverArea
         anchors.fill: parent
@@ -63,6 +64,7 @@ Item {
         onTriggered: tooltip.visible = true
     }
 
+    // Show/hide tooltip on hover
     Connections {
         target: hoverArea
         function onContainsMouseChanged(): void {
@@ -75,6 +77,7 @@ Item {
         }
     }
 
+    // Tooltip
     Rectangle {
         id: tooltip
         visible: false

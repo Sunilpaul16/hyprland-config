@@ -11,6 +11,7 @@ Singleton {
 
     readonly property string cliphistBinary: "cliphist"
     property list<string> entries: []
+    // Entry parsing helpers
     function entryIsImage(entry) {
         return /^\d+\t\[\[.*binary data.*\d+x\d+.*\]\]$/.test(entry);
     }
@@ -28,6 +29,7 @@ Singleton {
         return entry.replace(/^\d+\t/, "");
     }
 
+    // Fuzzy search
     function query(search: string): var {
         const rows = root.entries.map(entry => ({
             entry,
@@ -40,6 +42,7 @@ Singleton {
         return Fuzzy.go(trimmed, rows, { key: "text", all: true }).map(r => r.obj);
     }
 
+    // Actions
     function refresh() {
         listProc.buffer = [];
         listProc.running = true;

@@ -23,6 +23,7 @@ Item {
     implicitWidth: row.implicitWidth
     implicitHeight: row.implicitHeight
 
+    // Execute / confirm-gate actions
     function runAction(action): void {
         Quickshell.execDetached(action.command);
         SessionState.open = false;

@@ -10,6 +10,7 @@ Singleton {
 
     property var byMonitor: ({})
 
+    // Record active toplevel
     function record() {
         const tl = Hyprland.activeToplevel;
 
@@ -30,6 +31,7 @@ Singleton {
         }
     }
 
+    // Look up last-active window for a monitor
     function lastFor(monitor) {
         if (!monitor)
             return null;

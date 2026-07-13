@@ -28,6 +28,7 @@ Rectangle {
         NumberAnimation { duration: 160; easing.type: Easing.OutCubic }
     }
 
+    // Slide-in entrance, hold a lock while mounted
     x: width
     Component.onCompleted: {
         x = 0;

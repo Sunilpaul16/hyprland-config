@@ -9,6 +9,7 @@ Item {
     id: root
     property var screen
 
+    // Derived window state
     readonly property var monitor: Hyprland.monitorFor(root.screen)
     readonly property var current: LastActive.lastFor(root.monitor)
     readonly property bool isGloballyActive: !!root.current && root.current === Hyprland.activeToplevel

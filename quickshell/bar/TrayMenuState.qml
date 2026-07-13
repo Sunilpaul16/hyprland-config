@@ -27,6 +27,7 @@ Singleton {
         menu: root.open && root.targetItem ? (root.targetItem.menu ?? null) : null
     }
 
+    // Open/close controls
     function showAt(item: var, x: real, y: real): void {
         root.targetItem = item;
         root.anchorX = x;

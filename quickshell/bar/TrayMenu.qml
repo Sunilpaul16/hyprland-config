@@ -8,6 +8,7 @@ import Quickshell.Hyprland
 PanelWindow {
     id: root
 
+    // Visibility state
     readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
     readonly property bool active: TrayMenuState.open && root.isFocusedScreen
 
@@ -17,6 +18,7 @@ PanelWindow {
         NumberAnimation { duration: 120; easing.type: Easing.OutCubic }
     }
 
+    // Positioning
     anchors {
         top: true
         left: true
@@ -67,6 +69,7 @@ PanelWindow {
             scale: 0.96 + 0.04 * root.showProgress
             transformOrigin: Item.TopLeft
 
+            // Menu entries list
             Column {
                 id: list
                 anchors.top: parent.top

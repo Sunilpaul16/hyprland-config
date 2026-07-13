@@ -8,6 +8,7 @@ PanelWindow {
     id: root
     property var screen
 
+    // Visibility state
     readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
 
     property bool triggered: false
@@ -26,6 +27,7 @@ PanelWindow {
         NumberAnimation { duration: 160; easing.type: Easing.OutCubic }
     }
 
+    // Positioning
     anchors {
         bottom: true
         left: true
@@ -65,6 +67,7 @@ PanelWindow {
         onTriggered: root.triggered = false
     }
 
+    // Bar sizing + icon selection
     readonly property int barWidth: 160
     readonly property int barHeight: 6
     readonly property string icon: {

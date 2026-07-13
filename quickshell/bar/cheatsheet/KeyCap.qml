@@ -1,6 +1,7 @@
 import QtQuick
 import "../"
 
+// Key cap badge
 Rectangle {
     id: root
 

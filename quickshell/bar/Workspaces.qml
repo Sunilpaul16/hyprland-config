@@ -30,6 +30,7 @@ Item {
 
     readonly property int activeIndex: displaySlots.findIndex(ws => !ws.isPlaceholder && ws.monitor === root.monitor && ws.active)
 
+    // Distinct app classes per workspace
     function appWmClasses(ws) {
         if (!ws || ws.isPlaceholder)
             return [];

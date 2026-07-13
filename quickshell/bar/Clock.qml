@@ -1,5 +1,6 @@
 import QtQuick
 
+// Clock widget: time + date
 Item {
     implicitWidth: row.implicitWidth
     implicitHeight: row.implicitHeight

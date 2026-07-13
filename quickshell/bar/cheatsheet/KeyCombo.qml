@@ -36,6 +36,7 @@ Row {
         "XF86AudioPrev": "Prev"
     })
 
+    // Modifier bit-flag decode
     function modNames(modmask) {
         const names = [];
         if (modmask & (1 << 2)) names.push("Ctrl");

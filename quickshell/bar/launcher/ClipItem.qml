@@ -12,6 +12,7 @@ Item {
     required property var modelData
     required property bool isCurrent
 
+    // Derived state
     readonly property bool isAction: !!root.modelData.isAction
 
     width: ListView.view.width
@@ -23,6 +24,7 @@ Item {
     readonly property string thumbPath: root.isAction ? "" : `${Cliphist.decodeDir}/${Cliphist.entryId(root.modelData.entry)}`
     property string thumbSource: ""
 
+    // Decode thumbnail on create, clean up on destroy
     Component.onCompleted: {
         if (!root.isAction && root.modelData.isImage)
             decodeProc.running = true;

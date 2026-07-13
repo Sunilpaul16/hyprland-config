@@ -7,6 +7,7 @@ import Quickshell.Hyprland
 PanelWindow {
     id: root
 
+    // Visibility state
     readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
     readonly property bool active: MediaState.open && root.isFocusedScreen
 
@@ -16,6 +17,7 @@ PanelWindow {
         NumberAnimation { duration: 160; easing.type: Easing.OutCubic }
     }
 
+    // Positioning
     anchors {
         top: true
         left: true

@@ -48,6 +48,7 @@ Singleton {
         }
     }
 
+    // Notif component factory
     Component {
         id: notifComp
         Notif {}
