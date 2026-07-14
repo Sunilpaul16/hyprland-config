@@ -22,10 +22,6 @@ version_check = false
 input_path = '~/.config/matugen/templates/hyprlock/colors.conf'
 output_path = '~/.config/hypr/hyprlock/colors.conf'
 
-[templates.fuzzel]
-input_path = '~/.config/matugen/templates/fuzzel/fuzzel_theme.ini'
-output_path = '~/.config/fuzzel/fuzzel_theme.ini'
-
 [templates.hyprland]
 input_path = '~/.config/matugen/templates/hyprland/colors.lua'
 output_path = '~/.config/hypr/colors.lua'
