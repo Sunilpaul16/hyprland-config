@@ -35,7 +35,6 @@ hl.config({
         gaps_workspaces = 50,
         border_size = 1,
         col = {
-            active_border = "rgba(0DB7D455)",
             inactive_border = "rgba(31313600)"
         },
         resize_on_border = true,
