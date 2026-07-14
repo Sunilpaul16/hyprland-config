@@ -16,7 +16,7 @@ PanelWindow {
     property real showProgress: active ? 1 : 0
 
     Behavior on showProgress {
-        NumberAnimation { duration: 120; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
     }
 
     // Positioning

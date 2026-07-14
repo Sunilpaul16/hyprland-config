@@ -22,7 +22,7 @@ Item {
             color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
             font.pixelSize: 12
 
-            Behavior on color { ColorAnimation { duration: 120 } }
+            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
         }
 
         Text {
@@ -33,7 +33,7 @@ Item {
             font.pixelSize: 13
             elide: Text.ElideRight
 
-            Behavior on color { ColorAnimation { duration: 120 } }
+            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
         }
     }
 

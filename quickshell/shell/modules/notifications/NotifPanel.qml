@@ -15,7 +15,7 @@ PanelWindow {
     property real showProgress: active ? 1 : 0
 
     Behavior on showProgress {
-        NumberAnimation { duration: 160; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
     }
 
     // Positioning
@@ -99,7 +99,7 @@ PanelWindow {
                     implicitWidth: clearText.implicitWidth + 20
                     implicitHeight: 26
 
-                    Behavior on color { ColorAnimation { duration: 120 } }
+                    Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
                     Text {
                         id: clearText
