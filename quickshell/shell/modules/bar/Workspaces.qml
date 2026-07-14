@@ -94,9 +94,9 @@ Item {
             color: Colors.surface
             opacity: (modelData.occupied && index !== root.activeIndex) ? 1 : 0
 
-            Behavior on x { NumberAnimation { duration: 200; easing.type: Easing.OutSine } }
-            Behavior on width { NumberAnimation { duration: 200; easing.type: Easing.OutSine } }
-            Behavior on opacity { NumberAnimation { duration: 150 } }
+            Behavior on x { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+            Behavior on width { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+            Behavior on opacity { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
         }
     }
 
@@ -113,8 +113,8 @@ Item {
         x: activeSlot ? activeSlot.x : 0
         width: activeSlot ? activeSlot.width : root.pillSize
 
-        Behavior on x { NumberAnimation { duration: 200; easing.type: Easing.OutSine } }
-        Behavior on width { NumberAnimation { duration: 200; easing.type: Easing.OutSine } }
+        Behavior on x { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+        Behavior on width { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
     }
 
     // Slot content (icons or number)
@@ -133,8 +133,8 @@ Item {
             width: modelData.width
             height: root.pillSize
 
-            Behavior on x { NumberAnimation { duration: 200; easing.type: Easing.OutSine } }
-            Behavior on width { NumberAnimation { duration: 200; easing.type: Easing.OutSine } }
+            Behavior on x { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+            Behavior on width { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
 
             Row {
                 visible: slot.hasIcons
@@ -170,7 +170,7 @@ Item {
                 font.bold: slot.isActive
                 color: slot.isActive ? Colors.background : (modelData.occupied ? Colors.text : Colors.textMuted)
 
-                Behavior on color { ColorAnimation { duration: 150 } }
+                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
             }
 
             MouseArea {

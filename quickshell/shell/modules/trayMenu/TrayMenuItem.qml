@@ -34,7 +34,7 @@ Item {
         radius: 6
         color: hoverArea.containsMouse && root.entry.enabled ? Colors.surface : "transparent"
 
-        Behavior on color { ColorAnimation { duration: 100 } }
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
         Row {
             id: row

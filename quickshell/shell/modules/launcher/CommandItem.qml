@@ -20,7 +20,7 @@ Item {
         radius: 10
         color: root.isCurrent ? Colors.primary : "transparent"
 
-        Behavior on color { ColorAnimation { duration: 120 } }
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
         // Icon + title/description
         Row {

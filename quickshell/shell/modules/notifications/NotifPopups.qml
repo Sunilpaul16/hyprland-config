@@ -70,10 +70,10 @@ PanelWindow {
             delegate: Wrapper {}
 
             move: Transition {
-                NumberAnimation { property: "y"; duration: 200; easing.type: Easing.OutCubic }
+                NumberAnimation { property: "y"; duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
             }
             displaced: Transition {
-                NumberAnimation { property: "y"; duration: 200; easing.type: Easing.OutCubic }
+                NumberAnimation { property: "y"; duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
             }
         }
     }
@@ -107,15 +107,15 @@ PanelWindow {
                 target: card
                 property: "x"
                 to: stack.width
-                duration: 200
-                easing.type: Easing.InCubic
+                duration: Motion.deliberateDuration
+                easing.type: Motion.deliberateEasing
             }
             NumberAnimation {
                 target: wrapper
                 property: "implicitHeight"
                 to: 0
-                duration: 180
-                easing.type: Easing.OutCubic
+                duration: Motion.deliberateDuration
+                easing.type: Motion.deliberateEasing
             }
             PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
         }

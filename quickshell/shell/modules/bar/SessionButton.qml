@@ -15,7 +15,7 @@ Item {
         color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
         font.pixelSize: 15
 
-        Behavior on color { ColorAnimation { duration: 120 } }
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }
 
     // Click to open session screen

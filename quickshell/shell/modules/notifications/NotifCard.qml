@@ -26,7 +26,7 @@ Rectangle {
     border.color: Colors.error
 
     Behavior on implicitHeight {
-        NumberAnimation { duration: 160; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
     }
 
     // Slide-in entrance, hold a lock while mounted
@@ -38,7 +38,7 @@ Rectangle {
     Component.onDestruction: modelData.unlock(card)
 
     Behavior on x {
-        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
     }
 
     HoverHandler {
@@ -201,7 +201,7 @@ Rectangle {
                         radius: 8
                         color: btnArea.containsMouse ? Colors.outline : Colors.background
 
-                        Behavior on color { ColorAnimation { duration: 120 } }
+                        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
                         Text {
                             anchors.centerIn: parent
@@ -238,7 +238,7 @@ Rectangle {
             visible: card.modelData.expanded
             color: closeArea.containsMouse ? Colors.outline : "transparent"
 
-            Behavior on color { ColorAnimation { duration: 120 } }
+            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
             Text {
                 anchors.centerIn: parent
@@ -271,8 +271,8 @@ Rectangle {
                 font.pixelSize: 13
                 rotation: card.modelData.expanded ? 180 : 0
 
-                Behavior on rotation { NumberAnimation { duration: 150 } }
-                Behavior on color { ColorAnimation { duration: 120 } }
+                Behavior on rotation { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
             }
 
             MouseArea {

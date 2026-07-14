@@ -25,7 +25,7 @@ Item {
         border.width: root.confirming ? 1 : 0
         border.color: Colors.error
 
-        Behavior on color { ColorAnimation { duration: 120 } }
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
         // Normal state: icon + label
         Column {
@@ -33,7 +33,7 @@ Item {
             spacing: 8
             opacity: root.confirming ? 0 : 1
 
-            Behavior on opacity { NumberAnimation { duration: 120 } }
+            Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -55,7 +55,7 @@ Item {
             spacing: 10
             opacity: root.confirming ? 1 : 0
 
-            Behavior on opacity { NumberAnimation { duration: 120 } }
+            Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
             Text {
                 width: root.boxWidth - 16
@@ -78,7 +78,7 @@ Item {
                     radius: 8
                     color: yesArea.containsMouse ? Colors.error : Colors.errorContainer
 
-                    Behavior on color { ColorAnimation { duration: 120 } }
+                    Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
                     Text {
                         anchors.centerIn: parent
@@ -104,7 +104,7 @@ Item {
                     radius: 8
                     color: cancelArea.containsMouse ? Colors.outline : Colors.surface
 
-                    Behavior on color { ColorAnimation { duration: 120 } }
+                    Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
                     Text {
                         anchors.centerIn: parent

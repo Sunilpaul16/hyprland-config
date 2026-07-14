@@ -32,7 +32,7 @@ Item {
         opacity: hoverArea.containsMouse ? 0.5 : 0
         z: -1
 
-        Behavior on opacity { NumberAnimation { duration: 120 } }
+        Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }
 
     // Left-click activate, right-click menu

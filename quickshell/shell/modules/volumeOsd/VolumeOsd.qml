@@ -25,7 +25,7 @@ PanelWindow {
 
     property real showProgress: active ? 1 : 0
     Behavior on showProgress {
-        NumberAnimation { duration: 160; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
     }
 
     // Positioning
@@ -123,8 +123,8 @@ PanelWindow {
                     color: Audio.muted ? Colors.textMuted : Colors.primary
                     width: track.width * Math.max(0, Math.min(1, Audio.volume))
 
-                    Behavior on width { NumberAnimation { duration: 120; easing.type: Easing.OutSine } }
-                    Behavior on color { ColorAnimation { duration: 120 } }
+                    Behavior on width { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                    Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
                 }
             }
 

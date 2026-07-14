@@ -20,7 +20,7 @@ Item {
         color: area.containsMouse ? Colors.text : Colors.textMuted
         font.pixelSize: root.big ? 16 : 13
 
-        Behavior on color { ColorAnimation { duration: 120 } }
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }
 
     MouseArea {

@@ -43,9 +43,9 @@ Item {
         border.width: root.isCurrent ? 2 : 0
         border.color: Colors.primary
 
-        Behavior on width { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
-        Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
-        Behavior on anchors.bottomMargin { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+        Behavior on width { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+        Behavior on height { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+        Behavior on anchors.bottomMargin { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
 
         Rectangle {
             anchors.fill: parent

@@ -62,7 +62,7 @@ Item {
         border.width: root.isAction ? 1 : 0
         border.color: root.isAction ? Colors.error : Colors.outline
 
-        Behavior on color { ColorAnimation { duration: 120 } }
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
         // Icon/thumbnail + text
         Row {

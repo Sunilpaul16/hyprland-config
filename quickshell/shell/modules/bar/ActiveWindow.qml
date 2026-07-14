@@ -33,7 +33,7 @@ Item {
         spacing: 8
         opacity: root.isGloballyActive ? 1 : 0.6
 
-        Behavior on opacity { NumberAnimation { duration: 150 } }
+        Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
         IconImage {
             anchors.verticalCenter: parent.verticalCenter
@@ -50,7 +50,7 @@ Item {
             font.pixelSize: 13
             elide: Text.ElideRight
 
-            Behavior on color { ColorAnimation { duration: 150 } }
+            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
         }
     }
 }

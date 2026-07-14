@@ -17,7 +17,7 @@ Item {
         color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
         font.pixelSize: 14
 
-        Behavior on color { ColorAnimation { duration: 120 } }
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }
 
     // Unread-count badge
