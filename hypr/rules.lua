@@ -2,7 +2,7 @@
 ---- WINDOWS AND WORKSPACES ----
 --------------------------------
 
-local suppressMaximizeRule = hl.window_rule({
+hl.window_rule({
     name  = "suppress-maximize-events",
     match = { class = ".*" },
 

@@ -5,7 +5,7 @@
 
 
 hl.bind(kbTerminal, hl.dsp.exec_cmd(terminal), { description = "App: terminal" })
-local closeWindowBind = hl.bind(kbCloseWindow, hl.dsp.window.close(), { description = "Window: close" })
+hl.bind(kbCloseWindow, hl.dsp.window.close(), { description = "Window: close" })
 hl.bind(kbExit, hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"), { description = "System: exit hyprland" })
 hl.bind(kbFileManager, hl.dsp.exec_cmd(fileManager), { description = "App: file manager" })
 hl.bind(kbToggleWindowFloating, hl.dsp.window.float({ action = "toggle" }), { description = "Window: toggle floating" })
