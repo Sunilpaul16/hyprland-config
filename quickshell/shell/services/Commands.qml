@@ -13,6 +13,7 @@ Singleton {
         { name: "clip", title: "Clipboard", description: "Browse clipboard history", icon: "\u{1F4CB}" }
     ]
 
+    // Fuzzy query
     function query(search: string): var {
         const trimmed = search.trim();
         if (!trimmed)

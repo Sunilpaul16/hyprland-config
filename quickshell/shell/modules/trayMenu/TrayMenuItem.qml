@@ -70,6 +70,7 @@ Item {
                 asynchronous: true
             }
 
+            // Entry label
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.entry.text
@@ -89,6 +90,7 @@ Item {
             }
         }
 
+        // Click to trigger
         MouseArea {
             id: hoverArea
             anchors.fill: parent

@@ -66,5 +66,6 @@ Row {
         }
     }
 
+    // Main key
     KeyCap { label: root.mainKey }
 }

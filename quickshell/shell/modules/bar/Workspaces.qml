@@ -173,6 +173,7 @@ Item {
                 Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
             }
 
+            // Click to switch workspace
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor

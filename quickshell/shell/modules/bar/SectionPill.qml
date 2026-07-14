@@ -19,6 +19,7 @@ Item {
         color: Colors.surface
     }
 
+    // Content slot
     Item {
         id: inner
         anchors.centerIn: parent

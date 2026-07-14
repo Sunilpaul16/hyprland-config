@@ -4,9 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Mpris
 
-// Media player (MPRIS) state singleton — tracks whichever player is
-// currently playing, falling back to the first available one. No
-// duplicate-player filtering or manual player picking (barebones).
+// Media player (MPRIS) state — active player, or first available
 Singleton {
     id: root
 
@@ -76,13 +74,13 @@ Singleton {
         artDownloader.running = true;
     }
 
+    // Download remote art to cache
     Process {
         id: artDownloader
         property string pendingUrl: ""
         property string pendingDest: ""
         // Own properties (not root.artUrl directly) so the command string
-        // used by a run is pinned at the moment it's launched, matching
-        // end-4's MprisController pattern for this same download.
+        // is pinned at the moment the run launches.
         command: ["bash", "-c", `mkdir -p "$(dirname '${pendingDest}')" && { [ -f '${pendingDest}' ] || curl -4 -sSL '${pendingUrl}' -o '${pendingDest}'; }`]
         onExited: exitCode => {
             root.artDownloaded = (exitCode === 0);

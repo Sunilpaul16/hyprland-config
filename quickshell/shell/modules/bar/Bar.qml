@@ -9,6 +9,7 @@ import "../../services"
 PanelWindow {
     id: bar
 
+    // Dimensions
     readonly property int barContentHeight: 40
     readonly property int cornerSize: 14
 

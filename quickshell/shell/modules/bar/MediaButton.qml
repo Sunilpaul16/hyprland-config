@@ -11,6 +11,7 @@ Item {
     implicitWidth: visible ? row.implicitWidth : 0
     implicitHeight: row.implicitHeight
 
+    // Icon + title
     Row {
         id: row
         anchors.verticalCenter: parent.verticalCenter
@@ -37,6 +38,7 @@ Item {
         }
     }
 
+    // Click to toggle popup
     MouseArea {
         id: hoverArea
         anchors.fill: parent

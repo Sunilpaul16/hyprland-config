@@ -10,6 +10,7 @@ Item {
     readonly property int infoWidth: 200
     readonly property real progress: Media.length > 0 ? Math.max(0, Math.min(1, Media.position / Media.length)) : 0
 
+    // mm:ss formatter
     function formatTime(seconds: real): string {
         if (!seconds || seconds < 0 || isNaN(seconds))
             return "0:00";

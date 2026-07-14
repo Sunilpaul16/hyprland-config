@@ -12,6 +12,7 @@ Column {
     property int columnWidth: 280
     spacing: 8
 
+    // Category title
     Text {
         text: root.categoryName
         color: Colors.text

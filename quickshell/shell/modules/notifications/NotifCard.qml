@@ -5,11 +5,7 @@ import Quickshell.Services.Notifications
 import "../../services"
 
 
-// Notification card — collapsed by default (icon, "summary · time", one-line
-// body preview, chevron); expands on chevron click to show app name, full
-// body, actions, and a close button. Modeled on caelestia-dots/shell's
-// modules/notifications/Notification.qml look, without its Tokens/plugin
-// dependencies — plain QML + this repo's Colors.qml only.
+// Notification card
 Rectangle {
     id: card
 

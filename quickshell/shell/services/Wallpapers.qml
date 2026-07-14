@@ -21,6 +21,7 @@ Singleton {
         return videoExtensions.includes(ext);
     }
 
+    // Fuzzy query
     function query(search: string): var {
         const trimmed = search.trim();
         if (!trimmed)

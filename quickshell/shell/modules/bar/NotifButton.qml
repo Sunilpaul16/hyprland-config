@@ -10,6 +10,7 @@ Item {
     implicitWidth: bellIcon.implicitWidth
     implicitHeight: bellIcon.implicitHeight
 
+    // Bell icon
     Text {
         id: bellIcon
         anchors.centerIn: parent
@@ -42,6 +43,7 @@ Item {
         }
     }
 
+    // Click to toggle panel
     MouseArea {
         id: hoverArea
         anchors.fill: parent
