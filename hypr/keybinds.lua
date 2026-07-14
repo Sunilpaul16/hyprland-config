@@ -12,12 +12,13 @@ hl.bind(kbToggleWindowFloating, hl.dsp.window.float({ action = "toggle" }), { de
 hl.bind(kbAppMenu, hl.dsp.exec_cmd(menu), { description = "Launcher: application menu" })
 hl.bind(kbTogglePseudotile, hl.dsp.window.pseudo(), { description = "Window: toggle pseudotile" })
 hl.bind(kbToggleSplit, hl.dsp.layout("togglesplit"), { description = "Window: toggle split direction" })
-hl.bind(kbToggleFullscreen, hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }),{ description = "Window: Fullscreen" })
+hl.bind(kbToggleFullscreen, hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }), { description = "Window: Fullscreen" })
 hl.bind(kbTogglePin, hl.dsp.window.pin(), { description = "Window: Pin" })
 
 hl.bind(kbBrowser, hl.dsp.exec_cmd(browser), { description = "App: browser" })
 hl.bind(kbClipboardHistory, hl.dsp.exec_cmd("qs -c shell ipc call launcher openClip"), { description = "Launcher: clipboard history" })
 hl.bind(kbLock, hl.dsp.exec_cmd("hyprlock"), { description = "System: lock screen" })
+hl.bind(kbRestartShell, hl.dsp.exec_cmd([[bash -c 'pkill -x qs; qs -n -c shell']]), { description = "System: restart quickshell" })
 hl.bind(kbLauncher, hl.dsp.exec_cmd("qs -c shell ipc call launcher openApps"), { description = "Launcher: apps" })
 hl.bind(kbWallpaperPicker, hl.dsp.exec_cmd("qs -c shell ipc call launcher openWallpaper"), { description = "Launcher: wallpaper" })
 hl.bind(kbCodeEditor, hl.dsp.exec_cmd(codeEditor), { description = "App: code editor" })
@@ -84,3 +85,4 @@ local function zoomfunction(value)
 end
 hl.bind(kbZoomOut, function() zoomfunction(-0.3) end, { repeating = true, description = "Screen: zoom out" })
 hl.bind(kbZoomIn, function() zoomfunction(0.3) end, { repeating = true, description = "Screen: zoom in" })
+
