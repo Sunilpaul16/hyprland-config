@@ -91,7 +91,7 @@ PanelWindow {
 
         opacity: root.showProgress
         scale: 0.96 + 0.04 * root.showProgress
-        transformOrigin: Item.Center
+        transformOrigin: Item.Bottom
 
         implicitWidth: row.implicitWidth + 28
         implicitHeight: 44
