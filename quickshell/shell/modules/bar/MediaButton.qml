@@ -42,6 +42,9 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: MediaState.toggle()
+        onClicked: {
+            const pos = root.mapToItem(null, root.width / 2, root.height);
+            MediaState.toggle(pos.x, pos.y);
+        }
     }
 }

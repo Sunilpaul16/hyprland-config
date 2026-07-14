@@ -58,10 +58,14 @@ PanelWindow {
 
             readonly property int maxListHeight: root.height - 96 - header.implicitHeight - 26
 
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.topMargin: 48
-            anchors.rightMargin: 14
+            // Right edge aligned under NotifButton's actual bar position
+            // (clamped to stay onscreen), not a fixed screen corner
+            readonly property real restingY: Math.max(8, Math.min(NotifPanelState.anchorY + 8, root.height - implicitHeight - 8))
+            readonly property int slideDistance: 20
+
+            x: Math.max(8, Math.min(NotifPanelState.anchorX - implicitWidth, root.width - implicitWidth - 8))
+            // Slides down from the bar into restingY as showProgress animates
+            y: restingY - (1 - root.showProgress) * slideDistance
             implicitWidth: 360
             implicitHeight: header.implicitHeight + 16 + Math.max(list.contentHeight, empty.implicitHeight) + 32
             radius: 18

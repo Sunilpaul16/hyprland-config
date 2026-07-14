@@ -47,6 +47,9 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: NotifPanelState.toggle()
+        onClicked: {
+            const pos = root.mapToItem(null, root.width, root.height);
+            NotifPanelState.toggle(pos.x, pos.y);
+        }
     }
 }

@@ -52,13 +52,17 @@ PanelWindow {
             onClicked: {}
         }
 
-        // Panel, dropped near the bar's right side where the pill lives
+        // Panel, centered under MediaButton's actual bar position (clamped
+        // to stay onscreen) — MediaButton sits mid-row, not at a screen edge
         Rectangle {
             id: panel
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.topMargin: 48
-            anchors.rightMargin: 14
+
+            readonly property real restingY: Math.max(8, Math.min(MediaState.anchorY + 8, root.height - implicitHeight - 8))
+            readonly property int slideDistance: 20
+
+            x: Math.max(8, Math.min(MediaState.anchorX - implicitWidth / 2, root.width - implicitWidth - 8))
+            // Slides down from the bar into restingY as showProgress animates
+            y: restingY - (1 - root.showProgress) * slideDistance
             implicitWidth: content.implicitWidth + 56
             implicitHeight: content.implicitHeight + 40
             radius: 18
@@ -68,7 +72,7 @@ PanelWindow {
 
             opacity: root.showProgress
             scale: 0.96 + 0.04 * root.showProgress
-            transformOrigin: Item.TopRight
+            transformOrigin: Item.Top
 
             MediaContent {
                 id: content

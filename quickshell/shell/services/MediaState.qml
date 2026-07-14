@@ -3,14 +3,27 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Media popup open/close state
+// Media popup open/close state, plus where to anchor it (scene coords of
+// MediaButton's bottom-center point, captured on open — same technique as
+// TrayMenuState.anchorX/anchorY)
 Singleton {
     id: root
 
     property bool open: false
+    property real anchorX: 0
+    property real anchorY: 0
 
-    function toggle(): void {
-        root.open = !root.open;
+    function showAt(x: real, y: real): void {
+        root.anchorX = x;
+        root.anchorY = y;
+        root.open = true;
+    }
+
+    function toggle(x: real, y: real): void {
+        if (root.open)
+            root.open = false;
+        else
+            root.showAt(x, y);
     }
 
     // IPC handler
