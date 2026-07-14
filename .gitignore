@@ -19,6 +19,9 @@ __pycache__/
 # local Claude Code project instructions — not published
 CLAUDE.md
 
+# research notes documenting other people's repos — not my code, don't commit
+references/
+
 # secrets / credentials — belt and suspenders alongside the explicit grep scan
 *.env
 .env*
