@@ -10,6 +10,13 @@ local suppressMaximizeRule = hl.window_rule({
 })
 
 hl.window_rule({
+    name  = "float-blueman-manager",
+    match = { class = "blueman-manager" },
+
+    tag   = "+float",
+})
+
+hl.window_rule({
     name  = "fix-xwayland-drags",
     match = {
         class      = "^$",
