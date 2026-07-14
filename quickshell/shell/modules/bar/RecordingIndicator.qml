@@ -82,6 +82,6 @@ Item {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: Quickshell.execDetached(["/home/spaul16/.local/bin/record", "stop"])
+        onClicked: Quickshell.execDetached([Quickshell.env("HOME") + "/.local/bin/record", "stop"])
     }
 }

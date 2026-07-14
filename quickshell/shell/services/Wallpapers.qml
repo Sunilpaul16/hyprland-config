@@ -8,7 +8,7 @@ import "fuzzysort.js" as Fuzzy
 Singleton {
     id: root
 
-    readonly property string wallpaperDir: "/home/spaul16/wallpaper"
+    readonly property string wallpaperDir: Quickshell.env("HOME") + "/wallpaper"
     readonly property string thumbCacheDir: Quickshell.env("HOME") + "/.cache/wallpaper-thumbs"
     readonly property var videoExtensions: ["mp4", "webm", "mkv"]
 

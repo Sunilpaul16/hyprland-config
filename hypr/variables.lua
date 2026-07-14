@@ -8,6 +8,8 @@ menu        = "fuzzel"
 browser    = "google-chrome-stable"
 codeEditor      = "code"
 
+home = os.getenv("HOME")
+
 ---------------------
 ---- KEYBINDINGS ----
 ---------------------

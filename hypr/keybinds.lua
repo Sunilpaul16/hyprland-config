@@ -23,13 +23,13 @@ hl.bind(kbCheatsheet, hl.dsp.exec_cmd("qs -c shell ipc call cheatsheet toggle"),
 
 
 -- Screenshots
-hl.bind(kbScreenshotFull, hl.dsp.exec_cmd("/home/spaul16/.local/bin/screenshot full"), { description = "Screenshot: fullscreen" })
-hl.bind(kbScreenshotRegion, hl.dsp.exec_cmd("/home/spaul16/.local/bin/screenshot region"), { description = "Screenshot: region" })
-hl.bind(kbScreenshotRegionEdit, hl.dsp.exec_cmd("/home/spaul16/.local/bin/screenshot region --edit"), { description = "Screenshot: region + edit" })
+hl.bind(kbScreenshotFull, hl.dsp.exec_cmd(home .. "/.local/bin/screenshot full"), { description = "Screenshot: fullscreen" })
+hl.bind(kbScreenshotRegion, hl.dsp.exec_cmd(home .. "/.local/bin/screenshot region"), { description = "Screenshot: region" })
+hl.bind(kbScreenshotRegionEdit, hl.dsp.exec_cmd(home .. "/.local/bin/screenshot region --edit"), { description = "Screenshot: region + edit" })
 
 -- Screen recording (press again to stop, regardless of which mode started it)
-hl.bind(kbRecordRegion, hl.dsp.exec_cmd("/home/spaul16/.local/bin/record region"), { description = "Record: region (toggle)" })
-hl.bind(kbRecordFull, hl.dsp.exec_cmd("/home/spaul16/.local/bin/record full"), { description = "Record: fullscreen (toggle)" })
+hl.bind(kbRecordRegion, hl.dsp.exec_cmd(home .. "/.local/bin/record region"), { description = "Record: region (toggle)" })
+hl.bind(kbRecordFull, hl.dsp.exec_cmd(home .. "/.local/bin/record full"), { description = "Record: fullscreen (toggle)" })
 
 -- Move focus with arrow keys
 hl.bind(kbFocusLeft,  hl.dsp.focus({ direction = "left" }),  { description = "Window: focus left" })
