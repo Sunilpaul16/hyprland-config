@@ -1,6 +1,12 @@
 /*
 * GTK colors generated with Matugen
 * The source template is here: ~/.config/matugen/templates/gtk-3.0/gtk.css
+*
+* Colors only, intentionally — GTK3 is treated as the legacy toolkit here.
+* GTK4 apps use libadwaita, so ~/.config/matugen/templates/gtk-4.0/gtk.css
+* additionally carries ~500 lines of static libadwaita/Nautilus widget
+* restyling; GTK3 apps don't use libadwaita, so there's no equivalent
+* widget layer to restyle. Not half-finished, just a smaller surface area.
 */
 
 /* Accents */
