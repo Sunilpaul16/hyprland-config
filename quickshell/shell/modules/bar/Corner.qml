@@ -27,11 +27,6 @@ Item {
             startX: root.isLeft ? 0 : root.size
             startY: 0
 
-            // moveToStart:false + matching startAngle per corner (mirrors
-            // end-4/dots-hyprland's RoundCorner.qml) is required here —
-            // without it the default moveToStart:true jump plus a second
-            // redundant PathLine produced a self-intersecting crescent
-            // instead of a clean wedge, most visible on the right corner.
             PathAngleArc {
                 moveToStart: false
                 centerX: root.isLeft ? root.size : 0

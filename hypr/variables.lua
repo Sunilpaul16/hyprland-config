@@ -13,13 +13,6 @@ home = os.getenv("HOME")
 ---------------------
 ---- KEYBINDINGS ----
 ---------------------
--- Named combos referenced by keybinds.lua, one variable per bind (pattern
--- borrowed from caelestia-dots/caelestia's hypr/variables.lua). Naming:
--- `kb` + PascalCase action name, derived from each bind's description with
--- the "Category:" prefix dropped (matches caelestia's kbLock/kbTerminal/
--- kbShowSidebar style). kbGoToWs/kbMoveWinToWs are mod-only prefixes
--- combined with a workspace number in keybinds.lua's loop, same as
--- caelestia's own kbGoToWs/kbMoveWinToWs.
 
 -- Apps / launcher
 kbTerminal          = "SUPER + Grave"
