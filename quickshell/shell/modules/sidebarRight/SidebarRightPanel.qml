@@ -85,8 +85,7 @@ PanelWindow {
                     spacing: 12
 
                     NotificationsCard { Layout.fillWidth: true }
-                    KeepAwakeCard { Layout.fillWidth: true }
-                    ScreenRecorderCard { Layout.fillWidth: true }
+                    SystemCard { Layout.fillWidth: true }
                     QuickTogglesRow { Layout.fillWidth: true }
                 }
             }
