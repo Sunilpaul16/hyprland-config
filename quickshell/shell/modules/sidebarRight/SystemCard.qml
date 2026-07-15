@@ -23,8 +23,8 @@ Rectangle {
             Layout.fillWidth: true
             spacing: 12
 
-            Text {
-                text: "\u{2615}" // hot beverage glyph, matches "keep awake" concept
+            MaterialIcon {
+                text: "coffee"
                 color: Colors.text
                 font.pixelSize: 20
             }
@@ -94,8 +94,8 @@ Rectangle {
             Layout.fillWidth: true
             spacing: 12
 
-            Text {
-                text: "\u{23FA}" // record symbol
+            MaterialIcon {
+                text: "screen_record"
                 color: Colors.text
                 font.pixelSize: 20
             }
@@ -135,10 +135,10 @@ Rectangle {
                         font.pixelSize: 11
                     }
 
-                    Text {
-                        text: "\u{2304}" // small down chevron
+                    MaterialIcon {
+                        text: "expand_more"
                         color: Colors.textMuted
-                        font.pixelSize: 10
+                        font.pixelSize: 16
                     }
                 }
             }
@@ -160,10 +160,10 @@ Rectangle {
                 Layout.fillWidth: true
                 spacing: 6
 
-                Text {
-                    text: "\u{2261}" // list glyph
+                MaterialIcon {
+                    text: "video_library"
                     color: Colors.text
-                    font.pixelSize: 13
+                    font.pixelSize: 16
                 }
 
                 Text {
@@ -173,10 +173,10 @@ Rectangle {
                     font.pixelSize: 13
                 }
 
-                Text {
-                    text: "\u{2304}"
+                MaterialIcon {
+                    text: "expand_more"
                     color: Colors.textMuted
-                    font.pixelSize: 10
+                    font.pixelSize: 16
                 }
             }
 

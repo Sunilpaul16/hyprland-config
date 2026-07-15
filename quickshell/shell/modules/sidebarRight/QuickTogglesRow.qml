@@ -22,7 +22,7 @@ ColumnLayout {
         spacing: 8
 
         Repeater {
-            model: ["\u{1F4F6}", "BT", "\u{1F399}", "\u{2699}", "\u{22EF}"] // wifi, bluetooth, mic, settings, more
+            model: ["wifi", "bluetooth", "mic", "settings", "more_horiz"]
 
             Rectangle {
                 required property string modelData
@@ -32,11 +32,11 @@ ColumnLayout {
                 radius: 12
                 color: Colors.background
 
-                Text {
+                MaterialIcon {
                     anchors.centerIn: parent
                     text: parent.modelData
                     color: Colors.text
-                    font.pixelSize: parent.modelData.length > 1 && parent.modelData !== "\u{22EF}" ? 10 : 15
+                    font.pixelSize: 20
                 }
             }
         }

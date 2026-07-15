@@ -31,9 +31,9 @@ Rectangle {
             Layout.bottomMargin: 12
             spacing: 12
 
-            Text {
+            MaterialIcon {
                 Layout.alignment: Qt.AlignHCenter
-                text: "\u{1F515}" // bell with cancellation stroke — glyph stand-in for an illustration
+                text: "notifications_off"
                 color: Colors.textMuted
                 font.pixelSize: 48
             }
