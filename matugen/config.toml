@@ -8,8 +8,7 @@
 # from a separate pipeline (materialyoucolor + sed substitution into
 # terminal/kitty-theme.conf, run from ~/.local/bin/switchwall) because it
 # needs a real 16-color ANSI terminal palette, which matugen's own Material
-# You role set can't produce on its own (see ANALYSIS.md §4 / FEATURES.md
-# for why). See colorgen/ next to this file.
+# You role set can't produce on its own. See colorgen/ next to this file.
 #
 # GTK templates need `gsettings ... color-scheme prefer-dark` set (done by
 # switchwall/this setup) — otherwise GTK4 apps render the @media (light)

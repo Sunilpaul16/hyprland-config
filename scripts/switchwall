@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 # switchwall — set a wallpaper (image or video) and regenerate the matugen +
-# materialyoucolor theming pipeline: hyprlock/fuzzel/hyprland colors via
+# materialyoucolor theming pipeline: hyprlock/hyprland/GTK3+4 colors via
 # matugen, kitty's terminal palette via materialyoucolor, then reload.
+# Fuzzel is NOT themed here — see fuzzel/fuzzel_theme.ini, frozen by design.
 #
 # Usage: switchwall <path-to-image-or-video>
 #
-# Standalone precursor to end-4/dots-hyprland's switchwall.sh: no quickshell,
-# no ~/.config/illogical-impulse/config.json, monitors are hardcoded to
-# DP-3/DP-2 (see ~/.config/hypr/general.lua) instead of looped from
-# `hyprctl monitors`. Revisit when quickshell is set up.
+# Standalone precursor to end-4/dots-hyprland's switchwall.sh: no
+# ~/.config/illogical-impulse/config.json, and monitor names are parsed out
+# of ~/.config/hypr/general.lua's hl.monitor({...}) calls (single source of
+# truth) rather than looped from `hyprctl monitors`. Revisit if monitors
+# ever need to be hotplug-agnostic.
 #
 # Idempotent: safe to re-run with the same or a different wallpaper — always
 # kills any previous mpvpaper before relaunching, and every generated file is
@@ -26,7 +28,9 @@
 
 set -euo pipefail
 
-MONITORS=(DP-3 DP-2)
+HYPR_GENERAL="$HOME/.config/hypr/general.lua"
+mapfile -t MONITORS < <(grep -oP 'hl\.monitor\(\{\s*output\s*=\s*"\K[^"]+' "$HYPR_GENERAL")
+[[ ${#MONITORS[@]} -gt 0 ]] || { echo "switchwall: no monitors found in $HYPR_GENERAL" >&2; exit 1; }
 VENV_PYTHON="$HOME/.local/state/quickshell/.venv/bin/python3"
 COLORGEN_DIR="$HOME/.config/matugen/colorgen"
 CACHE_DIR="$HOME/.cache/matugen"
@@ -95,7 +99,7 @@ if is_video "$wallpaper"; then
     colorsource="$frame"
 fi
 
-# --- 3. matugen: hyprlock / fuzzel / hyprland colors.lua / GTK3+4 css -------
+# --- 3. matugen: hyprlock / hyprland colors.lua / GTK3+4 css ----------------
 # --source-color-index 0 picks the most dominant color deterministically
 # (matugen prompts interactively otherwise when several candidates are close).
 matugen image "$colorsource" --source-color-index 0 --mode dark
