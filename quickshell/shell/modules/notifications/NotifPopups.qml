@@ -120,7 +120,7 @@ PanelWindow {
             PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
         }
 
-        NotifCard {
+        ToastCard {
             id: card
 
             modelData: wrapper.notif ?? wrapper.modelData

@@ -32,7 +32,9 @@ Singleton {
         onNotification: notif => {
             notif.tracked = true;
             const wrapper = notifComp.createObject(root, {
-                popup: true,
+                // Don't pop up a toast for something already visible live in
+                // the sidebar's Notifications card — still lands in history.
+                popup: !SidebarRightState.open,
                 notification: notif
             });
             root.list = [wrapper, ...root.list];
