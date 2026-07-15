@@ -6,6 +6,7 @@ import "modules/cheatsheet"
 import "modules/mediaPopup"
 import "modules/notifications"
 import "modules/session"
+import "modules/sidebarRight"
 import "modules/trayMenu"
 import "modules/volumeOsd"
 
@@ -95,6 +96,17 @@ ShellRoot {
         model: Quickshell.screens
 
         TrayMenu {
+            property var modelData
+            screen: modelData
+        }
+    }
+
+    // For each monitor: right sidebar (Notifications/Keep Awake/Screen
+    // Recorder/Quick Toggles — static shell)
+    Variants {
+        model: Quickshell.screens
+
+        SidebarRightPanel {
             property var modelData
             screen: modelData
         }

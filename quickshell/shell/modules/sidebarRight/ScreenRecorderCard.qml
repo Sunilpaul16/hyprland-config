@@ -1,0 +1,117 @@
+import QtQuick
+import QtQuick.Layouts
+import "../../services"
+
+// Static shell only — inert visuals, no real wiring to scripts/record or
+// the bar's RecordingIndicator (which already polls wf-recorder live).
+Rectangle {
+    id: root
+
+    radius: 18
+    color: Colors.surface
+    implicitHeight: column.implicitHeight + 32
+
+    ColumnLayout {
+        id: column
+        anchors { left: parent.left; right: parent.right; top: parent.top; margins: 16 }
+        spacing: 16
+
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 12
+
+            Text {
+                text: "\u{23FA}" // record symbol
+                color: Colors.text
+                font.pixelSize: 20
+            }
+
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 2
+
+                Text {
+                    text: "Screen Recorder"
+                    color: Colors.text
+                    font.pixelSize: 14
+                    font.bold: true
+                }
+
+                Text {
+                    text: "Recording off"
+                    color: Colors.textMuted
+                    font.pixelSize: 12
+                }
+            }
+
+            Rectangle {
+                radius: 8
+                color: Colors.background
+                implicitWidth: fullscreenRow.implicitWidth + 20
+                implicitHeight: fullscreenRow.implicitHeight + 10
+
+                RowLayout {
+                    id: fullscreenRow
+                    anchors.centerIn: parent
+                    spacing: 4
+
+                    Text {
+                        text: "Fullscreen"
+                        color: Colors.text
+                        font.pixelSize: 11
+                    }
+
+                    Text {
+                        text: "\u{2304}" // small down chevron
+                        color: Colors.textMuted
+                        font.pixelSize: 10
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            implicitHeight: 1
+            color: Colors.outline
+            opacity: 0.3
+        }
+
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 8
+
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 6
+
+                Text {
+                    text: "\u{2261}" // list glyph
+                    color: Colors.text
+                    font.pixelSize: 13
+                }
+
+                Text {
+                    Layout.fillWidth: true
+                    text: "Recordings"
+                    color: Colors.text
+                    font.pixelSize: 13
+                }
+
+                Text {
+                    text: "\u{2304}"
+                    color: Colors.textMuted
+                    font.pixelSize: 10
+                }
+            }
+
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                Layout.topMargin: 4
+                text: "No recordings found"
+                color: Colors.textMuted
+                font.pixelSize: 12
+            }
+        }
+    }
+}

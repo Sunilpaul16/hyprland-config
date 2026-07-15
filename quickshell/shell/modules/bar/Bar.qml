@@ -98,6 +98,13 @@ PanelWindow {
                 Layout.alignment: Qt.AlignVCenter
                 horizontalPadding: 8
 
+                SidebarRightButton {}
+            }
+
+            SectionPill {
+                Layout.alignment: Qt.AlignVCenter
+                horizontalPadding: 8
+
                 SessionButton {}
             }
         }
