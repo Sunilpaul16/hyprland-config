@@ -37,6 +37,7 @@ Rectangle {
         NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
     }
 
+    // Hover state
     HoverHandler {
         id: hover
         onHoveredChanged: card.modelData.hovered = hovered

@@ -20,6 +20,7 @@ PanelWindow {
         right: true
     }
 
+    // Window setup
     implicitHeight: barContentHeight + cornerSize
     exclusiveZone: barContentHeight
     color: "transparent"

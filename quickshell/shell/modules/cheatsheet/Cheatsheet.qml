@@ -26,6 +26,7 @@ PanelWindow {
         bottom: true
     }
 
+    // Window setup
     color: "transparent"
     exclusiveZone: 0
     visible: showProgress > 0.001

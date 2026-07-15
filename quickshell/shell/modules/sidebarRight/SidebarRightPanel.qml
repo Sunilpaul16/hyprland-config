@@ -16,6 +16,7 @@ import "../../services"
 PanelWindow {
     id: root
 
+    // Visibility state
     readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
     readonly property bool active: SidebarRightState.open && root.isFocusedScreen
 
@@ -25,6 +26,7 @@ PanelWindow {
         NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
     }
 
+    // Positioning
     anchors {
         top: true
         left: true
@@ -32,6 +34,7 @@ PanelWindow {
         bottom: true
     }
 
+    // Window setup
     exclusiveZone: 0
     color: "transparent"
     visible: showProgress > 0.001
@@ -46,6 +49,7 @@ PanelWindow {
         onClicked: SidebarRightState.open = false
     }
 
+    // Focus scope
     Item {
         anchors.fill: parent
         focus: root.active
@@ -96,6 +100,7 @@ PanelWindow {
             contentHeight: column.implicitHeight
             clip: true
 
+            // Card stack
             ColumnLayout {
                 id: column
                 width: parent.width

@@ -17,6 +17,7 @@ ColumnLayout {
         font.bold: true
     }
 
+    // Icon row
     RowLayout {
         Layout.fillWidth: true
         spacing: 8

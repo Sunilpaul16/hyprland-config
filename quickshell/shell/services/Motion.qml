@@ -1,7 +1,7 @@
 pragma Singleton
 import QtQuick
 
-
+// Animation timing singleton
 QtObject {
     // quick — hover/press feedback (colors, small opacity/size nudges)
     readonly property int quickDuration: 110

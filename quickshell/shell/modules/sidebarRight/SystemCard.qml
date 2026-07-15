@@ -82,6 +82,7 @@ Rectangle {
             }
         }
 
+        // Divider
         Rectangle {
             Layout.fillWidth: true
             implicitHeight: 1
@@ -144,6 +145,7 @@ Rectangle {
             }
         }
 
+        // Divider
         Rectangle {
             Layout.fillWidth: true
             implicitHeight: 1

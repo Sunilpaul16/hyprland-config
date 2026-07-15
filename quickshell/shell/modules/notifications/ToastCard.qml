@@ -40,6 +40,7 @@ Rectangle {
         NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
     }
 
+    // Hover state
     HoverHandler {
         onHoveredChanged: card.modelData.hovered = hovered
     }
@@ -51,11 +52,13 @@ Rectangle {
         onClicked: card.modelData.close()
     }
 
+    // Content
     Item {
         id: content
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
         implicitHeight: Math.max(iconSlot.height, textCol.implicitHeight)
 
+        // Icon
         Rectangle {
             id: iconSlot
             width: 26

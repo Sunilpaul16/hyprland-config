@@ -21,6 +21,7 @@ Rectangle {
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 16 }
         spacing: 12
 
+        // Header: title + clear-all
         RowLayout {
             Layout.fillWidth: true
             spacing: 8
@@ -60,6 +61,7 @@ Rectangle {
             }
         }
 
+        // Empty state
         ColumnLayout {
             Layout.fillWidth: true
             Layout.topMargin: 12
@@ -82,6 +84,7 @@ Rectangle {
             }
         }
 
+        // History list
         ListView {
             id: list
             Layout.fillWidth: true

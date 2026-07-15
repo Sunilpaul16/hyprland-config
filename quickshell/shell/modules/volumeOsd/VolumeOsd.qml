@@ -35,6 +35,7 @@ PanelWindow {
         right: true
     }
 
+    // Window setup
     color: "transparent"
     exclusiveZone: 0
     implicitHeight: 120

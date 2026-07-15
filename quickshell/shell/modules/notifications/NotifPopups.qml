@@ -11,6 +11,7 @@ import "../../services"
 PanelWindow {
     id: root
 
+    // Visibility state
     readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
 
     // Layout constants
@@ -27,6 +28,7 @@ PanelWindow {
         bottom: true
     }
 
+    // Window setup
     color: "transparent"
     exclusiveZone: 0
 
@@ -37,6 +39,7 @@ PanelWindow {
 
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
+    // Click-through everywhere except the stack itself
     mask: Region {
         item: stack
     }

@@ -20,6 +20,7 @@ Item {
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }
 
+    // Click to toggle sidebar
     MouseArea {
         id: hoverArea
         anchors.fill: parent
