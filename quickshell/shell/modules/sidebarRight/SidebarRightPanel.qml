@@ -78,30 +78,32 @@ PanelWindow {
             transform: Translate { x: (1 - root.showProgress) * 24 }
         }
 
-        Loader {
-            id: contentLoader
-            active: root.showProgress > 0.001
+        // Always-present (not Loader-created) — same convention NotifPanel.qml
+        // uses for its own content. A Loader that only activates once the
+        // panel opens was found to break NotifCard's Behavior-driven slide-in
+        // animation (verified: the notification list rendered nothing at all
+        // until this was removed), so the card stack is now part of the
+        // always-alive scene graph just like `backdrop`, with only opacity/
+        // transform toggling on open/close.
+        Flickable {
             anchors.fill: backdrop
             anchors.margins: 12
 
             opacity: root.showProgress
             transform: Translate { x: (1 - root.showProgress) * 24 }
 
-            sourceComponent: Flickable {
-                anchors.fill: parent
-                contentWidth: width
-                contentHeight: column.implicitHeight
-                clip: true
+            contentWidth: width
+            contentHeight: column.implicitHeight
+            clip: true
 
-                ColumnLayout {
-                    id: column
-                    width: parent.width
-                    spacing: 12
+            ColumnLayout {
+                id: column
+                width: parent.width
+                spacing: 12
 
-                    NotificationsCard { Layout.fillWidth: true }
-                    SystemCard { Layout.fillWidth: true }
-                    QuickTogglesRow { Layout.fillWidth: true }
-                }
+                NotificationsCard { Layout.fillWidth: true }
+                SystemCard { Layout.fillWidth: true }
+                QuickTogglesRow { Layout.fillWidth: true }
             }
         }
     }
