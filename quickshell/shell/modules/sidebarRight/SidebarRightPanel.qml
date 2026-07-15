@@ -7,14 +7,12 @@ import "../../services"
 
 // Right sidebar: Notifications / Keep Awake / Screen Recorder / Quick
 // Toggles. Static shell for now — every card inside is a visual placeholder,
-// no live data wiring. True top/right/bottom-anchored strip (not a floating
-// card like NotifPanel), matching end-4's sidebarRight approach.
-//
-// No click-outside-dismiss: this window only covers the sidebar's own
-// width, so it can't catch clicks landing elsewhere without a second
-// fullscreen input-capture layer (the trick NotifPanel.qml uses). Close via
-// the bar toggle or Escape only — flagged as a known gap, build later if
-// wanted.
+// no live data wiring. Window is fullscreen (all 4 sides anchored) purely so
+// a click-outside-dismiss MouseArea has somewhere to catch clicks — the
+// visible card stack itself is still pinned to a fixed-width right-hand
+// strip via the `backdrop` Rectangle below. Mirrors NotifPanel.qml's
+// click-outside structure exactly (outer catcher -> focus scope -> absorbing
+// MouseArea sized to the visual card -> the card).
 PanelWindow {
     id: root
 
@@ -29,11 +27,11 @@ PanelWindow {
 
     anchors {
         top: true
+        left: true
         right: true
         bottom: true
     }
 
-    implicitWidth: 360
     exclusiveZone: 0
     color: "transparent"
     visible: showProgress > 0.001
@@ -42,10 +40,23 @@ PanelWindow {
     WlrLayershell.namespace: "quickshell-sidebar-right"
     WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
+    // Click outside to close
+    MouseArea {
+        anchors.fill: parent
+        onClicked: SidebarRightState.open = false
+    }
+
     Item {
         anchors.fill: parent
         focus: root.active
         Keys.onEscapePressed: SidebarRightState.open = false
+
+        // Absorb clicks on the sidebar itself so they don't fall through
+        // to the full-screen close catcher above.
+        MouseArea {
+            anchors.fill: backdrop
+            onClicked: {}
+        }
 
         // Statically-declared backdrop, NOT loader-created — anchored
         // straight to this Item (guaranteed full window size), so it never
@@ -53,11 +64,14 @@ PanelWindow {
         // Loader's size. The first fix put this same Rectangle as the
         // Loader's sourceComponent root, which still left the fill broken
         // (verified visually — not just re-read as code), so ownership of
-        // the fill is moved out of the Loader entirely.
+        // the fill is moved out of the Loader entirely. Now that the window
+        // is fullscreen, this Rectangle is also what pins the visible card
+        // stack to a fixed-width right-hand strip instead of the whole
+        // screen.
         Rectangle {
             id: backdrop
-            anchors.fill: parent
-            anchors.margins: 8
+            anchors { top: parent.top; right: parent.right; bottom: parent.bottom; margins: 8 }
+            width: 360
             radius: 20
             color: Colors.background
             opacity: root.showProgress
