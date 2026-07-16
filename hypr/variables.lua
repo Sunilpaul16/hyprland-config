@@ -24,6 +24,7 @@ kbLauncher          = "SUPER + Space" -- quickshell app launcher
 kbClipboardHistory  = "SUPER + V"
 kbWallpaperPicker   = "SUPER + T"
 kbCheatsheet        = "SUPER + Slash"
+kbOverview          = "SUPER + Tab" -- quickshell workspace overview
 
 -- Window actions
 kbCloseWindow           = "SUPER + Q"

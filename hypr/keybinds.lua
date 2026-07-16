@@ -23,6 +23,7 @@ hl.bind(kbLauncher, hl.dsp.exec_cmd("qs -c shell ipc call launcher openApps"), {
 hl.bind(kbWallpaperPicker, hl.dsp.exec_cmd("qs -c shell ipc call launcher openWallpaper"), { description = "Launcher: wallpaper" })
 hl.bind(kbCodeEditor, hl.dsp.exec_cmd(codeEditor), { description = "App: code editor" })
 hl.bind(kbCheatsheet, hl.dsp.exec_cmd("qs -c shell ipc call cheatsheet toggle"), { description = "Launcher: keybind cheatsheet" })
+hl.bind(kbOverview, hl.dsp.exec_cmd("qs -c shell ipc call overview toggle"), { description = "Launcher: workspace overview" })
 
 
 -- Screenshots

@@ -5,6 +5,7 @@ import "modules/launcher"
 import "modules/cheatsheet"
 import "modules/mediaPopup"
 import "modules/notifications"
+import "modules/overview"
 import "modules/session"
 import "modules/sidebarRight"
 import "modules/trayMenu"
@@ -107,6 +108,16 @@ ShellRoot {
         model: Quickshell.screens
 
         SidebarRightPanel {
+            property var modelData
+            screen: modelData
+        }
+    }
+
+    // For each monitor: workspace overview with live window thumbnails
+    Variants {
+        model: Quickshell.screens
+
+        Overview {
             property var modelData
             screen: modelData
         }
