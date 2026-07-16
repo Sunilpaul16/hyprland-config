@@ -60,7 +60,7 @@ wallpaper="$1"
 
 command -v mpvpaper >/dev/null || { echo "switchwall: missing required binary: mpvpaper" >&2; exit 1; }
 if ! $PREVIEW; then
-    for bin in matugen ffmpeg; do
+    for bin in matugen ffmpeg gsettings; do
         command -v "$bin" >/dev/null || { echo "switchwall: missing required binary: $bin" >&2; exit 1; }
     done
     [[ -x "$VENV_PYTHON" ]] || { echo "switchwall: venv python not found at $VENV_PYTHON" >&2; exit 1; }
@@ -103,6 +103,13 @@ fi
 # --source-color-index 0 picks the most dominant color deterministically
 # (matugen prompts interactively otherwise when several candidates are close).
 matugen image "$colorsource" --source-color-index 0 --mode dark
+
+# GTK4 apps render gtk.css's light @media block over the dark colors matugen
+# just generated unless the desktop is actually in dark mode -- set it here
+# instead of relying on it having been set manually once (dconf persists it
+# across reboots, so this only needs to run once in practice, but re-running
+# it is harmless).
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
 # Quit Nautilus so it picks up the regenerated gtk-3.0/gtk-4.0 css on next
 # open (GTK doesn't hot-reload custom css into already-running instances).
