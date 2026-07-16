@@ -25,7 +25,6 @@ Singleton {
     }
 
     // IPC handler
-    // IPC handler
     IpcHandler {
         target: "notifPanel"
 
