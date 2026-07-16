@@ -134,6 +134,10 @@ while IFS=: read -r name value; do
 done < "$scss"
 
 # --- 5. Reload ---------------------------------------------------------------
+# (end-4's applycolor.sh also blasts OSC escape sequences into every
+#  /dev/pts/* device for non-kitty terminal support; skipped here --
+#  kitty-only repo, and that approach writes blind into ttys with no
+#  guarantee a terminal's even attached, e.g. SSH sessions/tmux panes.)
 hyprctl reload >/dev/null
 pkill -SIGUSR1 -x kitty >/dev/null 2>&1 || true
 
