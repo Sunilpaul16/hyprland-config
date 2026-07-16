@@ -40,7 +40,7 @@ Rectangle {
                 }
 
                 Text {
-                    text: "Preventing sleep mode"
+                    text: IdleInhibitState.enabled ? "Preventing sleep mode" : "Sleep as normal"
                     color: Colors.textMuted
                     font.pixelSize: 12
                 }
