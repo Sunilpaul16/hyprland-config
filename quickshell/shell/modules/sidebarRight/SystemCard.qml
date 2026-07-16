@@ -1,11 +1,14 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import "../../services"
 
 // Merged Keep Awake + Screen Recorder + Recordings — one shared card
 // background with dividers between sections (matches caelestia's grouping,
-// was three separate cards before). Static shell only — inert visuals, no
-// real idle-inhibit or scripts/record wiring yet.
+// was three separate cards before). Keep Awake / Screen Recorder are still
+// static placeholders — no real idle-inhibit or live recording-status
+// wiring yet. Recordings is live: lists scripts/record's ~/Videos output
+// via the Recordings singleton, with play/reveal/delete per row.
 Rectangle {
     id: root
 
@@ -155,39 +158,90 @@ Rectangle {
 
         // --- Recordings ---
         ColumnLayout {
+            id: recordingsSection
             Layout.fillWidth: true
             spacing: 8
 
-            RowLayout {
+            property bool expanded: false
+            onExpandedChanged: if (expanded) Recordings.refresh()
+
+            Item {
                 Layout.fillWidth: true
-                spacing: 6
+                implicitHeight: headerRow.implicitHeight
 
-                MaterialIcon {
-                    text: "video_library"
-                    color: Colors.text
-                    font.pixelSize: 16
+                RowLayout {
+                    id: headerRow
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    spacing: 6
+
+                    MaterialIcon {
+                        text: "video_library"
+                        color: Colors.text
+                        font.pixelSize: 16
+                    }
+
+                    Text {
+                        Layout.fillWidth: true
+                        text: "Recordings"
+                        color: Colors.text
+                        font.pixelSize: 13
+                    }
+
+                    Text {
+                        text: Recordings.entries.length + (Recordings.entries.length === 1 ? " recording" : " recordings")
+                        color: Colors.textMuted
+                        font.pixelSize: 11
+                    }
+
+                    MaterialIcon {
+                        text: "expand_more"
+                        color: Colors.textMuted
+                        font.pixelSize: 16
+                        rotation: recordingsSection.expanded ? 180 : 0
+
+                        Behavior on rotation { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                    }
                 }
 
-                Text {
-                    Layout.fillWidth: true
-                    text: "Recordings"
-                    color: Colors.text
-                    font.pixelSize: 13
-                }
-
-                MaterialIcon {
-                    text: "expand_more"
-                    color: Colors.textMuted
-                    font.pixelSize: 16
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: recordingsSection.expanded = !recordingsSection.expanded
                 }
             }
 
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                Layout.topMargin: 4
-                text: "No recordings found"
-                color: Colors.textMuted
-                font.pixelSize: 12
+            ColumnLayout {
+                Layout.fillWidth: true
+                visible: recordingsSection.expanded
+                spacing: 6
+
+                Text {
+                    Layout.alignment: Qt.AlignHCenter
+                    Layout.topMargin: 4
+                    visible: Recordings.entries.length === 0
+                    text: "No recordings found"
+                    color: Colors.textMuted
+                    font.pixelSize: 12
+                }
+
+                ListView {
+                    id: recordingsList
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: Math.min(contentHeight, 180)
+                    visible: Recordings.entries.length > 0
+                    interactive: contentHeight > height
+                    clip: true
+                    spacing: 6
+
+                    model: ScriptModel {
+                        values: Recordings.entries
+                    }
+
+                    delegate: RecordingRow {
+                        width: recordingsList.width
+                    }
+                }
             }
         }
     }
