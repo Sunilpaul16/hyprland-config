@@ -12,8 +12,10 @@ Singleton {
     property real anchorY: 0
 
     function showAt(x: real, y: real): void {
-        root.anchorX = x;
-        root.anchorY = y;
+        if (!isNaN(x))
+            root.anchorX = x;
+        if (!isNaN(y))
+            root.anchorY = y;
         root.open = true;
     }
 
