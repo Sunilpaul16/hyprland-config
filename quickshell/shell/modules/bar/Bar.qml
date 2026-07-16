@@ -62,10 +62,12 @@ PanelWindow {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 8
 
+            // Recording indicator
             RecordingIndicator {
                 Layout.alignment: Qt.AlignVCenter
             }
 
+            // Media button
             SectionPill {
                 Layout.alignment: Qt.AlignVCenter
                 visible: Media.hasPlayer
@@ -73,6 +75,7 @@ PanelWindow {
                 MediaButton {}
             }
 
+            // Tray
             SectionPill {
                 Layout.alignment: Qt.AlignVCenter
                 visible: tray.hasItems
@@ -82,12 +85,14 @@ PanelWindow {
                 }
             }
 
+            // Clock
             SectionPill {
                 Layout.alignment: Qt.AlignVCenter
 
                 Clock {}
             }
 
+            // Notification button
             SectionPill {
                 Layout.alignment: Qt.AlignVCenter
                 horizontalPadding: 8
@@ -95,6 +100,7 @@ PanelWindow {
                 NotifButton {}
             }
 
+            // Sidebar toggle button
             SectionPill {
                 Layout.alignment: Qt.AlignVCenter
                 horizontalPadding: 8
@@ -102,6 +108,7 @@ PanelWindow {
                 SidebarRightButton {}
             }
 
+            // Session/power button
             SectionPill {
                 Layout.alignment: Qt.AlignVCenter
                 horizontalPadding: 8

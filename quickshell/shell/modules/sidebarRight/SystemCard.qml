@@ -5,10 +5,11 @@ import "../../services"
 
 // Merged Keep Awake + Screen Recorder + Recordings — one shared card
 // background with dividers between sections (matches caelestia's grouping,
-// was three separate cards before). Keep Awake / Screen Recorder are still
-// static placeholders — no real idle-inhibit or live recording-status
-// wiring yet. Recordings is live: lists scripts/record's ~/Videos output
-// via the Recordings singleton, with play/reveal/delete per row.
+// was three separate cards before). Keep Awake is live, wired to
+// IdleInhibitState (Wayland idle-inhibit protocol). Screen Recorder is
+// still a static placeholder — no live recording-status wiring yet.
+// Recordings is live: lists scripts/record's ~/Videos output via the
+// Recordings singleton, with play/reveal/delete per row.
 Rectangle {
     id: root
 
@@ -59,20 +60,24 @@ Rectangle {
                     Text {
                         id: activeSinceText
                         anchors.centerIn: parent
-                        text: "Active since —"
+                        text: IdleInhibitState.enabled
+                            ? "Active since " + Qt.formatDateTime(new Date(IdleInhibitState.activeSince), "hh:mm")
+                            : "Active since —"
                         color: Colors.textMuted
                         font.pixelSize: 10
                     }
                 }
             }
 
-            // Inert toggle switch (visual only — always shown "on")
+            // Keep Awake toggle switch
             Rectangle {
                 Layout.alignment: Qt.AlignVCenter
                 width: 40
                 height: 22
                 radius: height / 2
-                color: Colors.primary
+                color: IdleInhibitState.enabled ? Colors.primary : Colors.outline
+
+                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
                 Rectangle {
                     width: 18
@@ -80,7 +85,15 @@ Rectangle {
                     radius: width / 2
                     color: Colors.background
                     anchors.verticalCenter: parent.verticalCenter
-                    x: parent.width - width - 2
+                    x: IdleInhibitState.enabled ? parent.width - width - 2 : 2
+
+                    Behavior on x { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: IdleInhibitState.toggle()
                 }
             }
         }
