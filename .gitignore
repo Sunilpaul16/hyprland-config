@@ -50,3 +50,8 @@ gtk-3.0/gtk.css
 gtk-4.0/gtk.css
 quickshell/shell/services/Colors.qml
 kitty/theme.conf
+
+# live-written runtime user preferences (services/Config.qml) — a JSON-
+# backed FileView adapter the shell itself reads/writes on every setting
+# change, not something to hand-edit as repo source or track history of.
+quickshell/config.json

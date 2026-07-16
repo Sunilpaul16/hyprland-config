@@ -36,7 +36,7 @@ QtObject {
     // itself stays in Notifs.list (history) until explicitly cleared
     readonly property Timer timer: Timer {
         running: notif.popup && !notif.closed && !notif.critical && !notif.hovered
-        interval: notif.expireTimeout > 0 ? notif.expireTimeout : 5000
+        interval: notif.expireTimeout > 0 ? notif.expireTimeout : Config.toastDismissDuration
         onTriggered: notif.popup = false
     }
 

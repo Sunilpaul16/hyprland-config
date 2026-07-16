@@ -10,7 +10,7 @@ PanelWindow {
     id: bar
 
     // Dimensions
-    readonly property int barContentHeight: 40
+    readonly property int barContentHeight: Config.barHeight
     readonly property int cornerSize: 14
 
     // Positioning
