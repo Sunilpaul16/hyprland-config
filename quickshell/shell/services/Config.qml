@@ -3,16 +3,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// JSON-backed runtime config. Mirrors end-4/dots-hyprland's Config.qml
-// pattern: FileView + JsonAdapter, a debounced write on adapterUpdated (any
-// property change anywhere in the adapter), a debounced reload when the
-// file changes externally (watchChanges), and a FileNotFound-only
-// load-failure fallback that writes the in-memory defaults to create the
-// file on first run. File lives at ~/.config/quickshell/config.json --
-// deliberately NOT under quickshell/shell/, which is the directory this
-// shell hot-reloads on any change (see switchwall's --preview comment);
-// writing a live-edited JSON file in there would reset the whole shell on
-// every single setting change.
+
+// Runtime config singleton (JSON-backed)
 Singleton {
     id: root
 
@@ -20,6 +12,7 @@ Singleton {
     property alias barHeight: adapter.barHeight
     property alias toastDismissDuration: adapter.toastDismissDuration
 
+    // Config file
     FileView {
         id: configFile
         path: Quickshell.env("HOME") + "/.config/quickshell/config.json"
@@ -32,6 +25,7 @@ Singleton {
                 writeAdapter();
         }
 
+        // Persisted values
         JsonAdapter {
             id: adapter
             property bool use12Hour: false
@@ -40,9 +34,7 @@ Singleton {
         }
     }
 
-    // Debounce writes: adapterUpdated fires on every nested property
-    // change, so batch bursts (e.g. several settings flipped at once) into
-    // one disk write instead of one per property.
+    // Debounced write
     Timer {
         id: writeTimer
         interval: 50
@@ -50,9 +42,7 @@ Singleton {
         onTriggered: configFile.writeAdapter()
     }
 
-    // Debounce reloads: watchChanges only emits fileChanged(), it doesn't
-    // reload automatically -- this is what makes an external hand-edit to
-    // the JSON file actually take effect live.
+    // Debounced reload
     Timer {
         id: reloadTimer
         interval: 50

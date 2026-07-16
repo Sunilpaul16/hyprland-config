@@ -3,9 +3,7 @@ import Quickshell
 import Quickshell.Hyprland
 import "../../services"
 
-// Single workspace card: background sized to its monitor's aspect ratio
-// (accounting for rotated outputs -- this repo's DP-2 runs transform=3),
-// workspace number, active-workspace highlight, and live window thumbnails.
+// Single workspace card (real or placeholder)
 Item {
     id: root
 
@@ -27,6 +25,7 @@ Item {
 
     width: height * (monLogicalWidth / monLogicalHeight)
 
+    // Card background
     Rectangle {
         id: bg
         anchors.fill: parent
@@ -36,9 +35,7 @@ Item {
         border.color: root.isActive ? Colors.primary : Colors.outline
         clip: true
 
-        // Click empty card area to jump to that workspace. Declared before
-        // the thumbnail Repeater so thumbnails stack on top and get first
-        // claim on clicks -- this only sees clicks that miss every thumbnail.
+        // Click to switch workspace
         MouseArea {
             anchors.fill: parent
             cursorShape: Qt.PointingHandCursor

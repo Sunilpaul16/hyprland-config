@@ -11,6 +11,7 @@ import "modules/sidebarRight"
 import "modules/trayMenu"
 import "modules/volumeOsd"
 
+// Shell entrypoint
 ShellRoot {
     // For each monitor: bar
     Variants {

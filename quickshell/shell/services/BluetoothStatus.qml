@@ -3,8 +3,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Bluetooth
 
-// Bluetooth state singleton. Named `BluetoothStatus`, not `Bluetooth` — that
-// name is already taken by the Quickshell.Bluetooth singleton this wraps.
+
+// Bluetooth state singleton
 Singleton {
     id: root
 

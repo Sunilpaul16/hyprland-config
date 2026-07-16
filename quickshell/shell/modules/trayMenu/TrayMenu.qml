@@ -4,8 +4,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../../services"
 
-// Custom-rendered tray context-menu overlay (QsMenuOpener-driven, plain
-// QML — not a native platform menu, see TrayMenuState.qml for why)
+// Tray context menu overlay window
 PanelWindow {
     id: root
 
@@ -54,7 +53,7 @@ PanelWindow {
             onClicked: {}
         }
 
-        // Panel, anchored near the click point (clamped to stay onscreen)
+        // Panel
         Rectangle {
             id: panel
 

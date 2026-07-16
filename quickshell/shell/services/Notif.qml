@@ -9,6 +9,7 @@ QtObject {
     id: notif
 
 
+    // UI state
     property bool popup
     property bool closed
     property bool expanded
@@ -19,6 +20,7 @@ QtObject {
 
     property date time: new Date()
 
+    // Notification content (synced from Notification)
     property Notification notification
     property string notificationId
     property string summary
@@ -32,8 +34,7 @@ QtObject {
 
     readonly property bool critical: urgency === NotificationUrgency.Critical
 
-    // Auto-dismiss timer — only hides the toast popup; the notification
-    // itself stays in Notifs.list (history) until explicitly cleared
+    // Auto-dismiss timer
     readonly property Timer timer: Timer {
         running: notif.popup && !notif.closed && !notif.critical && !notif.hovered
         interval: notif.expireTimeout > 0 ? notif.expireTimeout : Config.toastDismissDuration

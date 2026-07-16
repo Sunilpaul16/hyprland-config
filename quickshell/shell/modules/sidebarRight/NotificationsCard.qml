@@ -4,9 +4,7 @@ import Quickshell
 import "../../services"
 import "../notifications"
 
-// Live notification history — same Notifs singleton and NotifCard delegate
-// modules/notifications/NotifPanel.qml (bell icon in the bar) uses, so both
-// surfaces share one data source and one per-item look instead of drifting.
+// Notifications card (sidebar)
 Rectangle {
     id: root
 

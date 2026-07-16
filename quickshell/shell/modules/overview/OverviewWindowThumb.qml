@@ -4,10 +4,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../../services"
 
-// One window's live thumbnail within a WorkspaceCard. Position/size come
-// from the window's absolute Hyprland layout coordinates (`at`/`size`)
-// scaled into the card by the workspace's monitor dimensions -- the same
-// math end-4's overview uses, see references/end4-reference.md.
+// Live window thumbnail (positioned + sized from Hyprland IPC geometry)
 Item {
     id: root
 
@@ -67,6 +64,7 @@ Item {
         }
     }
 
+    // Click to focus window
     MouseArea {
         id: hoverArea
         anchors.fill: parent

@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
-# Screen recording via wf-recorder. No state file/singleton -- the running
-# wf-recorder process itself is the state (same model end-4's record.sh uses):
-# `record region`/`record full` starts a recording if none is running, or
-# stops whatever is running if one already is. `record stop` is an explicit,
-# unconditional stop (used by the bar indicator's click handler, which has no
-# reason to pass an arbitrary start-mode just to mean "stop").
+
 set -euo pipefail
 
 usage() {
@@ -12,6 +7,7 @@ usage() {
     exit 1
 }
 
+# Parse args
 MODE="${1:-}"
 SOUND=false
 [[ "${2:-}" == "--sound" ]] && SOUND=true
@@ -21,6 +17,7 @@ case "$MODE" in
     *) usage ;;
 esac
 
+# Dependency preflight
 for bin in wf-recorder pactl notify-send; do
     command -v "$bin" >/dev/null || { echo "record: missing required binary: $bin" >&2; exit 1; }
 done
@@ -36,6 +33,7 @@ stop_recording() {
     notify-send -a record "Recording stopped" || true
 }
 
+# Stop mode / toggle-off
 if [[ "$MODE" == stop ]]; then
     is_recording && stop_recording
     exit 0
@@ -46,6 +44,7 @@ if is_recording; then
     exit 0
 fi
 
+# Build wf-recorder args
 SAVE_DIR="$HOME/Videos"
 mkdir -p "$SAVE_DIR"
 OUTFILE="$SAVE_DIR/Recording_$(date +%Y-%m-%d_%H.%M.%S).mp4"
@@ -66,6 +65,7 @@ if $SOUND; then
     args+=(-a "${sink}.monitor")
 fi
 
+# Launch
 wf-recorder "${args[@]}" >"$SAVE_DIR/.wf-recorder.log" 2>&1 &
 disown
 notify-send -a record "Recording started" "$OUTFILE" || true

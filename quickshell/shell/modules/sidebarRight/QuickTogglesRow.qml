@@ -2,10 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../../services"
 
-// Wifi/bluetooth/mic pills wired to real state (Wifi/BluetoothStatus/Audio
-// singletons). Settings + overflow stay inert placeholders — no
-// control-center surface built for them yet. No card background (matches
-// caelestia reference) — sits directly on the panel's own backdrop.
+// Quick toggles row
 ColumnLayout {
     id: root
 
@@ -23,6 +20,7 @@ ColumnLayout {
         Layout.fillWidth: true
         spacing: 8
 
+        // Wifi
         TogglePill {
             Layout.preferredWidth: 40
             Layout.preferredHeight: 40
@@ -32,6 +30,7 @@ ColumnLayout {
             onClicked: Wifi.toggle()
         }
 
+        // Bluetooth
         TogglePill {
             Layout.preferredWidth: 40
             Layout.preferredHeight: 40
@@ -41,6 +40,7 @@ ColumnLayout {
             onClicked: BluetoothStatus.toggle()
         }
 
+        // Mic
         TogglePill {
             Layout.preferredWidth: 40
             Layout.preferredHeight: 40
@@ -49,6 +49,7 @@ ColumnLayout {
             onClicked: Audio.toggleMicMute()
         }
 
+        // Settings (placeholder)
         Rectangle {
             Layout.preferredWidth: 40
             Layout.preferredHeight: 40
@@ -63,6 +64,7 @@ ColumnLayout {
             }
         }
 
+        // Overflow (placeholder)
         Rectangle {
             Layout.preferredWidth: 40
             Layout.preferredHeight: 40

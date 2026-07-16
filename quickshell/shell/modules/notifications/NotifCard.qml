@@ -126,6 +126,7 @@ Rectangle {
             elide: Text.ElideRight
         }
 
+        // Header column (summary, body, actions)
         Column {
             id: headerCol
             anchors.left: iconSlot.right

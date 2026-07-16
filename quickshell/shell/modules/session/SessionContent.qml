@@ -12,8 +12,6 @@ Item {
     // Reset any in-progress confirm when the overlay closes
     onActiveOverlayChanged: if (!activeOverlay) root.confirmingId = ""
 
-    // Lock = existing hyprlock keybind command (hypr/keybinds.lua SUPER+L).
-    // Logout = existing exit dispatcher (hypr/keybinds.lua SUPER+M).
     readonly property var actions: [
         { id: "lock", label: "Lock", icon: "\u{1F512}", confirm: false, command: ["hyprlock"] },
         { id: "logout", label: "Logout", icon: "\u{1F6AA}", confirm: true, command: ["bash", "-c", "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"] },

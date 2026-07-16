@@ -1,33 +1,9 @@
 #!/usr/bin/env bash
-# switchwall — set a wallpaper (image or video) and regenerate the matugen +
-# materialyoucolor theming pipeline: hyprlock/hyprland/GTK3+4 colors via
-# matugen, kitty's terminal palette via materialyoucolor, then reload.
-# Fuzzel is NOT themed here — see fuzzel/fuzzel_theme.ini, frozen by design.
-#
-# Usage: switchwall <path-to-image-or-video>
-#
-# Standalone precursor to end-4/dots-hyprland's switchwall.sh: no
-# ~/.config/illogical-impulse/config.json, and monitor names are parsed out
-# of ~/.config/hypr/general.lua's hl.monitor({...}) calls (single source of
-# truth) rather than looped from `hyprctl monitors`. Revisit if monitors
-# ever need to be hotplug-agnostic.
-#
-# Idempotent: safe to re-run with the same or a different wallpaper — always
-# kills any previous mpvpaper before relaunching, and every generated file is
-# fully overwritten (not appended to) on each run.
-#
-# --preview: only swap the displayed wallpaper (mpvpaper), skip matugen/
-# kitty/gtk/hyprctl-reload entirely. Needed because the full pipeline
-# regenerates ~/.config/quickshell/shell/services/Colors.qml, which lives inside the
-# directory Quickshell hot-reloads on any change — running the full pipeline
-# on every hover/arrow-key tick while browsing the wallpaper picker would
-# reset the whole quickshell config (closing the picker) after the very
-# first preview. --preview is for that live-browsing case; a plain
-# (non---preview) call still does the full theming pipeline, used once the
-# user actually confirms a choice.
+
 
 set -euo pipefail
 
+# Paths and constants
 HYPR_GENERAL="$HOME/.config/hypr/general.lua"
 mapfile -t MONITORS < <(grep -oP 'hl\.monitor\(\{\s*output\s*=\s*"\K[^"]+' "$HYPR_GENERAL")
 [[ ${#MONITORS[@]} -gt 0 ]] || { echo "switchwall: no monitors found in $HYPR_GENERAL" >&2; exit 1; }
@@ -35,12 +11,9 @@ VENV_PYTHON="$HOME/.local/state/quickshell/.venv/bin/python3"
 COLORGEN_DIR="$HOME/.config/matugen/colorgen"
 CACHE_DIR="$HOME/.cache/matugen"
 KITTY_THEME_OUT="$HOME/.config/kitty/theme.conf"
-# Last-confirmed wallpaper path, replayed by hypr/execs.lua on login via
-# `switchwall --preview` (mpvpaper only) since mpvpaper doesn't survive a
-# session restart but the matugen-generated theme files already do.
+
 STATE_FILE="$HOME/.local/state/quickshell/current_wallpaper"
-# Same mpv options end-4's switchwall.sh uses for video wallpapers; reused
-# as-is for static images too (mpv holds a single looped frame fine).
+
 MPV_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 video-align-x=0.5 video-align-y=0.5 load-scripts=no"
 
 usage() {
@@ -48,6 +21,7 @@ usage() {
     exit 1
 }
 
+# Parse args
 PREVIEW=false
 if [[ "${1:-}" == "--preview" ]]; then
     PREVIEW=true
@@ -58,6 +32,7 @@ fi
 wallpaper="$1"
 [[ -f "$wallpaper" ]] || { echo "switchwall: no such file: $wallpaper" >&2; exit 1; }
 
+# Dependency preflight
 command -v mpvpaper >/dev/null || { echo "switchwall: missing required binary: mpvpaper" >&2; exit 1; }
 if ! $PREVIEW; then
     for bin in matugen ffmpeg gsettings; do
@@ -100,19 +75,14 @@ if is_video "$wallpaper"; then
 fi
 
 # --- 3. matugen: hyprlock / hyprland colors.lua / GTK3+4 css ----------------
-# --source-color-index 0 picks the most dominant color deterministically
-# (matugen prompts interactively otherwise when several candidates are close).
+
+
 matugen image "$colorsource" --source-color-index 0 --mode dark
 
-# GTK4 apps render gtk.css's light @media block over the dark colors matugen
-# just generated unless the desktop is actually in dark mode -- set it here
-# instead of relying on it having been set manually once (dconf persists it
-# across reboots, so this only needs to run once in practice, but re-running
-# it is harmless).
+
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
-# Quit Nautilus so it picks up the regenerated gtk-3.0/gtk-4.0 css on next
-# open (GTK doesn't hot-reload custom css into already-running instances).
+
 nautilus -q || true
 
 # --- 4. materialyoucolor: kitty's 16-color terminal palette -----------------
@@ -134,10 +104,6 @@ while IFS=: read -r name value; do
 done < "$scss"
 
 # --- 5. Reload ---------------------------------------------------------------
-# (end-4's applycolor.sh also blasts OSC escape sequences into every
-#  /dev/pts/* device for non-kitty terminal support; skipped here --
-#  kitty-only repo, and that approach writes blind into ttys with no
-#  guarantee a terminal's even attached, e.g. SSH sessions/tmux panes.)
 hyprctl reload >/dev/null
 pkill -SIGUSR1 -x kitty >/dev/null 2>&1 || true
 

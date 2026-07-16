@@ -1,8 +1,7 @@
 import QtQuick
 import "../../services"
 
-// Small capability-gated media control glyph button (dimmed, not hidden,
-// when the active player doesn't support the action)
+// Transport control icon button
 Item {
     id: root
 

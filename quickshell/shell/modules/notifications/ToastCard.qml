@@ -4,12 +4,7 @@ import Quickshell.Widgets
 import Quickshell.Services.Notifications
 import "../../services"
 
-// Simple auto-popup toast — app icon, app name/summary, one-line truncated
-// body. No expand, no actions; clicking anywhere dismisses immediately.
-// Deliberately separate from NotifCard.qml (the full history/history-popup
-// card) — toasts are meant to be glanceable, not interactive. Reuses
-// modelData's existing timer/hovered/critical behavior from Notif.qml
-// unchanged (flat timeout, pause on hover, critical never auto-dismisses).
+// Notification toast card
 Rectangle {
     id: card
 
@@ -99,6 +94,7 @@ Rectangle {
             }
         }
 
+        // Summary + app name + body column
         Column {
             id: textCol
             anchors.left: iconSlot.right

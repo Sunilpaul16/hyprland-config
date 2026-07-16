@@ -4,8 +4,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../../services"
 
-// Workspace overview overlay window (mirrors modules/cheatsheet/Cheatsheet.qml's
-// show/hide + click-outside/Escape-to-close structure).
+// Workspace overview overlay window
 PanelWindow {
     id: root
 

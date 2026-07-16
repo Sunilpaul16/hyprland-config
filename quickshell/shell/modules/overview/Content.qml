@@ -4,12 +4,7 @@ import Quickshell
 import Quickshell.Hyprland
 import "../../services"
 
-// Workspace overview content: one card per workspace, horizontally
-// scrollable. Slot computation (real workspaces + placeholders up to
-// max(minSlots, highest used id)) mirrors modules/bar/Workspaces.qml's
-// displaySlots, with an upper clamp -- Hyprland briefly surfaces a huge
-// sentinel workspace id while hyprlock is transitioning, and an unclamped
-// loop there would try to build that many cards.
+// Workspace overview content (horizontal card row)
 Item {
     id: root
 
@@ -20,6 +15,7 @@ Item {
     readonly property int minSlots: 4
     readonly property int maxSlots: 20
 
+    // Build display slots (real + placeholder, clamped to maxSlots)
     readonly property var displaySlots: {
         const usedIds = root.allWorkspaces.map(ws => ws.id).filter(id => id > 0 && id <= root.maxSlots);
         const maxId = Math.max(root.minSlots, ...usedIds, 0);
@@ -29,16 +25,10 @@ Item {
         return slots;
     }
 
+    // Card sizing
     readonly property int cardHeight: 200
     readonly property int cardSpacing: 16
 
-    // Estimated from a 16:9 assumption, not list.contentWidth -- a
-    // ListView only instantiates delegates within its own viewport, so
-    // sizing this container from the ListView's (post-layout) content
-    // width creates a real 0-width/no-delegates/0-contentWidth deadlock.
-    // Actual per-card width (which does account for rotated monitors) is
-    // still computed in WorkspaceCard; this is only for the container's
-    // overall/scrollable width and centering.
     readonly property real estimatedCardWidth: cardHeight * 16 / 9
     readonly property real naturalWidth: displaySlots.length * estimatedCardWidth + Math.max(0, displaySlots.length - 1) * cardSpacing
 
@@ -57,6 +47,7 @@ Item {
         font.bold: true
     }
 
+    // Workspace card row
     ListView {
         id: list
         anchors.top: parent.top

@@ -3,13 +3,8 @@ import QtQuick.Layouts
 import Quickshell
 import "../../services"
 
-// Merged Keep Awake + Screen Recorder + Recordings — one shared card
-// background with dividers between sections (matches caelestia's grouping,
-// was three separate cards before). Keep Awake is live, wired to
-// IdleInhibitState (Wayland idle-inhibit protocol). Screen Recorder is
-// still a static placeholder — no live recording-status wiring yet.
-// Recordings is live: lists scripts/record's ~/Videos output via the
-// Recordings singleton, with play/reveal/delete per row.
+
+// System card (Keep Awake / Screen Recorder / Recordings)
 Rectangle {
     id: root
 
@@ -178,6 +173,7 @@ Rectangle {
             property bool expanded: false
             onExpandedChanged: if (expanded) Recordings.refresh()
 
+            // Header (click to expand/collapse)
             Item {
                 Layout.fillWidth: true
                 implicitHeight: headerRow.implicitHeight
@@ -224,6 +220,7 @@ Rectangle {
                 }
             }
 
+            // Expanded list
             ColumnLayout {
                 Layout.fillWidth: true
                 visible: recordingsSection.expanded

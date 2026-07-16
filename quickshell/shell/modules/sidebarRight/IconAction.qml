@@ -1,8 +1,7 @@
 import QtQuick
 import "../../services"
 
-// Small tappable icon button — play/reveal/delete rows in the Recordings
-// list, and their inline confirm/cancel state.
+// Small icon action button
 Rectangle {
     id: root
 

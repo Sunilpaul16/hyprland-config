@@ -2,8 +2,7 @@ import QtQuick
 import Quickshell.Services.SystemTray
 import "../../services"
 
-// One system tray icon: left-click activates, right-click opens its
-// context menu (falls back to secondaryActivate() if it has none)
+// Single tray icon: pixmap, hover highlight, click handling, tooltip
 Item {
     id: root
 

@@ -5,14 +5,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../../services"
 
-// Right sidebar: Notifications / Keep Awake / Screen Recorder / Quick
-// Toggles. Static shell for now — every card inside is a visual placeholder,
-// no live data wiring. Window is fullscreen (all 4 sides anchored) purely so
-// a click-outside-dismiss MouseArea has somewhere to catch clicks — the
-// visible card stack itself is still pinned to a fixed-width right-hand
-// strip via the `backdrop` Rectangle below. Mirrors NotifPanel.qml's
-// click-outside structure exactly (outer catcher -> focus scope -> absorbing
-// MouseArea sized to the visual card -> the card).
+// Right sidebar overlay window
 PanelWindow {
     id: root
 
@@ -62,16 +55,7 @@ PanelWindow {
             onClicked: {}
         }
 
-        // Statically-declared backdrop, NOT loader-created — anchored
-        // straight to this Item (guaranteed full window size), so it never
-        // depends on a dynamically-loaded item correctly picking up the
-        // Loader's size. The first fix put this same Rectangle as the
-        // Loader's sourceComponent root, which still left the fill broken
-        // (verified visually — not just re-read as code), so ownership of
-        // the fill is moved out of the Loader entirely. Now that the window
-        // is fullscreen, this Rectangle is also what pins the visible card
-        // stack to a fixed-width right-hand strip instead of the whole
-        // screen.
+        // Sidebar backdrop (slide-in panel background)
         Rectangle {
             id: backdrop
             anchors { top: parent.top; right: parent.right; bottom: parent.bottom; margins: 8 }
@@ -82,13 +66,8 @@ PanelWindow {
             transform: Translate { x: (1 - root.showProgress) * 24 }
         }
 
-        // Always-present (not Loader-created) — same convention NotifPanel.qml
-        // uses for its own content. A Loader that only activates once the
-        // panel opens was found to break NotifCard's Behavior-driven slide-in
-        // animation (verified: the notification list rendered nothing at all
-        // until this was removed), so the card stack is now part of the
-        // always-alive scene graph just like `backdrop`, with only opacity/
-        // transform toggling on open/close.
+
+        // Scrollable card content
         Flickable {
             anchors.fill: backdrop
             anchors.margins: 12

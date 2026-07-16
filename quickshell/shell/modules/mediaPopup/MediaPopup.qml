@@ -53,8 +53,7 @@ PanelWindow {
             onClicked: {}
         }
 
-        // Panel, centered under MediaButton's actual bar position (clamped
-        // to stay onscreen) — MediaButton sits mid-row, not at a screen edge
+        // Panel
         Rectangle {
             id: panel
 

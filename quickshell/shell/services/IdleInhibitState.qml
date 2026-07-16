@@ -4,11 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 
-// Keep Awake state. Uses Quickshell's native Wayland idle-inhibit protocol
-// (idle-inhibit-unstable-v1, honored directly by Hyprland) rather than
-// spawning a systemd-inhibit subprocess -- the inhibitor is tied to this
-// invisible surface's lifetime, so a qs restart/crash releases it
-// automatically instead of leaving an orphaned lock behind.
+// Idle-inhibit state
 Singleton {
     id: root
 
@@ -20,7 +16,7 @@ Singleton {
         root.activeSince = root.enabled ? Date.now() : 0;
     }
 
-    // IPC handler (matches CheatsheetState/OverviewState convention)
+    // IPC handler
     IpcHandler {
         target: "idleinhibit"
 
@@ -39,6 +35,7 @@ Singleton {
         }
     }
 
+    // Wayland idle-inhibit surface
     IdleInhibitor {
         enabled: root.enabled
         window: PanelWindow {

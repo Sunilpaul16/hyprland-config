@@ -3,9 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Recordings list singleton for scripts/record's output (~/Videos/Recording_*.mp4).
-// Same find+StdioCollector directory-scan pattern Wallpapers.qml uses (no
-// FileSystemModel -- that's caelestia's own C++ plugin, out of scope here).
+// Local recordings list singleton
 Singleton {
     id: root
 
@@ -51,8 +49,7 @@ Singleton {
         }
     }
 
-    // Delete a recording (dynamic-path one-shot process, same pattern as
-    // Wallpapers.qml's thumbGenComponent)
+    // Delete-recording process factory
     Component {
         id: deleteComponent
 

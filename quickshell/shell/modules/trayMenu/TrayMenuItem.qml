@@ -2,9 +2,7 @@ import QtQuick
 import Quickshell
 import "../../services"
 
-// One tray context-menu entry: separator or clickable item (checkbox/
-// radio glyph + icon + text). Submenu entries (hasChildren) are shown
-// with a trailing indicator but aren't deeply expandable this pass.
+// Single tray-menu entry (item or separator)
 Item {
     id: root
 

@@ -8,10 +8,12 @@ import Quickshell.Services.Pipewire
 Singleton {
     id: root
 
+    // Sink (output)
     readonly property PwNode sink: Pipewire.defaultAudioSink
     readonly property bool muted: !!sink?.audio?.muted
     readonly property real volume: sink?.audio?.volume ?? 0
 
+    // Source (mic input)
     readonly property PwNode source: Pipewire.defaultAudioSource
     readonly property bool micMuted: !!source?.audio?.muted
 

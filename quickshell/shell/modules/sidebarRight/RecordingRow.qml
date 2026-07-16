@@ -3,9 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import "../../services"
 
-// Single recording row: date/time label + play/reveal/delete. Delete asks
-// for inline confirmation first (mirrors modules/session/SessionActionButton's
-// Yes/Cancel swap -- this shell has no separate modal-overlay system).
+// Single recording row: name + play/reveal/delete (or delete confirm)
 RowLayout {
     id: root
 
@@ -23,6 +21,7 @@ RowLayout {
         elide: Text.ElideRight
     }
 
+    // Normal actions (play/reveal/delete)
     RowLayout {
         visible: !root.confirmingDelete
         spacing: 0
@@ -44,6 +43,7 @@ RowLayout {
         }
     }
 
+    // Confirm delete
     RowLayout {
         visible: root.confirmingDelete
         spacing: 0

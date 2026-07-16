@@ -3,9 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Right sidebar (Notifications + Keep Awake + Screen Recorder + Quick
-// Toggles) open/close state. Static-shell pass: no per-card data lives here,
-// just the panel's own visibility.
+// Right sidebar open/close state
 Singleton {
     id: root
 

@@ -1,9 +1,7 @@
 import QtQuick
 import "../../services"
 
-// Right sidebar toggle (Notifications/Keep Awake/Screen Recorder/Quick
-// Toggles panel) — separate from NotifButton, which stays wired to the
-// existing notification history panel (NotifPanelState/NotifPanel).
+// Sidebar toggle icon widget, opens right sidebar
 Item {
     id: root
 

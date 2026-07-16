@@ -1,9 +1,8 @@
 import QtQuick
 import "../../services"
 
-// Reusable 40x40 icon pill for Quick Toggles. Filled with Colors.primary
-// when `active`; dimmed (via Item's built-in `enabled`) when the underlying
-// hardware/service isn't available (e.g. wifi on an ethernet-only box).
+
+// Toggle pill button (icon + active state)
 Rectangle {
     id: root
 

@@ -3,9 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Notification history panel open/close state, plus where to anchor it
-// (scene coords of NotifButton's bottom-right corner, captured on open —
-// same technique as TrayMenuState.anchorX/anchorY)
+// Notification panel open/close state
 Singleton {
     id: root
 
@@ -26,6 +24,7 @@ Singleton {
             root.showAt(x, y);
     }
 
+    // IPC handler
     // IPC handler
     IpcHandler {
         target: "notifPanel"
