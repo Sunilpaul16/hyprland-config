@@ -52,6 +52,7 @@ kbWorkspacePrev          = "SUPER + mouse_up"
 kbExit  = "SUPER + M"
 kbLock  = "SUPER + L"
 kbRestartShell = "SUPER + CTRL + R"
+kbReloadHyprland = "SUPER + CTRL + ALT + R"
 
 -- Screenshots / recording
 kbScreenshotFull        = "Print"
