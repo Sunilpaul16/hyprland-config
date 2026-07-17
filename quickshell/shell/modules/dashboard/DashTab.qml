@@ -12,14 +12,11 @@ Item {
 
     GridLayout {
         anchors.fill: parent
-        columns: 5
+        columns: 6
         rowSpacing: 12
         columnSpacing: 12
 
-        // User card (stub — real content once a profile/uptime service exists)
-        StubCard {
-            label: "User"
-
+        UserCard {
             Layout.row: 0
             Layout.column: 0
             Layout.rowSpan: 2
@@ -55,9 +52,16 @@ Item {
             Layout.preferredWidth: 340
         }
 
+        ResourcesCard {
+            Layout.row: 1
+            Layout.column: 4
+            Layout.preferredWidth: 80
+            Layout.fillHeight: true
+        }
+
         MediaCard {
             Layout.row: 0
-            Layout.column: 4
+            Layout.column: 5
             Layout.rowSpan: 2
             Layout.preferredWidth: 210
             Layout.fillHeight: true
