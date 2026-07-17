@@ -183,7 +183,17 @@ PanelWindow {
 
                                 sourceComponent: modelData.component
 
+                                // Gate on the panel actually being shown, not just
+                                // index === currentTab: the default currentTab loader
+                                // would otherwise stay active from window construction
+                                // (on every monitor, dashboard closed or not), keeping
+                                // its cards' services polling 24/7 and defeating the
+                                // ref-counted "only poll while referenced" design.
+                                // `active || visible` loads eagerly on open and retains
+                                // content through the close fade-out.
                                 Component.onCompleted: active = Qt.binding(() => {
+                                    if (!(root.active || root.visible))
+                                        return false;
                                     if (index === root.currentTab)
                                         return true;
                                     const vx = Math.floor(tabView.visibleArea.xPosition * tabView.contentWidth);
