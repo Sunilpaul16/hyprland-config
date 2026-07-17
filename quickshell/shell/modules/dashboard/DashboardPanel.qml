@@ -206,7 +206,7 @@ PanelWindow {
 
     Component {
         id: mediaTabComponent
-        PlaceholderTab { label: "Media tab" }
+        MediaTab {}
     }
 
     Component {

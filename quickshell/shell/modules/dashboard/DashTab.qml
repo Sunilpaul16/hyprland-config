@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import "dash"
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -54,10 +55,7 @@ Item {
             Layout.preferredWidth: 340
         }
 
-        // Media card (stub — real content once Media service exists)
-        StubCard {
-            label: "Media"
-
+        MediaCard {
             Layout.row: 0
             Layout.column: 4
             Layout.rowSpan: 2
