@@ -45,6 +45,9 @@ Rectangle {
     color: Colors.surface
     border.width: 1
     border.color: Colors.outline
+    // Content-driven height so the outer grid can size this card to its
+    // own content instead of stretching it to fill leftover row height
+    implicitHeight: content.implicitHeight + content.anchors.margins * 2
 
     // Distro name — read once, not polled
     FileView {
@@ -74,6 +77,8 @@ Rectangle {
     }
 
     ColumnLayout {
+        id: content
+
         anchors.fill: parent
         anchors.margins: 16
         spacing: 12

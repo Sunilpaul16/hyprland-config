@@ -16,34 +16,39 @@ Item {
         rowSpacing: 12
         columnSpacing: 12
 
-        UserCard {
-            Layout.row: 0
-            Layout.column: 0
-            Layout.rowSpan: 2
-            Layout.preferredWidth: 190
-            Layout.fillHeight: true
-        }
-
+        // Weather spans the DateTime + part of the Calendar column beneath it
         SmallWeatherCard {
             Layout.row: 0
-            Layout.column: 1
-            Layout.columnSpan: 3
+            Layout.column: 0
+            Layout.columnSpan: 2
+            Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
+            Layout.preferredWidth: 220
             Layout.preferredHeight: 120
         }
 
+        // Content-sized, not stretched — narrower than Weather above it
         DateTimeCard {
             Layout.row: 1
-            Layout.column: 1
-            Layout.preferredWidth: 150
-            Layout.fillWidth: true
+            Layout.column: 0
             Layout.fillHeight: true
         }
 
+        // User spans further right than Calendar, but starts further right too
+        UserCard {
+            Layout.row: 0
+            Layout.column: 2
+            Layout.columnSpan: 3
+            Layout.alignment: Qt.AlignTop
+            Layout.fillWidth: true
+            Layout.preferredWidth: 300
+        }
+
+        // Starts one column left of User — reads wider / left-shifted vs. User above it
         CalendarCard {
             Layout.row: 1
-            Layout.column: 2
-            Layout.columnSpan: 2
+            Layout.column: 1
+            Layout.columnSpan: 3
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.preferredWidth: 340
@@ -56,6 +61,7 @@ Item {
             Layout.fillHeight: true
         }
 
+        // Media card spans both rows
         MediaCard {
             Layout.row: 0
             Layout.column: 5
@@ -72,8 +78,13 @@ Item {
         border.width: 1
         border.color: Colors.outline
         clip: true
+        // Content-driven width so this stays narrower than Weather above it
+        // instead of stretching to match the column
+        implicitWidth: clockContent.implicitWidth + 40
 
         ColumnLayout {
+            id: clockContent
+
             anchors.centerIn: parent
             spacing: -6
 
