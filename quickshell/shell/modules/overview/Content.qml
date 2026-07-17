@@ -12,13 +12,15 @@ Item {
     required property bool active
 
     readonly property var allWorkspaces: Hyprland.workspaces.values
-    readonly property int minSlots: 4
     readonly property int maxSlots: 20
 
-    // Build display slots (real + placeholder, clamped to maxSlots)
+    // Build display slots: real workspaces plus exactly one trailing empty
+    // slot (highest-occupied-id + 1), clamped to maxSlots to guard against
+    // the Hyprland sentinel-id spike during hyprlock transitions
     readonly property var displaySlots: {
         const usedIds = root.allWorkspaces.map(ws => ws.id).filter(id => id > 0 && id <= root.maxSlots);
-        const maxId = Math.max(root.minSlots, ...usedIds, 0);
+        const highestOccupied = Math.max(0, ...usedIds);
+        const maxId = Math.min(highestOccupied + 1, root.maxSlots);
         const slots = [];
         for (let id = 1; id <= maxId; id++)
             slots.push(root.allWorkspaces.find(ws => ws.id === id) ?? { id, isPlaceholder: true });
