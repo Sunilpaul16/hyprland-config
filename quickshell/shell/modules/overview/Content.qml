@@ -29,8 +29,19 @@ Item {
     readonly property int cardHeight: 200
     readonly property int cardSpacing: 16
 
-    readonly property real estimatedCardWidth: cardHeight * 16 / 9
-    readonly property real naturalWidth: displaySlots.length * estimatedCardWidth + Math.max(0, displaySlots.length - 1) * cardSpacing
+    // Mirrors WorkspaceCard's own width calc so the row's natural width
+    // matches what actually renders, including rotated monitors' swapped
+    // aspect ratio
+    function slotCardWidth(slot) {
+        const mon = (slot.isPlaceholder ? null : slot.monitor) ?? Hyprland.monitorFor(root.screen);
+        const transform = mon?.lastIpcObject?.transform ?? 0;
+        const rotated = transform % 2 === 1;
+        const logicalWidth = mon ? (rotated ? mon.height : mon.width) : 16;
+        const logicalHeight = mon ? (rotated ? mon.width : mon.height) : 9;
+        return root.cardHeight * (logicalWidth / logicalHeight);
+    }
+
+    readonly property real naturalWidth: displaySlots.reduce((sum, slot) => sum + root.slotCardWidth(slot), 0) + Math.max(0, displaySlots.length - 1) * cardSpacing
 
     implicitWidth: Math.min(naturalWidth, (root.screen?.width ?? 1280) * 0.85)
     implicitHeight: cardHeight + 28
