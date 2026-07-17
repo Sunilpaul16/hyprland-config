@@ -65,25 +65,6 @@ Item {
         }
     }
 
-    // Generic labeled placeholder for cards without real content yet
-    component StubCard: Rectangle {
-        id: stub
-
-        required property string label
-
-        radius: 18
-        color: Colors.surface
-        border.width: 1
-        border.color: Colors.outline
-
-        Text {
-            anchors.centerIn: parent
-            text: stub.label
-            color: Colors.textMuted
-            font.pixelSize: 15
-        }
-    }
-
     // Big stacked HH / MM digital clock
     component DateTimeCard: Rectangle {
         radius: 18
