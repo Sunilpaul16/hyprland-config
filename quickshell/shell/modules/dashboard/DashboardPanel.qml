@@ -211,7 +211,7 @@ PanelWindow {
 
     Component {
         id: performanceTabComponent
-        PlaceholderTab { label: "Performance tab" }
+        PerformanceTab {}
     }
 
     Component {
