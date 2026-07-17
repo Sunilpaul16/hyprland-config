@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import "modules/bar"
+import "modules/dashboard"
 import "modules/launcher"
 import "modules/cheatsheet"
 import "modules/mediaPopup"
@@ -119,6 +120,16 @@ ShellRoot {
         model: Quickshell.screens
 
         Overview {
+            property var modelData
+            screen: modelData
+        }
+    }
+
+    // For each monitor: dashboard overlay (tabbed — Dashboard/Media/Performance/Weather)
+    Variants {
+        model: Quickshell.screens
+
+        DashboardPanel {
             property var modelData
             screen: modelData
         }
