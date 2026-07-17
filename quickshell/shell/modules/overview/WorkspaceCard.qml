@@ -21,7 +21,7 @@ Item {
     readonly property real monLogicalWidth: monitor ? (monRotated ? monitor.height : monitor.width) : 16
     readonly property real monLogicalHeight: monitor ? (monRotated ? monitor.width : monitor.height) : 9
 
-    readonly property bool isActive: !isPlaceholder && slot.active
+    readonly property bool isFocused: !isPlaceholder && slot.focused
 
     width: height * (monLogicalWidth / monLogicalHeight)
 
@@ -31,8 +31,8 @@ Item {
         anchors.fill: parent
         radius: 12
         color: Colors.surface
-        border.width: root.isActive ? 2 : 1
-        border.color: root.isActive ? Colors.primary : Colors.outline
+        border.width: root.isFocused ? 2 : 1
+        border.color: root.isFocused ? Colors.primary : Colors.outline
         clip: true
 
         // Click to switch workspace
@@ -48,9 +48,9 @@ Item {
         Text {
             anchors { top: parent.top; left: parent.left; margins: 8 }
             text: root.slot.id
-            color: root.isActive ? Colors.primary : Colors.textMuted
+            color: root.isFocused ? Colors.primary : Colors.textMuted
             font.pixelSize: 13
-            font.bold: root.isActive
+            font.bold: root.isFocused
             z: 2
         }
 
