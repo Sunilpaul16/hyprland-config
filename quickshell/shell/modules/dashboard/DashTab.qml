@@ -24,10 +24,7 @@ Item {
             Layout.fillHeight: true
         }
 
-        // Weather card (stub — real content once Weather service exists)
-        StubCard {
-            label: "Weather"
-
+        SmallWeatherCard {
             Layout.row: 0
             Layout.column: 1
             Layout.columnSpan: 3
