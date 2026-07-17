@@ -198,10 +198,10 @@ PanelWindow {
         }
     }
 
-    // Placeholder tab pages (real content lands in a later session)
+    // Tab pages
     Component {
         id: dashboardTabComponent
-        PlaceholderTab { label: "Dashboard tab" }
+        DashTab {}
     }
 
     Component {
