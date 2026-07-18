@@ -4,7 +4,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../../services"
 
-// Session/power overlay window
+// Session/power overlay window — right-edge slide-in drawer
 PanelWindow {
     id: root
 
@@ -47,31 +47,38 @@ PanelWindow {
         focus: root.active
         Keys.onEscapePressed: SessionState.open = false
 
-        // Absorb clicks on panel
+        // Absorb clicks on the drawer itself
         MouseArea {
-            anchors.fill: panel
+            anchors.fill: drawer
             onClicked: {}
         }
 
-        // Panel
-        Rectangle {
-            id: panel
-            anchors.centerIn: parent
-            implicitWidth: content.implicitWidth + 56
-            implicitHeight: content.implicitHeight + 40
-            radius: 18
-            color: Colors.background
-            border.width: 1
-            border.color: Colors.outline
+        // Drawer: right-edge slide via animated rightMargin + opacity fade,
+        // resting/closed margins mirror SidebarRightPanel's 8px edge gap
+        Item {
+            id: drawer
 
+            readonly property int restingMargin: 8
+            readonly property int closedMargin: -(drawer.implicitWidth + restingMargin)
+
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: closedMargin + (restingMargin - closedMargin) * root.showProgress
+            // Fallback sizing for the first open frame, before the Loader's
+            // content has laid out (mirrors caelestia Wrapper.qml's own
+            // implicitHeight-fallback comment for the same race)
+            implicitWidth: (loader.item ? loader.item.implicitWidth : 0) || 64
+            implicitHeight: (loader.item ? loader.item.implicitHeight : 0) || 384
             opacity: root.showProgress
-            scale: 0.96 + 0.04 * root.showProgress
-            transformOrigin: Item.Center
 
-            SessionContent {
-                id: content
-                anchors.centerIn: parent
-                activeOverlay: root.active
+            // Content only instantiated while open/animating — avoids the
+            // gif slot (and its loop animation) running while closed
+            Loader {
+                id: loader
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                active: root.active || root.showProgress > 0.001
+                sourceComponent: SessionContent {}
             }
         }
     }

@@ -1,56 +1,52 @@
 import QtQuick
-import Quickshell
 import "../../services"
+import "../sidebarRight"
 
-// Session/power actions row
-Item {
+// Session/power actions column — right-edge drawer content
+Column {
     id: root
 
-    property bool activeOverlay: false
-    property string confirmingId: ""
+    spacing: 16
 
-    // Reset any in-progress confirm when the overlay closes
-    onActiveOverlayChanged: if (!activeOverlay) root.confirmingId = ""
-
-    readonly property var actions: [
-        { id: "lock", label: "Lock", icon: "\u{1F512}", confirm: false, command: ["hyprlock"] },
-        { id: "logout", label: "Logout", icon: "\u{1F6AA}", confirm: true, command: ["bash", "-c", "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"] },
-        { id: "reboot", label: "Reboot", icon: "\u{1F501}", confirm: true, command: ["systemctl", "reboot"] },
-        { id: "shutdown", label: "Shutdown", icon: "\u{23FB}", confirm: true, command: ["systemctl", "poweroff"] }
-    ]
-
-    implicitWidth: row.implicitWidth
-    implicitHeight: row.implicitHeight
-
-    // Execute / confirm-gate actions
-    function runAction(action): void {
-        Quickshell.execDetached(action.command);
-        SessionState.open = false;
+    SessionActionButton {
+        icon: "logout"
+        command: ["bash", "-c", "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"]
     }
 
-    function activate(action): void {
-        if (action.confirm)
-            root.confirmingId = action.id;
-        else
-            root.runAction(action);
+    SessionActionButton {
+        icon: "power_settings_new"
+        command: ["systemctl", "poweroff"]
     }
 
-    Row {
-        id: row
-        spacing: 16
+    // Decorative slot — placeholder for caelestia's kurukuru.gif; no
+    // equivalent asset in this repo yet, spins a Material icon in its place
+    Item {
+        implicitWidth: 64
+        implicitHeight: 64
 
-        Repeater {
-            model: root.actions
+        MaterialIcon {
+            anchors.centerIn: parent
+            text: "sync"
+            color: Colors.textMuted
+            font.pixelSize: 28
 
-            SessionActionButton {
-                required property var modelData
-
-                action: modelData
-                confirming: root.confirmingId === modelData.id
-                onActivate: root.activate(modelData)
-                onConfirm: root.runAction(modelData)
-                onCancel: root.confirmingId = ""
+            RotationAnimation on rotation {
+                running: parent.visible
+                from: 0
+                to: 360
+                duration: 1400
+                loops: Animation.Infinite
             }
         }
+    }
+
+    SessionActionButton {
+        icon: "lock"
+        command: ["hyprlock"]
+    }
+
+    SessionActionButton {
+        icon: "cached"
+        command: ["systemctl", "reboot"]
     }
 }
