@@ -19,6 +19,15 @@ PanelWindow {
         NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
     }
 
+    // Right-edge stack registration — innermost panel, always flush to
+    // the edge itself, but other panels need to know its open+width to
+    // offset past it
+    readonly property int edgeMargin: 8
+    readonly property real registeredWidth: backdrop.width + edgeMargin
+
+    onActiveChanged: RightEdgeStack.register(root.screen, "sidebar", root.active, registeredWidth)
+    Component.onCompleted: RightEdgeStack.register(root.screen, "sidebar", root.active, registeredWidth)
+
     // Positioning
     anchors {
         top: true
@@ -58,7 +67,7 @@ PanelWindow {
         // Sidebar backdrop (slide-in panel background)
         Rectangle {
             id: backdrop
-            anchors { top: parent.top; right: parent.right; bottom: parent.bottom; margins: 8 }
+            anchors { top: parent.top; right: parent.right; bottom: parent.bottom; margins: root.edgeMargin }
             width: 360
             radius: 20
             color: Colors.background

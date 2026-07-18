@@ -18,6 +18,9 @@ PanelWindow {
         NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
     }
 
+    // Right-edge stack registration
+    onActiveChanged: RightEdgeStack.register(root.screen, "session", root.active, drawer.registeredWidth)
+
     // Positioning
     anchors {
         top: true
@@ -61,9 +64,22 @@ PanelWindow {
             readonly property int restingMargin: 8
             readonly property int closedMargin: -(drawer.implicitWidth + restingMargin)
 
+            // Pushed left by whichever right-edge panels are stacked
+            // outside Session (currently just Sidebar, if open)
+            property real stackOffset: RightEdgeStack.offsetFor(root.screen, "session")
+            Behavior on stackOffset {
+                NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
+            }
+
+            // Total footprint (from the true screen edge) a panel further
+            // out needs to clear to avoid overlapping Session
+            property real registeredWidth: implicitWidth + restingMargin
+            onRegisteredWidthChanged: RightEdgeStack.register(root.screen, "session", root.active, registeredWidth)
+            Component.onCompleted: RightEdgeStack.register(root.screen, "session", root.active, registeredWidth)
+
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
-            anchors.rightMargin: closedMargin + (restingMargin - closedMargin) * root.showProgress
+            anchors.rightMargin: closedMargin + (restingMargin - closedMargin) * root.showProgress + stackOffset
             // Fallback sizing for the first open frame, before the Loader's
             // content has laid out (mirrors caelestia Wrapper.qml's own
             // implicitHeight-fallback comment for the same race)
