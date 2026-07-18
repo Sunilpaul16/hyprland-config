@@ -43,8 +43,9 @@ Column {
     // Vertical fill track — click/drag to set an absolute value, scroll to
     // step. Built on QtQuick.Templates' Slider (via QtQuick.Controls, same
     // base caelestia's FilledSlider uses) for real press/move/release
-    // handling, restyled to this file's existing bottom-anchored-fill look
-    // rather than caelestia's own visual treatment.
+    // handling. Proportions/handle-in-track structure match caelestia's
+    // actual FilledSlider (~/shell/components/controls/FilledSlider.qml)
+    // rather than caelestia's exact colors/tokens.
     component VolumeSlider: Item {
         id: slider
 
@@ -56,31 +57,20 @@ Column {
         // move from a downward one, updated every tick during a gesture
         property real lastDragValue: value
 
+        readonly property int trackWidth: 24
+
         signal wheelUp
         signal wheelDown
         signal wantsUnmute
         signal moved(real newValue)
 
-        implicitWidth: 40
+        implicitWidth: trackWidth
         implicitHeight: 140
-
-        MaterialIcon {
-            id: iconText
-            anchors.top: parent.top
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: slider.icon
-            color: Colors.text
-            font.pixelSize: 18
-        }
 
         Slider {
             id: control
 
-            anchors.top: iconText.bottom
-            anchors.topMargin: 8
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: 40
+            anchors.fill: parent
             padding: 0
 
             orientation: Qt.Vertical
@@ -101,10 +91,10 @@ Column {
                     control.value = Qt.binding(() => slider.value);
             }
 
+            // Pill-capped track, full control width — no separate hit-area
+            // padding, matching FilledSlider's background sizing
             background: Rectangle {
-                id: track
-                x: control.leftPadding + control.availableWidth / 2 - width / 2
-                width: 8
+                width: control.availableWidth
                 height: control.availableHeight
                 radius: width / 2
                 color: Colors.surface
@@ -114,9 +104,10 @@ Column {
                 // so it stays correct whether driven by drag, scroll, or
                 // an external change while the panel's open
                 Rectangle {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
                     anchors.bottom: parent.bottom
-                    width: parent.width
-                    radius: width / 2
+                    radius: parent.radius
                     height: parent.height * Math.max(0, Math.min(1, slider.value))
                     color: slider.muted ? Colors.textMuted : Colors.primary
 
@@ -125,13 +116,27 @@ Column {
                 }
             }
 
+            // Circular handle, same diameter as the track, riding at the
+            // current value position — contains the icon, swapping to the
+            // live percentage while pressed (same "moving" concept as
+            // FilledSlider's handle.moving, using our own control.pressed
+            // rather than adding new state tracking for it)
             handle: Rectangle {
                 x: control.leftPadding + control.availableWidth / 2 - width / 2
                 y: (control.availableHeight - height) * (1 - Math.max(0, Math.min(1, slider.value)))
-                width: 14
-                height: 14
-                radius: 7
-                color: control.pressed ? Colors.text : Colors.primary
+                width: slider.trackWidth
+                height: slider.trackWidth
+                radius: width / 2
+                color: control.pressed ? Colors.text : (slider.muted ? Colors.textMuted : Colors.primary)
+
+                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+                MaterialIcon {
+                    anchors.centerIn: parent
+                    text: control.pressed ? String(Math.round(slider.value * 100)) : slider.icon
+                    color: Colors.background
+                    font.pixelSize: control.pressed ? 11 : 14
+                }
             }
         }
 
