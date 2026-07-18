@@ -226,17 +226,6 @@ PanelWindow {
 
     Component {
         id: weatherTabComponent
-        PlaceholderTab { label: "Weather tab" }
-    }
-
-    component PlaceholderTab: Item {
-        required property string label
-
-        Text {
-            anchors.centerIn: parent
-            text: parent.label
-            color: Colors.textMuted
-            font.pixelSize: 18
-        }
+        WeatherTab {}
     }
 }
