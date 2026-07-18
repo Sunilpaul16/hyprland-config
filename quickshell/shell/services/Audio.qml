@@ -41,6 +41,11 @@ Singleton {
         setVolume(volume - 0.05);
     }
 
+    function unmuteVolume(): void {
+        if (sink?.ready && sink?.audio)
+            sink.audio.muted = false;
+    }
+
     // Source (mic) volume — same clamp/step convention as sink, no existing
     // keybind precedent to match for mic level specifically
     function setSourceVolume(newVolume: real): void {
@@ -56,6 +61,11 @@ Singleton {
 
     function decrementSourceVolume(): void {
         setSourceVolume(sourceVolume - 0.05);
+    }
+
+    function unmuteSourceVolume(): void {
+        if (source?.ready && source?.audio)
+            source.audio.muted = false;
     }
 
     // Keep sink/source bound for property updates

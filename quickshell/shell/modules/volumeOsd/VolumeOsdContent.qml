@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import "../../services"
 import "../sidebarRight"
 
@@ -25,6 +26,8 @@ Column {
         muted: Audio.muted
         onWheelUp: Audio.incrementVolume()
         onWheelDown: Audio.decrementVolume()
+        onWantsUnmute: Audio.unmuteVolume()
+        onMoved: newValue => Audio.setVolume(newValue)
     }
 
     VolumeSlider {
@@ -33,9 +36,15 @@ Column {
         muted: Audio.micMuted
         onWheelUp: Audio.incrementSourceVolume()
         onWheelDown: Audio.decrementSourceVolume()
+        onWantsUnmute: Audio.unmuteSourceVolume()
+        onMoved: newValue => Audio.setSourceVolume(newValue)
     }
 
-    // Vertical fill track, scroll to adjust
+    // Vertical fill track — click/drag to set an absolute value, scroll to
+    // step. Built on QtQuick.Templates' Slider (via QtQuick.Controls, same
+    // base caelestia's FilledSlider uses) for real press/move/release
+    // handling, restyled to this file's existing bottom-anchored-fill look
+    // rather than caelestia's own visual treatment.
     component VolumeSlider: Item {
         id: slider
 
@@ -43,8 +52,14 @@ Column {
         required property real value
         required property bool muted
 
+        // Value captured at the start of each drag gesture — lets onMoved
+        // tell a raise from a lower within the same gesture
+        property real dragStartValue: value
+
         signal wheelUp
         signal wheelDown
+        signal wantsUnmute
+        signal moved(real newValue)
 
         implicitWidth: 40
         implicitHeight: 140
@@ -58,33 +73,72 @@ Column {
             font.pixelSize: 18
         }
 
-        // Track
-        Rectangle {
-            id: track
+        Slider {
+            id: control
+
             anchors.top: iconText.bottom
             anchors.topMargin: 8
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
-            width: 8
-            radius: width / 2
-            color: Colors.surface
+            width: 40
+            padding: 0
 
-            // Fill
-            Rectangle {
-                anchors.bottom: parent.bottom
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: parent.width
+            orientation: Qt.Vertical
+            from: 0
+            to: 1
+            value: slider.value
+
+            onMoved: {
+                if (slider.muted && control.value > slider.dragStartValue)
+                    slider.wantsUnmute();
+                slider.moved(control.value);
+            }
+            onPressedChanged: {
+                if (pressed)
+                    slider.dragStartValue = slider.value;
+                else
+                    control.value = Qt.binding(() => slider.value);
+            }
+
+            background: Rectangle {
+                id: track
+                x: control.leftPadding + control.availableWidth / 2 - width / 2
+                width: 8
+                height: control.availableHeight
                 radius: width / 2
-                height: parent.height * Math.max(0, Math.min(1, slider.value))
-                color: slider.muted ? Colors.textMuted : Colors.primary
+                color: Colors.surface
 
-                Behavior on height { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                // Fill — driven straight off slider.value (not
+                // control.visualPosition, though they're equivalent here)
+                // so it stays correct whether driven by drag, scroll, or
+                // an external change while the panel's open
+                Rectangle {
+                    anchors.bottom: parent.bottom
+                    width: parent.width
+                    radius: width / 2
+                    height: parent.height * Math.max(0, Math.min(1, slider.value))
+                    color: slider.muted ? Colors.textMuted : Colors.primary
+
+                    Behavior on height { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                    Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                }
+            }
+
+            handle: Rectangle {
+                x: control.leftPadding + control.availableWidth / 2 - width / 2
+                y: (control.availableHeight - height) * (1 - Math.max(0, Math.min(1, slider.value)))
+                width: 14
+                height: 14
+                radius: 7
+                color: control.pressed ? Colors.text : Colors.primary
             }
         }
 
+        // Wheel-only overlay — acceptedButtons: NoButton lets press/drag
+        // fall through to the Slider beneath undisturbed
         MouseArea {
-            anchors.fill: parent
+            anchors.fill: control
+            acceptedButtons: Qt.NoButton
             onWheel: event => {
                 if (event.angleDelta.y > 0)
                     slider.wheelUp();
