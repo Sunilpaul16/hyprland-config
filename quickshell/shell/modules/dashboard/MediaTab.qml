@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Quickshell.Services.Mpris
 import "../../services"
 
 // Media tab: full-page now-playing — cover art, draggable seek, transport controls
@@ -165,7 +166,14 @@ Item {
 
             RowLayout {
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 28
+                spacing: 20
+
+                ToggleIconButton {
+                    iconName: "shuffle"
+                    active: Media.shuffle
+                    visible: Media.shuffleSupported
+                    onClicked: Media.toggleShuffle()
+                }
 
                 TransportButton {
                     glyph: "\u{23EE}"
@@ -184,6 +192,13 @@ Item {
                     glyph: "\u{23ED}"
                     enabled: Media.canGoNext
                     onClicked: Media.next()
+                }
+
+                ToggleIconButton {
+                    iconName: Media.loopState === MprisLoopState.Track ? "repeat_one" : "repeat"
+                    active: Media.loopState !== MprisLoopState.None
+                    visible: Media.loopSupported
+                    onClicked: Media.cycleLoopState()
                 }
             }
         }
@@ -215,6 +230,41 @@ Item {
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             onClicked: btn.clicked()
+        }
+    }
+
+    // Shuffle/loop toggle — active-fill pill, same treatment as sidebarRight's TogglePill
+    component ToggleIconButton: Rectangle {
+        id: toggleBtn
+
+        required property string iconName
+        property bool active: false
+        signal clicked()
+
+        implicitWidth: icon.implicitWidth + 14
+        implicitHeight: icon.implicitHeight + 14
+        radius: implicitHeight / 2
+        color: toggleBtn.active ? Colors.primary : (area.containsMouse ? Colors.surface : "transparent")
+
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+        Text {
+            id: icon
+            anchors.centerIn: parent
+            text: toggleBtn.iconName
+            font.family: "Material Symbols Rounded"
+            font.pixelSize: 16
+            color: toggleBtn.active ? Colors.background : Colors.textMuted
+
+            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+        }
+
+        MouseArea {
+            id: area
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: toggleBtn.clicked()
         }
     }
 }

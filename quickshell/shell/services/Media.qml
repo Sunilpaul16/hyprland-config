@@ -25,6 +25,13 @@ Singleton {
     readonly property bool canGoPrevious: activePlayer?.canGoPrevious ?? false
     readonly property bool canGoNext: activePlayer?.canGoNext ?? false
 
+    // Shuffle / loop — both may only be written if the player advertises
+    // canControl and its own xSupported flag (MprisPlayer.shuffle/loopState docs)
+    readonly property bool shuffleSupported: (activePlayer?.canControl ?? false) && (activePlayer?.shuffleSupported ?? false)
+    readonly property bool shuffle: activePlayer?.shuffle ?? false
+    readonly property bool loopSupported: (activePlayer?.canControl ?? false) && (activePlayer?.loopSupported ?? false)
+    readonly property int loopState: activePlayer?.loopState ?? MprisLoopState.None
+
     // Transport controls
     function togglePlaying(): void {
         if (root.canTogglePlaying)
@@ -39,6 +46,20 @@ Singleton {
     function next(): void {
         if (root.canGoNext)
             root.activePlayer.next();
+    }
+
+    function toggleShuffle(): void {
+        if (root.shuffleSupported)
+            root.activePlayer.shuffle = !root.activePlayer.shuffle;
+    }
+
+    // None -> Track -> Playlist -> None
+    function cycleLoopState(): void {
+        if (!root.loopSupported)
+            return;
+        const order = [MprisLoopState.None, MprisLoopState.Track, MprisLoopState.Playlist];
+        const next = order[(order.indexOf(root.activePlayer.loopState) + 1) % order.length];
+        root.activePlayer.loopState = next;
     }
 
     // Poke position while playing so bound UI (popup progress bar) ticks
