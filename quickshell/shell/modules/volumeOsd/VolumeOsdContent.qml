@@ -52,9 +52,9 @@ Column {
         required property real value
         required property bool muted
 
-        // Value captured at the start of each drag gesture — lets onMoved
-        // tell a raise from a lower within the same gesture
-        property real dragStartValue: value
+        // Value from the previous drag tick — lets onMoved tell an upward
+        // move from a downward one, updated every tick during a gesture
+        property real lastDragValue: value
 
         signal wheelUp
         signal wheelDown
@@ -89,13 +89,14 @@ Column {
             value: slider.value
 
             onMoved: {
-                if (slider.muted && control.value > slider.dragStartValue)
+                if (slider.muted && control.value > slider.lastDragValue)
                     slider.wantsUnmute();
+                slider.lastDragValue = control.value;
                 slider.moved(control.value);
             }
             onPressedChanged: {
                 if (pressed)
-                    slider.dragStartValue = slider.value;
+                    slider.lastDragValue = slider.value;
                 else
                     control.value = Qt.binding(() => slider.value);
             }
