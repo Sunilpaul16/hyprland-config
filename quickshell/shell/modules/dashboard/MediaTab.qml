@@ -1,3 +1,4 @@
+import "."
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -7,6 +8,8 @@ import "../../services"
 // Media tab: full-page now-playing — cover art, draggable seek, transport controls
 Item {
     id: root
+
+    property bool playerMenuOpen: false
 
     function formatTime(seconds: real): string {
         if (!seconds || seconds < 0 || isNaN(seconds))
@@ -45,30 +48,8 @@ Item {
         spacing: 32
 
         // Cover art
-        Rectangle {
-            Layout.preferredWidth: 260
-            Layout.preferredHeight: 260
-            radius: 20
-            color: Colors.surface
-            clip: true
-
-            Image {
-                anchors.fill: parent
-                visible: Media.artSource.length > 0
-                source: Media.artSource
-                fillMode: Image.PreserveAspectCrop
-                asynchronous: true
-                cache: false
-            }
-
-            // Flat monochrome fallback glyph, not a colorful emoji
-            Text {
-                anchors.centerIn: parent
-                visible: Media.artSource.length === 0
-                text: "\u{266A}"
-                color: Colors.textMuted
-                font.pixelSize: 72
-            }
+        CoverArt {
+            size: 260
         }
 
         // Info + seek + controls
@@ -201,6 +182,168 @@ Item {
                     onClicked: Media.cycleLoopState()
                 }
             }
+        }
+    }
+
+    // Click-outside catcher for the player-menu dropdown
+    MouseArea {
+        anchors.fill: parent
+        visible: root.playerMenuOpen
+        onClicked: root.playerMenuOpen = false
+    }
+
+    // Multi-player selector — only shown with more than one active MPRIS
+    // player; picking one overrides Media's auto-detected active player
+    // (Media.manualPlayer), same override-takes-precedence pattern
+    // caelestia's Players.qml uses
+    Item {
+        id: playerSelector
+
+        visible: Media.hasMultiplePlayers
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.margins: 16
+        implicitWidth: pill.implicitWidth
+        implicitHeight: pill.implicitHeight
+
+        Rectangle {
+            id: pill
+
+            implicitWidth: pillRow.implicitWidth + 20
+            implicitHeight: pillRow.implicitHeight + 12
+            radius: implicitHeight / 2
+            color: root.playerMenuOpen ? Colors.surface : (pillHover.containsMouse ? Colors.surface : "transparent")
+            border.width: 1
+            border.color: Colors.outline
+
+            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+            RowLayout {
+                id: pillRow
+                anchors.centerIn: parent
+                spacing: 6
+
+                Text {
+                    text: Media.hasManualPlayer ? (Media.activePlayer?.identity || Media.activePlayer?.dbusName || "Unknown") : "Auto"
+                    color: Colors.text
+                    font.pixelSize: 12
+                    elide: Text.ElideRight
+                }
+
+                Text {
+                    text: root.playerMenuOpen ? "expand_less" : "expand_more"
+                    font.family: "Material Symbols Rounded"
+                    font.pixelSize: 16
+                    color: Colors.textMuted
+                }
+            }
+
+            MouseArea {
+                id: pillHover
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.playerMenuOpen = !root.playerMenuOpen
+            }
+        }
+
+        // Dropdown list
+        Rectangle {
+            id: dropdown
+
+            visible: root.playerMenuOpen
+            anchors.top: pill.bottom
+            anchors.right: parent.right
+            anchors.topMargin: 6
+            implicitWidth: Math.max(pill.implicitWidth, list.implicitWidth + 12)
+            implicitHeight: list.implicitHeight + 12
+            radius: 12
+            // Surface, not background — this sits on top of the dashboard
+            // panel's own Colors.background, so it needs contrast against it
+            color: Colors.surface
+            border.width: 1
+            border.color: Colors.outline
+
+            Column {
+                id: list
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.margins: 6
+                spacing: 2
+
+                PlayerMenuEntry {
+                    label: "Auto"
+                    selected: !Media.hasManualPlayer
+                    onClicked: {
+                        Media.clearPlayerOverride();
+                        root.playerMenuOpen = false;
+                    }
+                }
+
+                Repeater {
+                    model: Media.players
+
+                    PlayerMenuEntry {
+                        required property var modelData
+
+                        label: modelData.identity || modelData.dbusName || "Unknown"
+                        selected: Media.hasManualPlayer && Media.activePlayer === modelData
+                        onClicked: {
+                            Media.selectPlayer(modelData);
+                            root.playerMenuOpen = false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    component PlayerMenuEntry: Rectangle {
+        id: entry
+
+        required property string label
+        property bool selected: false
+        signal clicked()
+
+        implicitWidth: entryRow.implicitWidth + 20
+        implicitHeight: entryRow.implicitHeight + 10
+        radius: 6
+        color: entryHover.containsMouse ? Colors.surface : "transparent"
+
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+        RowLayout {
+            id: entryRow
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            spacing: 8
+
+            Text {
+                text: entry.selected ? "\u{25CF}" : ""
+                color: Colors.primary
+                font.pixelSize: 9
+                Layout.preferredWidth: 9
+            }
+
+            Text {
+                Layout.fillWidth: true
+                text: entry.label
+                color: Colors.text
+                font.pixelSize: 12
+                elide: Text.ElideRight
+            }
+        }
+
+        MouseArea {
+            id: entryHover
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: entry.clicked()
         }
     }
 

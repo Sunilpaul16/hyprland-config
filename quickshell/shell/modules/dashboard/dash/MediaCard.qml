@@ -1,3 +1,4 @@
+import "../"
 import QtQuick
 import QtQuick.Layouts
 import "../../../services"
@@ -20,31 +21,9 @@ Rectangle {
         spacing: 10
 
         // Cover art
-        Rectangle {
+        CoverArt {
             Layout.alignment: Qt.AlignHCenter
-            Layout.preferredWidth: Math.min(parent.width, 140)
-            Layout.preferredHeight: Layout.preferredWidth
-            radius: 14
-            color: Colors.background
-            clip: true
-
-            Image {
-                anchors.fill: parent
-                visible: Media.artSource.length > 0
-                source: Media.artSource
-                fillMode: Image.PreserveAspectCrop
-                asynchronous: true
-                cache: false
-            }
-
-            // Flat monochrome fallback glyph, not a colorful emoji
-            Text {
-                anchors.centerIn: parent
-                visible: Media.artSource.length === 0
-                text: "\u{266A}"
-                color: Colors.textMuted
-                font.pixelSize: 40
-            }
+            size: Math.min(parent.width, 140)
         }
 
         ColumnLayout {

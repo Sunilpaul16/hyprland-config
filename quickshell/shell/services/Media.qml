@@ -8,9 +8,24 @@ import Quickshell.Services.Mpris
 Singleton {
     id: root
 
-    // Active player selection
+    // Active player selection — a manual pick takes precedence over
+    // auto-following whichever player last started playing, same pattern
+    // caelestia's Players.qml uses (manualActive ?? auto-detected). Guarded
+    // against a stale reference (e.g. the picked player quit) by checking
+    // it's still in the live players list.
     readonly property var players: Mpris.players.values
-    readonly property var activePlayer: players.find(p => p.isPlaying) ?? players[0] ?? null
+    property var manualPlayer: null
+    readonly property bool hasManualPlayer: root.manualPlayer !== null && root.players.includes(root.manualPlayer)
+    readonly property bool hasMultiplePlayers: root.players.length > 1
+    readonly property var activePlayer: root.hasManualPlayer ? root.manualPlayer : (players.find(p => p.isPlaying) ?? players[0] ?? null)
+
+    function selectPlayer(player: var): void {
+        root.manualPlayer = player;
+    }
+
+    function clearPlayerOverride(): void {
+        root.manualPlayer = null;
+    }
 
     // Playback state
     readonly property bool hasPlayer: activePlayer !== null
