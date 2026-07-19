@@ -5,7 +5,17 @@ import Quickshell.Services.SystemTray
 Item {
     id: root
 
-    readonly property bool hasItems: SystemTray.items.values.length > 0
+    // Status applets (network/bluetooth managers) that register a tray icon
+    // even with no user-facing background app running; hide them so the
+    // pill only reflects real apps like Discord or Steam
+    readonly property var hiddenIds: ["nm-applet", "blueman"]
+
+    function isHidden(item: SystemTrayItem): bool {
+        return root.hiddenIds.includes(item.id.toLowerCase());
+    }
+
+    readonly property var visibleItems: SystemTray.items.values.filter(item => !root.isHidden(item))
+    readonly property bool hasItems: root.visibleItems.length > 0
 
     visible: root.hasItems
     implicitWidth: visible ? row.implicitWidth : 0
@@ -17,7 +27,7 @@ Item {
         spacing: 10
 
         Repeater {
-            model: SystemTray.items
+            model: root.visibleItems
 
             TrayItem {
                 required property SystemTrayItem modelData
