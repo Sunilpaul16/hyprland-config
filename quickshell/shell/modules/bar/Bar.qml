@@ -45,13 +45,27 @@ PanelWindow {
             }
         }
 
-        // Workspaces pill
-        SectionPill {
+        // Center widgets
+        RowLayout {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
+            spacing: 8
 
-            Workspaces {
-                screen: bar.screen
+            // Media button
+            SectionPill {
+                Layout.alignment: Qt.AlignVCenter
+                visible: Media.hasPlayer
+
+                MediaButton {}
+            }
+
+            // Workspaces pill
+            SectionPill {
+                Layout.alignment: Qt.AlignVCenter
+
+                Workspaces {
+                    screen: bar.screen
+                }
             }
         }
 
@@ -65,14 +79,6 @@ PanelWindow {
             // Recording indicator
             RecordingIndicator {
                 Layout.alignment: Qt.AlignVCenter
-            }
-
-            // Media button
-            SectionPill {
-                Layout.alignment: Qt.AlignVCenter
-                visible: Media.hasPlayer
-
-                MediaButton {}
             }
 
             // Tray
