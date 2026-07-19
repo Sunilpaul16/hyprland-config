@@ -22,8 +22,8 @@ Rectangle {
             spacing: 12
 
             MaterialIcon {
-                text: "screen_record"
-                color: Colors.text
+                text: Recorder.active ? "stop_circle" : "screen_record"
+                color: Recorder.active ? "#e64553" : Colors.text
                 font.pixelSize: 20
             }
 
@@ -39,34 +39,58 @@ Rectangle {
                 }
 
                 Text {
-                    text: "Recording off"
+                    text: Recorder.active ? "Recording — " + Recorder.elapsedLabel : "Recording off"
                     color: Colors.textMuted
                     font.pixelSize: 12
                 }
+
+                // Capture mode — disabled mid-recording so it can't drift
+                // from what's actually running
+                RowLayout {
+                    Layout.topMargin: 6
+                    spacing: 6
+                    enabled: !Recorder.active
+                    opacity: Recorder.active ? 0.5 : 1
+
+                    ModePill {
+                        label: "Full"
+                        active: Recorder.mode === "full"
+                        onClicked: Recorder.mode = "full"
+                    }
+
+                    ModePill {
+                        label: "Region"
+                        active: Recorder.mode === "region"
+                        onClicked: Recorder.mode = "region"
+                    }
+                }
             }
 
+            // Start/stop toggle (same switch idiom as KeepAwakeCard)
             Rectangle {
-                radius: 8
-                color: Colors.background
-                implicitWidth: fullscreenRow.implicitWidth + 20
-                implicitHeight: fullscreenRow.implicitHeight + 10
+                Layout.alignment: Qt.AlignVCenter
+                width: 40
+                height: 22
+                radius: height / 2
+                color: Recorder.active ? Colors.primary : Colors.outline
 
-                RowLayout {
-                    id: fullscreenRow
-                    anchors.centerIn: parent
-                    spacing: 4
+                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-                    Text {
-                        text: "Fullscreen"
-                        color: Colors.text
-                        font.pixelSize: 11
-                    }
+                Rectangle {
+                    width: 18
+                    height: 18
+                    radius: width / 2
+                    color: Colors.background
+                    anchors.verticalCenter: parent.verticalCenter
+                    x: Recorder.active ? parent.width - width - 2 : 2
 
-                    MaterialIcon {
-                        text: "expand_more"
-                        color: Colors.textMuted
-                        font.pixelSize: 16
-                    }
+                    Behavior on x { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: Recorder.toggle()
                 }
             }
         }
@@ -168,6 +192,36 @@ Rectangle {
                     }
                 }
             }
+        }
+    }
+
+    // Small selectable pill for the capture-mode row
+    component ModePill: Rectangle {
+        id: pill
+
+        required property string label
+        property bool active: false
+        signal clicked
+
+        radius: height / 2
+        color: pill.active ? Colors.primary : Colors.background
+        implicitWidth: pillText.implicitWidth + 16
+        implicitHeight: pillText.implicitHeight + 8
+
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+        Text {
+            id: pillText
+            anchors.centerIn: parent
+            text: pill.label
+            color: pill.active ? Colors.background : Colors.textMuted
+            font.pixelSize: 10
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            cursorShape: Qt.PointingHandCursor
+            onClicked: pill.clicked()
         }
     }
 }

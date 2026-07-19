@@ -1,47 +1,14 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
-import Quickshell.Io
 import "../../services"
 
 // Recording indicator widget
 Item {
     id: root
 
-    property bool recording: false
-    property real recordingStartedAt: 0
-    property int elapsedSeconds: 0
-
-    visible: recording
+    visible: Recorder.active
     implicitWidth: visible ? row.implicitWidth : 0
     implicitHeight: row.implicitHeight
-
-    // Poll + tick
-    Timer {
-        interval: 1000
-        running: true
-        repeat: true
-        onTriggered: {
-            if (!pollProc.running)
-                pollProc.running = true;
-            if (root.recording)
-                root.elapsedSeconds = Math.floor((Date.now() - root.recordingStartedAt) / 1000);
-        }
-    }
-
-    // Poll for wf-recorder
-    Process {
-        id: pollProc
-        command: ["pgrep", "-x", "wf-recorder"]
-        onExited: exitCode => {
-            const nowRecording = exitCode === 0;
-            if (nowRecording && !root.recording)
-                root.recordingStartedAt = Date.now();
-            root.recording = nowRecording;
-            if (!nowRecording)
-                root.elapsedSeconds = 0;
-        }
-    }
 
     // Dot + timer label
     RowLayout {
@@ -59,7 +26,7 @@ Item {
             color: "#e64553"
 
             SequentialAnimation on opacity {
-                running: root.recording
+                running: Recorder.active
                 loops: Animation.Infinite
                 NumberAnimation { from: 1; to: 0.3; duration: 700; easing.type: Easing.InOutQuad }
                 NumberAnimation { from: 0.3; to: 1; duration: 700; easing.type: Easing.InOutQuad }
@@ -68,11 +35,7 @@ Item {
 
         Text {
             Layout.alignment: Qt.AlignVCenter
-            text: {
-                const m = Math.floor(root.elapsedSeconds / 60);
-                const s = root.elapsedSeconds % 60;
-                return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
-            }
+            text: Recorder.elapsedLabel
             color: Colors.text
             font.pixelSize: 12
         }
@@ -82,6 +45,6 @@ Item {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: Quickshell.execDetached([Quickshell.env("HOME") + "/.local/bin/record", "stop"])
+        onClicked: Recorder.stop()
     }
 }
