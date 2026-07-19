@@ -84,16 +84,6 @@ ShellRoot {
         }
     }
 
-    // For each monitor: notification history panel
-    Variants {
-        model: Quickshell.screens
-
-        NotifPanel {
-            property var modelData
-            screen: modelData
-        }
-    }
-
     // For each monitor: tray context-menu popup
     Variants {
         model: Quickshell.screens

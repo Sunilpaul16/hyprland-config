@@ -92,14 +92,6 @@ PanelWindow {
                 Clock {}
             }
 
-            // Notification button
-            SectionPill {
-                Layout.alignment: Qt.AlignVCenter
-                horizontalPadding: 8
-
-                NotifButton {}
-            }
-
             // Sidebar toggle button
             SectionPill {
                 Layout.alignment: Qt.AlignVCenter
