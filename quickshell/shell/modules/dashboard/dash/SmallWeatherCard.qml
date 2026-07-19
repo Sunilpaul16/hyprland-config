@@ -2,10 +2,8 @@ import QtQuick
 import QtQuick.Layouts
 import "../../../services"
 
-// Icon + temp + one-line description, sized to content — the compact
-// dashboard-tab weather summary (see references/caelestia-dashboard-
-// reference.md's "dash/SmallWeather.qml" section). See WeatherTab.qml for
-// the full page (7-day forecast, sunrise/sunset, detail cards).
+// Icon + temp + one-line description — compact weather summary.
+// See WeatherTab.qml for the full page.
 Rectangle {
     id: root
 

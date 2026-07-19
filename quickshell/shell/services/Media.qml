@@ -8,10 +8,8 @@ import Quickshell.Services.Mpris
 Singleton {
     id: root
 
-    // Active player selection — a manual pick takes precedence over
-    // auto-following whichever player last started playing, same pattern
-    // caelestia's Players.qml uses (manualActive ?? auto-detected). Guarded
-    // against a stale reference (e.g. the picked player quit) by checking
+    // Active player selection — a manual pick overrides auto-detection,
+    // guarded against a stale reference (picked player quit) by checking
     // it's still in the live players list.
     readonly property var players: Mpris.players.values
     property var manualPlayer: null

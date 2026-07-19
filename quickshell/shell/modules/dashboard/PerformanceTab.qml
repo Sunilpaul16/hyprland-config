@@ -4,10 +4,8 @@ import QtQuick.Layouts
 import "../../services"
 
 // Performance tab: CPU / Memory / Network / Battery / GPU / Storage cards.
-// Each card is loaded through its own file-based Loader (not a direct type
-// import) so a broken/missing card file only takes down that one slot —
-// Loader.status isolates load-time failures from the rest of the tab, unlike
-// inline component instantiation which would fail the whole file.
+// Each card loads through its own file Loader for fault isolation — a
+// broken card file only takes down that one slot.
 Item {
     id: root
 
@@ -25,10 +23,8 @@ Item {
         CardSlot { source: "performance/StorageCard.qml" }
     }
 
-    // Wraps a card file's Loader with fault isolation (Loader.Error shows a
-    // small fallback instead of a blank gap) and lets a card's own
-    // intentional `visible: false` (e.g. BatteryCard with no battery)
-    // collapse the grid cell entirely rather than reserving empty space.
+    // Wraps a card's Loader with fault isolation (load errors show a small
+    // fallback) and collapses the grid cell when a card sets `visible: false`.
     component CardSlot: Item {
         id: slot
 

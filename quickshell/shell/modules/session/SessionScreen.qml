@@ -81,8 +81,7 @@ PanelWindow {
             anchors.right: parent.right
             anchors.rightMargin: closedMargin + (restingMargin - closedMargin) * root.showProgress + stackOffset
             // Fallback sizing for the first open frame, before the Loader's
-            // content has laid out (mirrors caelestia Wrapper.qml's own
-            // implicitHeight-fallback comment for the same race)
+            // content has laid out
             implicitWidth: (loader.item ? loader.item.implicitWidth : 0) || 64
             implicitHeight: (loader.item ? loader.item.implicitHeight : 0) || 384
             opacity: root.showProgress

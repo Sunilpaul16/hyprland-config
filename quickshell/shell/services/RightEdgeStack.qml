@@ -2,11 +2,9 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Right-edge panel stacking coordinator. Panels register their own
-// open/width per screen; a panel reads back how far it's pushed left by
-// whichever panels are stacked closer to the edge than it, without
-// needing to know about those panels directly. Fixed innermost-to-
-// outermost order (mirrors caelestia's Sidebar/Session/Osd arrangement):
+// Right-edge panel stacking coordinator — panels register open/width per
+// screen, then read back how far they're pushed left by panels stacked
+// closer to the edge. Fixed innermost-to-outermost order:
 Singleton {
     id: root
 

@@ -2,10 +2,8 @@ import QtQuick
 import QtQuick.Shapes
 import "../../../services"
 
-// Circular usage-percentage ring (0..1) — the native-QML substitute for
-// caelestia's C++ CircularProgress ring (see reference doc's HeroCard
-// section). Shared by CpuCard/MemoryCard/BatteryCard; content (usually a
-// centered percentage label) goes in as a child.
+// Circular usage-percentage ring (0..1). Shared by CpuCard/MemoryCard/
+// BatteryCard; content (usually a percentage label) goes in as a child.
 Item {
     id: root
 

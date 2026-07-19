@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-# Adapted from end-4/dots-hyprland (dots/.config/quickshell/ii/scripts/colors/generate_colors_material.py).
-# Original shebang self-activated $ILLOGICAL_IMPULSE_VIRTUAL_ENV; this standalone copy is instead
-# invoked directly with the venv's python by ~/.local/bin/switchwall, so no env var is needed.
+# Standalone materialyoucolor color-generation script for kitty's 16-color
+# ANSI palette. The original self-activated a venv via an env var on its own
+# shebang; this copy is instead invoked directly with the venv's python by
+# ~/.local/bin/switchwall, so no env var is needed.
 import argparse
 import math
 import json

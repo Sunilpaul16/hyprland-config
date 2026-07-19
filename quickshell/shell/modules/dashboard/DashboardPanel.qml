@@ -164,13 +164,9 @@ PanelWindow {
                         Repeater {
                             model: root.tabModel
 
-                            // Only the current tab (+ whichever adjacent tab is
-                            // partially scrolled into view during a drag) is
-                            // instantiated — mirrors caelestia-shell's
-                            // Tabs.qml/Content.qml activation-window check
-                            // (see references/caelestia-dashboard-reference.md,
-                            // "Shell structure" section) rather than just
-                            // gating on index === currentTab.
+                            // Also keeps whichever adjacent tab is mid-scroll
+                            // during a drag instantiated, not just the current
+                            // tab
                             delegate: Loader {
                                 id: paneLoader
 

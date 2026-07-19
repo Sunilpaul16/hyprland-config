@@ -7,9 +7,7 @@ import Quickshell.Io
 import "../../../services"
 
 // Distro name + uptime + WM/desktop + profile picture. Picker is a stock
-// QtQuick.Dialogs FileDialog (no portal round-trip, no C++ — see INDEX.md's
-// Dashboard section, 2026-07-19 entry) rather than caelestia's hand-built
-// FileDialog + C++ copyFile() util.
+// QtQuick.Dialogs FileDialog — no portal round-trip, no C++ needed.
 Rectangle {
     id: root
 

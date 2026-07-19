@@ -4,10 +4,8 @@ import QtQuick.Layouts
 import "../../../services"
 
 // Network throughput: auto-scaling sparkline (down/up) + current speed row.
-// The sparkline is a native QML Shape/PathPolyline drawing straight off
-// NetworkUsage's capped JS-array history — the substitute for caelestia's
-// C++ CircularBuffer/SparklineItem pair (see reference doc's NetworkCard
-// section).
+// Sparkline is a native QML Shape/PathPolyline off NetworkUsage's capped
+// history array.
 Rectangle {
     id: root
 

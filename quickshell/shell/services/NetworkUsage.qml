@@ -8,14 +8,9 @@ import Quickshell.Io
 // totals + a capped sample history for sparkline graphs. Same FileView+Timer
 // shape as SystemUsage.qml.
 //
-// NOTE: this file didn't exist in this repo before this session — the
-// Performance-tab task that introduced it assumed it was already here
-// (it exists in the caelestia reference repo at ~/shell/services/
-// NetworkUsage.qml, which is presumably what got conflated). Built fresh
-// here, porting that file's proven /proc/net/dev parsing + overflow
-// handling, but with a plain capped JS array standing in for its C++
-// CircularBuffer (see references/caelestia-dashboard-reference.md's
-// NetworkCard section).
+// NOTE: this file didn't exist in this repo before this session — an
+// earlier task assumed it was already here. Built fresh, with a plain
+// capped JS array standing in for a C++ CircularBuffer.
 Singleton {
     id: root
 

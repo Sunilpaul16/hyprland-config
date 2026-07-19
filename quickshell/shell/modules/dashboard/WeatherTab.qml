@@ -4,11 +4,9 @@ import QtQuick
 import QtQuick.Layouts
 import "../../services"
 
-// Weather tab: header (city/date + sunrise/sunset), hero card, detail
-// cards (humidity/feels-like/wind), 7-day forecast strip. Auto-geolocated
-// only (ipinfo.io) — manual city entry/config UI, forward geocoding, the
-// Nominatim reverse-geocode fallback, and the diacritics-restoration table
-// are all explicitly out of scope this session (see INDEX.md backlog).
+// Weather tab: header, hero card, detail cards, 7-day forecast strip.
+// Auto-geolocated only — manual location config is out of scope for now
+// (see INDEX.md backlog).
 Item {
     id: root
 

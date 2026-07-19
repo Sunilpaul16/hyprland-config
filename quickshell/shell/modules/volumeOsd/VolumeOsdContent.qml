@@ -41,11 +41,8 @@ Column {
     }
 
     // Vertical fill track — click/drag to set an absolute value, scroll to
-    // step. Built on QtQuick.Templates' Slider (via QtQuick.Controls, same
-    // base caelestia's FilledSlider uses) for real press/move/release
-    // handling. Proportions/handle-in-track structure match caelestia's
-    // actual FilledSlider (~/shell/components/controls/FilledSlider.qml)
-    // rather than caelestia's exact colors/tokens.
+    // step. Built on QtQuick.Templates' Slider (via QtQuick.Controls) for
+    // real press/move/release handling.
     component VolumeSlider: Item {
         id: slider
 
@@ -99,10 +96,8 @@ Column {
                 radius: width / 2
                 color: Colors.surface
 
-                // Fill — driven straight off slider.value (not
-                // control.visualPosition, though they're equivalent here)
-                // so it stays correct whether driven by drag, scroll, or
-                // an external change while the panel's open
+                // Driven off slider.value, not visualPosition, so it stays
+                // correct for drag, scroll, or external changes
                 Rectangle {
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -116,11 +111,8 @@ Column {
                 }
             }
 
-            // Circular handle, same diameter as the track, riding at the
-            // current value position — contains the icon, swapping to the
-            // live percentage while pressed (same "moving" concept as
-            // FilledSlider's handle.moving, using our own control.pressed
-            // rather than adding new state tracking for it)
+            // Circular handle at the current value position — shows the
+            // icon, swaps to a live percentage while pressed
             handle: Rectangle {
                 x: control.leftPadding + control.availableWidth / 2 - width / 2
                 y: (control.availableHeight - height) * (1 - Math.max(0, Math.min(1, slider.value)))

@@ -4,12 +4,9 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// GPU usage + temperature polling via nvidia-smi — Nvidia only (confirmed
-// 2026-07-19 this box has no AMD/Intel gpu_busy_percent sysfs path, so no
-// fallback path is built; see INDEX.md's Dashboard section for the
-// investigation). Tier-1 subprocess-shelling substitute for caelestia's
-// hybrid nvidia-smi/sysfs C++ Gpu service. Same ref-counted shape as
-// SystemUsage.qml/NetworkUsage.qml.
+// GPU usage + temperature polling via nvidia-smi — Nvidia only (this box
+// has no AMD/Intel gpu_busy_percent sysfs path, so no fallback path is
+// built). Same ref-counted shape as SystemUsage.qml/NetworkUsage.qml.
 Singleton {
     id: root
 

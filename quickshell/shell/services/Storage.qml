@@ -7,9 +7,7 @@ import Quickshell.Io
 // Physical-disk usage: merges df's per-mount used/total with lsblk's
 // partition -> parent-disk (PKNAME) mapping, so multiple mounts on one
 // physical disk (this box's /, /boot, /home all on one nvme0n1) show as a
-// single card instead of three. Tier-1 subprocess-shelling substitute for
-// caelestia's QStorageInfo + sysfs major:minor C++ approach (see INDEX.md's
-// Dashboard section, 2026-07-19 entry).
+// single card instead of three.
 Singleton {
     id: root
 

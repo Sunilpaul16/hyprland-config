@@ -74,8 +74,7 @@ Singleton {
         root._prevIdle = idle;
     }
 
-    // Mirrors caelestia's cpuPackageTemp() label matching (sensorslib.cpp):
-    // scan every sensors chip/feature, primary = "Package id N" (Intel) or
+    // Scans every sensors chip/feature: primary = "Package id N" (Intel) or
     // "Tdie" (AMD), fallback = "Tctl" (AMD, when Tdie isn't exposed).
     function parseSensorsJson(jsonText: string): void {
         if (!jsonText)

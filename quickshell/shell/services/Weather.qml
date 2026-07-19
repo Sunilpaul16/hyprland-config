@@ -4,20 +4,13 @@ import QtQuick
 import Quickshell
 import "../utils"
 
-// Current weather (Open-Meteo), geolocated via ipinfo.io. No location
-// config exists yet (services/Config.qml has no weather-location slot), so
-// this always just guesses from the box's public IP on startup — manual
-// city config / forward geocoding / Nominatim reverse-geocode fallback /
-// diacritics table are all skipped until a config surface exists to drive
-// them (see references/caelestia-dashboard-reference.md's Weather section
-// for the full port plan).
+// Current weather (Open-Meteo), geolocated via ipinfo.io. No location config
+// exists yet, so this always guesses from the box's public IP — manual
+// city entry, geocoding, and locale fallbacks are deferred until one does.
 //
-// No ref-counted activation: unlike SystemUsage/NetworkUsage's continuous
-// /proc polling, this is one geolocation call at startup plus a refetch
-// once an hour — cheap enough that gating it behind a card being on
-// screen isn't worth the complexity, and keeping it always-on means the
-// data is already fresh whenever the dashboard is opened rather than
-// waiting on a fetch.
+// No ref-counted activation like SystemUsage/NetworkUsage: this is one
+// geolocation call at startup plus an hourly refetch — cheap enough to
+// stay always-on rather than gate behind a card being visible.
 Singleton {
     id: root
 
@@ -156,8 +149,7 @@ Singleton {
                 root._sunsetIso = data.daily.sunset[0] ?? "";
                 // "-" separators parse as UTC midnight in JS, which rolls
                 // back a day in any timezone behind UTC; "/" parses as
-                // local midnight instead (same fix caelestia's own
-                // Weather.qml uses for this exact field).
+                // local midnight instead.
                 root._forecast = (data.daily.time ?? []).map((date, i) => ({
                     date: date.replace(/-/g, "/"),
                     weatherCode: data.daily.weather_code[i],

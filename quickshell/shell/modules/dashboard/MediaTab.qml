@@ -192,10 +192,7 @@ Item {
         onClicked: root.playerMenuOpen = false
     }
 
-    // Multi-player selector — only shown with more than one active MPRIS
-    // player; picking one overrides Media's auto-detected active player
-    // (Media.manualPlayer), same override-takes-precedence pattern
-    // caelestia's Players.qml uses
+    // Multi-player selector — only shown with >1 active MPRIS player
     Item {
         id: playerSelector
 

@@ -18,8 +18,7 @@ Column {
         command: ["systemctl", "poweroff"]
     }
 
-    // Decorative slot — placeholder for caelestia's kurukuru.gif; no
-    // equivalent asset in this repo yet, spins a Material icon in its place
+    // Decorative slot — no gif asset yet, spins an icon in its place
     Item {
         implicitWidth: 64
         implicitHeight: 64

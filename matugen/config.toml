@@ -1,18 +1,15 @@
-# matugen config — standalone subset of end-4/dots-hyprland's matugen setup.
+# matugen config for this repo's theming pipeline.
 #
-# Only the templates that have zero quickshell dependency are wired up here.
-# Skipped for now (add back when quickshell is set up): kde-material-you-colors,
-# colors.json (quickshell's own theme feed), wallpaper.txt.
+# Only templates with zero quickshell dependency are wired up here. Skipped
+# for now: kde-material-you-colors, colors.json, wallpaper.txt.
 #
-# Note: kitty is NOT templated here. Unlike the others, kitty's colors come
-# from a separate pipeline (materialyoucolor + sed substitution into
-# terminal/kitty-theme.conf, run from ~/.local/bin/switchwall) because it
-# needs a real 16-color ANSI terminal palette, which matugen's own Material
-# You role set can't produce on its own. See colorgen/ next to this file.
+# kitty is NOT templated here — its colors come from a separate pipeline
+# (materialyoucolor + sed, run from switchwall) since matugen's own Material
+# You role set can't produce a 16-color ANSI terminal palette. See colorgen/.
 #
-# GTK templates need `gsettings ... color-scheme prefer-dark` set (done by
-# switchwall/this setup) — otherwise GTK4 apps render the @media (light)
-# block from gtk-4.0/gtk.css instead of the dark one matugen just generated.
+# GTK templates need `gsettings color-scheme prefer-dark` set (done by
+# switchwall) — otherwise GTK4 apps render the light @media block instead
+# of the dark one matugen just generated.
 
 [config]
 version_check = false
@@ -33,13 +30,13 @@ output_path = '~/.config/gtk-3.0/gtk.css'
 input_path = '~/.config/matugen/templates/gtk-4.0/gtk.css'
 output_path = '~/.config/gtk-4.0/gtk.css'
 
-# Our own from-scratch quickshell shell (~/.config/quickshell/shell/), NOT
-# end-4's ii shell — see [templates.m3colors] below for that, still deferred.
+# This repo's own quickshell shell — NOT the [templates.m3colors] target
+# below (a separate, still-deferred shell config).
 [templates.quickshell_shell_colors]
 input_path = '~/.config/matugen/templates/quickshell-shell/Colors.qml'
 output_path = '~/.config/quickshell/shell/services/Colors.qml'
 
-# --- Add when/if end-4's full ii shell is ever adopted ----------------------
+# --- Add if a second, alternate shell config is ever adopted -----------------
 # [templates.m3colors]
 # input_path = '~/.config/matugen/templates/colors.json'
 # output_path = '~/.local/state/quickshell/user/generated/colors.json'

@@ -3,9 +3,7 @@ pragma Singleton
 import QtQuick
 
 // Thin XMLHttpRequest GET helper — parses JSON responses before handing
-// them to the callback. Mirrors caelestia's Requests.get(url, onSuccess,
-// onError) shape (see references/caelestia-dashboard-reference.md's
-// Weather section), just JSON-parsed here rather than raw text.
+// them to the callback.
 QtObject {
     id: root
 

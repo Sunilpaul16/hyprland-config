@@ -2,12 +2,7 @@ import QtQuick
 import Qt5Compat.GraphicalEffects
 import "../../services"
 
-// Rotating cover-art frame — circular mask (plain-QML stand-in for
-// caelestia's M3Shapes "cookie" shape, see INDEX.md for why the scalloped
-// geometry itself was skipped), spins while playing (~23.5s/rev, linear,
-// matches caelestia's CoverArt), frozen when paused via `paused:` rather
-// than `running:` so it resumes from its current angle instead of jumping
-// back to 0.
+// Rotating cover-art frame — circular mask, spins while playing
 Item {
     id: root
 
@@ -16,8 +11,7 @@ Item {
     implicitWidth: root.size
     implicitHeight: root.size
 
-    // Subtle glow to lift the art off the card background — same
-    // Qt5Compat.GraphicalEffects module UserCard's avatar already uses
+    // Drop-shadow glow, same effect module as UserCard's avatar
     layer.enabled: true
     layer.effect: DropShadow {
         radius: 10
@@ -41,6 +35,7 @@ Item {
             }
         }
 
+        // paused, not running: resumes its angle instead of jumping to 0
         NumberAnimation on rotation {
             running: true
             paused: !Media.isPlaying
@@ -77,9 +72,7 @@ Item {
         font.pixelSize: root.size * 0.3
     }
 
-    // Loading state while remote art downloads — plain text, matching the
-    // "Loading…" idiom Weather tab/SmallWeatherCard already use rather than
-    // a spinner graphic (no such component exists in this repo)
+    // Loading indicator while remote art downloads
     Text {
         anchors.centerIn: parent
         visible: art.status === Image.Loading
