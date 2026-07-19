@@ -20,14 +20,14 @@ ColumnLayout {
         Layout.fillWidth: true
         spacing: 8
 
-        // Wifi
+        // Ethernet (opens NetworkManager's connection editor)
         TogglePill {
             Layout.preferredWidth: 40
             Layout.preferredHeight: 40
-            iconName: Wifi.hardwareAvailable ? (Wifi.enabled ? "wifi" : "wifi_off") : "wifi_off"
-            active: Wifi.hardwareAvailable && Wifi.enabled
-            enabled: Wifi.hardwareAvailable
-            onClicked: Wifi.toggle()
+            iconName: "lan"
+            active: EthernetStatus.connected
+            enabled: EthernetStatus.available
+            onClicked: EthernetStatus.openSettings()
         }
 
         // Bluetooth
@@ -64,7 +64,16 @@ ColumnLayout {
             }
         }
 
-        // Overflow (placeholder)
+        // Night light
+        TogglePill {
+            Layout.preferredWidth: 40
+            Layout.preferredHeight: 40
+            iconName: "bedtime"
+            active: NightLightState.enabled
+            onClicked: NightLightState.toggle()
+        }
+
+        // Do not disturb (placeholder)
         Rectangle {
             Layout.preferredWidth: 40
             Layout.preferredHeight: 40
@@ -73,7 +82,7 @@ ColumnLayout {
 
             MaterialIcon {
                 anchors.centerIn: parent
-                text: "more_horiz"
+                text: "notifications_off"
                 color: Colors.text
                 font.pixelSize: 20
             }
