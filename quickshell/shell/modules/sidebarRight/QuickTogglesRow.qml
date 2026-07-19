@@ -82,6 +82,15 @@ ColumnLayout {
             onClicked: DndState.toggle()
         }
 
+        // Screen Recorder card visibility
+        TogglePill {
+            Layout.preferredWidth: 40
+            Layout.preferredHeight: 40
+            iconName: "screen_record"
+            active: ScreenRecorderCardState.enabled
+            onClicked: ScreenRecorderCardState.toggle()
+        }
+
         Item { Layout.fillWidth: true }
     }
 }

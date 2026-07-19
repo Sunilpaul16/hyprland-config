@@ -103,7 +103,7 @@ PanelWindow {
 
                 NotificationsCard { Layout.fillWidth: true }
                 KeepAwakeCard { Layout.fillWidth: true }
-                ScreenRecorderCard { Layout.fillWidth: true }
+                ScreenRecorderCard { Layout.fillWidth: true; visible: ScreenRecorderCardState.enabled }
                 QuickTogglesCard { Layout.fillWidth: true }
             }
         }
