@@ -2,7 +2,7 @@
 zsh/.zsh_history
 zsh/.zcompdump*
 zsh/.z
-
+.claude/settings.json
 # caches / compiled / generated junk
 __pycache__/
 *.pyc
