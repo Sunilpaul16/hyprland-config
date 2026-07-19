@@ -64,15 +64,22 @@ PanelWindow {
             onClicked: {}
         }
 
-        // Sidebar backdrop (slide-in panel background)
+        // Sidebar backdrop (slide-in panel background) — shrink-wraps to
+        // content height rather than always stretching full monitor height,
+        // capped so it never overflows past the screen edges
         Rectangle {
             id: backdrop
-            anchors { top: parent.top; right: parent.right; bottom: parent.bottom; margins: root.edgeMargin }
+            anchors { top: parent.top; right: parent.right; margins: root.edgeMargin }
             width: 360
+            height: Math.min(column.implicitHeight + 24, parent.height - root.edgeMargin * 2)
             radius: 20
             color: Colors.background
             opacity: root.showProgress
             transform: Translate { x: (1 - root.showProgress) * 24 }
+
+            Behavior on height {
+                NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing }
+            }
         }
 
 
@@ -95,8 +102,9 @@ PanelWindow {
                 spacing: 12
 
                 NotificationsCard { Layout.fillWidth: true }
-                SystemCard { Layout.fillWidth: true }
-                QuickTogglesRow { Layout.fillWidth: true }
+                KeepAwakeCard { Layout.fillWidth: true }
+                ScreenRecorderCard { Layout.fillWidth: true }
+                QuickTogglesCard { Layout.fillWidth: true }
             }
         }
     }
