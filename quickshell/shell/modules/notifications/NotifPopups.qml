@@ -16,7 +16,7 @@ PanelWindow {
 
     // Layout constants
     readonly property int cardWidth: 340
-    readonly property int topGap: 60
+    readonly property int topGap: 10
     readonly property int sideGap: 10
     readonly property int cardSpacing: 8
 
