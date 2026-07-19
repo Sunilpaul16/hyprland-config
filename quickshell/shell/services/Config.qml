@@ -11,6 +11,7 @@ Singleton {
     property alias use12Hour: adapter.use12Hour
     property alias barHeight: adapter.barHeight
     property alias toastDismissDuration: adapter.toastDismissDuration
+    property alias hiddenQuickToggles: adapter.hiddenQuickToggles
 
     // Config file
     FileView {
@@ -31,6 +32,7 @@ Singleton {
             property bool use12Hour: false
             property int barHeight: 40
             property int toastDismissDuration: 5000
+            property list<string> hiddenQuickToggles: []
         }
     }
 
