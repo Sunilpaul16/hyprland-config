@@ -1,20 +1,31 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Dialogs
+import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Io
 import "../../../services"
 
-// Distro name + uptime + WM/desktop. No profile picture — this repo has no
-// ~/.face + FileDialog editor like caelestia's dash/User.qml — a generic
-// Material "person" icon stands in instead. No M3Shapes pill/gem badges,
-// plain rounded-rect chips.
+// Distro name + uptime + WM/desktop + profile picture. Picker is a stock
+// QtQuick.Dialogs FileDialog (no portal round-trip, no C++ — see INDEX.md's
+// Dashboard section, 2026-07-19 entry) rather than caelestia's hand-built
+// FileDialog + C++ copyFile() util.
 Rectangle {
     id: root
 
     readonly property string wmName: Quickshell.env("XDG_CURRENT_DESKTOP") || Quickshell.env("XDG_SESSION_DESKTOP") || "Unknown"
+    readonly property string facePath: Quickshell.env("HOME") + "/.face"
 
     property string osName: "Unknown OS"
     property string uptimeStr: "up —"
+    // Bumped on every successful copy to cache-bust the avatar Image, which
+    // otherwise wouldn't notice the file at the same path changed underneath it
+    property int faceGeneration: 0
+
+    function urlToPath(url): string {
+        const s = url.toString();
+        return s.startsWith("file://") ? decodeURIComponent(s.slice(7)) : s;
+    }
 
     function formatUptime(totalSeconds: real): string {
         const days = Math.floor(totalSeconds / 86400);
@@ -76,6 +87,27 @@ Rectangle {
         onTriggered: root.refreshUptime()
     }
 
+    // Profile picture picker
+    FileDialog {
+        id: facePicker
+        title: "Select a profile picture"
+        nameFilters: ["Image files (*.png *.jpg *.jpeg *.webp *.bmp)"]
+        onAccepted: copyProc.exec(["cp", root.urlToPath(selectedFile), root.facePath])
+    }
+
+    // Copies the picked file to ~/.face
+    Process {
+        id: copyProc
+        onExited: exitCode => {
+            if (exitCode === 0) {
+                root.faceGeneration++;
+                Quickshell.execDetached(["notify-send", "-a", "quickshell", "Profile picture updated", "The User card now shows your new picture."]);
+            } else {
+                Quickshell.execDetached(["notify-send", "-a", "quickshell", "-u", "critical", "Failed to update profile picture", "Could not copy the selected file to ~/.face."]);
+            }
+        }
+    }
+
     ColumnLayout {
         id: content
 
@@ -83,7 +115,10 @@ Rectangle {
         anchors.margins: 16
         spacing: 12
 
+        // Avatar (click to pick a new ~/.face picture)
         Rectangle {
+            id: avatar
+
             Layout.alignment: Qt.AlignHCenter
             Layout.topMargin: 8
             implicitWidth: 56
@@ -93,12 +128,68 @@ Rectangle {
             border.width: 1
             border.color: Colors.outline
 
+            // Fallback icon — shown until a real ~/.face loads
             Text {
                 anchors.centerIn: parent
+                visible: pfp.status !== Image.Ready
                 text: "person"
                 font.family: "Material Symbols Rounded"
                 font.pixelSize: 28
                 color: Colors.textMuted
+            }
+
+            // ~/.face, circle-cropped
+            Rectangle {
+                id: pfpClip
+                anchors.fill: parent
+                radius: parent.radius
+                color: "transparent"
+                visible: pfp.status === Image.Ready
+                layer.enabled: true
+                layer.effect: OpacityMask {
+                    maskSource: Rectangle {
+                        width: pfpClip.width
+                        height: pfpClip.height
+                        radius: pfpClip.radius
+                    }
+                }
+
+                Image {
+                    id: pfp
+                    anchors.fill: parent
+                    source: "file://" + root.facePath + "?" + root.faceGeneration
+                    fillMode: Image.PreserveAspectCrop
+                    asynchronous: true
+                    cache: false
+                }
+            }
+
+            // Hover scrim + edit affordance (fade idiom matches this shell's
+            // existing hover conventions — see IconAction.qml/TogglePill.qml)
+            Rectangle {
+                anchors.fill: parent
+                radius: parent.radius
+                color: Colors.background
+                opacity: avatarHover.containsMouse ? 0.75 : 0
+
+                Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "photo_camera"
+                    font.family: "Material Symbols Rounded"
+                    font.pixelSize: 20
+                    color: Colors.text
+                    opacity: parent.opacity
+                }
+            }
+
+            MouseArea {
+                id: avatarHover
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: facePicker.open()
             }
         }
 
