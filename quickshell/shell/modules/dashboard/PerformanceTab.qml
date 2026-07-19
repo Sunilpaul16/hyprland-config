@@ -3,11 +3,11 @@ import QtQuick
 import QtQuick.Layouts
 import "../../services"
 
-// Performance tab: CPU / Memory / Network / Battery cards. Each card is
-// loaded through its own file-based Loader (not a direct type import) so a
-// broken/missing card file only takes down that one slot — Loader.status
-// isolates load-time failures from the rest of the tab, unlike inline
-// component instantiation which would fail the whole file.
+// Performance tab: CPU / Memory / Network / Battery / GPU / Storage cards.
+// Each card is loaded through its own file-based Loader (not a direct type
+// import) so a broken/missing card file only takes down that one slot —
+// Loader.status isolates load-time failures from the rest of the tab, unlike
+// inline component instantiation which would fail the whole file.
 Item {
     id: root
 
@@ -21,6 +21,8 @@ Item {
         CardSlot { source: "performance/MemoryCard.qml" }
         CardSlot { source: "performance/NetworkCard.qml" }
         CardSlot { source: "performance/BatteryCard.qml" }
+        CardSlot { source: "performance/GpuCard.qml" }
+        CardSlot { source: "performance/StorageCard.qml" }
     }
 
     // Wraps a card file's Loader with fault isolation (Loader.Error shows a

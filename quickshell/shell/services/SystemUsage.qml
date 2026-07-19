@@ -21,6 +21,7 @@ Singleton {
     // CPU
     readonly property string cpuName: _cpuName
     readonly property real cpuPercentage: _cpuPercentage
+    readonly property real cpuTemperature: _cpuTemperature
 
     // Memory (KiB)
     readonly property real memoryUsedKib: _memoryUsedKib
@@ -29,6 +30,7 @@ Singleton {
 
     property string _cpuName: ""
     property real _cpuPercentage: 0
+    property real _cpuTemperature: 0
     property real _memoryUsedKib: 0
     property real _memoryTotalKib: 0
 
@@ -72,6 +74,52 @@ Singleton {
         root._prevIdle = idle;
     }
 
+    // Mirrors caelestia's cpuPackageTemp() label matching (sensorslib.cpp):
+    // scan every sensors chip/feature, primary = "Package id N" (Intel) or
+    // "Tdie" (AMD), fallback = "Tctl" (AMD, when Tdie isn't exposed).
+    function parseSensorsJson(jsonText: string): void {
+        if (!jsonText)
+            return;
+
+        let data;
+        try {
+            data = JSON.parse(jsonText);
+        } catch (e) {
+            return;
+        }
+
+        let primary = null;
+        let fallback = null;
+        for (const chipName in data) {
+            const chip = data[chipName];
+            for (const featureLabel in chip) {
+                const feature = chip[featureLabel];
+                if (typeof feature !== "object")
+                    continue; // skip the "Adapter" string field
+
+                let inputVal;
+                for (const key in feature) {
+                    if (key.startsWith("temp") && key.endsWith("_input")) {
+                        inputVal = feature[key];
+                        break;
+                    }
+                }
+                if (inputVal === undefined)
+                    continue;
+
+                if (featureLabel.startsWith("Package id ") || featureLabel === "Tdie")
+                    primary = inputVal;
+                else if (featureLabel === "Tctl")
+                    fallback = inputVal;
+            }
+        }
+
+        if (primary !== null)
+            root._cpuTemperature = primary;
+        else if (fallback !== null)
+            root._cpuTemperature = fallback;
+    }
+
     function parseMemInfo(content: string): void {
         if (!content)
             return;
@@ -110,6 +158,18 @@ Singleton {
         path: "/proc/meminfo"
     }
 
+    // CPU package temperature — same 1s cycle as CPU%/memory, not a separate
+    // timer, since this is the same "how's the system doing right now" tick
+    Process {
+        id: sensorsProc
+        command: ["sensors", "-j"]
+        stdout: StdioCollector { id: sensorsStdout }
+        onExited: exitCode => {
+            if (exitCode === 0)
+                root.parseSensorsJson(sensorsStdout.text);
+        }
+    }
+
     Timer {
         interval: 1000
         running: root.refCount > 0
@@ -120,6 +180,7 @@ Singleton {
             memInfoFile.reload();
             root.parseStat(statFile.text());
             root.parseMemInfo(memInfoFile.text());
+            sensorsProc.running = true;
         }
     }
 }
