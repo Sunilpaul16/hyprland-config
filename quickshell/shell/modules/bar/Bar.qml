@@ -12,6 +12,9 @@ PanelWindow {
     // Dimensions
     readonly property int barContentHeight: Config.barHeight
     readonly property int cornerSize: 14
+    // Extra window height below the corners so tray tooltips have room to
+    // draw without being clipped by the surface bounds
+    readonly property int tooltipReserve: 24
 
     // Positioning
     anchors {
@@ -21,11 +24,19 @@ PanelWindow {
     }
 
     // Window setup
-    implicitHeight: barContentHeight + cornerSize
+    implicitHeight: barContentHeight + cornerSize + tooltipReserve
     exclusiveZone: barContentHeight
     color: "transparent"
     WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.namespace: "quickshell-bar"
+
+    // Restrict input to the visible bar chrome so the extra tooltip
+    // clearance below the corners stays click-through
+    mask: Region {
+        Region { item: content }
+        Region { item: cornerTL }
+        Region { item: cornerTR }
+    }
     // Bar content
     Rectangle {
         id: content
@@ -117,12 +128,14 @@ PanelWindow {
     }
     // Round decorators
     Corner {
+        id: cornerTL
         anchors { top: content.bottom; left: parent.left }
         size: bar.cornerSize
         color: Colors.background
         corner: "topLeft"
     }
     Corner {
+        id: cornerTR
         anchors { top: content.bottom; right: parent.right }
         size: bar.cornerSize
         color: Colors.background
