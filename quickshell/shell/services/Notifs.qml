@@ -33,8 +33,9 @@ Singleton {
             notif.tracked = true;
             const wrapper = notifComp.createObject(root, {
                 // Don't pop up a toast for something already visible live in
-                // the sidebar's Notifications card — still lands in history.
-                popup: !SidebarRightState.open,
+                // the sidebar's Notifications card, or while Do Not Disturb
+                // is on — still lands in history either way.
+                popup: !SidebarRightState.open && !DndState.enabled,
                 notification: notif
             });
             root.list = [wrapper, ...root.list];

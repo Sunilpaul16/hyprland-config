@@ -73,19 +73,13 @@ ColumnLayout {
             onClicked: NightLightState.toggle()
         }
 
-        // Do not disturb (placeholder)
-        Rectangle {
+        // Do not disturb
+        TogglePill {
             Layout.preferredWidth: 40
             Layout.preferredHeight: 40
-            radius: 12
-            color: Colors.background
-
-            MaterialIcon {
-                anchors.centerIn: parent
-                text: "notifications_off"
-                color: Colors.text
-                font.pixelSize: 20
-            }
+            iconName: DndState.enabled ? "notifications_off" : "notifications"
+            active: DndState.enabled
+            onClicked: DndState.toggle()
         }
 
         Item { Layout.fillWidth: true }
