@@ -64,13 +64,18 @@ Item {
         }
     }
 
-    // Click to focus window
+    // Click to focus window, middle-click to close it (overview stays open)
     MouseArea {
         id: hoverArea
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: {
+        acceptedButtons: Qt.LeftButton | Qt.MiddleButton
+        onClicked: mouse => {
+            if (mouse.button === Qt.MiddleButton) {
+                Hyprland.dispatch(`hl.dsp.window.close({ window = "address:${root.ipc.address}" })`);
+                return;
+            }
             Hyprland.dispatch(`hl.dsp.focus({ window = "address:${root.ipc.address}" })`);
             OverviewState.open = false;
         }
