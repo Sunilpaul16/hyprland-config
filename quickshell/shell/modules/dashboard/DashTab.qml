@@ -140,6 +140,22 @@ Item {
         border.width: 1
         border.color: Colors.outline
 
+        // Wheel to change month, middle-click anywhere to jump to today
+        WheelHandler {
+            onWheel: event => {
+                if (event.angleDelta.y > 0)
+                    calCard.viewDate = new Date(calCard.viewYear, calCard.viewMonth - 1, 1);
+                else if (event.angleDelta.y < 0)
+                    calCard.viewDate = new Date(calCard.viewYear, calCard.viewMonth + 1, 1);
+            }
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.MiddleButton
+            onClicked: calCard.viewDate = new Date()
+        }
+
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 16
@@ -204,9 +220,12 @@ Item {
                 delegate: Text {
                     required property var model
 
+                    // Qt::DayOfWeek: Monday=1 .. Sunday=7
+                    readonly property bool isWeekend: model.day === 6 || model.day === 7
+
                     horizontalAlignment: Text.AlignHCenter
                     text: model.shortName
-                    color: Colors.textMuted
+                    color: isWeekend ? Colors.primary : Colors.textMuted
                     font.pixelSize: 11
                 }
             }
@@ -226,6 +245,12 @@ Item {
 
                     required property var model
 
+                    // JS Date.getDay(): Sunday=0 .. Saturday=6
+                    readonly property bool isWeekend: {
+                        const d = dayCell.model.date.getDay();
+                        return d === 0 || d === 6;
+                    }
+
                     implicitWidth: 26
                     implicitHeight: 26
                     radius: 13
@@ -235,7 +260,7 @@ Item {
                         anchors.centerIn: parent
                         text: dayCell.model.day
                         font.pixelSize: 12
-                        color: dayCell.model.today ? Colors.background : Colors.text
+                        color: dayCell.model.today ? Colors.background : (dayCell.isWeekend ? Colors.primary : Colors.text)
                         opacity: dayCell.model.month === grid.month ? 1 : 0.35
                     }
                 }
