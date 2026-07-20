@@ -10,6 +10,7 @@ import "modules/cheatsheet"
 import "modules/mediaPopup"
 import "modules/notifications"
 import "modules/overview"
+import "modules/polkit"
 import "modules/session"
 import "modules/sidebarRight"
 import "modules/trayMenu"
@@ -76,6 +77,16 @@ ShellRoot {
         model: Quickshell.screens
 
         SessionScreen {
+            property var modelData
+            screen: modelData
+        }
+    }
+
+    // For each monitor: polkit authentication dialog
+    Variants {
+        model: Quickshell.screens
+
+        PolkitDialog {
             property var modelData
             screen: modelData
         }
