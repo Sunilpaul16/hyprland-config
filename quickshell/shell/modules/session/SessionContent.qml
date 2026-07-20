@@ -8,14 +8,25 @@ Column {
 
     spacing: 16
 
-    SessionActionButton {
-        icon: "logout"
-        command: ["bash", "-c", "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"]
+    // Focus the first action button — called once from SessionScreen.qml
+    // when the drawer opens, so Up/Down/Enter work without a click first
+    function focusFirst(): void {
+        logoutBtn.forceActiveFocus();
     }
 
     SessionActionButton {
+        id: logoutBtn
+        icon: "logout"
+        command: ["bash", "-c", "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"]
+        KeyNavigation.down: poweroffBtn
+    }
+
+    SessionActionButton {
+        id: poweroffBtn
         icon: "power_settings_new"
         command: ["systemctl", "poweroff"]
+        KeyNavigation.up: logoutBtn
+        KeyNavigation.down: lockBtn
     }
 
     // Decorative slot — no gif asset yet, spins an icon in its place
@@ -40,12 +51,17 @@ Column {
     }
 
     SessionActionButton {
+        id: lockBtn
         icon: "lock"
         command: ["hyprlock"]
+        KeyNavigation.up: poweroffBtn
+        KeyNavigation.down: rebootBtn
     }
 
     SessionActionButton {
+        id: rebootBtn
         icon: "cached"
         command: ["systemctl", "reboot"]
+        KeyNavigation.up: lockBtn
     }
 }

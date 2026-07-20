@@ -14,8 +14,18 @@ Rectangle {
     implicitHeight: 64
     radius: width / 2
     color: hoverArea.containsMouse ? Colors.surface : Colors.background
+    border.width: root.activeFocus ? 2 : 0
+    border.color: Colors.primary
 
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+    function activate(): void {
+        Quickshell.execDetached(root.command);
+        SessionState.open = false;
+    }
+
+    Keys.onReturnPressed: root.activate()
+    Keys.onEnterPressed: root.activate()
 
     MaterialIcon {
         anchors.centerIn: parent
@@ -29,9 +39,6 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            Quickshell.execDetached(root.command);
-            SessionState.open = false;
-        }
+        onClicked: root.activate()
     }
 }

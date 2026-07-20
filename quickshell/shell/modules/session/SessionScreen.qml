@@ -50,6 +50,10 @@ PanelWindow {
         focus: root.active
         Keys.onEscapePressed: SessionState.open = false
 
+        // Hand keyboard focus to the first action button so Up/Down/Enter
+        // work immediately, without a click first
+        onFocusChanged: if (focus && loader.item) loader.item.focusFirst()
+
         // Absorb clicks on the drawer itself
         MouseArea {
             anchors.fill: drawer
@@ -94,6 +98,9 @@ PanelWindow {
                 anchors.verticalCenter: parent.verticalCenter
                 active: root.active || root.showProgress > 0.001
                 sourceComponent: SessionContent {}
+                // Covers the case where this Loader creates its item after
+                // the focus scope's onFocusChanged already fired this tick
+                onLoaded: if (root.active) item.focusFirst()
             }
         }
     }
