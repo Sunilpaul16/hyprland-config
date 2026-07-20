@@ -5,27 +5,78 @@ import "../../services"
 Item {
     id: root
 
-    // Scrollable category flow
+    required property var screen
+
+    readonly property int cardSpacing: 20
+
+    // Row-count based height estimate, just for balancing columns below —
+    // doesn't need to match rendered pixels exactly
+    function estimatedHeight(category) {
+        return 58 + Binds.rowsFor(category).length * 26;
+    }
+
+    // Column packing (longest-processing-time bin-packing): sort categories
+    // tallest-first, always drop the next one into whichever column is
+    // currently shortest. More categories grow the column count rather than
+    // any one column's height, so this keeps scaling as keybinds are added
+    // over time instead of turning into one tall wall or leaving a column
+    // mostly empty.
+    readonly property int columnCount: Math.max(2, Math.ceil(Binds.categories.length / 3))
+    readonly property var columns: {
+        const cats = [...Binds.categories].sort((a, b) => root.estimatedHeight(b) - root.estimatedHeight(a));
+        const cols = Array.from({ length: root.columnCount }, () => []);
+        const heights = new Array(root.columnCount).fill(0);
+        for (const cat of cats) {
+            let shortest = 0;
+            for (let i = 1; i < heights.length; i++) {
+                if (heights[i] < heights[shortest])
+                    shortest = i;
+            }
+            cols[shortest].push(cat);
+            heights[shortest] += root.estimatedHeight(cat) + root.cardSpacing;
+        }
+        return cols;
+    }
+
+    // Natural size, read straight from the rendered columns below. Safe to
+    // do (unlike sizing from a horizontal ListView's contentWidth — see the
+    // gotcha in Overview/Content.qml) because Row/Column/Repeater fully
+    // instantiate every child regardless of viewport size; there's no
+    // virtualization deadlock to avoid here.
+    implicitWidth: Math.min(columnsRow.implicitWidth, (root.screen?.width ?? 1280) * 0.85)
+    implicitHeight: Math.min(columnsRow.implicitHeight, (root.screen?.height ?? 800) * 0.8)
+    width: implicitWidth
+    height: implicitHeight
+
+    // Scrollable column row
     Flickable {
         id: flickable
         anchors.fill: parent
         clip: true
-        contentWidth: flow.implicitWidth
-        contentHeight: height
+        contentWidth: columnsRow.implicitWidth
+        contentHeight: Math.max(height, columnsRow.implicitHeight)
         boundsBehavior: Flickable.StopAtBounds
 
-        Flow {
-            id: flow
-            height: flickable.height
-            flow: Flow.TopToBottom
-            spacing: 32
+        Row {
+            id: columnsRow
+            spacing: root.cardSpacing
 
             Repeater {
-                model: Binds.categories
+                model: root.columns
 
-                CategoryColumn {
-                    required property string modelData
-                    categoryName: modelData
+                Column {
+                    id: columnItem
+                    required property var modelData
+                    spacing: root.cardSpacing
+
+                    Repeater {
+                        model: columnItem.modelData
+
+                        CategoryColumn {
+                            required property string modelData
+                            categoryName: modelData
+                        }
+                    }
                 }
             }
         }
