@@ -11,7 +11,21 @@ Singleton {
     // Active player selection — a manual pick overrides auto-detection,
     // guarded against a stale reference (picked player quit) by checking
     // it's still in the live players list.
-    readonly property var players: Mpris.players.values
+    // Bus names get an ".instanceNNNN"-style suffix when an app registers
+    // multiple MPRIS players at once (browsers are the common case,
+    // e.g. one per tab) — dedupe by the bus name with that suffix
+    // stripped, preferring whichever instance is actively playing
+    readonly property var players: {
+        const raw = Mpris.players.values;
+        const seen = new Map();
+        for (const p of raw) {
+            const key = (p.dbusName ?? "").replace(/\.instance\d+$/, "") || p.dbusName;
+            const existing = seen.get(key);
+            if (!existing || (p.isPlaying && !existing.isPlaying))
+                seen.set(key, p);
+        }
+        return [...seen.values()];
+    }
     property var manualPlayer: null
     readonly property bool hasManualPlayer: root.manualPlayer !== null && root.players.includes(root.manualPlayer)
     readonly property bool hasMultiplePlayers: root.players.length > 1
