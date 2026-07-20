@@ -11,20 +11,24 @@ Singleton {
     // Sink (output)
     readonly property PwNode sink: Pipewire.defaultAudioSink
     readonly property bool muted: !!sink?.audio?.muted
-    readonly property real volume: sink?.audio?.volume ?? 0
+    readonly property real volume: isNaN(sink?.audio?.volume) ? 0 : sink.audio.volume
 
     // Source (mic input)
     readonly property PwNode source: Pipewire.defaultAudioSource
     readonly property bool micMuted: !!source?.audio?.muted
-    readonly property real sourceVolume: source?.audio?.volume ?? 0
+    readonly property real sourceVolume: isNaN(source?.audio?.volume) ? 0 : source.audio.volume
 
     function toggleMicMute(): void {
         if (source?.audio)
             source.audio.muted = !source.audio.muted;
     }
 
-    // Sink volume — clamped [0, 1], matching the existing keybind's -l 1 cap
+    // Sink volume — clamped [0, 1], matching the existing keybind's -l 1 cap.
+    // PipeWire can report NaN on resume-from-suspend; Math.min/max propagate
+    // it straight through the clamp, so guard before it reaches the sink.
     function setVolume(newVolume: real): void {
+        if (isNaN(newVolume))
+            return;
         if (sink?.ready && sink?.audio)
             sink.audio.volume = Math.max(0, Math.min(1, newVolume));
     }
@@ -49,6 +53,8 @@ Singleton {
     // Source (mic) volume — same clamp/step convention as sink, no existing
     // keybind precedent to match for mic level specifically
     function setSourceVolume(newVolume: real): void {
+        if (isNaN(newVolume))
+            return;
         if (source?.ready && source?.audio)
             source.audio.volume = Math.max(0, Math.min(1, newVolume));
     }
