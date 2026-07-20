@@ -22,6 +22,7 @@ hl.bind(kbRestartShell, hl.dsp.exec_cmd([[bash -c 'pkill -x qs; qs -n -c shell']
 hl.bind(kbReloadHyprland, hl.dsp.exec_cmd([[bash -c 'hyprctl reload && notify-send -a hyprland "Hyprland" "Config reloaded"']]), { description = "System: reload Hyprland config" })
 hl.bind(kbLauncher, hl.dsp.exec_cmd("qs -c shell ipc call launcher openApps"), { description = "Launcher: apps" })
 hl.bind(kbWallpaperPicker, hl.dsp.exec_cmd("qs -c shell ipc call launcher openWallpaper"), { description = "Launcher: wallpaper" })
+hl.bind(kbRandomWallpaper, hl.dsp.global("quickshell:randomWallpaper"), { description = "Launcher: random wallpaper" })
 hl.bind(kbCodeEditor, hl.dsp.exec_cmd(codeEditor), { description = "App: code editor" })
 hl.bind(kbCheatsheet, hl.dsp.exec_cmd("qs -c shell ipc call cheatsheet toggle"), { description = "Launcher: keybind cheatsheet" })
 hl.bind(kbOverview, hl.dsp.exec_cmd("qs -c shell ipc call overview toggle"), { description = "Launcher: workspace overview" })

@@ -23,6 +23,7 @@ kbCodeEditor        = "SUPER + C"
 kbLauncher          = "SUPER + Space" -- quickshell app launcher
 kbClipboardHistory  = "SUPER + V"
 kbWallpaperPicker   = "SUPER + T"
+kbRandomWallpaper   = "SUPER + SHIFT + T"
 kbCheatsheet        = "SUPER + Slash"
 kbOverview          = "SUPER + Tab" -- quickshell workspace overview
 

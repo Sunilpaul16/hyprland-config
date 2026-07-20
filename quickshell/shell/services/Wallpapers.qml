@@ -2,6 +2,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
 
 // Wallpaper list singleton
 Singleton {
@@ -30,6 +31,26 @@ Singleton {
 
     function thumbPathFor(path: string): string {
         return `${root.thumbCacheDir}/${Qt.md5(path)}.png`;
+    }
+
+    function randomFromCurrentFolder(): var {
+        return root.list.length > 0 ? root.list[Math.floor(Math.random() * root.list.length)] : null;
+    }
+
+    function applyRandom(): void {
+        const entry = root.randomFromCurrentFolder();
+        if (entry)
+            Quickshell.execDetached([Directories.switchwallScript, entry.path]);
+    }
+
+    // Bound to a Hyprland keybind via hl.dsp.global("quickshell:randomWallpaper")
+    // — see hypr/keybinds.lua. (hyprctl's own dispatch CLI on this native-Lua
+    // config build only accepts hl.dsp.* dispatcher expressions, not the
+    // classic "global <name>" string form.)
+    GlobalShortcut {
+        name: "randomWallpaper"
+        description: "Set a random wallpaper from the current folder"
+        onPressed: root.applyRandom()
     }
 
     Component.onCompleted: scanProc.running = true
