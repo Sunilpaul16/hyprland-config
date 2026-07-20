@@ -2,6 +2,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
 
 // Keybind data singleton
 Singleton {
@@ -67,6 +68,16 @@ Singleton {
 
     function refresh() {
         getBinds.running = true;
+    }
+
+    // Re-fetch whenever Hyprland's config is reloaded, so the cheatsheet
+    // is never stale after `hyprctl reload`
+    Connections {
+        target: Hyprland
+        function onRawEvent(event) {
+            if (event.name === "configreloaded")
+                root.refresh();
+        }
     }
 
     // Fetch binds from hyprctl
