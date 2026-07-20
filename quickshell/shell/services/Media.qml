@@ -114,8 +114,9 @@ Singleton {
         property string pendingUrl: ""
         property string pendingDest: ""
         // Own properties (not root.artUrl directly) so the command string
-        // is pinned at the moment the run launches.
-        command: ["bash", "-c", `mkdir -p "$(dirname '${pendingDest}')" && { [ -f '${pendingDest}' ] || curl -4 -sSL '${pendingUrl}' -o '${pendingDest}'; }`]
+        // is pinned at the moment the run launches. Escaped since
+        // pendingUrl is content a web page controls (MPRIS trackArtUrl).
+        command: ["bash", "-c", `mkdir -p "$(dirname '${StringUtils.shellSingleQuoteEscape(pendingDest)}')" && { [ -f '${StringUtils.shellSingleQuoteEscape(pendingDest)}' ] || curl -4 -sSL '${StringUtils.shellSingleQuoteEscape(pendingUrl)}' -o '${StringUtils.shellSingleQuoteEscape(pendingDest)}'; }`]
         onExited: exitCode => {
             root.artDownloaded = (exitCode === 0);
         }

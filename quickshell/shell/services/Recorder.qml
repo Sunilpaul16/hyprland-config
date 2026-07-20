@@ -16,11 +16,7 @@ Singleton {
     property int elapsedSeconds: 0
     property string mode: "full" // "full" | "region" — used for the next recording
 
-    readonly property string elapsedLabel: {
-        const m = Math.floor(root.elapsedSeconds / 60);
-        const s = root.elapsedSeconds % 60;
-        return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
-    }
+    readonly property string elapsedLabel: StringUtils.friendlyTimeForSeconds(root.elapsedSeconds)
 
     function cycleMode(): void {
         root.mode = root.mode === "full" ? "region" : "full";
