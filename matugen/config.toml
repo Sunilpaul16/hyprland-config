@@ -33,6 +33,14 @@ output_path = '~/.config/gtk-3.0/gtk.css'
 input_path = '~/.config/matugen/templates/gtk-4.0/gtk.css'
 output_path = '~/.config/gtk-4.0/gtk.css'
 
+# btop/ is a plain copy in this repo, not symlinked (see CLAUDE.md) — this
+# writes straight to the live ~/.config/btop/ location like every other
+# template here, but the repo's own btop/themes/ won't reflect it without
+# a manual sync.
+[templates.btop]
+input_path = '~/.config/matugen/templates/btop/matugen.theme'
+output_path = '~/.config/btop/themes/matugen.theme'
+
 # Read at runtime by services/ColorsLoader.qml, which mutates Colors.qml's
 # properties in place — NOT a direct template-to-Colors.qml overwrite
 # anymore, since that lived inside the hot-reloaded shell tree and
