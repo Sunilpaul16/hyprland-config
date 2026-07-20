@@ -34,6 +34,11 @@ QtObject {
 
     readonly property bool critical: urgency === NotificationUrgency.Critical
 
+    // Heuristic: **bold**, `code`, and [text](url) are distinctive enough
+    // not to false-positive on plain text (unlike single */_ for italics,
+    // which collide with things like "5 * 3")
+    readonly property bool bodyHasMarkdown: /\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\)/.test(body)
+
     // Auto-dismiss timer
     readonly property Timer timer: Timer {
         running: notif.popup && !notif.closed && !notif.critical && !notif.hovered

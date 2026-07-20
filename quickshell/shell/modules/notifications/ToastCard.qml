@@ -132,7 +132,7 @@ Rectangle {
                 text: card.modelData.body
                 color: Colors.textMuted
                 font.pixelSize: 12
-                textFormat: Text.PlainText
+                textFormat: card.modelData.bodyHasMarkdown ? Text.MarkdownText : Text.PlainText
                 wrapMode: Text.NoWrap
                 elide: Text.ElideRight
                 maximumLineCount: 1

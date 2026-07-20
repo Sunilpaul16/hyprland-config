@@ -66,8 +66,8 @@ Rectangle {
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
         implicitHeight: Math.max(iconSlot.height, appNameText.height + headerCol.implicitHeight)
 
-        // Reserve room for chevron (always) + close button (expanded only)
-        readonly property int actionsReserve: card.modelData.expanded ? 44 : 24
+        // Reserve room for chevron (always) + close/copy buttons (expanded only)
+        readonly property int actionsReserve: card.modelData.expanded ? 64 : 24
 
         // Icon
         Rectangle {
@@ -175,7 +175,7 @@ Rectangle {
                 text: card.modelData.body
                 color: Colors.textMuted
                 font.pixelSize: 12
-                textFormat: Text.PlainText
+                textFormat: card.modelData.bodyHasMarkdown ? Text.MarkdownText : Text.PlainText
                 wrapMode: card.modelData.expanded ? Text.WordWrap : Text.NoWrap
                 elide: Text.ElideRight
                 maximumLineCount: card.modelData.expanded ? 8 : 1
@@ -221,6 +221,36 @@ Rectangle {
                         }
                     }
                 }
+            }
+        }
+
+        // Copy body to clipboard (expanded only)
+        Rectangle {
+            id: copyBtn
+            anchors.right: closeBtn.left
+            anchors.top: parent.top
+            anchors.rightMargin: 2
+            width: 16
+            height: 16
+            radius: 8
+            visible: card.modelData.expanded && card.modelData.body.length > 0
+            color: copyArea.containsMouse ? Colors.outline : "transparent"
+
+            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+            Text {
+                anchors.centerIn: parent
+                text: "⧉"
+                color: Colors.textMuted
+                font.pixelSize: 10
+            }
+
+            MouseArea {
+                id: copyArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: Quickshell.clipboardText = card.modelData.body
             }
         }
 
