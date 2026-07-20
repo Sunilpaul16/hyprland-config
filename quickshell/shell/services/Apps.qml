@@ -1,7 +1,6 @@
 pragma Singleton
 import QtQuick
 import Quickshell
-import "fuzzysort.js" as Fuzzy
 
 // Installed apps singleton
 Singleton {

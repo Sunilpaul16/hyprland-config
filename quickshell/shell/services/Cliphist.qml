@@ -2,7 +2,6 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import "fuzzysort.js" as Fuzzy
 
 
 // Clipboard history singleton

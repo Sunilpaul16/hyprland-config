@@ -1,6 +1,7 @@
 .pragma library
 
-
+// Vendored from https://github.com/farzher/fuzzysort (MIT license).
+// Accessed via the Fuzzy.qml wrapper singleton, not imported directly.
 
 var single =  (search, target) => {
     if(!search || !target) return NULL
