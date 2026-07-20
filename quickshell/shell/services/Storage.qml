@@ -25,6 +25,20 @@ Singleton {
     property var disks: []
     readonly property var primaryDisk: root.disks.length > 0 ? root.disks[0] : null
 
+    // Manual disk pick overrides primaryDisk, guarded against a stale
+    // reference the same way Media.qml's manualPlayer is
+    property var manualDisk: null
+    readonly property bool hasManualDisk: root.manualDisk !== null && root.disks.includes(root.manualDisk)
+    readonly property var selectedDisk: root.hasManualDisk ? root.manualDisk : root.primaryDisk
+
+    function selectDisk(disk): void {
+        root.manualDisk = disk;
+    }
+
+    function clearDiskOverride(): void {
+        root.manualDisk = null;
+    }
+
     property string _dfText: ""
 
     function flattenLsblk(node, map): void {
