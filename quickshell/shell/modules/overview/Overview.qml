@@ -5,74 +5,86 @@ import Quickshell.Hyprland
 import "../../services"
 
 // Workspace overview overlay window
-PanelWindow {
-    id: root
+Scope {
+    Variants {
+        model: Quickshell.screens
 
-    // Visibility state
-    readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
-    readonly property bool active: OverviewState.open && root.isFocusedScreen
+        PanelLoader {
+            id: panelLoader
+            required property var modelData
 
-    property real showProgress: active ? 1 : 0
+            component: PanelWindow {
+                id: root
+                screen: panelLoader.modelData
 
-    Behavior on showProgress {
-        NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
-    }
+                // Visibility state
+                readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
+                readonly property bool active: OverviewState.open && root.isFocusedScreen
 
-    // Positioning
-    anchors {
-        top: true
-        left: true
-        right: true
-        bottom: true
-    }
+                property real showProgress: active ? 1 : 0
 
-    // Window setup
-    color: "transparent"
-    exclusiveZone: 0
-    visible: showProgress > 0.001
+                Behavior on showProgress {
+                    NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
+                }
 
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.namespace: "quickshell-overview"
-    WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+                // Positioning
+                anchors {
+                    top: true
+                    left: true
+                    right: true
+                    bottom: true
+                }
 
-    // Click outside to close
-    MouseArea {
-        anchors.fill: parent
-        onClicked: OverviewState.open = false
-    }
+                // Window setup
+                color: "transparent"
+                exclusiveZone: 0
+                visible: showProgress > 0.001
 
-    // Focus scope
-    Item {
-        anchors.fill: parent
-        focus: root.active
-        Keys.onEscapePressed: OverviewState.open = false
+                WlrLayershell.layer: WlrLayer.Overlay
+                WlrLayershell.namespace: "quickshell-overview"
+                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-        // Absorb clicks on panel
-        MouseArea {
-            anchors.fill: panel
-            onClicked: {}
-        }
+                // Click outside to close
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: OverviewState.open = false
+                }
 
-        // Panel
-        Rectangle {
-            id: panel
-            anchors.centerIn: parent
-            width: Math.min(content.implicitWidth + 56, (root.screen?.width ?? 1280) * 0.92)
-            height: content.implicitHeight + 56
-            radius: 18
-            color: Colors.background
-            border.width: 1
-            border.color: Colors.outline
+                // Focus scope
+                Item {
+                    anchors.fill: parent
+                    focus: root.active
+                    Keys.onEscapePressed: OverviewState.open = false
 
-            opacity: root.showProgress
-            scale: 0.96 + 0.04 * root.showProgress
-            transformOrigin: Item.Center
+                    // Absorb clicks on panel
+                    MouseArea {
+                        anchors.fill: panel
+                        onClicked: {}
+                    }
 
-            Content {
-                id: content
-                anchors.centerIn: parent
-                screen: root.screen
-                active: root.active
+                    // Panel
+                    Rectangle {
+                        id: panel
+                        anchors.centerIn: parent
+                        width: Math.min(content.implicitWidth + 56, (root.screen?.width ?? 1280) * 0.92)
+                        height: content.implicitHeight + 56
+                        radius: 18
+                        color: Colors.background
+                        border.width: 1
+                        border.color: Colors.outline
+
+                        opacity: root.showProgress
+                        scale: 0.96 + 0.04 * root.showProgress
+                        transformOrigin: Item.Center
+
+                        Content {
+                            id: content
+                            anchors.centerIn: parent
+                            screen: root.screen
+                            active: root.active
+                        }
+                    }
+                }
             }
         }
     }

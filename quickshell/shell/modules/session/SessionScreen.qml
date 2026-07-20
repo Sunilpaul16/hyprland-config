@@ -5,102 +5,114 @@ import Quickshell.Hyprland
 import "../../services"
 
 // Session/power overlay window — right-edge slide-in drawer
-PanelWindow {
-    id: root
+Scope {
+    Variants {
+        model: Quickshell.screens
 
-    // Visibility state
-    readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
-    readonly property bool active: SessionState.open && root.isFocusedScreen
+        PanelLoader {
+            id: panelLoader
+            required property var modelData
 
-    property real showProgress: active ? 1 : 0
+            component: PanelWindow {
+                id: root
+                screen: panelLoader.modelData
 
-    Behavior on showProgress {
-        NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
-    }
+                // Visibility state
+                readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
+                readonly property bool active: SessionState.open && root.isFocusedScreen
 
-    // Right-edge stack registration
-    onActiveChanged: RightEdgeStack.register(root.screen, "session", root.active, drawer.registeredWidth)
+                property real showProgress: active ? 1 : 0
 
-    // Positioning
-    anchors {
-        top: true
-        left: true
-        right: true
-        bottom: true
-    }
+                Behavior on showProgress {
+                    NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
+                }
 
-    // Window setup
-    color: "transparent"
-    exclusiveZone: 0
-    visible: showProgress > 0.001
+                // Right-edge stack registration
+                onActiveChanged: RightEdgeStack.register(root.screen, "session", root.active, drawer.registeredWidth)
 
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.namespace: "quickshell-session"
-    WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+                // Positioning
+                anchors {
+                    top: true
+                    left: true
+                    right: true
+                    bottom: true
+                }
 
-    // Click outside to close
-    MouseArea {
-        anchors.fill: parent
-        onClicked: SessionState.open = false
-    }
+                // Window setup
+                color: "transparent"
+                exclusiveZone: 0
+                visible: showProgress > 0.001
 
-    // Focus scope
-    Item {
-        anchors.fill: parent
-        focus: root.active
-        Keys.onEscapePressed: SessionState.open = false
+                WlrLayershell.layer: WlrLayer.Overlay
+                WlrLayershell.namespace: "quickshell-session"
+                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-        // Hand keyboard focus to the first action button so Up/Down/Enter
-        // work immediately, without a click first
-        onFocusChanged: if (focus && loader.item) loader.item.focusFirst()
+                // Click outside to close
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: SessionState.open = false
+                }
 
-        // Absorb clicks on the drawer itself
-        MouseArea {
-            anchors.fill: drawer
-            onClicked: {}
-        }
+                // Focus scope
+                Item {
+                    anchors.fill: parent
+                    focus: root.active
+                    Keys.onEscapePressed: SessionState.open = false
 
-        // Drawer: right-edge slide via animated rightMargin + opacity fade,
-        // resting/closed margins mirror SidebarRightPanel's 8px edge gap
-        Item {
-            id: drawer
+                    // Hand keyboard focus to the first action button so Up/Down/Enter
+                    // work immediately, without a click first
+                    onFocusChanged: if (focus && loader.item) loader.item.focusFirst()
 
-            readonly property int restingMargin: 8
-            readonly property int closedMargin: -(drawer.implicitWidth + restingMargin)
+                    // Absorb clicks on the drawer itself
+                    MouseArea {
+                        anchors.fill: drawer
+                        onClicked: {}
+                    }
 
-            // Pushed left by whichever right-edge panels are stacked
-            // outside Session (currently just Sidebar, if open)
-            property real stackOffset: RightEdgeStack.offsetFor(root.screen, "session")
-            Behavior on stackOffset {
-                NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
-            }
+                    // Drawer: right-edge slide via animated rightMargin + opacity fade,
+                    // resting/closed margins mirror SidebarRightPanel's 8px edge gap
+                    Item {
+                        id: drawer
 
-            // Total footprint (from the true screen edge) a panel further
-            // out needs to clear to avoid overlapping Session
-            property real registeredWidth: implicitWidth + restingMargin
-            onRegisteredWidthChanged: RightEdgeStack.register(root.screen, "session", root.active, registeredWidth)
-            Component.onCompleted: RightEdgeStack.register(root.screen, "session", root.active, registeredWidth)
+                        readonly property int restingMargin: 8
+                        readonly property int closedMargin: -(drawer.implicitWidth + restingMargin)
 
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.right: parent.right
-            anchors.rightMargin: closedMargin + (restingMargin - closedMargin) * root.showProgress + stackOffset
-            // Fallback sizing for the first open frame, before the Loader's
-            // content has laid out
-            implicitWidth: (loader.item ? loader.item.implicitWidth : 0) || 64
-            implicitHeight: (loader.item ? loader.item.implicitHeight : 0) || 384
-            opacity: root.showProgress
+                        // Pushed left by whichever right-edge panels are stacked
+                        // outside Session (currently just Sidebar, if open)
+                        property real stackOffset: RightEdgeStack.offsetFor(root.screen, "session")
+                        Behavior on stackOffset {
+                            NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
+                        }
 
-            // Content only instantiated while open/animating — avoids the
-            // gif slot (and its loop animation) running while closed
-            Loader {
-                id: loader
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                active: root.active || root.showProgress > 0.001
-                sourceComponent: SessionContent {}
-                // Covers the case where this Loader creates its item after
-                // the focus scope's onFocusChanged already fired this tick
-                onLoaded: if (root.active) item.focusFirst()
+                        // Total footprint (from the true screen edge) a panel further
+                        // out needs to clear to avoid overlapping Session
+                        property real registeredWidth: implicitWidth + restingMargin
+                        onRegisteredWidthChanged: RightEdgeStack.register(root.screen, "session", root.active, registeredWidth)
+                        Component.onCompleted: RightEdgeStack.register(root.screen, "session", root.active, registeredWidth)
+
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: closedMargin + (restingMargin - closedMargin) * root.showProgress + stackOffset
+                        // Fallback sizing for the first open frame, before the Loader's
+                        // content has laid out
+                        implicitWidth: (loader.item ? loader.item.implicitWidth : 0) || 64
+                        implicitHeight: (loader.item ? loader.item.implicitHeight : 0) || 384
+                        opacity: root.showProgress
+
+                        // Content only instantiated while open/animating — avoids the
+                        // gif slot (and its loop animation) running while closed
+                        Loader {
+                            id: loader
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            active: root.active || root.showProgress > 0.001
+                            sourceComponent: SessionContent {}
+                            // Covers the case where this Loader creates its item after
+                            // the focus scope's onFocusChanged already fired this tick
+                            onLoaded: if (root.active) item.focusFirst()
+                        }
+                    }
+                }
             }
         }
     }

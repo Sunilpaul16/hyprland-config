@@ -12,12 +12,16 @@ Singleton {
     property alias barHeight: adapter.barHeight
     property alias toastDismissDuration: adapter.toastDismissDuration
 
+    // Gates panels from reading config before the FileView has loaded
+    property bool ready: false
+
     // Config file
     FileView {
         id: configFile
         path: Directories.configFile
         watchChanges: true
 
+        onLoaded: root.ready = true
         onFileChanged: reloadTimer.restart()
         onAdapterUpdated: writeTimer.restart()
         onLoadFailed: error => {

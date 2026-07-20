@@ -5,87 +5,99 @@ import Quickshell.Hyprland
 import "../../services"
 
 // Tray context menu overlay window
-PanelWindow {
-    id: root
+Scope {
+    Variants {
+        model: Quickshell.screens
 
-    // Visibility state
-    readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
-    readonly property bool active: TrayMenuState.open && root.isFocusedScreen
+        PanelLoader {
+            id: panelLoader
+            required property var modelData
 
-    property real showProgress: active ? 1 : 0
+            component: PanelWindow {
+                id: root
+                screen: panelLoader.modelData
 
-    Behavior on showProgress {
-        NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
-    }
+                // Visibility state
+                readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
+                readonly property bool active: TrayMenuState.open && root.isFocusedScreen
 
-    // Positioning
-    anchors {
-        top: true
-        left: true
-        right: true
-        bottom: true
-    }
+                property real showProgress: active ? 1 : 0
 
-    // Window setup
-    color: "transparent"
-    exclusiveZone: 0
-    visible: showProgress > 0.001
+                Behavior on showProgress {
+                    NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
+                }
 
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.namespace: "quickshell-tray-menu"
-    WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+                // Positioning
+                anchors {
+                    top: true
+                    left: true
+                    right: true
+                    bottom: true
+                }
 
-    // Click outside to close
-    MouseArea {
-        anchors.fill: parent
-        onClicked: TrayMenuState.close()
-    }
+                // Window setup
+                color: "transparent"
+                exclusiveZone: 0
+                visible: showProgress > 0.001
 
-    // Focus scope
-    Item {
-        anchors.fill: parent
-        focus: root.active
-        Keys.onEscapePressed: TrayMenuState.close()
+                WlrLayershell.layer: WlrLayer.Overlay
+                WlrLayershell.namespace: "quickshell-tray-menu"
+                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-        // Absorb clicks on panel
-        MouseArea {
-            anchors.fill: panel
-            onClicked: {}
-        }
+                // Click outside to close
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: TrayMenuState.close()
+                }
 
-        // Panel
-        Rectangle {
-            id: panel
+                // Focus scope
+                Item {
+                    anchors.fill: parent
+                    focus: root.active
+                    Keys.onEscapePressed: TrayMenuState.close()
 
-            x: Math.max(8, Math.min(TrayMenuState.anchorX, root.width - implicitWidth - 8))
-            y: Math.max(8, Math.min(TrayMenuState.anchorY + 14, root.height - implicitHeight - 8))
-            implicitWidth: Math.max(160, list.implicitWidth + 12)
-            implicitHeight: list.implicitHeight + 12
-            radius: 12
-            color: Colors.background
-            border.width: 1
-            border.color: Colors.outline
+                    // Absorb clicks on panel
+                    MouseArea {
+                        anchors.fill: panel
+                        onClicked: {}
+                    }
 
-            opacity: root.showProgress
-            scale: 0.96 + 0.04 * root.showProgress
-            transformOrigin: Item.TopLeft
+                    // Panel
+                    Rectangle {
+                        id: panel
 
-            // Menu entries list
-            Column {
-                id: list
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.margins: 6
-                spacing: 2
+                        x: Math.max(8, Math.min(TrayMenuState.anchorX, root.width - implicitWidth - 8))
+                        y: Math.max(8, Math.min(TrayMenuState.anchorY + 14, root.height - implicitHeight - 8))
+                        implicitWidth: Math.max(160, list.implicitWidth + 12)
+                        implicitHeight: list.implicitHeight + 12
+                        radius: 12
+                        color: Colors.background
+                        border.width: 1
+                        border.color: Colors.outline
 
-                Repeater {
-                    model: TrayMenuState.entries
+                        opacity: root.showProgress
+                        scale: 0.96 + 0.04 * root.showProgress
+                        transformOrigin: Item.TopLeft
 
-                    TrayMenuItem {
-                        required property var modelData
-                        entry: modelData
-                        width: list.width
+                        // Menu entries list
+                        Column {
+                            id: list
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.margins: 6
+                            spacing: 2
+
+                            Repeater {
+                                model: TrayMenuState.entries
+
+                                TrayMenuItem {
+                                    required property var modelData
+                                    entry: modelData
+                                    width: list.width
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -5,134 +5,146 @@ import Quickshell.Hyprland
 import "../../services"
 
 // Volume/mic OSD window — right-edge slide-in drawer, auto-show-on-change
-PanelWindow {
-    id: root
+Scope {
+    Variants {
+        model: Quickshell.screens
 
-    // Visibility state
-    readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
+        PanelLoader {
+            id: panelLoader
+            required property var modelData
 
-    property bool triggered: false
-    readonly property bool active: root.triggered && root.isFocusedScreen
+            component: PanelWindow {
+                id: root
+                screen: panelLoader.modelData
 
-    property bool startupGraceOver: false
-    // Startup grace period — suppresses the spurious trigger every
-    // Audio.qml property emits on shell launch
-    Timer {
-        interval: 1000
-        running: true
-        onTriggered: root.startupGraceOver = true
-    }
+                // Visibility state
+                readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
 
-    property real showProgress: active ? 1 : 0
-    Behavior on showProgress {
-        NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
-    }
+                property bool triggered: false
+                readonly property bool active: root.triggered && root.isFocusedScreen
 
-    // Right-edge stack registration
-    onActiveChanged: RightEdgeStack.register(root.screen, "volume", root.active, drawer.registeredWidth)
+                property bool startupGraceOver: false
+                // Startup grace period — suppresses the spurious trigger every
+                // Audio.qml property emits on shell launch
+                Timer {
+                    interval: 1000
+                    running: true
+                    onTriggered: root.startupGraceOver = true
+                }
 
-    // Show (and restart the auto-hide timer) on any sink/source change
-    function show(): void {
-        if (!root.startupGraceOver)
-            return;
-        root.triggered = true;
-        armHideTimer();
-    }
+                property real showProgress: active ? 1 : 0
+                Behavior on showProgress {
+                    NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
+                }
 
-    // Keeps the timer stopped while hovered instead of letting a
-    // scroll-triggered restart race past a still-active hover
-    function armHideTimer(): void {
-        if (drawer.hovered)
-            hideTimer.stop();
-        else
-            hideTimer.restart();
-    }
+                // Right-edge stack registration
+                onActiveChanged: RightEdgeStack.register(root.screen, "volume", root.active, drawer.registeredWidth)
 
-    Connections {
-        target: Audio
-        function onVolumeChanged() { root.show(); }
-        function onMutedChanged() { root.show(); }
-        function onSourceVolumeChanged() { root.show(); }
-        function onMicMutedChanged() { root.show(); }
-    }
+                // Show (and restart the auto-hide timer) on any sink/source change
+                function show(): void {
+                    if (!root.startupGraceOver)
+                        return;
+                    root.triggered = true;
+                    armHideTimer();
+                }
 
-    // Auto-hide timer
-    Timer {
-        id: hideTimer
-        interval: 1500
-        onTriggered: root.triggered = false
-    }
+                // Keeps the timer stopped while hovered instead of letting a
+                // scroll-triggered restart race past a still-active hover
+                function armHideTimer(): void {
+                    if (drawer.hovered)
+                        hideTimer.stop();
+                    else
+                        hideTimer.restart();
+                }
 
-    // Positioning
-    anchors {
-        top: true
-        left: true
-        right: true
-        bottom: true
-    }
+                Connections {
+                    target: Audio
+                    function onVolumeChanged() { root.show(); }
+                    function onMutedChanged() { root.show(); }
+                    function onSourceVolumeChanged() { root.show(); }
+                    function onMicMutedChanged() { root.show(); }
+                }
 
-    // Window setup
-    color: "transparent"
-    exclusiveZone: 0
-    visible: showProgress > 0.001
+                // Auto-hide timer
+                Timer {
+                    id: hideTimer
+                    interval: 1500
+                    onTriggered: root.triggered = false
+                }
 
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.namespace: "quickshell-volume-osd"
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+                // Positioning
+                anchors {
+                    top: true
+                    left: true
+                    right: true
+                    bottom: true
+                }
 
-    // Click/scroll-through everywhere except the drawer itself — this is
-    // a passive toast, not a modal, so no click-outside-to-close
-    mask: Region {
-        item: drawer
-    }
+                // Window setup
+                color: "transparent"
+                exclusiveZone: 0
+                visible: showProgress > 0.001
 
-    // Drawer: right-edge slide via animated rightMargin + opacity fade,
-    // same mechanism as SessionScreen
-    Item {
-        id: drawer
+                WlrLayershell.layer: WlrLayer.Overlay
+                WlrLayershell.namespace: "quickshell-volume-osd"
+                WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-        property bool hovered: false
+                // Click/scroll-through everywhere except the drawer itself — this is
+                // a passive toast, not a modal, so no click-outside-to-close
+                mask: Region {
+                    item: drawer
+                }
 
-        readonly property int restingMargin: 8
-        readonly property int closedMargin: -(drawer.implicitWidth + restingMargin)
+                // Drawer: right-edge slide via animated rightMargin + opacity fade,
+                // same mechanism as SessionScreen
+                Item {
+                    id: drawer
 
-        // Pushed left by whichever right-edge panels are stacked outside
-        // this one (Sidebar and/or Session, if open)
-        property real stackOffset: RightEdgeStack.offsetFor(root.screen, "volume")
-        Behavior on stackOffset {
-            NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
-        }
+                    property bool hovered: false
 
-        property real registeredWidth: implicitWidth + restingMargin
-        onRegisteredWidthChanged: RightEdgeStack.register(root.screen, "volume", root.active, registeredWidth)
-        Component.onCompleted: RightEdgeStack.register(root.screen, "volume", root.active, registeredWidth)
+                    readonly property int restingMargin: 8
+                    readonly property int closedMargin: -(drawer.implicitWidth + restingMargin)
 
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.right: parent.right
-        anchors.rightMargin: closedMargin + (restingMargin - closedMargin) * root.showProgress + stackOffset
-        // Fallback sizing for the first open frame, before the Loader's
-        // content has laid out (same race SessionScreen's drawer guards)
-        implicitWidth: (loader.item ? loader.item.implicitWidth : 0) || 40
-        implicitHeight: (loader.item ? loader.item.implicitHeight : 0) || 296
-        opacity: root.showProgress
+                    // Pushed left by whichever right-edge panels are stacked outside
+                    // this one (Sidebar and/or Session, if open)
+                    property real stackOffset: RightEdgeStack.offsetFor(root.screen, "volume")
+                    Behavior on stackOffset {
+                        NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
+                    }
 
-        HoverHandler {
-            onHoveredChanged: {
-                drawer.hovered = hovered;
-                if (!hovered)
-                    root.armHideTimer();
-                else
-                    hideTimer.stop();
+                    property real registeredWidth: implicitWidth + restingMargin
+                    onRegisteredWidthChanged: RightEdgeStack.register(root.screen, "volume", root.active, registeredWidth)
+                    Component.onCompleted: RightEdgeStack.register(root.screen, "volume", root.active, registeredWidth)
+
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: closedMargin + (restingMargin - closedMargin) * root.showProgress + stackOffset
+                    // Fallback sizing for the first open frame, before the Loader's
+                    // content has laid out (same race SessionScreen's drawer guards)
+                    implicitWidth: (loader.item ? loader.item.implicitWidth : 0) || 40
+                    implicitHeight: (loader.item ? loader.item.implicitHeight : 0) || 296
+                    opacity: root.showProgress
+
+                    HoverHandler {
+                        onHoveredChanged: {
+                            drawer.hovered = hovered;
+                            if (!hovered)
+                                root.armHideTimer();
+                            else
+                                hideTimer.stop();
+                        }
+                    }
+
+                    // Content only instantiated while open/animating
+                    Loader {
+                        id: loader
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        active: root.active || root.showProgress > 0.001
+                        sourceComponent: VolumeOsdContent {}
+                    }
+                }
             }
-        }
-
-        // Content only instantiated while open/animating
-        Loader {
-            id: loader
-            anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
-            active: root.active || root.showProgress > 0.001
-            sourceComponent: VolumeOsdContent {}
         }
     }
 }
