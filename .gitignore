@@ -58,4 +58,4 @@ kitty/theme.conf
 # change, not something to hand-edit as repo source or track history of.
 quickshell/config.json
 
-./rev
+review
