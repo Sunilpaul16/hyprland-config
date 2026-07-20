@@ -46,7 +46,7 @@ Singleton {
 
     FileView {
         id: colorsFile
-        path: Quickshell.env("HOME") + "/.local/state/quickshell/colors.json"
+        path: Directories.colorsFile
         watchChanges: true
 
         onFileChanged: root.reapplyTheme()

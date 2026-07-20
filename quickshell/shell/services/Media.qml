@@ -89,7 +89,7 @@ Singleton {
     // so it isn't re-downloaded once per monitor.
     readonly property string artUrl: activePlayer?.trackArtUrl ?? ""
     readonly property bool artIsRemote: artUrl.startsWith("http://") || artUrl.startsWith("https://")
-    readonly property string artCacheDir: Quickshell.env("HOME") + "/.cache/quickshell-media-art"
+    readonly property string artCacheDir: Directories.mediaArtCache
     readonly property string artCacheFile: artCacheDir + "/" + Qt.md5(artUrl) + ".jpg"
     property bool artDownloaded: false
 

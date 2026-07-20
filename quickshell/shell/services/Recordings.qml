@@ -7,7 +7,7 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    readonly property string dir: Quickshell.env("HOME") + "/Videos"
+    readonly property string dir: Directories.videosDir
     property list<var> entries: [] // {name, path, mtimeMs}, newest first
 
     function refresh(): void {

@@ -131,13 +131,13 @@ Item {
     function previewWallpaper(entry): void {
         if (!entry)
             return;
-        Quickshell.execDetached([Quickshell.env("HOME") + "/.local/bin/switchwall", "--preview", entry.path]);
+        Quickshell.execDetached([Directories.switchwallScript, "--preview", entry.path]);
     }
 
     function confirmSelection(entry): void {
         applyDebounce.stop();
         if (entry)
-            Quickshell.execDetached([Quickshell.env("HOME") + "/.local/bin/switchwall", entry.path]);
+            Quickshell.execDetached([Directories.switchwallScript, entry.path]);
         LauncherState.open = false;
     }
 

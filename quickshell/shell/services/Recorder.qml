@@ -9,7 +9,7 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    readonly property string recordBin: Quickshell.env("HOME") + "/.local/bin/record"
+    readonly property string recordBin: Directories.recordScript
 
     property bool active: false
     property real startedAt: 0

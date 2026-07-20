@@ -12,7 +12,7 @@ Rectangle {
     id: root
 
     readonly property string wmName: Quickshell.env("XDG_CURRENT_DESKTOP") || Quickshell.env("XDG_SESSION_DESKTOP") || "Unknown"
-    readonly property string facePath: Quickshell.env("HOME") + "/.face"
+    readonly property string facePath: Directories.faceIcon
 
     property string osName: "Unknown OS"
     property string uptimeStr: "up —"

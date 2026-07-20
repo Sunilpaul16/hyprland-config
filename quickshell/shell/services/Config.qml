@@ -16,7 +16,7 @@ Singleton {
     // Config file
     FileView {
         id: configFile
-        path: Quickshell.env("HOME") + "/.config/quickshell/config.json"
+        path: Directories.configFile
         watchChanges: true
 
         onFileChanged: reloadTimer.restart()
