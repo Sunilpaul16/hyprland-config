@@ -1,0 +1,12 @@
+{
+  "background": "{{colors.background.default.hex}}",
+  "surface": "{{colors.surface_container.default.hex}}",
+  "primary": "{{colors.primary.default.hex}}",
+  "text": "{{colors.on_surface.default.hex}}",
+  "textMuted": "{{colors.on_surface_variant.default.hex}}",
+  "outline": "{{colors.outline.default.hex}}",
+  "error": "{{colors.error.default.hex}}",
+  "textOnError": "{{colors.on_error.default.hex}}",
+  "errorContainer": "{{colors.error_container.default.hex}}",
+  "textOnErrorContainer": "{{colors.on_error_container.default.hex}}"
+}

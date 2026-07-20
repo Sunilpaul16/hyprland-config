@@ -1,7 +1,10 @@
 # matugen config for this repo's theming pipeline.
 #
-# Only templates with zero quickshell dependency are wired up here. Skipped
-# for now: kde-material-you-colors, colors.json, wallpaper.txt.
+# Only templates with zero quickshell dependency are wired up here, plus
+# colors.json (loaded at runtime by services/ColorsLoader.qml rather than
+# matugen overwriting Colors.qml directly — see that file and Colors.qml's
+# own header comment). Skipped for now: kde-material-you-colors,
+# wallpaper.txt.
 #
 # kitty is NOT templated here — its colors come from a separate pipeline
 # (materialyoucolor + sed, run from switchwall) since matugen's own Material
@@ -30,13 +33,16 @@ output_path = '~/.config/gtk-3.0/gtk.css'
 input_path = '~/.config/matugen/templates/gtk-4.0/gtk.css'
 output_path = '~/.config/gtk-4.0/gtk.css'
 
-# This repo's own quickshell shell — NOT the [templates.m3colors] target
-# below (a separate, still-deferred shell config).
-[templates.quickshell_shell_colors]
-input_path = '~/.config/matugen/templates/quickshell-shell/Colors.qml'
-output_path = '~/.config/quickshell/shell/services/Colors.qml'
+# Read at runtime by services/ColorsLoader.qml, which mutates Colors.qml's
+# properties in place — NOT a direct template-to-Colors.qml overwrite
+# anymore, since that lived inside the hot-reloaded shell tree and
+# restarted the whole shell on every wallpaper change.
+[templates.quickshell_colors_json]
+input_path = '~/.config/matugen/templates/colors-json/colors.json'
+output_path = '~/.local/state/quickshell/colors.json'
 
-# --- Add if a second, alternate shell config is ever adopted -----------------
+# --- Add if a second, alternate shell config is ever adopted, wanting the
+# --- full M3 role dump rather than this repo's trimmed 10-key subset --------
 # [templates.m3colors]
 # input_path = '~/.config/matugen/templates/colors.json'
 # output_path = '~/.local/state/quickshell/user/generated/colors.json'

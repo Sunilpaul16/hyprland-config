@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import "services"
 import "modules/bar"
 import "modules/dashboard"
 import "modules/launcher"
@@ -14,6 +15,10 @@ import "modules/volumeOsd"
 
 // Shell entrypoint
 ShellRoot {
+    // Force ColorsLoader's lazy singleton to load and apply matugen's
+    // last-written theme (see ColorsLoader.qml)
+    Component.onCompleted: ColorsLoader.reapplyTheme()
+
     // For each monitor: bar
     Variants {
         model: Quickshell.screens
