@@ -7,9 +7,13 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    readonly property int temperature: 4000
+    readonly property int temperature: 5200
 
-    property bool enabled: false
+    // Restored across a shell-only restart (not a fresh Hyprland login —
+    // see Persistent.isNewHyprlandInstance), so the toggle doesn't desync
+    // from the hyprsunset process, which keeps running across restarts
+    property bool enabled: !Persistent.isNewHyprlandInstance && Persistent.nightLightEnabled
+    onEnabledChanged: Persistent.nightLightEnabled = root.enabled
 
     function toggle(): void {
         root.enabled = !root.enabled;

@@ -192,7 +192,7 @@ ColumnLayout {
         property bool editMode: false
         default property alias content: contentItem.children
 
-        readonly property bool hidden: Config.hiddenQuickToggles.indexOf(toggleId) !== -1
+        readonly property bool hidden: Persistent.hiddenQuickToggles.indexOf(toggleId) !== -1
         visible: slot.editMode || !slot.hidden
 
         implicitWidth: 40
@@ -209,13 +209,13 @@ ColumnLayout {
             enabled: slot.editMode
             cursorShape: Qt.PointingHandCursor
             onClicked: {
-                const ids = Config.hiddenQuickToggles.slice();
+                const ids = Persistent.hiddenQuickToggles.slice();
                 const idx = ids.indexOf(slot.toggleId);
                 if (idx !== -1)
                     ids.splice(idx, 1);
                 else
                     ids.push(slot.toggleId);
-                Config.hiddenQuickToggles = ids;
+                Persistent.hiddenQuickToggles = ids;
             }
         }
 

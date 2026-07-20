@@ -7,7 +7,8 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    property bool enabled: false
+    property bool enabled: !Persistent.isNewHyprlandInstance && Persistent.keepAwakeCardEnabled
+    onEnabledChanged: Persistent.keepAwakeCardEnabled = root.enabled
 
     function toggle(): void {
         root.enabled = !root.enabled;
