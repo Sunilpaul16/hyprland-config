@@ -95,46 +95,92 @@ Scope {
                             spacing: 16
 
                             // Tab bar
-                            RowLayout {
+                            Item {
                                 id: tabBar
                                 Layout.fillWidth: true
-                                spacing: 8
+                                implicitHeight: buttonsRow.implicitHeight
 
-                                Repeater {
-                                    model: root.tabModel
+                                // Stretchy active-tab indicator — leading/trailing edges
+                                // animate at different speeds so it stretches between
+                                // tabs rather than sliding (comparison.md #39)
+                                Rectangle {
+                                    id: activeIndicator
 
-                                    delegate: Rectangle {
-                                        id: tabButton
+                                    // buttonsRow.children (not tabRepeater.itemAt()) — .itemAt() is a
+                                    // plain method call with no notify signal, so this binding would
+                                    // never re-run once Repeater populated its items asynchronously
+                                    // after the first evaluation; .children is NOTIFY-able and re-fires
+                                    // when the delegate is actually added
+                                    readonly property Item targetItem: buttonsRow.children[root.currentTab]
 
-                                        required property int index
-                                        required property var modelData
-                                        readonly property bool current: index === root.currentTab
+                                    z: 0
+                                    height: parent.height
+                                    radius: height / 2
+                                    color: Colors.primary
 
-                                        radius: 10
-                                        color: current ? Colors.primary : "transparent"
-                                        implicitWidth: tabLabel.implicitWidth + 24
-                                        implicitHeight: tabLabel.implicitHeight + 12
+                                    AnimatedTabIndexPair {
+                                        id: leftBound
+                                        index: activeIndicator.targetItem ? activeIndicator.targetItem.x : 0
+                                    }
+                                    AnimatedTabIndexPair {
+                                        id: rightBound
+                                        index: activeIndicator.targetItem ? (activeIndicator.targetItem.x + activeIndicator.targetItem.width) : 0
+                                    }
 
-                                        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                                    x: Math.min(leftBound.idx1, leftBound.idx2)
+                                    width: Math.max(rightBound.idx1, rightBound.idx2) - x
+                                }
 
-                                        Text {
-                                            id: tabLabel
-                                            anchors.centerIn: parent
-                                            text: tabButton.modelData.text
-                                            color: tabButton.current ? Colors.background : Colors.text
-                                            font.pixelSize: 13
-                                            font.bold: tabButton.current
-                                        }
+                                Row {
+                                    id: buttonsRow
+                                    z: 1
+                                    spacing: 8
 
-                                        MouseArea {
-                                            anchors.fill: parent
-                                            cursorShape: Qt.PointingHandCursor
-                                            onClicked: root.currentTab = tabButton.index
+                                    Repeater {
+                                        model: root.tabModel
+
+                                        delegate: Rectangle {
+                                            id: tabButton
+
+                                            required property int index
+                                            required property var modelData
+                                            readonly property bool current: index === root.currentTab
+
+                                            radius: 10
+                                            color: "transparent"
+                                            implicitWidth: tabLabel.implicitWidth + 24
+                                            implicitHeight: tabLabel.implicitHeight + 12
+
+                                            Text {
+                                                id: tabLabel
+                                                anchors.centerIn: parent
+                                                text: tabButton.modelData.text
+                                                color: tabButton.current ? Colors.background : Colors.text
+                                                font.pixelSize: 13
+                                                font.bold: tabButton.current
+                                            }
+
+                                            MouseArea {
+                                                anchors.fill: parent
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: root.currentTab = tabButton.index
+                                            }
                                         }
                                     }
                                 }
 
-                                Item { Layout.fillWidth: true }
+                                // Wheel-to-switch-tab
+                                MouseArea {
+                                    z: 2
+                                    anchors.fill: parent
+                                    acceptedButtons: Qt.NoButton
+                                    onWheel: event => {
+                                        if (event.angleDelta.y < 0)
+                                            root.currentTab = Math.min(root.currentTab + 1, root.tabModel.length - 1);
+                                        else
+                                            root.currentTab = Math.max(root.currentTab - 1, 0);
+                                    }
+                                }
                             }
 
                             // Horizontally-flickable tab content (one pane per tab, swipeable)
@@ -232,6 +278,21 @@ Scope {
                 Component {
                     id: weatherTabComponent
                     WeatherTab {}
+                }
+
+                // Tracks a target value through two independently-timed
+                // Behaviors — idx1 (fast) and idx2 (slow) — so a bound edge
+                // computed from min/max of both arrives late, stretching
+                // rather than sliding (comparison.md #39, ported from
+                // end-4's AnimatedTabIndexPair)
+                component AnimatedTabIndexPair: QtObject {
+                    required property real index
+
+                    property real idx1: index
+                    property real idx2: index
+
+                    Behavior on idx1 { NumberAnimation { duration: 100; easing.type: Easing.OutSine } }
+                    Behavior on idx2 { NumberAnimation { duration: 300; easing.type: Easing.OutSine } }
                 }
             }
         }
