@@ -31,6 +31,9 @@ parser.add_argument('--cache', type=str, default=None, help='file path to store 
 parser.add_argument('--debug', action='store_true', default=False, help='debug mode')
 args = parser.parse_args()
 
+if args.path is None and args.color is None:
+    parser.error('one of --path or --color is required')
+
 rgba_to_hex = lambda rgba: "#{:02X}{:02X}{:02X}".format(rgba[0], rgba[1], rgba[2])
 argb_to_hex = lambda argb: "#{:02X}{:02X}{:02X}".format(*map(round, rgba_from_argb(argb)))
 hex_to_argb = lambda hex_code: argb_from_rgb(int(hex_code[1:3], 16), int(hex_code[3:5], 16), int(hex_code[5:], 16))
@@ -69,7 +72,10 @@ if args.path is not None:
     image = Image.open(args.path)
 
     if image.format == "GIF":
-        image.seek(1)
+        try:
+            image.seek(1)
+        except EOFError:
+            image.seek(0)
 
     if image.mode in ["L", "P"]:
         image = image.convert('RGB')
@@ -86,7 +92,7 @@ if args.path is not None:
     hct = Hct.from_int(argb)
     if(args.smart):
         if(hct.chroma < 20):
-            args.scheme = 'neutral'
+            args.scheme = 'scheme-neutral'
 elif args.color is not None:
     argb = hex_to_argb(args.color)
     hct = Hct.from_int(argb)
@@ -145,7 +151,7 @@ if args.termscheme is not None:
     # names this key 'primaryPaletteKeyColor' (pure camelCase, no underscore).
     primary_color_argb = hex_to_argb(material_colors['primaryPaletteKeyColor'])
     for color, val in term_source_colors.items():
-        if(args.scheme == 'monochrome') :
+        if(args.scheme == 'scheme-monochrome') :
             term_colors[color] = val
             continue
         if args.blend_bg_fg and color == "term0":

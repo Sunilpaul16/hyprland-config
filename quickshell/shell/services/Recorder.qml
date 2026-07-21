@@ -16,6 +16,12 @@ Singleton {
     property int elapsedSeconds: 0
     property string mode: "full" // "full" | "region" — used for the next recording
 
+    // active only refreshes on the 1s pgrep poll, so a rapid double-toggle
+    // could see !active both times and start wf-recorder twice instead of
+    // starting then stopping — this closes that window optimistically,
+    // cleared unconditionally once the next poll has fresh information
+    property bool starting: false
+
     readonly property string elapsedLabel: StringUtils.friendlyTimeForSeconds(root.elapsedSeconds)
 
     function cycleMode(): void {
@@ -24,10 +30,12 @@ Singleton {
 
     // Start (using the selected mode) if idle, stop if active
     function toggle(): void {
-        if (root.active)
+        if (root.active) {
             root.stop();
-        else
+        } else if (!root.starting) {
+            root.starting = true;
             Quickshell.execDetached([root.recordBin, root.mode]);
+        }
     }
 
     function stop(): void {
@@ -58,6 +66,7 @@ Singleton {
             root.active = nowActive;
             if (!nowActive)
                 root.elapsedSeconds = 0;
+            root.starting = false;
         }
     }
 }

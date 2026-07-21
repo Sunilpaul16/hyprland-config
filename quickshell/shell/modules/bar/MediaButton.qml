@@ -18,12 +18,27 @@ Item {
         spacing: 6
 
         Text {
+            id: playPauseIcon
             anchors.verticalCenter: parent.verticalCenter
             text: Media.isPlaying ? "\u{23F8}" : "\u{25B6}" // pause / play
-            color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
+            color: (hoverArea.containsMouse || playPauseHover.containsMouse) ? Colors.text : Colors.textMuted
             font.pixelSize: 12
 
             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+            // This glyph promises transport control (it's the same icon
+            // MediaContent.qml's real play/pause button uses) — give it its
+            // own higher-z hit target that actually toggles playback,
+            // instead of just opening the popup like the rest of the row
+            MouseArea {
+                id: playPauseHover
+                anchors.fill: parent
+                anchors.margins: -4
+                z: 1
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: Media.togglePlaying()
+            }
         }
 
         Text {

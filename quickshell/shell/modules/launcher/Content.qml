@@ -128,17 +128,38 @@ Item {
         Cliphist.deleteEntry(row.entry);
     }
 
+    // Tracks whether a not-yet-confirmed --preview is currently applied, so
+    // dismissing without picking (Escape, click-outside) can revert to the
+    // actually-committed wallpaper instead of leaving the display desynced
+    property bool hasPreviewed: false
+
     function previewWallpaper(entry): void {
         if (!entry)
             return;
+        content.hasPreviewed = true;
         Quickshell.execDetached([Directories.switchwallScript, "--preview", entry.path]);
     }
 
     function confirmSelection(entry): void {
         applyDebounce.stop();
+        content.hasPreviewed = false;
         if (entry)
             Quickshell.execDetached([Directories.switchwallScript, entry.path]);
         LauncherState.open = false;
+    }
+
+    function revertPreview(): void {
+        // Also cancel a pending debounced preview — otherwise a Right/Left
+        // press just before closing can fire its queued previewWallpaper()
+        // after this revert and silently undo it
+        applyDebounce.stop();
+        if (!content.hasPreviewed)
+            return;
+        content.hasPreviewed = false;
+        // A real switch (not --noswitch, which deliberately leaves the
+        // displayed wallpaper alone and only regenerates colors) is needed
+        // here since --preview actually did change what mpvpaper shows
+        Quickshell.execDetached(["bash", "-c", `"${Directories.switchwallScript}" "$(cat "${Directories.currentWallpaperFile}")"`]);
     }
 
     function activateCurrent(): void {
@@ -368,7 +389,9 @@ Item {
         }
     }
 
-    // Sync from launcher state on open
+    // Sync from launcher state on open; revert an unconfirmed wallpaper
+    // preview on close (Escape, click-outside — anything that didn't go
+    // through confirmSelection)
     Connections {
         target: LauncherState
         function onOpenChanged() {
@@ -376,6 +399,8 @@ Item {
                 input.text = LauncherState.pendingText;
                 input.cursorPosition = input.text.length;
                 input.forceActiveFocus();
+            } else {
+                content.revertPreview();
             }
         }
     }

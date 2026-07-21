@@ -11,6 +11,11 @@ Item {
     implicitWidth: root.size
     implicitHeight: root.size
 
+    // Remote art has an empty Image.source while it downloads (Media.artSource
+    // stays "" until artDownloaded flips), so status sits at Image.Null rather
+    // than Image.Loading — check Media's own pending state directly instead
+    readonly property bool artPending: Media.artIsRemote && !Media.artDownloaded && Media.artUrl.length > 0
+
     // Drop-shadow glow, same effect module as UserCard's avatar
     layer.enabled: true
     layer.effect: DropShadow {
@@ -66,7 +71,7 @@ Item {
     // Fallback glyph — no track, or art failed to load
     Text {
         anchors.centerIn: parent
-        visible: art.status === Image.Null || art.status === Image.Error
+        visible: (art.status === Image.Null || art.status === Image.Error) && !root.artPending
         text: "\u{266A}"
         color: Colors.textMuted
         font.pixelSize: root.size * 0.3
@@ -75,7 +80,7 @@ Item {
     // Loading indicator while remote art downloads
     Text {
         anchors.centerIn: parent
-        visible: art.status === Image.Loading
+        visible: art.status === Image.Loading || root.artPending
         text: "Loading…"
         color: Colors.textMuted
         font.pixelSize: Math.max(10, root.size * 0.08)

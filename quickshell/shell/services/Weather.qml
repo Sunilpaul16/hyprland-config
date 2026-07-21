@@ -19,6 +19,9 @@ Singleton {
     property string city: ""
     property bool loading: true
     property bool hasError: false
+    // Distinguishes "never got real data" from "have cached data, but the
+    // latest poll failed" — only the former should show an error state
+    property bool hasLoadedOnce: false
 
     readonly property real currentTemp: _currentTemp
     readonly property int weatherCode: _weatherCode
@@ -159,21 +162,34 @@ Singleton {
                 gotAny = true;
             }
 
-            root.hasError = !gotAny;
+            if (gotAny)
+                root.hasLoadedOnce = true;
+            root.hasError = !gotAny && !root.hasLoadedOnce;
             root.loading = false;
         }, () => {
-            root.hasError = true;
+            // A transient hourly-refetch failure shouldn't hide perfectly
+            // good cached data — only show the error state if we've never
+            // had a successful fetch to fall back on
+            root.hasError = !root.hasLoadedOnce;
             root.loading = false;
         });
     }
 
     Component.onCompleted: root.geolocate()
 
-    // Refetch hourly (no location-change trigger yet — there's no config to change)
+    // Refetch hourly (no location-change trigger yet — there's no config to change).
+    // Retries geolocation too if it never succeeded at startup — otherwise a
+    // boot-time geolocate() failure leaves latitude/longitude NaN forever,
+    // and fetchForecast() silently no-ops on NaN coords every hour after
     Timer {
         interval: 3600000
         running: true
         repeat: true
-        onTriggered: root.fetchForecast()
+        onTriggered: {
+            if (isNaN(root.latitude) || isNaN(root.longitude))
+                root.geolocate();
+            else
+                root.fetchForecast();
+        }
     }
 }

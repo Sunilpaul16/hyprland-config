@@ -40,9 +40,7 @@ Rectangle {
         return "up " + str;
     }
 
-    function refreshUptime(): void {
-        uptimeFile.reload();
-        const content = uptimeFile.text();
+    function applyUptime(content: string): void {
         if (!content)
             return;
         const seconds = parseFloat(content.split(" ")[0]);
@@ -71,9 +69,13 @@ Rectangle {
         }
     }
 
+    // reload() is async — text() must be read from onLoaded, not right
+    // after calling reload(), or it reads the pre-reload content (was
+    // permanently one cycle stale and blank for the first minute)
     FileView {
         id: uptimeFile
         path: "/proc/uptime"
+        onLoaded: root.applyUptime(text())
     }
 
     // Uptime doesn't need to be precise — refresh once a minute, not every second
@@ -81,8 +83,7 @@ Rectangle {
         interval: 60000
         running: true
         repeat: true
-        triggeredOnStart: true
-        onTriggered: root.refreshUptime()
+        onTriggered: uptimeFile.reload()
     }
 
     // Profile picture picker

@@ -43,6 +43,7 @@
     @define-color popover_bg_color {{colors.surface_container_highest.light.hex}};
     @define-color popover_fg_color {{colors.on_surface.light.hex}};
     @define-color popover_fg_hover_color rgba({{colors.on_surface.light.red}}, {{colors.on_surface.light.green}}, {{colors.on_surface.light.blue}}, 0.08);
+    @define-color popover_fg_active_color rgba({{colors.on_surface.light.red}}, {{colors.on_surface.light.green}}, {{colors.on_surface.light.blue}}, 0.1);
     @define-color dialog_bg_color {{colors.surface_container_high.light.hex}};
     @define-color dialog_fg_color {{colors.on_surface.light.hex}};
     @define-color thumbnail_bg_color {{colors.surface_container_high.light.hex}};
@@ -106,6 +107,7 @@
     @define-color popover_bg_color {{colors.surface_container_highest.dark.hex}};
     @define-color popover_fg_color {{colors.on_surface.dark.hex}};
     @define-color popover_fg_hover_color rgba({{colors.on_surface.dark.red}}, {{colors.on_surface.dark.green}}, {{colors.on_surface.dark.blue}}, 0.08);
+    @define-color popover_fg_active_color rgba({{colors.on_surface.dark.red}}, {{colors.on_surface.dark.green}}, {{colors.on_surface.dark.blue}}, 0.1);
     @define-color dialog_bg_color {{colors.surface_container_high.dark.hex}};
     @define-color dialog_fg_color {{colors.on_surface.dark.hex}};
     @define-color thumbnail_bg_color {{colors.surface_container_high.dark.hex}};

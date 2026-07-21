@@ -44,12 +44,13 @@ Singleton {
     property list<real> _downloadHistory: []
     property list<real> _uploadHistory: []
 
-    property real _prevRxBytes: 0
-    property real _prevTxBytes: 0
     property real _prevTimestamp: 0
-    property real _initialRxBytes: 0
-    property real _initialTxBytes: 0
     property bool _initialized: false
+    // Per-interface {rx, tx} baseline — deltas are summed per-interface so a
+    // NIC disappearing (VPN down, USB dock unplugged, docker0 torn down)
+    // just stops contributing instead of reading as a 64-bit counter
+    // wraparound against the old whole-sum total
+    property var _ifaceState: ({})
 
     function formatBytes(bytes: real): var {
         if (!isFinite(bytes) || bytes < 0)
@@ -87,8 +88,9 @@ Singleton {
             return;
 
         const lines = content.split("\n");
-        let rxBytes = 0;
-        let txBytes = 0;
+        const seen = {};
+        let rxDeltaSum = 0;
+        let txDeltaSum = 0;
 
         for (let i = 2; i < lines.length; i++) {
             const line = lines[i].trim();
@@ -103,17 +105,36 @@ Singleton {
             if (iface === "lo")
                 continue;
 
-            rxBytes += parseFloat(parts[1]) || 0;
-            txBytes += parseFloat(parts[9]) || 0;
+            const rx = parseFloat(parts[1]) || 0;
+            const tx = parseFloat(parts[9]) || 0;
+            seen[iface] = true;
+
+            // A lower reading than last cycle means this interface's own
+            // counters reset (down/up, driver reload) — treat it as a fresh
+            // baseline for just that interface rather than a 64-bit
+            // wraparound (which would take ~584 years at 1GB/s to happen for
+            // real)
+            const prev = root._ifaceState[iface];
+            if (prev) {
+                if (rx >= prev.rx)
+                    rxDeltaSum += rx - prev.rx;
+                if (tx >= prev.tx)
+                    txDeltaSum += tx - prev.tx;
+            }
+            root._ifaceState[iface] = { rx: rx, tx: tx };
+        }
+
+        // Drop interfaces that vanished entirely so a later NIC (same name
+        // or new) starts its own fresh baseline instead of diffing against
+        // a stale value
+        for (const name in root._ifaceState) {
+            if (!seen[name])
+                delete root._ifaceState[name];
         }
 
         const now = Date.now();
 
         if (!root._initialized) {
-            root._initialRxBytes = rxBytes;
-            root._initialTxBytes = txBytes;
-            root._prevRxBytes = rxBytes;
-            root._prevTxBytes = txBytes;
             root._prevTimestamp = now;
             root._initialized = true;
             return;
@@ -121,36 +142,16 @@ Singleton {
 
         const timeDelta = (now - root._prevTimestamp) / 1000;
         if (timeDelta > 0) {
-            let rxDelta = rxBytes - root._prevRxBytes;
-            let txDelta = txBytes - root._prevTxBytes;
+            root._downloadSpeed = rxDeltaSum / timeDelta;
+            root._uploadSpeed = txDeltaSum / timeDelta;
 
-            // Counter wraparound (64-bit) — assume it wrapped rather than went backwards
-            if (rxDelta < 0)
-                rxDelta += Math.pow(2, 64);
-            if (txDelta < 0)
-                txDelta += Math.pow(2, 64);
-
-            root._downloadSpeed = rxDelta / timeDelta;
-            root._uploadSpeed = txDelta / timeDelta;
-
-            if (isFinite(root._downloadSpeed) && root._downloadSpeed >= 0)
-                root._downloadHistory = root.pushCapped(root._downloadHistory, root._downloadSpeed);
-            if (isFinite(root._uploadSpeed) && root._uploadSpeed >= 0)
-                root._uploadHistory = root.pushCapped(root._uploadHistory, root._uploadSpeed);
+            root._downloadHistory = root.pushCapped(root._downloadHistory, root._downloadSpeed);
+            root._uploadHistory = root.pushCapped(root._uploadHistory, root._uploadSpeed);
         }
 
-        let downTotal = rxBytes - root._initialRxBytes;
-        let upTotal = txBytes - root._initialTxBytes;
-        if (downTotal < 0)
-            downTotal += Math.pow(2, 64);
-        if (upTotal < 0)
-            upTotal += Math.pow(2, 64);
+        root._downloadTotal += rxDeltaSum;
+        root._uploadTotal += txDeltaSum;
 
-        root._downloadTotal = downTotal;
-        root._uploadTotal = upTotal;
-
-        root._prevRxBytes = rxBytes;
-        root._prevTxBytes = txBytes;
         root._prevTimestamp = now;
     }
 
