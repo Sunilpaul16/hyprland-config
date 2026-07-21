@@ -45,21 +45,29 @@ Item {
         Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }
 
-    // App icon badge
+    // App icon badge — scales with thumbnail size instead of a fixed 20px (comparison.md #38)
     Rectangle {
+        id: iconBadge
+
+        readonly property real baseSize: Math.min(root.width, root.height)
+        readonly property bool compact: baseSize < 70
+        readonly property real badgeSize: Math.max(14, Math.min(32, baseSize * (compact ? 0.35 : 0.15)))
+
         visible: root.iconName !== ""
         anchors { right: parent.right; bottom: parent.bottom; margins: 4 }
-        width: 20
-        height: 20
-        radius: 6
+        width: badgeSize
+        height: badgeSize
+        radius: width * 0.3
         color: Colors.background
+
+        Behavior on width { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+        Behavior on height { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
         Image {
             anchors.centerIn: parent
-            anchors.margins: 2
             source: root.iconName ? Quickshell.iconPath(root.iconName, "") : ""
-            sourceSize.width: 14
-            sourceSize.height: 14
+            sourceSize.width: iconBadge.badgeSize * 0.7
+            sourceSize.height: iconBadge.badgeSize * 0.7
             smooth: true
         }
     }
