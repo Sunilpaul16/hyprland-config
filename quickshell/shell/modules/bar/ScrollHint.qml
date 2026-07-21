@@ -1,0 +1,33 @@
+import QtQuick
+import "../../services"
+import "../sidebarRight"
+
+// Fading up/icon/down affordance for a scroll-to-adjust zone
+Column {
+    id: root
+    property bool reveal: false
+    property string icon: ""
+
+    spacing: -4
+    opacity: reveal ? 1 : 0
+    scale: reveal ? 1 : 0.85
+
+    Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+    Behavior on scale { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+    MaterialIcon {
+        text: "keyboard_arrow_up"
+        font.pixelSize: 12
+        color: Colors.textMuted
+    }
+    MaterialIcon {
+        text: root.icon
+        font.pixelSize: 12
+        color: Colors.textMuted
+    }
+    MaterialIcon {
+        text: "keyboard_arrow_down"
+        font.pixelSize: 12
+        color: Colors.textMuted
+    }
+}

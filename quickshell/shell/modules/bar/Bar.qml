@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import "../../services"
 
 // Bar window
@@ -20,9 +21,6 @@ Scope {
                 // Dimensions
                 readonly property int barContentHeight: Config.barHeight
                 readonly property int cornerSize: 14
-                // Extra window height below the corners so tray tooltips have room to
-                // draw without being clipped by the surface bounds
-                readonly property int tooltipReserve: 24
 
                 // Positioning
                 anchors {
@@ -31,20 +29,15 @@ Scope {
                     right: true
                 }
 
-                // Window setup
-                implicitHeight: barContentHeight + cornerSize + tooltipReserve
+                // Window setup — no extra reserved height needed: tray tooltips are
+                // their own PopupWindow (PopupToolTip.qml), not clipped by this
+                // window's bounds, so it can be sized exactly to its visible chrome
+                implicitHeight: barContentHeight + cornerSize
                 exclusiveZone: barContentHeight
                 color: "transparent"
                 WlrLayershell.layer: WlrLayer.Top
                 WlrLayershell.namespace: "quickshell-bar"
 
-                // Restrict input to the visible bar chrome so the extra tooltip
-                // clearance below the corners stays click-through
-                mask: Region {
-                    Region { item: content }
-                    Region { item: cornerTL }
-                    Region { item: cornerTR }
-                }
                 // Bar content
                 Rectangle {
                     id: content
@@ -66,6 +59,7 @@ Scope {
 
                     // Center widgets
                     RowLayout {
+                        id: centerRow
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 8
@@ -78,18 +72,46 @@ Scope {
                             MediaButton {}
                         }
 
-                        // Workspaces pill
-                        SectionPill {
+                        // Workspaces pill — scroll to switch workspace
+                        MouseArea {
+                            id: workspaceScrollZone
                             Layout.alignment: Qt.AlignVCenter
+                            implicitWidth: workspacesPill.implicitWidth
+                            implicitHeight: workspacesPill.implicitHeight
 
-                            Workspaces {
-                                screen: bar.screen
+                            hoverEnabled: true
+                            acceptedButtons: Qt.NoButton
+
+                            onWheel: event => {
+                                if (event.angleDelta.y < 0)
+                                    Hyprland.dispatch(`hl.dsp.focus({ workspace = "e+1" })`);
+                                else if (event.angleDelta.y > 0)
+                                    Hyprland.dispatch(`hl.dsp.focus({ workspace = "e-1" })`);
+                            }
+
+                            SectionPill {
+                                id: workspacesPill
+                                anchors.fill: parent
+
+                                Workspaces {
+                                    screen: bar.screen
+                                }
                             }
                         }
                     }
 
+                    // Workspace scroll hint — fades in over the gap to the right of centerRow
+                    ScrollHint {
+                        reveal: workspaceScrollZone.containsMouse
+                        icon: "swap_horiz"
+                        anchors.left: centerRow.right
+                        anchors.leftMargin: 6
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
                     // Right-side widgets
                     RowLayout {
+                        id: rightRow
                         anchors.right: parent.right
                         anchors.rightMargin: 14
                         anchors.verticalCenter: parent.verticalCenter
@@ -131,6 +153,37 @@ Scope {
                             horizontalPadding: 8
 
                             SessionButton {}
+                        }
+                    }
+
+                    // Volume scroll zone — the open gap between center content and
+                    // the tray/clock cluster, left of the tray so it doesn't compete
+                    // with tray icon hover/click targets
+                    MouseArea {
+                        id: volumeScrollZone
+                        anchors {
+                            left: centerRow.right
+                            leftMargin: 12
+                            right: rightRow.left
+                            rightMargin: 8
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
+
+                        hoverEnabled: true
+                        acceptedButtons: Qt.NoButton
+
+                        onWheel: event => {
+                            if (event.angleDelta.y < 0)
+                                Audio.decrementVolume();
+                            else if (event.angleDelta.y > 0)
+                                Audio.incrementVolume();
+                        }
+
+                        ScrollHint {
+                            reveal: volumeScrollZone.containsMouse
+                            icon: "volume_up"
+                            anchors.centerIn: parent
                         }
                     }
                 }

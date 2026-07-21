@@ -57,11 +57,13 @@ Item {
         }
     }
 
-    // Simple hand-rolled tooltip (no QtQuick.Controls dependency)
+    property bool tooltipVisible: false
+
+    // Simple hand-rolled tooltip delay (no QtQuick.Controls dependency)
     Timer {
         id: tooltipDelay
         interval: 500
-        onTriggered: tooltip.visible = true
+        onTriggered: root.tooltipVisible = true
     }
 
     // Show/hide tooltip on hover
@@ -72,31 +74,15 @@ Item {
                 tooltipDelay.start();
             else {
                 tooltipDelay.stop();
-                tooltip.visible = false;
+                root.tooltipVisible = false;
             }
         }
     }
 
-    // Tooltip
-    Rectangle {
-        id: tooltip
-        visible: false
-        anchors.top: parent.bottom
-        anchors.topMargin: 8
-        anchors.horizontalCenter: parent.horizontalCenter
-        radius: 8
-        color: Colors.surface
-        border.width: 1
-        border.color: Colors.outline
-        implicitWidth: tooltipText.implicitWidth + 20
-        implicitHeight: tooltipText.implicitHeight + 14
-
-        Text {
-            id: tooltipText
-            anchors.centerIn: parent
-            text: root.tooltipStr
-            color: Colors.text
-            font.pixelSize: 12
-        }
+    // Tooltip — its own PopupWindow, can't be clipped by the bar's bounds
+    PopupToolTip {
+        hoverTarget: root
+        text: root.tooltipStr
+        shown: root.tooltipVisible
     }
 }
