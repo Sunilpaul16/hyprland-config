@@ -9,6 +9,10 @@ Rectangle {
 
     required property string icon
     required property var command
+    // Only the actions that actually end the session (logout/poweroff/
+    // reboot) opt in — locking doesn't kill anything, so it has nothing to
+    // warn about (comparison.md #31)
+    property bool warnIfBusy: false
 
     implicitWidth: 64
     implicitHeight: 64
@@ -20,6 +24,14 @@ Rectangle {
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
     function activate(): void {
+        if (root.warnIfBusy && (SessionWarnings.downloadRunning || SessionWarnings.packageManagerRunning)) {
+            const reasons = [];
+            if (SessionWarnings.downloadRunning)
+                reasons.push("a download may still be running");
+            if (SessionWarnings.packageManagerRunning)
+                reasons.push("your package manager is running");
+            Quickshell.execDetached(["notify-send", "-a", "quickshell", "-u", "critical", "Careful — session action requested", reasons.join(" and ") + "."]);
+        }
         Quickshell.execDetached(root.command);
         SessionState.open = false;
     }

@@ -18,6 +18,7 @@ Column {
         id: logoutBtn
         icon: "logout"
         command: ["bash", "-c", "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"]
+        warnIfBusy: true
         KeyNavigation.down: poweroffBtn
     }
 
@@ -25,6 +26,7 @@ Column {
         id: poweroffBtn
         icon: "power_settings_new"
         command: ["systemctl", "poweroff"]
+        warnIfBusy: true
         KeyNavigation.up: logoutBtn
         KeyNavigation.down: lockBtn
     }
@@ -62,6 +64,7 @@ Column {
         id: rebootBtn
         icon: "cached"
         command: ["systemctl", "reboot"]
+        warnIfBusy: true
         KeyNavigation.up: lockBtn
     }
 }

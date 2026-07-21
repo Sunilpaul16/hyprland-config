@@ -28,7 +28,11 @@ Scope {
                 }
 
                 // Right-edge stack registration
-                onActiveChanged: RightEdgeStack.register(root.screen, "session", root.active, drawer.registeredWidth)
+                onActiveChanged: {
+                    RightEdgeStack.register(root.screen, "session", root.active, drawer.registeredWidth);
+                    if (root.active)
+                        SessionWarnings.refresh();
+                }
 
                 // Positioning
                 anchors {
