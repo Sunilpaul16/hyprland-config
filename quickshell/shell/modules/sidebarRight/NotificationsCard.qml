@@ -93,10 +93,12 @@ Rectangle {
             clip: true
 
             model: ScriptModel {
-                values: Notifs.list.filter(n => !n.closed)
+                values: Notifs.appNameList
             }
 
-            delegate: NotifCard {
+            delegate: NotifGroupCard {
+                required property string modelData
+                appName: modelData
                 width: list.width
             }
 
