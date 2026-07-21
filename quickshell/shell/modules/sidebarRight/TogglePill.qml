@@ -1,17 +1,21 @@
 import QtQuick
+import QtQuick.Layouts
 import "../../services"
 
 
-// Toggle pill button (icon + active state)
+// Toggle pill button (icon + active state); `large` widens the pill and
+// reveals a text label next to the icon (comparison.md #36's size variants)
 Rectangle {
     id: root
 
     required property string iconName
     property bool active: false
+    property bool large: false
+    property string label: ""
 
     signal clicked
 
-    implicitWidth: 40
+    implicitWidth: large ? layout.implicitWidth + 24 : 40
     implicitHeight: 40
     radius: 12
     color: root.active ? Colors.primary : (hoverArea.containsMouse ? Colors.surface : Colors.background)
@@ -19,13 +23,25 @@ Rectangle {
 
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-    MaterialIcon {
+    RowLayout {
+        id: layout
         anchors.centerIn: parent
-        text: root.iconName
-        color: root.active ? Colors.background : Colors.text
-        font.pixelSize: 20
+        spacing: 8
 
-        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+        MaterialIcon {
+            text: root.iconName
+            color: root.active ? Colors.background : Colors.text
+            font.pixelSize: 20
+
+            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+        }
+
+        Text {
+            visible: root.large
+            text: root.label
+            color: root.active ? Colors.background : Colors.text
+            font.pixelSize: 13
+        }
     }
 
     MouseArea {

@@ -22,7 +22,10 @@ Singleton {
     property alias screenRecorderCardEnabled: adapter.screenRecorderCardEnabled
     property alias keepAwakeCardEnabled: adapter.keepAwakeCardEnabled
     property alias dndEnabled: adapter.dndEnabled
-    property alias hiddenQuickToggles: adapter.hiddenQuickToggles
+    // Ordered [{type, size}] — type is a QuickToggleModel id, size is
+    // "small"|"large". Toggles with no entry here are new since the layout
+    // was last saved and get appended with a default size (comparison.md #36)
+    property alias quickToggleLayout: adapter.quickToggleLayout
 
     // State file
     FileView {
@@ -53,7 +56,7 @@ Singleton {
             property bool screenRecorderCardEnabled: false
             property bool keepAwakeCardEnabled: false
             property bool dndEnabled: false
-            property list<string> hiddenQuickToggles: []
+            property list<var> quickToggleLayout: []
             property string lastHyprlandInstanceSignature: ""
         }
     }
