@@ -23,6 +23,19 @@ Singleton {
             source.audio.muted = !source.audio.muted;
     }
 
+    function toggleMute(): void {
+        if (sink?.audio)
+            sink.audio.muted = !sink.audio.muted;
+    }
+
+    // isSink here means "plays into the sink" (a stream), not "is the sink itself"
+    readonly property var outputAppNodes: Pipewire.nodes.values.filter(n => n.isStream && n.isSink)
+    readonly property var inputAppNodes: Pipewire.nodes.values.filter(n => n.isStream && !n.isSink)
+
+    function appNodeDisplayName(node): string {
+        return node.properties["application.name"] ?? node.description ?? node.name;
+    }
+
     // Sink volume — clamped [0, 1], matching the existing keybind's -l 1 cap.
     // PipeWire can report NaN on resume-from-suspend; Math.min/max propagate
     // it straight through the clamp, so guard before it reaches the sink.

@@ -13,6 +13,7 @@ Rectangle {
     property string label: ""
 
     signal clicked
+    signal altClicked
 
     implicitWidth: large ? layout.implicitWidth + 24 : 40
     implicitHeight: 40
@@ -48,7 +49,13 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         enabled: root.enabled
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
         cursorShape: Qt.PointingHandCursor
-        onClicked: root.clicked()
+        onClicked: mouse => {
+            if (mouse.button === Qt.RightButton)
+                root.altClicked();
+            else
+                root.clicked();
+        }
     }
 }

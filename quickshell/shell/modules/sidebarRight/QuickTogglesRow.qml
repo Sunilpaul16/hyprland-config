@@ -28,6 +28,15 @@ ColumnLayout {
             toggled: BluetoothStatus.enabled
             available: BluetoothStatus.available
             mainAction: () => BluetoothStatus.toggle()
+            altAction: () => SidebarDialogState.openBluetooth()
+        },
+        QuickToggleModel {
+            toggleId: "volume"
+            name: "Volume"
+            icon: Audio.muted ? "volume_off" : "volume_up"
+            toggled: !Audio.muted
+            mainAction: () => Audio.toggleMute()
+            altAction: () => SidebarDialogState.openVolume()
         },
         QuickToggleModel {
             toggleId: "mic"
@@ -35,6 +44,7 @@ ColumnLayout {
             icon: Audio.micMuted ? "mic_off" : "mic"
             toggled: !Audio.micMuted
             mainAction: () => Audio.toggleMicMute()
+            altAction: () => SidebarDialogState.openVolume()
         },
         QuickToggleModel {
             toggleId: "nightlight"
@@ -262,6 +272,7 @@ ColumnLayout {
             large: slot.large
             label: slot.toggleModel.name
             onClicked: slot.toggleModel.mainAction()
+            onAltClicked: if (slot.toggleModel.altAction) slot.toggleModel.altAction()
         }
 
         // Edit-mode outline + tap-to-resize

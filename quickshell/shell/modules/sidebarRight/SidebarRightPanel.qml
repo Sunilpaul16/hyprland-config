@@ -34,7 +34,11 @@ Scope {
                 readonly property int edgeMargin: 8
                 readonly property real registeredWidth: backdrop.width + edgeMargin
 
-                onActiveChanged: RightEdgeStack.register(root.screen, "sidebar", root.active, registeredWidth)
+                onActiveChanged: {
+                    RightEdgeStack.register(root.screen, "sidebar", root.active, registeredWidth);
+                    if (!root.active)
+                        SidebarDialogState.close();
+                }
                 Component.onCompleted: RightEdgeStack.register(root.screen, "sidebar", root.active, registeredWidth)
 
                 // Positioning
@@ -64,7 +68,12 @@ Scope {
                 Item {
                     anchors.fill: parent
                     focus: root.active
-                    Keys.onEscapePressed: SidebarRightState.open = false
+                    Keys.onEscapePressed: {
+                        if (SidebarDialogState.openDialog !== "")
+                            SidebarDialogState.close();
+                        else
+                            SidebarRightState.open = false;
+                    }
 
                     // Absorb clicks on the sidebar itself so they don't fall through
                     // to the full-screen close catcher above.
@@ -96,6 +105,7 @@ Scope {
                     Flickable {
                         anchors.fill: backdrop
                         anchors.margins: 12
+                        visible: SidebarDialogState.openDialog === ""
 
                         opacity: root.showProgress
                         transform: Translate { x: (1 - root.showProgress) * 24 }
@@ -115,6 +125,19 @@ Scope {
                             ScreenRecorderCard { Layout.fillWidth: true; visible: ScreenRecorderCardState.enabled }
                             QuickTogglesCard { Layout.fillWidth: true }
                         }
+                    }
+
+                    // In-panel toggle dialogs, same overlay area (comparison.md #25)
+                    ToggleDialog {
+                        anchors.fill: backdrop
+                        shown: SidebarDialogState.openDialog === "bluetooth"
+                        sourceComponent: BluetoothDialog {}
+                    }
+
+                    ToggleDialog {
+                        anchors.fill: backdrop
+                        shown: SidebarDialogState.openDialog === "volume"
+                        sourceComponent: VolumeMixerDialog {}
                     }
                 }
             }
