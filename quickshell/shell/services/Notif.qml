@@ -22,7 +22,7 @@ QtObject {
 
     // Notification content (synced from Notification)
     property Notification notification
-    property string notificationId
+    property int notificationId: 0
     property string summary
     property string body
     property string appIcon
@@ -99,7 +99,8 @@ QtObject {
     Component.onCompleted: {
         if (!notification)
             return;
-        notificationId = notification.id;
+        // Offset avoids colliding with history — Quickshell's own ids restart at 1 every run
+        notificationId = notification.id + Notifs.idOffset;
         summary = notification.summary;
         body = notification.body;
         appIcon = notification.appIcon;

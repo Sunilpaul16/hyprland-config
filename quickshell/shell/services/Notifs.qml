@@ -26,6 +26,7 @@ Singleton {
                 delete root.latestTimeForApp[appName];
         }
         root.expandedApps = root.expandedApps.filter(appName => root.list.some(n => n.appName === appName && !n.closed));
+        writeTimer.restart();
     }
 
     // Per-app groups (comparison.md #26)
@@ -65,6 +66,26 @@ Singleton {
             n.close();
     }
 
+    // idOffset keeps a fresh session's ids from colliding with history — applied in Notif.qml (comparison.md #27)
+    property int idOffset: 0
+
+    function notifToJSON(n) {
+        return {
+            notificationId: n.notificationId,
+            appIcon: n.appIcon,
+            appName: n.appName,
+            body: n.body,
+            image: n.image,
+            summary: n.summary,
+            time: n.time.getTime(),
+            urgency: n.urgency
+        };
+    }
+
+    function persist(): void {
+        historyFile.setText(JSON.stringify(root.list.filter(n => !n.closed).map(n => root.notifToJSON(n)), null, 2));
+    }
+
     // Notification server
     NotificationServer {
         id: server
@@ -102,5 +123,51 @@ Singleton {
     Component {
         id: notifComp
         Notif {}
+    }
+
+    // Debounced write — avoids hammering disk on a burst of rapid notifications
+    Timer {
+        id: writeTimer
+        interval: 200
+        repeat: false
+        onTriggered: root.persist()
+    }
+
+    // History file — reloaded notifs get actions: [], meaningless once the sender is dead (comparison.md #27)
+    FileView {
+        id: historyFile
+        path: Directories.notificationsFile
+
+        onLoaded: {
+            let parsed = [];
+            try {
+                parsed = JSON.parse(historyFile.text() || "[]");
+            } catch (e) {
+                parsed = [];
+            }
+
+            let maxId = 0;
+            const restored = parsed.map(n => {
+                maxId = Math.max(maxId, n.notificationId ?? 0);
+                return notifComp.createObject(root, {
+                    notificationId: n.notificationId ?? 0,
+                    appIcon: n.appIcon ?? "",
+                    appName: n.appName ?? "",
+                    body: n.body ?? "",
+                    image: n.image ?? "",
+                    summary: n.summary ?? "",
+                    time: new Date(n.time ?? 0),
+                    urgency: n.urgency ?? NotificationUrgency.Normal
+                });
+            });
+
+            root.idOffset = maxId;
+            root.list = restored;
+        }
+
+        onLoadFailed: error => {
+            if (error === FileViewError.FileNotFound)
+                historyFile.setText("[]");
+        }
     }
 }
