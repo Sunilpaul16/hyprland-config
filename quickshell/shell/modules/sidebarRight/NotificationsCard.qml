@@ -99,6 +99,35 @@ Rectangle {
             delegate: NotifCard {
                 width: list.width
             }
+
+            // Accumulated scroll target so rapid wheel ticks stack instead of each restarting the animation (comparison.md #37)
+            property real scrollTargetY: 0
+
+            Behavior on contentY {
+                NumberAnimation { id: scrollAnim; duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
+            }
+
+            onContentYChanged: if (!scrollAnim.running) list.scrollTargetY = list.contentY
+
+            function scrollByDelta(delta: real): void {
+                const maxY = Math.max(0, list.contentHeight - list.height);
+                const base = scrollAnim.running ? list.scrollTargetY : list.contentY;
+                const targetY = Math.max(0, Math.min(base - delta, maxY));
+                list.scrollTargetY = targetY;
+                list.contentY = targetY;
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.NoButton
+                onWheel: event => {
+                    if (list.contentHeight <= list.height) {
+                        event.accepted = false;
+                        return;
+                    }
+                    list.scrollByDelta(event.angleDelta.y / 2);
+                }
+            }
         }
     }
 }
