@@ -8,6 +8,8 @@ Item {
 
     required property SystemTrayItem item
 
+    signal toggleHiddenRequested
+
     readonly property string tooltipStr: root.item.tooltipTitle.length > 0 ? root.item.tooltipTitle : root.item.title
 
     implicitWidth: 18
@@ -34,13 +36,13 @@ Item {
         Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }
 
-    // Left-click activate, right-click menu
+    // Left-click activate, right-click menu, middle-click pin/unpin to the overflow popup
     MouseArea {
         id: hoverArea
         anchors.fill: parent
         anchors.margins: -5
         hoverEnabled: true
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
         cursorShape: Qt.PointingHandCursor
 
         onClicked: mouse => {
@@ -53,6 +55,8 @@ Item {
                 } else {
                     root.item.secondaryActivate();
                 }
+            } else if (mouse.button === Qt.MiddleButton) {
+                root.toggleHiddenRequested();
             }
         }
     }

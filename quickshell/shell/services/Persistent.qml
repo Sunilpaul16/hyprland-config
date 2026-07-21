@@ -24,6 +24,8 @@ Singleton {
     property alias dndEnabled: adapter.dndEnabled
     // Ordered [{type, size}] — a missing entry is new since the layout was last saved (comparison.md #36)
     property alias quickToggleLayout: adapter.quickToggleLayout
+    // Tray items pushed into the overflow popup instead of the bar row (comparison.md #35)
+    property alias hiddenTrayIds: adapter.hiddenTrayIds
 
     // State file
     FileView {
@@ -55,6 +57,7 @@ Singleton {
             property bool keepAwakeCardEnabled: false
             property bool dndEnabled: false
             property list<var> quickToggleLayout: []
+            property list<string> hiddenTrayIds: ["nm-applet", "blueman"]
             property string lastHyprlandInstanceSignature: ""
         }
     }
