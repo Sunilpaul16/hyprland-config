@@ -31,11 +31,40 @@ Rectangle {
                 Layout.fillWidth: true
                 spacing: 2
 
-                Text {
-                    text: "Screen Recorder"
-                    color: Colors.text
-                    font.pixelSize: 14
-                    font.bold: true
+                RowLayout {
+                    spacing: 6
+
+                    Text {
+                        text: "Screen Recorder"
+                        color: Colors.text
+                        font.pixelSize: 14
+                        font.bold: true
+                    }
+
+                    // Blinking REC pill (comparison.md #49) — fast fade out, slow fade back in, looping
+                    Rectangle {
+                        visible: Recorder.active
+                        radius: height / 2
+                        color: "#e64553"
+                        implicitWidth: recText.implicitWidth + 10
+                        implicitHeight: recText.implicitHeight + 4
+
+                        SequentialAnimation on opacity {
+                            running: Recorder.active
+                            loops: Animation.Infinite
+                            NumberAnimation { from: 1; to: 0.25; duration: 600; easing.type: Easing.InQuad }
+                            NumberAnimation { from: 0.25; to: 1; duration: 1000; easing.type: Easing.OutQuad }
+                        }
+
+                        Text {
+                            id: recText
+                            anchors.centerIn: parent
+                            text: "REC"
+                            color: Colors.background
+                            font.pixelSize: 9
+                            font.bold: true
+                        }
+                    }
                 }
 
                 Text {
@@ -43,54 +72,75 @@ Rectangle {
                     color: Colors.textMuted
                     font.pixelSize: 12
                 }
+            }
 
-                // Capture mode — disabled mid-recording so it can't drift
-                // from what's actually running
-                RowLayout {
-                    Layout.topMargin: 6
-                    spacing: 6
-                    enabled: !Recorder.active
-                    opacity: Recorder.active ? 0.5 : 1
+            // SplitButton: main segment starts/stops, chevron picks the mode (comparison.md #49)
+            RowLayout {
+                Layout.alignment: Qt.AlignVCenter
+                spacing: 4
 
-                    ModePill {
-                        label: "Full"
-                        active: Recorder.mode === "full"
-                        onClicked: Recorder.mode = "full"
+                Rectangle {
+                    id: mainSegment
+                    implicitWidth: mainText.implicitWidth + 20
+                    implicitHeight: 28
+                    radius: height / 2
+                    color: Recorder.active ? "#e64553" : Colors.primary
+
+                    Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+                    Text {
+                        id: mainText
+                        anchors.centerIn: parent
+                        text: Recorder.active ? "Stop" : (Recorder.mode === "full" ? "Full" : "Region")
+                        color: Colors.background
+                        font.pixelSize: 12
+                        font.bold: true
                     }
 
-                    ModePill {
-                        label: "Region"
-                        active: Recorder.mode === "region"
-                        onClicked: Recorder.mode = "region"
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: Recorder.toggle()
+                    }
+                }
+
+                // Mode picker — hidden mid-recording so it can't drift from what's actually running
+                Rectangle {
+                    id: chevronSegment
+                    visible: !Recorder.active
+                    implicitWidth: 28
+                    implicitHeight: 28
+                    radius: height / 2
+                    color: chevronHover.containsMouse ? Colors.outline : Colors.background
+
+                    Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+                    MaterialIcon {
+                        anchors.centerIn: parent
+                        text: "expand_more"
+                        color: Colors.text
+                        font.pixelSize: 15
+                        rotation: modeMenu.shown ? 180 : 0
+
+                        Behavior on rotation { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                    }
+
+                    MouseArea {
+                        id: chevronHover
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: modeMenu.shown = !modeMenu.shown
                     }
                 }
             }
 
-            // Start/stop toggle (same switch idiom as KeepAwakeCard)
-            Rectangle {
-                Layout.alignment: Qt.AlignVCenter
-                width: 40
-                height: 22
-                radius: height / 2
-                color: Recorder.active ? Colors.primary : Colors.outline
-
-                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-                Rectangle {
-                    width: 18
-                    height: 18
-                    radius: width / 2
-                    color: Colors.background
-                    anchors.verticalCenter: parent.verticalCenter
-                    x: Recorder.active ? parent.width - width - 2 : 2
-
-                    Behavior on x { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: Recorder.toggle()
+            RecorderModeMenu {
+                id: modeMenu
+                anchorItem: chevronSegment
+                onItemSelected: value => {
+                    Recorder.mode = value;
+                    modeMenu.shown = false;
                 }
             }
         }
@@ -195,33 +245,4 @@ Rectangle {
         }
     }
 
-    // Small selectable pill for the capture-mode row
-    component ModePill: Rectangle {
-        id: pill
-
-        required property string label
-        property bool active: false
-        signal clicked
-
-        radius: height / 2
-        color: pill.active ? Colors.primary : Colors.background
-        implicitWidth: pillText.implicitWidth + 16
-        implicitHeight: pillText.implicitHeight + 8
-
-        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-        Text {
-            id: pillText
-            anchors.centerIn: parent
-            text: pill.label
-            color: pill.active ? Colors.background : Colors.textMuted
-            font.pixelSize: 10
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
-            onClicked: pill.clicked()
-        }
-    }
 }
