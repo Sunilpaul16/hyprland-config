@@ -16,10 +16,7 @@ Singleton {
     property int elapsedSeconds: 0
     property string mode: "full" // "full" | "region" — used for the next recording
 
-    // active only refreshes on the 1s pgrep poll, so a rapid double-toggle
-    // could see !active both times and start wf-recorder twice instead of
-    // starting then stopping — this closes that window optimistically,
-    // cleared unconditionally once the next poll has fresh information
+    // Closes the window where a rapid double-toggle could double-start before the 1s poll catches up
     property bool starting: false
 
     readonly property string elapsedLabel: StringUtils.friendlyTimeForSeconds(root.elapsedSeconds)

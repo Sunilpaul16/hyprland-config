@@ -26,10 +26,7 @@ Item {
 
             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-            // This glyph promises transport control (it's the same icon
-            // MediaContent.qml's real play/pause button uses) — give it its
-            // own higher-z hit target that actually toggles playback,
-            // instead of just opening the popup like the rest of the row
+            // Higher-z hit target so this glyph actually toggles playback, not just opens the popup
             MouseArea {
                 id: playPauseHover
                 anchors.fill: parent

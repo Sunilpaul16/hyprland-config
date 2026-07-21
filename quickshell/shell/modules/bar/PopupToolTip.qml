@@ -2,9 +2,7 @@ import QtQuick
 import Quickshell
 import "../../services"
 
-// Hover tooltip rendered as its own PopupWindow, anchored to `hoverTarget` —
-// escapes the enclosing bar PanelWindow's clip bounds entirely instead of
-// needing a reserved-height + mask workaround (comparison.md #22)
+// Hover tooltip as its own PopupWindow, escaping the bar's clip bounds (comparison.md #22)
 Loader {
     id: root
 

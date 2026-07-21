@@ -29,9 +29,7 @@ Scope {
                     right: true
                 }
 
-                // Window setup — no extra reserved height needed: tray tooltips are
-                // their own PopupWindow (PopupToolTip.qml), not clipped by this
-                // window's bounds, so it can be sized exactly to its visible chrome
+                // Window setup — no reserved height needed, tray tooltips are their own PopupWindow now
                 implicitHeight: barContentHeight + cornerSize
                 exclusiveZone: barContentHeight
                 color: "transparent"
@@ -156,9 +154,7 @@ Scope {
                         }
                     }
 
-                    // Volume scroll zone — the open gap between center content and
-                    // the tray/clock cluster, left of the tray so it doesn't compete
-                    // with tray icon hover/click targets
+                    // Volume scroll zone — the open gap left of the tray/clock cluster
                     MouseArea {
                         id: volumeScrollZone
                         anchors {

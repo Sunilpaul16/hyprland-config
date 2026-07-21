@@ -9,9 +9,7 @@ Rectangle {
 
     required property string icon
     required property var command
-    // Only the actions that actually end the session (logout/poweroff/
-    // reboot) opt in — locking doesn't kill anything, so it has nothing to
-    // warn about (comparison.md #31)
+    // Only logout/poweroff/reboot opt in — locking doesn't end the session (comparison.md #31)
     property bool warnIfBusy: false
 
     implicitWidth: 64

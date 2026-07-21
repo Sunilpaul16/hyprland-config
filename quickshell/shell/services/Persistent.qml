@@ -22,9 +22,7 @@ Singleton {
     property alias screenRecorderCardEnabled: adapter.screenRecorderCardEnabled
     property alias keepAwakeCardEnabled: adapter.keepAwakeCardEnabled
     property alias dndEnabled: adapter.dndEnabled
-    // Ordered [{type, size}] — type is a QuickToggleModel id, size is
-    // "small"|"large". Toggles with no entry here are new since the layout
-    // was last saved and get appended with a default size (comparison.md #36)
+    // Ordered [{type, size}] — a missing entry is new since the layout was last saved (comparison.md #36)
     property alias quickToggleLayout: adapter.quickToggleLayout
 
     // State file

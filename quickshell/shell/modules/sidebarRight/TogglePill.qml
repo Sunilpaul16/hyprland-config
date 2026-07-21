@@ -3,8 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 
 
-// Toggle pill button (icon + active state); `large` widens the pill and
-// reveals a text label next to the icon (comparison.md #36's size variants)
+// Toggle pill button; `large` widens the pill and reveals a label (comparison.md #36)
 Rectangle {
     id: root
 

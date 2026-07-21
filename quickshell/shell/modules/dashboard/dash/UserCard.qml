@@ -69,9 +69,7 @@ Rectangle {
         }
     }
 
-    // reload() is async — text() must be read from onLoaded, not right
-    // after calling reload(), or it reads the pre-reload content (was
-    // permanently one cycle stale and blank for the first minute)
+    // reload() is async — text() must be read from onLoaded, not right after calling reload()
     FileView {
         id: uptimeFile
         path: "/proc/uptime"

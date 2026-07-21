@@ -4,9 +4,7 @@ import Quickshell.Wayland
 import "../../services"
 import "../bar"
 
-// Fake full-screen corner rounding on all four corners, plus a hot corner
-// that toggles the right sidebar on the two right corners only — this shell
-// has no left sidebar to map the other two to (comparison.md #30)
+// Fake full-screen corner rounding + right-corner hot zones toggling the sidebar (comparison.md #30)
 Scope {
     Variants {
         model: Quickshell.screens
@@ -20,12 +18,9 @@ Scope {
 
                 // Visual rounding radius — matches the bar's own corner size
                 readonly property int roundingSize: 14
-                // Interactive click-target size for the right corners — bigger than
-                // the rounding wedge so the hot zone is actually easy to hit
+                // Interactive click-target for the right corners — bigger than the rounding wedge
                 readonly property int hotZoneSize: 24
-                // Debug aid — flip to true and restart qs to render the hot-zones as
-                // solid rectangles so their extent can be seen (comparison.md #30's
-                // `visualize` flag; this sandbox can't simulate mouse clicks/hover)
+                // Debug aid — flip true and restart qs to render hot-zones as solid rectangles
                 readonly property bool visualize: false
 
                 component CornerWindow: PanelWindow {
@@ -50,8 +45,7 @@ Scope {
                     WlrLayershell.namespace: "quickshell-screen-corner"
                     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-                    // Decorative wedge — pinned to the actual physical corner even
-                    // when the window itself is bigger (interactive corners)
+                    // Decorative wedge — pinned to the true physical corner even when the window is bigger
                     Corner {
                         anchors {
                             top: cornerWindow.anchorTop ? parent.top : undefined

@@ -128,9 +128,7 @@ Item {
         Cliphist.deleteEntry(row.entry);
     }
 
-    // Tracks whether a not-yet-confirmed --preview is currently applied, so
-    // dismissing without picking (Escape, click-outside) can revert to the
-    // actually-committed wallpaper instead of leaving the display desynced
+    // Tracks whether a not-yet-confirmed --preview needs reverting on close
     property bool hasPreviewed: false
 
     function previewWallpaper(entry): void {
@@ -149,16 +147,11 @@ Item {
     }
 
     function revertPreview(): void {
-        // Also cancel a pending debounced preview — otherwise a Right/Left
-        // press just before closing can fire its queued previewWallpaper()
-        // after this revert and silently undo it
-        applyDebounce.stop();
+        applyDebounce.stop(); // a queued preview must not fire after this revert
         if (!content.hasPreviewed)
             return;
         content.hasPreviewed = false;
-        // A real switch (not --noswitch, which deliberately leaves the
-        // displayed wallpaper alone and only regenerates colors) is needed
-        // here since --preview actually did change what mpvpaper shows
+        // Real switch, not --noswitch — that deliberately never touches the displayed wallpaper
         Quickshell.execDetached(["bash", "-c", `"${Directories.switchwallScript}" "$(cat "${Directories.currentWallpaperFile}")"`]);
     }
 
@@ -389,9 +382,7 @@ Item {
         }
     }
 
-    // Sync from launcher state on open; revert an unconfirmed wallpaper
-    // preview on close (Escape, click-outside — anything that didn't go
-    // through confirmSelection)
+    // Sync from launcher state on open; revert an unconfirmed preview on close
     Connections {
         target: LauncherState
         function onOpenChanged() {

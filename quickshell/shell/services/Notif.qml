@@ -41,10 +41,7 @@ QtObject {
 
     // Auto-dismiss timer
     readonly property Timer timer: Timer {
-        // expireTimeout is spec'd as: 0 = never expire, -1 = server decides
-        // (our default), >0 = explicit ms. Without the !== 0 guard, a
-        // never-expire toast fell into the same "use default" bucket as -1
-        // and auto-dismissed after Config.toastDismissDuration anyway.
+        // expireTimeout: 0 = never expire, -1 = server default, >0 = explicit ms
         running: notif.popup && !notif.closed && !notif.critical && !notif.hovered && notif.expireTimeout !== 0
         interval: notif.expireTimeout > 0 ? notif.expireTimeout : Config.toastDismissDuration
         onTriggered: notif.popup = false

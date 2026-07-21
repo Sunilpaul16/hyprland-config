@@ -11,9 +11,7 @@ Item {
     implicitWidth: root.size
     implicitHeight: root.size
 
-    // Remote art has an empty Image.source while it downloads (Media.artSource
-    // stays "" until artDownloaded flips), so status sits at Image.Null rather
-    // than Image.Loading — check Media's own pending state directly instead
+    // Remote art has an empty source while downloading, so status sits at Null rather than Loading
     readonly property bool artPending: Media.artIsRemote && !Media.artDownloaded && Media.artUrl.length > 0
 
     // Drop-shadow glow, same effect module as UserCard's avatar

@@ -100,17 +100,11 @@ Scope {
                                 Layout.fillWidth: true
                                 implicitHeight: buttonsRow.implicitHeight
 
-                                // Stretchy active-tab indicator — leading/trailing edges
-                                // animate at different speeds so it stretches between
-                                // tabs rather than sliding (comparison.md #39)
+                                // Stretchy active-tab indicator (comparison.md #39)
                                 Rectangle {
                                     id: activeIndicator
 
-                                    // buttonsRow.children (not tabRepeater.itemAt()) — .itemAt() is a
-                                    // plain method call with no notify signal, so this binding would
-                                    // never re-run once Repeater populated its items asynchronously
-                                    // after the first evaluation; .children is NOTIFY-able and re-fires
-                                    // when the delegate is actually added
+                                    // children, not itemAt() — the latter has no notify signal and won't re-run once Repeater populates async
                                     readonly property Item targetItem: buttonsRow.children[root.currentTab]
 
                                     z: 0
@@ -280,11 +274,7 @@ Scope {
                     WeatherTab {}
                 }
 
-                // Tracks a target value through two independently-timed
-                // Behaviors — idx1 (fast) and idx2 (slow) — so a bound edge
-                // computed from min/max of both arrives late, stretching
-                // rather than sliding (comparison.md #39, ported from
-                // end-4's AnimatedTabIndexPair)
+                // idx1 (fast) and idx2 (slow) — min/max of both stretches the indicator instead of sliding it
                 component AnimatedTabIndexPair: QtObject {
                     required property real index
 

@@ -19,8 +19,7 @@ Singleton {
     property string city: ""
     property bool loading: true
     property bool hasError: false
-    // Distinguishes "never got real data" from "have cached data, but the
-    // latest poll failed" — only the former should show an error state
+    // Distinguishes "never got real data" from "have cached data, latest poll failed"
     property bool hasLoadedOnce: false
 
     readonly property real currentTemp: _currentTemp
@@ -167,9 +166,7 @@ Singleton {
             root.hasError = !gotAny && !root.hasLoadedOnce;
             root.loading = false;
         }, () => {
-            // A transient hourly-refetch failure shouldn't hide perfectly
-            // good cached data — only show the error state if we've never
-            // had a successful fetch to fall back on
+            // Don't hide good cached data just because this one refetch failed
             root.hasError = !root.hasLoadedOnce;
             root.loading = false;
         });
@@ -177,10 +174,7 @@ Singleton {
 
     Component.onCompleted: root.geolocate()
 
-    // Refetch hourly (no location-change trigger yet — there's no config to change).
-    // Retries geolocation too if it never succeeded at startup — otherwise a
-    // boot-time geolocate() failure leaves latitude/longitude NaN forever,
-    // and fetchForecast() silently no-ops on NaN coords every hour after
+    // Refetch hourly; retries geolocate() too if it never succeeded at startup
     Timer {
         interval: 3600000
         running: true

@@ -78,10 +78,7 @@ Singleton {
             if (parts.length < 5)
                 continue;
 
-            // source (parts[0]) and fstype/used/size (the last three) never
-            // contain spaces, but the mountpoint in between can — reassemble
-            // it instead of trusting a fixed column index, or a mount like
-            // "/mnt/My Backup" shifts used/size into the wrong fields
+            // mountpoint can contain spaces; source/fstype/used/size can't, so parse from both ends
             const source = parts[0];
             const usedKib = parseFloat(parts[parts.length - 2]);
             const totalKib = parseFloat(parts[parts.length - 1]);

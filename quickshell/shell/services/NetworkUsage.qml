@@ -46,10 +46,7 @@ Singleton {
 
     property real _prevTimestamp: 0
     property bool _initialized: false
-    // Per-interface {rx, tx} baseline — deltas are summed per-interface so a
-    // NIC disappearing (VPN down, USB dock unplugged, docker0 torn down)
-    // just stops contributing instead of reading as a 64-bit counter
-    // wraparound against the old whole-sum total
+    // Per-interface {rx, tx} baseline, so a vanished NIC just stops contributing instead of reading as a wraparound
     property var _ifaceState: ({})
 
     function formatBytes(bytes: real): var {
@@ -109,11 +106,7 @@ Singleton {
             const tx = parseFloat(parts[9]) || 0;
             seen[iface] = true;
 
-            // A lower reading than last cycle means this interface's own
-            // counters reset (down/up, driver reload) — treat it as a fresh
-            // baseline for just that interface rather than a 64-bit
-            // wraparound (which would take ~584 years at 1GB/s to happen for
-            // real)
+            // A lower reading means this interface reset, not a real wraparound (~584yr at 1GB/s)
             const prev = root._ifaceState[iface];
             if (prev) {
                 if (rx >= prev.rx)
@@ -124,9 +117,7 @@ Singleton {
             root._ifaceState[iface] = { rx: rx, tx: tx };
         }
 
-        // Drop interfaces that vanished entirely so a later NIC (same name
-        // or new) starts its own fresh baseline instead of diffing against
-        // a stale value
+        // Drop vanished interfaces so a later NIC starts a fresh baseline
         for (const name in root._ifaceState) {
             if (!seen[name])
                 delete root._ifaceState[name];

@@ -11,9 +11,7 @@ ColumnLayout {
 
     property bool editMode: false
 
-    // Declarative toggle definitions — the feature/state lives here;
-    // visibility, order, and size live in Persistent.quickToggleLayout, so
-    // the two concerns can't collide (comparison.md #24, resolves §4.5)
+    // Feature/state only — visibility/order/size live in Persistent.quickToggleLayout (comparison.md #24)
     readonly property list<QuickToggleModel> toggleModels: [
         QuickToggleModel {
             toggleId: "ethernet"
@@ -68,22 +66,17 @@ ColumnLayout {
         }
     ]
 
-    // Fallback order the very first time the shell runs, before the user has
-    // ever hidden/reordered/resized anything
+    // Fallback order before the user has ever hidden/reordered/resized anything
     readonly property var defaultLayout: root.toggleModels.map(t => ({ type: t.toggleId, size: "small" }))
 
-    // Persisted layout, reconciled against the live model list — an entry
-    // for a toggle that no longer exists is silently dropped rather than
-    // erroring (e.g. after removing a toggle in a future change)
+    // Reconciled against the live model list — a removed toggle's stale entry is silently dropped
     readonly property var orderedVisible: {
         const knownIds = root.toggleModels.map(t => t.toggleId);
         const source = Persistent.quickToggleLayout.length > 0 ? Persistent.quickToggleLayout : root.defaultLayout;
         return source.filter(entry => knownIds.indexOf(entry.type) !== -1);
     }
 
-    // Toggles that exist but aren't in the visible layout — surfaced as an
-    // "add back" palette while editing (comparison.md #36's "revealed unused
-    // toggles palette")
+    // Exist but aren't in the visible layout — surfaced as an "add back" palette while editing
     readonly property var hiddenModels: {
         const visibleIds = root.orderedVisible.map(e => e.type);
         return root.toggleModels.filter(t => visibleIds.indexOf(t.toggleId) === -1);
@@ -245,8 +238,7 @@ ColumnLayout {
         }
     }
 
-    // A single visible toggle: the pill itself, plus (in edit mode) a hide
-    // badge, move-earlier/move-later badges, and tap-body-to-resize
+    // A single visible toggle: the pill, plus edit-mode hide/move/resize controls
     component ToggleSlot: Item {
         id: slot
 
