@@ -83,7 +83,7 @@ Rectangle {
             Image {
                 anchors.fill: parent
                 visible: card.hasImage
-                source: card.hasImage ? Qt.resolvedUrl(card.modelData.image) : ""
+                source: card.hasImage ? StringUtils.resolveNotifImage(card.modelData.image) : ""
                 fillMode: Image.PreserveAspectCrop
                 asynchronous: true
                 cache: false

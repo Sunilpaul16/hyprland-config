@@ -53,7 +53,7 @@ Item {
                     Image {
                         anchors.fill: parent
                         visible: root.group?.image.length > 0
-                        source: root.group?.image.length > 0 ? Qt.resolvedUrl(root.group.image) : ""
+                        source: root.group?.image.length > 0 ? StringUtils.resolveNotifImage(root.group.image) : ""
                         fillMode: Image.PreserveAspectCrop
                         asynchronous: true
                         cache: false
