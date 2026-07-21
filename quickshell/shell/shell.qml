@@ -11,6 +11,7 @@ import "modules/mediaPopup"
 import "modules/notifications"
 import "modules/overview"
 import "modules/polkit"
+import "modules/screenCorners"
 import "modules/session"
 import "modules/sidebarRight"
 import "modules/trayMenu"
@@ -35,4 +36,5 @@ ShellRoot {
     SidebarRightPanel {}
     Overview {}
     DashboardPanel {}
+    ScreenCorners {}
 }
