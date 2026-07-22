@@ -85,7 +85,10 @@ Scope {
 
                         anchors.centerIn: parent
                         width: Math.min((root.screen?.width ?? 1280) * 0.85, 1400)
-                        height: Math.min((root.screen?.height ?? 800) * 0.85, 900)
+                        // Content-driven, not a fixed screen fraction — so a tab whose
+                        // cards need less room than the ceiling doesn't get stretched
+                        // into dead space (caelestia's Wrapper.qml sizes the same way)
+                        height: Math.min(contentColumn.implicitHeight + 40, (root.screen?.height ?? 800) * 0.85, 900)
                         radius: 18
                         color: Colors.background
                         border.width: 1
@@ -95,7 +98,13 @@ Scope {
                         scale: 0.96 + 0.04 * root.showProgress
                         transformOrigin: Item.Center
 
+                        Behavior on height {
+                            NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
+                        }
+
                         ColumnLayout {
+                            id: contentColumn
+
                             anchors.fill: parent
                             anchors.margins: 20
                             spacing: 16
@@ -110,8 +119,15 @@ Scope {
                                 Rectangle {
                                     id: activeIndicator
 
-                                    // children, not itemAt() — the latter has no notify signal and won't re-run once Repeater populates async
-                                    readonly property Item targetItem: buttonsRow.children[root.currentTab]
+                                    // itemAt(), not children[] — RowLayout's internal bookkeeping
+                                    // reorders buttonsRow.children, so position-based indexing isn't
+                                    // reliable (see tabView.currentPane below for the same issue with
+                                    // paneRow's Loaders). tabRepeater.count is read only to force
+                                    // re-evaluation once the Repeater finishes populating.
+                                    readonly property Item targetItem: {
+                                        tabRepeater.count;
+                                        return tabRepeater.itemAt(root.currentTab);
+                                    }
 
                                     z: 0
                                     height: parent.height
@@ -131,12 +147,16 @@ Scope {
                                     width: Math.max(rightBound.idx1, rightBound.idx2) - x
                                 }
 
-                                Row {
+                                RowLayout {
                                     id: buttonsRow
+                                    anchors.left: parent.left
+                                    anchors.right: parent.right
                                     z: 1
                                     spacing: 8
 
                                     Repeater {
+                                        id: tabRepeater
+
                                         model: root.tabModel
 
                                         delegate: Rectangle {
@@ -146,9 +166,10 @@ Scope {
                                             required property var modelData
                                             readonly property bool current: index === root.currentTab
 
+                                            Layout.fillWidth: true
+                                            Layout.preferredWidth: 1
                                             radius: 10
                                             color: "transparent"
-                                            implicitWidth: tabLabel.implicitWidth + 24
                                             implicitHeight: tabLabel.implicitHeight + 12
 
                                             Text {
@@ -188,9 +209,23 @@ Scope {
                                 id: tabView
 
                                 readonly property real paneWidth: width
+                                // itemAt(), not children[] — unlike buttonsRow's plain Rectangle
+                                // delegates, these Loaders' async `active` toggling reorders
+                                // paneRow.children, so position-based indexing is unreliable here.
+                                // repeater.count is read only to force re-evaluation once the
+                                // Repeater finishes populating (itemAt() alone isn't tracked)
+                                readonly property Item currentPane: {
+                                    repeater.count;
+                                    return repeater.itemAt(root.currentTab);
+                                }
+                                property real currentPaneHeight: currentPane?.height ?? 0
 
                                 Layout.fillWidth: true
-                                Layout.fillHeight: true
+                                Layout.preferredHeight: currentPaneHeight
+
+                                Behavior on currentPaneHeight {
+                                    NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
+                                }
 
                                 flickableDirection: Flickable.HorizontalFlick
                                 contentWidth: paneRow.width
@@ -217,6 +252,8 @@ Scope {
                                     height: tabView.height
 
                                     Repeater {
+                                        id: repeater
+
                                         model: root.tabModel
 
                                         // Also keeps whichever adjacent tab is mid-scroll
@@ -230,7 +267,10 @@ Scope {
 
                                             x: index * tabView.paneWidth
                                             width: tabView.paneWidth
-                                            height: tabView.height
+                                            // Own natural content height, not the tallest tab's —
+                                            // tabView.currentPaneHeight then follows whichever pane
+                                            // is current, animated on switch
+                                            height: item ? item.implicitHeight : 0
 
                                             sourceComponent: modelData.component
 

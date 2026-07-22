@@ -14,6 +14,7 @@ Rectangle {
     color: Colors.surface
     border.width: 1
     border.color: Colors.outline
+    implicitHeight: content.implicitHeight + 24
 
     Component.onCompleted: {
         SystemUsage.ref();
@@ -25,6 +26,8 @@ Rectangle {
     }
 
     ColumnLayout {
+        id: content
+
         anchors.fill: parent
         anchors.margins: 12
         spacing: 10

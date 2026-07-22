@@ -10,7 +10,12 @@ import "../../services"
 Item {
     id: root
 
+    implicitWidth: grid.implicitWidth
+    implicitHeight: grid.implicitHeight
+
     GridLayout {
+        id: grid
+
         anchors.fill: parent
         columns: 6
         rowSpacing: 12
@@ -81,6 +86,7 @@ Item {
         // Content-driven width so this stays narrower than Weather above it
         // instead of stretching to match the column
         implicitWidth: clockContent.implicitWidth + 40
+        implicitHeight: clockContent.implicitHeight + 32
 
         ColumnLayout {
             id: clockContent
@@ -139,6 +145,7 @@ Item {
         color: Colors.surface
         border.width: 1
         border.color: Colors.outline
+        implicitHeight: calContent.implicitHeight + 32
 
         // Wheel to change month, middle-click anywhere to jump to today
         WheelHandler {
@@ -157,6 +164,8 @@ Item {
         }
 
         ColumnLayout {
+            id: calContent
+
             anchors.fill: parent
             anchors.margins: 16
             spacing: 8

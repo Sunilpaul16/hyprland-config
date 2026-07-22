@@ -14,7 +14,12 @@ Item {
     readonly property bool hasForecast: Weather.forecast.length > 0
     readonly property bool hasSunTimes: Weather.sunrise !== "--:--" || Weather.sunset !== "--:--"
 
+    implicitWidth: content.implicitWidth
+    implicitHeight: content.implicitHeight
+
     ColumnLayout {
+        id: content
+
         anchors.fill: parent
         spacing: 16
 
@@ -259,8 +264,12 @@ Item {
         color: Colors.surface
         border.width: 1
         border.color: Colors.outline
+        implicitWidth: dayContent.implicitWidth + 24
+        implicitHeight: dayContent.implicitHeight + 24
 
         ColumnLayout {
+            id: dayContent
+
             anchors.centerIn: parent
             spacing: 6
 

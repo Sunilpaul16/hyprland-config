@@ -15,8 +15,11 @@ Rectangle {
     border.width: 1
     border.color: Colors.outline
     clip: true
+    implicitHeight: content.implicitHeight + 32
 
     ColumnLayout {
+        id: content
+
         anchors.fill: parent
         anchors.margins: 16
         spacing: 10

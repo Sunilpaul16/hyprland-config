@@ -9,7 +9,12 @@ import "../../services"
 Item {
     id: root
 
+    implicitWidth: grid.implicitWidth
+    implicitHeight: grid.implicitHeight
+
     GridLayout {
+        id: grid
+
         anchors.fill: parent
         columns: 2
         rowSpacing: 12

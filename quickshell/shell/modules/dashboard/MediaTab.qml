@@ -11,6 +11,9 @@ Item {
 
     property bool playerMenuOpen: false
 
+    implicitWidth: (Media.hasPlayer ? hasMediaRow.implicitWidth : emptyState.implicitWidth) + 64
+    implicitHeight: (Media.hasPlayer ? hasMediaRow.implicitHeight : emptyState.implicitHeight) + 64
+
     function formatTime(seconds: real): string {
         if (!seconds || seconds < 0 || isNaN(seconds))
             return "0:00";
@@ -22,6 +25,8 @@ Item {
 
     // No-media empty state
     ColumnLayout {
+        id: emptyState
+
         anchors.centerIn: parent
         visible: !Media.hasPlayer
         spacing: 12
@@ -43,6 +48,8 @@ Item {
 
     // Has-media content
     RowLayout {
+        id: hasMediaRow
+
         anchors.centerIn: parent
         visible: Media.hasPlayer
         spacing: 32
