@@ -19,7 +19,7 @@ parser.add_argument('--path', type=str, default=None, help='generate colorscheme
 parser.add_argument('--size', type=int , default=128 , help='bitmap image size')
 parser.add_argument('--color', type=str, default=None, help='generate colorscheme from color')
 parser.add_argument('--mode', type=str, choices=['dark', 'light'], default='dark', help='dark or light mode')
-parser.add_argument('--scheme', type=str, default='vibrant', help='material scheme to use')
+parser.add_argument('--scheme', type=str, default='scheme-vibrant', help='material scheme to use')
 parser.add_argument('--smart', action='store_true', default=False, help='decide scheme type based on image color')
 parser.add_argument('--transparency', type=str, choices=['opaque', 'transparent'], default='opaque', help='enable transparency')
 parser.add_argument('--termscheme', type=str, default=None, help='JSON file containg the terminal scheme for generating term colors')
