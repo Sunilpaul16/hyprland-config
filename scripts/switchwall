@@ -13,12 +13,14 @@ CACHE_DIR="$HOME/.cache/matugen"
 KITTY_THEME_OUT="$HOME/.config/kitty/theme.conf"
 
 STATE_FILE="$HOME/.local/state/quickshell/current_wallpaper"
+MODE_FILE="$HOME/.local/state/quickshell/color_mode"
 
 MPV_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 video-align-x=0.5 video-align-y=0.5 load-scripts=no"
 
 usage() {
-    echo "Usage: $(basename "$0") [--preview] <path-to-image-or-video>" >&2
+    echo "Usage: $(basename "$0") [--preview] [--mode auto|light|dark] <path-to-image-or-video>" >&2
     echo "       $(basename "$0") --noswitch" >&2
+    echo "       $(basename "$0") --mode auto|light|dark   (re-themes the current wallpaper)" >&2
     exit 1
 }
 
@@ -32,10 +34,35 @@ is_video() {
 # Parse args
 PREVIEW=false
 NOSWITCH=false
-case "${1:-}" in
-    --preview) PREVIEW=true; shift ;;
-    --noswitch) NOSWITCH=true; shift ;;
-esac
+SET_MODE=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --preview)  PREVIEW=true; shift ;;
+        --noswitch) NOSWITCH=true; shift ;;
+        --mode)     [[ -n "${2:-}" ]] || usage; SET_MODE="$2"; shift 2 ;;
+        --)         shift; break ;;
+        -*)         usage ;;
+        *)          break ;;
+    esac
+done
+
+# Persisted override; bare --mode re-themes the current wallpaper in place
+if [[ -n "$SET_MODE" ]]; then
+    case "$SET_MODE" in
+        auto|light|dark) ;;
+        *) echo "switchwall: --mode must be auto, light or dark (got: $SET_MODE)" >&2; exit 1 ;;
+    esac
+    mkdir -p "$(dirname "$MODE_FILE")"
+    printf '%s' "$SET_MODE" > "$MODE_FILE"
+    if [[ $# -eq 0 ]] && ! $PREVIEW; then
+        NOSWITCH=true
+    fi
+fi
+
+COLOR_MODE=auto
+if [[ -s "$MODE_FILE" ]]; then
+    COLOR_MODE="$(cat "$MODE_FILE")"
+fi
 
 if $NOSWITCH; then
     [[ $# -eq 0 ]] || usage
@@ -78,27 +105,49 @@ printf '%s' "$wallpaper" > "$STATE_FILE"
 
 # --- 2. Color source: extract a frame if it's a video -----------------------
 colorsource="$wallpaper"
+lumsource="$wallpaper"
 if is_video "$wallpaper"; then
     frame="$CACHE_DIR/$(basename "$wallpaper").frame.jpg"
     ffmpeg -y -i "$wallpaper" -vframes 1 "$frame" >/dev/null 2>&1
     [[ -s "$frame" ]] || { echo "switchwall: ffmpeg failed to extract a frame from $wallpaper" >&2; exit 1; }
     colorsource="$frame"
+
+    # Brightness only: frame 0 is often a near-white title card, which would
+    # flip the whole desktop to light mode. Accent still comes from frame 0.
+    lumframe="$CACHE_DIR/$(basename "$wallpaper").lum.jpg"
+    ffmpeg -y -ss 00:00:01 -i "$wallpaper" -frames:v 1 "$lumframe" >/dev/null 2>&1 || true
+    if [[ -s "$lumframe" ]]; then
+        lumsource="$lumframe"
+    else
+        lumsource="$frame"
+    fi
 fi
 
 # --- 3. matugen: hyprlock / hyprland colors.lua / GTK3+4 css ----------------
 
-# Resolved once here so both engines below agree: matugen has no --smart of
-# its own, so a low-chroma wallpaper would otherwise mute kitty only.
-SCHEME="$("$VENV_PYTHON" "$COLORGEN_DIR/generate_colors_material.py" \
+# Resolved once here so both engines below agree: matugen has neither --smart
+# nor brightness-based mode selection of its own, so a low-chroma or bright
+# wallpaper would otherwise only affect kitty.
+mapfile -t RESOLVED < <("$VENV_PYTHON" "$COLORGEN_DIR/generate_colors_material.py" \
     --path "$colorsource" \
+    --luminance-path "$lumsource" \
     --scheme scheme-tonal-spot \
     --smart \
-    --print-scheme)"
+    --mode "$COLOR_MODE" \
+    --print-scheme \
+    --print-mode)
+[[ ${#RESOLVED[@]} -eq 2 ]] || { echo "switchwall: failed to resolve scheme/mode" >&2; exit 1; }
+SCHEME="${RESOLVED[0]}"
+MODE="${RESOLVED[1]}"
 
-matugen image "$colorsource" --source-color-index 0 --mode dark --type "$SCHEME"
+matugen image "$colorsource" --source-color-index 0 --mode "$MODE" --type "$SCHEME"
 
 
-gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+if [[ "$MODE" == light ]]; then
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
+else
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+fi
 
 
 nautilus -q || true
@@ -107,7 +156,7 @@ nautilus -q || true
 scss="$CACHE_DIR/material_colors.scss"
 "$VENV_PYTHON" "$COLORGEN_DIR/generate_colors_material.py" \
     --path "$colorsource" \
-    --mode dark \
+    --mode "$MODE" \
     --scheme "$SCHEME" \
     --termscheme "$COLORGEN_DIR/terminal/scheme-base.json" \
     --blend_bg_fg \

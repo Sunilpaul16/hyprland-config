@@ -18,7 +18,9 @@ parser = argparse.ArgumentParser(description='Color generation script')
 parser.add_argument('--path', type=str, default=None, help='generate colorscheme from image')
 parser.add_argument('--size', type=int , default=128 , help='bitmap image size')
 parser.add_argument('--color', type=str, default=None, help='generate colorscheme from color')
-parser.add_argument('--mode', type=str, choices=['dark', 'light'], default='dark', help='dark or light mode')
+parser.add_argument('--mode', type=str, choices=['dark', 'light', 'auto'], default='dark', help='dark or light mode; auto picks by wallpaper brightness')
+parser.add_argument('--luminance-path', type=str, default=None, help='image to measure brightness from for --mode auto (defaults to --path)')
+parser.add_argument('--light-threshold', type=float, default=0.5, help='(0-1) relative luminance at or above which --mode auto picks light')
 parser.add_argument('--scheme', type=str, default='scheme-vibrant', help='material scheme to use')
 parser.add_argument('--smart', action='store_true', default=False, help='decide scheme type based on image color')
 parser.add_argument('--transparency', type=str, choices=['opaque', 'transparent'], default='opaque', help='enable transparency')
@@ -30,6 +32,7 @@ parser.add_argument('--blend_bg_fg', action='store_true', default=False, help='S
 parser.add_argument('--cache', type=str, default=None, help='file path to store the generated color')
 parser.add_argument('--debug', action='store_true', default=False, help='debug mode')
 parser.add_argument('--print-scheme', action='store_true', default=False, help='print the resolved scheme name and exit, without generating colors')
+parser.add_argument('--print-mode', action='store_true', default=False, help='print the resolved dark/light mode and exit, without generating colors')
 args = parser.parse_args()
 
 if args.path is None and args.color is None:
@@ -69,8 +72,19 @@ def boost_chroma_tone (argb: int, chroma: float = 1, tone: float = 1) -> int:
     hct = Hct.from_int(argb)
     return Hct.from_hct(hct.hue, hct.chroma * chroma, hct.tone * tone).to_int()
 
-darkmode = (args.mode == 'dark')
+# Rec.709 relative luminance (WCAG's definition), gamma-corrected -- a plain
+# mean over gamma-encoded values reads mid-tone images as far too bright
+def relative_luminance (image) -> float:
+    def linear (c: float) -> float:
+        c /= 255
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+    pixels = list(image.getdata())
+    total = sum(0.2126 * linear(p[0]) + 0.7152 * linear(p[1]) + 0.0722 * linear(p[2])
+                for p in pixels)
+    return total / len(pixels)
+
 transparent = (args.transparency == 'transparent')
+luminance = None
 
 if args.path is not None:
     image = Image.open(args.path)
@@ -87,6 +101,16 @@ if args.path is not None:
     wsize_new, hsize_new = calculate_optimal_size(wsize, hsize, args.size)
     if wsize_new < wsize or hsize_new < hsize:
         image = image.resize((wsize_new, hsize_new), Image.Resampling.BICUBIC)
+
+    # Piggybacks on the bitmap already downscaled for quantization. A separate
+    # source is used for video, whose first frame is often a title card.
+    if args.luminance_path is not None and args.luminance_path != args.path:
+        lum_image = Image.open(args.luminance_path).convert('RGB')
+        lum_image.thumbnail((args.size, args.size), Image.Resampling.BICUBIC)
+    else:
+        lum_image = image.convert('RGB')
+    luminance = relative_luminance(lum_image)
+
     colors = QuantizeCelebi(list(image.getdata()), 128)
     argb = Score.score(colors)[0]
 
@@ -111,9 +135,19 @@ elif args.color is not None:
     argb = hex_to_argb(args.color)
     hct = Hct.from_int(argb)
 
-# Lets switchwall resolve --smart once and hand the same scheme to matugen
-if args.print_scheme:
-    print(args.scheme)
+# Falls back to dark when there is no image to measure (--color)
+if args.mode == 'auto':
+    args.mode = 'light' if (luminance is not None and luminance >= args.light_threshold) else 'dark'
+
+darkmode = (args.mode == 'dark')
+
+# Lets switchwall resolve --smart and --mode auto once, then hand the same
+# answers to matugen and gsettings
+if args.print_scheme or args.print_mode:
+    if args.print_scheme:
+        print(args.scheme)
+    if args.print_mode:
+        print(args.mode)
     raise SystemExit(0)
 
 if args.scheme == 'scheme-fruit-salad':
