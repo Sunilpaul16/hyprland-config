@@ -203,38 +203,51 @@ Rectangle {
 
         Item { Layout.fillHeight: true }
 
-        Chip {
-            Layout.alignment: Qt.AlignHCenter
+        InfoRow {
             Layout.fillWidth: true
+            icon: "schedule"
             text: root.uptimeStr
         }
 
-        Chip {
-            Layout.alignment: Qt.AlignHCenter
+        InfoRow {
             Layout.fillWidth: true
+            icon: "select_window"
             text: root.wmName
         }
     }
 
-    component Chip: Rectangle {
-        id: chip
+    // Icon-badge + label style (caelestia's uptime/WM bubbles), plain
+    // Rectangles rather than caelestia's M3Shapes clamshell/pill shapes
+    component InfoRow: RowLayout {
+        id: info
 
+        required property string icon
         required property string text
 
-        Layout.preferredHeight: chipLabel.implicitHeight + 12
-        radius: 10
-        color: Colors.background
-        border.width: 1
-        border.color: Colors.outline
+        spacing: 8
+
+        Rectangle {
+            Layout.preferredWidth: 22
+            Layout.preferredHeight: 22
+            radius: 11
+            color: Colors.background
+            border.width: 1
+            border.color: Colors.outline
+
+            Text {
+                anchors.centerIn: parent
+                text: info.icon
+                font.family: "Material Symbols Rounded"
+                font.pixelSize: 13
+                color: Colors.primary
+            }
+        }
 
         Text {
-            id: chipLabel
-            anchors.centerIn: parent
-            width: parent.width - 16
-            text: chip.text
+            Layout.fillWidth: true
+            text: info.text
             color: Colors.textMuted
             font.pixelSize: 11
-            horizontalAlignment: Text.AlignHCenter
             elide: Text.ElideRight
         }
     }

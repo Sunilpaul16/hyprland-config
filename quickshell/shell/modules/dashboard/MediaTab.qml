@@ -49,7 +49,7 @@ Item {
 
         // Cover art
         CoverArt {
-            size: 260
+            size: Config.dashboardMediaCoverArtSize
         }
 
         // Info + seek + controls

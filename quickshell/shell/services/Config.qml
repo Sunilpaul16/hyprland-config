@@ -12,6 +12,15 @@ Singleton {
     property alias barHeight: adapter.barHeight
     property alias toastDismissDuration: adapter.toastDismissDuration
 
+    // Dashboard card sizing (defaults ported from caelestia's Tokens.sizes.dashboard)
+    property alias dashboardUserWidth: adapter.dashboardUserWidth
+    property alias dashboardWeatherWidth: adapter.dashboardWeatherWidth
+    property alias dashboardMediaCardWidth: adapter.dashboardMediaCardWidth
+    property alias dashboardMediaCoverArtSize: adapter.dashboardMediaCoverArtSize
+    property alias dashboardResourceRingThickness: adapter.dashboardResourceRingThickness
+    property alias dashboardMediaProgressThickness: adapter.dashboardMediaProgressThickness
+    property alias dashboardMediaProgressSweep: adapter.dashboardMediaProgressSweep
+
     // Gates panels from reading config before the FileView has loaded
     property bool ready: false
 
@@ -35,6 +44,13 @@ Singleton {
             property bool use12Hour: false
             property int barHeight: 40
             property int toastDismissDuration: 5000
+            property int dashboardUserWidth: 340
+            property int dashboardWeatherWidth: 275
+            property int dashboardMediaCardWidth: 200
+            property int dashboardMediaCoverArtSize: 200
+            property int dashboardResourceRingThickness: 6
+            property int dashboardMediaProgressThickness: 6
+            property int dashboardMediaProgressSweep: 180
         }
     }
 

@@ -33,14 +33,14 @@ Rectangle {
             Layout.alignment: Qt.AlignHCenter
             Layout.fillHeight: true
             value: SystemUsage.cpuPercentage
-            label: "CPU"
+            icon: "memory"
         }
 
         Ring {
             Layout.alignment: Qt.AlignHCenter
             Layout.fillHeight: true
             value: SystemUsage.memoryPercentage
-            label: "MEM"
+            icon: "memory_alt"
         }
 
         Ring {
@@ -48,40 +48,29 @@ Rectangle {
             Layout.fillHeight: true
             visible: Storage.primaryDisk !== null
             value: Storage.primaryDisk?.percentage ?? 0
-            label: "DISK"
+            icon: "hard_disk"
         }
     }
 
-    component Ring: ColumnLayout {
+    // Icon-in-ring style (caelestia's Resources widget) — the arc alone
+    // conveys the percentage, no numeric label
+    component Ring: UsageRing {
         id: ringItem
 
-        required property real value
-        required property string label
+        required property string icon
 
-        spacing: 4
-
-        UsageRing {
-            Layout.alignment: Qt.AlignHCenter
-            Layout.preferredWidth: 40
-            Layout.preferredHeight: 40
-            thickness: 4
-            value: ringItem.value
-            ringColor: Colors.primary
-
-            Text {
-                anchors.centerIn: parent
-                text: Math.round(ringItem.value * 100) + "%"
-                color: Colors.text
-                font.pixelSize: 10
-                font.bold: true
-            }
-        }
+        Layout.alignment: Qt.AlignHCenter
+        Layout.preferredWidth: 40
+        Layout.preferredHeight: 40
+        thickness: Config.dashboardResourceRingThickness
+        ringColor: Colors.primary
 
         Text {
-            Layout.alignment: Qt.AlignHCenter
-            text: ringItem.label
-            color: Colors.textMuted
-            font.pixelSize: 10
+            anchors.centerIn: parent
+            text: ringItem.icon
+            font.family: "Material Symbols Rounded"
+            font.pixelSize: 16
+            color: Colors.primary
         }
     }
 }

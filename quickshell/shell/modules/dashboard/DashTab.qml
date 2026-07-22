@@ -23,7 +23,7 @@ Item {
             Layout.columnSpan: 2
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
-            Layout.preferredWidth: 220
+            Layout.preferredWidth: Config.dashboardWeatherWidth
             Layout.preferredHeight: 120
         }
 
@@ -41,7 +41,7 @@ Item {
             Layout.columnSpan: 3
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
-            Layout.preferredWidth: 300
+            Layout.preferredWidth: Config.dashboardUserWidth
         }
 
         // Starts one column left of User — reads wider / left-shifted vs. User above it
@@ -66,7 +66,7 @@ Item {
             Layout.row: 0
             Layout.column: 5
             Layout.rowSpan: 2
-            Layout.preferredWidth: 210
+            Layout.preferredWidth: Config.dashboardMediaCardWidth
             Layout.fillHeight: true
         }
     }

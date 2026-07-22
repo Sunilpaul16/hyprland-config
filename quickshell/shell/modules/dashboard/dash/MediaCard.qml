@@ -1,9 +1,10 @@
 import "../"
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Shapes
 import "../../../services"
 
-// Condensed media summary card — cover art, title/artist, static progress, transport controls
+// Condensed media summary card — cover art (progress arc wraps it), title/artist, transport controls
 Rectangle {
     id: root
 
@@ -20,10 +21,53 @@ Rectangle {
         anchors.margins: 16
         spacing: 10
 
-        // Cover art
-        CoverArt {
+        // Cover art, wrapped in a playback-progress arc (caelestia's dash Media widget)
+        Item {
+            id: coverWrapper
+
             Layout.alignment: Qt.AlignHCenter
-            size: Math.min(parent.width, 140)
+            implicitWidth: progressArc.width
+            implicitHeight: progressArc.height
+
+            CoverArt {
+                id: cover
+
+                anchors.centerIn: parent
+                size: Math.min(root.width - 32, 140)
+            }
+
+            Item {
+                id: progressArc
+
+                anchors.centerIn: cover
+                visible: Media.hasPlayer
+                width: cover.width + Config.dashboardMediaProgressThickness * 2 + 4
+                height: width
+
+                Shape {
+                    anchors.fill: parent
+                    asynchronous: true
+                    preferredRendererType: Shape.CurveRenderer
+
+                    ShapePath {
+                        strokeWidth: Config.dashboardMediaProgressThickness
+                        strokeColor: Colors.primary
+                        fillColor: "transparent"
+                        capStyle: ShapePath.RoundCap
+
+                        PathAngleArc {
+                            centerX: progressArc.width / 2
+                            centerY: progressArc.height / 2
+                            radiusX: (progressArc.width - Config.dashboardMediaProgressThickness) / 2
+                            radiusY: radiusX
+                            startAngle: -90 - Config.dashboardMediaProgressSweep / 2
+                            sweepAngle: Config.dashboardMediaProgressSweep * root.progress
+
+                            Behavior on sweepAngle { NumberAnimation { duration: 300; easing.type: Easing.OutSine } }
+                        }
+                    }
+                }
+            }
         }
 
         ColumnLayout {
@@ -62,26 +106,6 @@ Rectangle {
         }
 
         Item { Layout.fillHeight: true }
-
-        // Static progress bar (not seekable — see MediaTab for the draggable slider)
-        Rectangle {
-            id: track
-
-            Layout.fillWidth: true
-            visible: Media.hasPlayer
-            implicitHeight: 4
-            radius: 2
-            color: Colors.background
-
-            Rectangle {
-                height: parent.height
-                radius: parent.radius
-                color: Colors.primary
-                width: track.width * root.progress
-
-                Behavior on width { NumberAnimation { duration: 300; easing.type: Easing.OutSine } }
-            }
-        }
 
         // Transport controls
         RowLayout {
