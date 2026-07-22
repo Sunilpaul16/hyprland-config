@@ -29,6 +29,7 @@ parser.add_argument('--term_fg_boost', type=float , default=0.35, help='Make ter
 parser.add_argument('--blend_bg_fg', action='store_true', default=False, help='Shift terminal background or foreground towards accent')
 parser.add_argument('--cache', type=str, default=None, help='file path to store the generated color')
 parser.add_argument('--debug', action='store_true', default=False, help='debug mode')
+parser.add_argument('--print-scheme', action='store_true', default=False, help='print the resolved scheme name and exit, without generating colors')
 args = parser.parse_args()
 
 if args.path is None and args.color is None:
@@ -109,6 +110,11 @@ if args.path is not None:
 elif args.color is not None:
     argb = hex_to_argb(args.color)
     hct = Hct.from_int(argb)
+
+# Lets switchwall resolve --smart once and hand the same scheme to matugen
+if args.print_scheme:
+    print(args.scheme)
+    raise SystemExit(0)
 
 if args.scheme == 'scheme-fruit-salad':
     from materialyoucolor.scheme.scheme_fruit_salad import SchemeFruitSalad as Scheme

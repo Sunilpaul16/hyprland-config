@@ -87,8 +87,15 @@ fi
 
 # --- 3. matugen: hyprlock / hyprland colors.lua / GTK3+4 css ----------------
 
+# Resolved once here so both engines below agree: matugen has no --smart of
+# its own, so a low-chroma wallpaper would otherwise mute kitty only.
+SCHEME="$("$VENV_PYTHON" "$COLORGEN_DIR/generate_colors_material.py" \
+    --path "$colorsource" \
+    --scheme scheme-tonal-spot \
+    --smart \
+    --print-scheme)"
 
-matugen image "$colorsource" --source-color-index 0 --mode dark
+matugen image "$colorsource" --source-color-index 0 --mode dark --type "$SCHEME"
 
 
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
@@ -101,7 +108,7 @@ scss="$CACHE_DIR/material_colors.scss"
 "$VENV_PYTHON" "$COLORGEN_DIR/generate_colors_material.py" \
     --path "$colorsource" \
     --mode dark \
-    --scheme scheme-tonal-spot \
+    --scheme "$SCHEME" \
     --termscheme "$COLORGEN_DIR/terminal/scheme-base.json" \
     --blend_bg_fg \
     > "$scss"
