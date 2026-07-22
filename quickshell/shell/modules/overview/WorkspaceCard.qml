@@ -10,6 +10,7 @@ Item {
     required property var screen
     required property bool active
     required property var slot // HyprlandWorkspace, or {id, isPlaceholder: true}
+    required property Item overviewContent
 
     readonly property bool isPlaceholder: !!slot.isPlaceholder
     readonly property var wsMonitor: isPlaceholder ? null : slot.monitor
@@ -31,8 +32,8 @@ Item {
         anchors.fill: parent
         radius: 12
         color: Colors.surface
-        border.width: root.isFocused ? 2 : 1
-        border.color: root.isFocused ? Colors.primary : Colors.outline
+        border.width: dropArea.containsDrag ? 3 : (root.isFocused ? 2 : 1)
+        border.color: dropArea.containsDrag || root.isFocused ? Colors.primary : Colors.outline
         clip: true
 
         // Click to switch workspace
@@ -42,6 +43,17 @@ Item {
             onClicked: {
                 Hyprland.dispatch(`hl.dsp.focus({ workspace = ${root.slot.id} })`);
                 OverviewState.open = false;
+            }
+        }
+
+        // Drag-to-move drop target
+        DropArea {
+            id: dropArea
+            anchors.fill: parent
+            keys: ["overview-window"]
+            onDropped: drop => {
+                drop.accept();
+                root.overviewContent.dragTargetWorkspace = root.slot.id;
             }
         }
 
@@ -68,6 +80,8 @@ Item {
                 monLogicalWidth: root.monLogicalWidth
                 monLogicalHeight: root.monLogicalHeight
                 overviewActive: root.active
+                overviewContent: root.overviewContent
+                sourceWorkspaceId: root.slot.id
             }
         }
     }

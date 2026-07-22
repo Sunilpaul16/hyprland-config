@@ -50,6 +50,39 @@ Item {
     width: implicitWidth
     height: implicitHeight
 
+    // Drag-to-move session, shared by every WorkspaceCard/thumbnail in this row
+    property bool dragActive: false
+    property string dragAddress: ""
+    property int dragSourceWorkspace: -1
+    property string dragIconName: ""
+    property int dragTargetWorkspace: -1
+
+    function beginDrag(item, mouse, address, sourceWorkspaceId, iconName) {
+        root.dragAddress = address;
+        root.dragSourceWorkspace = sourceWorkspaceId;
+        root.dragIconName = iconName;
+        root.dragActive = true;
+        root.updateDragPosition(item, mouse);
+    }
+
+    function updateDragPosition(item, mouse) {
+        const pos = item.mapToItem(root, mouse.x, mouse.y);
+        dragProxy.x = pos.x - dragProxy.width / 2;
+        dragProxy.y = pos.y - dragProxy.height / 2;
+    }
+
+    function releaseDrag() {
+        root.dragTargetWorkspace = -1;
+        dragProxy.Drag.drop();
+        if (root.dragTargetWorkspace > 0 && root.dragTargetWorkspace !== root.dragSourceWorkspace)
+            Hyprland.dispatch(`hl.dsp.window.move({ workspace = ${root.dragTargetWorkspace}, follow = false, window = "address:${root.dragAddress}" })`);
+        root.dragActive = false;
+        root.dragAddress = "";
+        root.dragSourceWorkspace = -1;
+        root.dragIconName = "";
+        root.dragTargetWorkspace = -1;
+    }
+
     Text {
         anchors.bottom: list.top
         anchors.bottomMargin: 8
@@ -81,6 +114,32 @@ Item {
             screen: root.screen
             active: root.active
             slot: modelData
+            overviewContent: root
+        }
+    }
+
+    // Drag-to-move proxy — lives outside the ListView's clip so it isn't cut off crossing card boundaries
+    Rectangle {
+        id: dragProxy
+        visible: root.dragActive
+        z: 100
+        width: 48
+        height: 48
+        radius: 10
+        color: Colors.background
+        border.width: 2
+        border.color: Colors.primary
+
+        Drag.active: root.dragActive
+        Drag.keys: ["overview-window"]
+
+        Image {
+            anchors.centerIn: parent
+            visible: root.dragIconName !== ""
+            source: root.dragIconName ? Quickshell.iconPath(root.dragIconName, "") : ""
+            sourceSize.width: 28
+            sourceSize.height: 28
+            smooth: true
         }
     }
 }
