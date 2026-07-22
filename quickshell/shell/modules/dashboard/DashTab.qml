@@ -29,7 +29,7 @@ Item {
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
             Layout.preferredWidth: Config.dashboardWeatherWidth
-            Layout.preferredHeight: 120
+            Layout.preferredHeight: 200
         }
 
         // Content-sized, not stretched — narrower than Weather above it
@@ -62,7 +62,7 @@ Item {
         ResourcesCard {
             Layout.row: 1
             Layout.column: 4
-            Layout.preferredWidth: 80
+            Layout.preferredWidth: 100
             Layout.fillHeight: true
         }
 

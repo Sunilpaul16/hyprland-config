@@ -21,6 +21,10 @@ Singleton {
     property alias dashboardMediaProgressThickness: adapter.dashboardMediaProgressThickness
     property alias dashboardMediaProgressSweep: adapter.dashboardMediaProgressSweep
 
+    // User card avatar — set to an absolute image path to override the
+    // ~/.face default (no in-app picker; edit config.json directly)
+    property alias userAvatarPath: adapter.userAvatarPath
+
     // Gates panels from reading config before the FileView has loaded
     property bool ready: false
 
@@ -51,6 +55,7 @@ Singleton {
             property int dashboardResourceRingThickness: 6
             property int dashboardMediaProgressThickness: 6
             property int dashboardMediaProgressSweep: 180
+            property string userAvatarPath: ""
         }
     }
 

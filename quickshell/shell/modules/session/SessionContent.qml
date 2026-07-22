@@ -31,24 +31,18 @@ Column {
         KeyNavigation.down: lockBtn
     }
 
-    // Decorative slot — no gif asset yet, spins an icon in its place
+    // Decorative slot — bongocat gif
     Item {
         implicitWidth: 64
         implicitHeight: 64
 
-        MaterialIcon {
+        AnimatedImage {
             anchors.centerIn: parent
-            text: "sync"
-            color: Colors.textMuted
-            font.pixelSize: 28
-
-            RotationAnimation on rotation {
-                running: parent.visible
-                from: 0
-                to: 360
-                duration: 1400
-                loops: Animation.Infinite
-            }
+            source: Qt.resolvedUrl(Directories.bongocatGif)
+            playing: parent.visible
+            fillMode: Image.PreserveAspectFit
+            width: 64
+            height: 64
         }
     }
 

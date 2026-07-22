@@ -1,29 +1,20 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Dialogs
 import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Io
 import "../../../services"
 
-// Distro name + uptime + WM/desktop + profile picture. Picker is a stock
-// QtQuick.Dialogs FileDialog — no portal round-trip, no C++ needed.
+// Distro name + uptime + WM/desktop + profile picture. Avatar path is
+// config-driven (Config.userAvatarPath) — no in-app picker.
 Rectangle {
     id: root
 
     readonly property string wmName: Quickshell.env("XDG_CURRENT_DESKTOP") || Quickshell.env("XDG_SESSION_DESKTOP") || "Unknown"
-    readonly property string facePath: Directories.faceIcon
+    readonly property string facePath: Config.userAvatarPath.length > 0 ? Config.userAvatarPath : Directories.faceIcon
 
     property string osName: "Unknown OS"
     property string uptimeStr: "up —"
-    // Bumped on every successful copy to cache-bust the avatar Image, which
-    // otherwise wouldn't notice the file at the same path changed underneath it
-    property int faceGeneration: 0
-
-    function urlToPath(url): string {
-        const s = url.toString();
-        return s.startsWith("file://") ? decodeURIComponent(s.slice(7)) : s;
-    }
 
     function formatUptime(totalSeconds: real): string {
         const days = Math.floor(totalSeconds / 86400);
@@ -84,27 +75,6 @@ Rectangle {
         onTriggered: uptimeFile.reload()
     }
 
-    // Profile picture picker
-    FileDialog {
-        id: facePicker
-        title: "Select a profile picture"
-        nameFilters: ["Image files (*.png *.jpg *.jpeg *.webp *.bmp)"]
-        onAccepted: copyProc.exec(["cp", root.urlToPath(selectedFile), root.facePath])
-    }
-
-    // Copies the picked file to ~/.face
-    Process {
-        id: copyProc
-        onExited: exitCode => {
-            if (exitCode === 0) {
-                root.faceGeneration++;
-                Quickshell.execDetached(["notify-send", "-a", "quickshell", "Profile picture updated", "The User card now shows your new picture."]);
-            } else {
-                Quickshell.execDetached(["notify-send", "-a", "quickshell", "-u", "critical", "Failed to update profile picture", "Could not copy the selected file to ~/.face."]);
-            }
-        }
-    }
-
     ColumnLayout {
         id: content
 
@@ -112,7 +82,7 @@ Rectangle {
         anchors.margins: 16
         spacing: 12
 
-        // Avatar (click to pick a new ~/.face picture)
+        // Avatar — source path set via Config.userAvatarPath
         Rectangle {
             id: avatar
 
@@ -125,7 +95,7 @@ Rectangle {
             border.width: 1
             border.color: Colors.outline
 
-            // Fallback icon — shown until a real ~/.face loads
+            // Fallback icon — shown until a real avatar image loads
             Text {
                 anchors.centerIn: parent
                 visible: pfp.status !== Image.Ready
@@ -135,7 +105,7 @@ Rectangle {
                 color: Colors.textMuted
             }
 
-            // ~/.face, circle-cropped
+            // Avatar image, circle-cropped
             Rectangle {
                 id: pfpClip
                 anchors.fill: parent
@@ -154,39 +124,11 @@ Rectangle {
                 Image {
                     id: pfp
                     anchors.fill: parent
-                    source: "file://" + root.facePath + "?" + root.faceGeneration
+                    source: root.facePath.length > 0 ? "file://" + root.facePath : ""
                     fillMode: Image.PreserveAspectCrop
                     asynchronous: true
                     cache: false
                 }
-            }
-
-            // Hover scrim + edit affordance (fade idiom matches this shell's
-            // existing hover conventions — see IconAction.qml/TogglePill.qml)
-            Rectangle {
-                anchors.fill: parent
-                radius: parent.radius
-                color: Colors.background
-                opacity: avatarHover.containsMouse ? 0.75 : 0
-
-                Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-                Text {
-                    anchors.centerIn: parent
-                    text: "photo_camera"
-                    font.family: "Material Symbols Rounded"
-                    font.pixelSize: 20
-                    color: Colors.text
-                    opacity: parent.opacity
-                }
-            }
-
-            MouseArea {
-                id: avatarHover
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: facePicker.open()
             }
         }
 

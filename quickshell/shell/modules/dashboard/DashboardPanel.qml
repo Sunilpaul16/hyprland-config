@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../../services"
+import "../sidebarRight"
 
 // Dashboard overlay window
 Scope {
@@ -30,10 +31,10 @@ Scope {
 
                 // Tab state
                 readonly property var tabModel: [
-                    { text: "Dashboard", component: dashboardTabComponent },
-                    { text: "Media", component: mediaTabComponent },
-                    { text: "Performance", component: performanceTabComponent },
-                    { text: "Weather", component: weatherTabComponent }
+                    { text: "Dashboard", iconName: "dashboard", component: dashboardTabComponent },
+                    { text: "Media", iconName: "queue_music", component: mediaTabComponent },
+                    { text: "Performance", iconName: "speed", component: performanceTabComponent },
+                    { text: "Weather", iconName: "cloud", component: weatherTabComponent }
                 ]
                 property int currentTab: 0
 
@@ -170,15 +171,28 @@ Scope {
                                             Layout.preferredWidth: 1
                                             radius: 10
                                             color: "transparent"
-                                            implicitHeight: tabLabel.implicitHeight + 12
+                                            implicitHeight: tabLabelRow.implicitHeight + 12
 
-                                            Text {
-                                                id: tabLabel
+                                            Row {
+                                                id: tabLabelRow
                                                 anchors.centerIn: parent
-                                                text: tabButton.modelData.text
-                                                color: tabButton.current ? Colors.background : Colors.text
-                                                font.pixelSize: 13
-                                                font.bold: tabButton.current
+                                                spacing: 6
+
+                                                MaterialIcon {
+                                                    anchors.verticalCenter: parent.verticalCenter
+                                                    text: tabButton.modelData.iconName
+                                                    color: tabButton.current ? Colors.background : Colors.text
+                                                    font.pixelSize: 15
+                                                }
+
+                                                Text {
+                                                    id: tabLabel
+                                                    anchors.verticalCenter: parent.verticalCenter
+                                                    text: tabButton.modelData.text
+                                                    color: tabButton.current ? Colors.background : Colors.text
+                                                    font.pixelSize: 13
+                                                    font.bold: tabButton.current
+                                                }
                                             }
 
                                             MouseArea {

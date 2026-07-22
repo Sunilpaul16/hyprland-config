@@ -21,4 +21,5 @@ QtObject {
     readonly property string mediaArtCache: home + "/.cache/quickshell-media-art"
     readonly property string videosDir: home + "/Videos"
     readonly property string faceIcon: home + "/.face"
+    readonly property string bongocatGif: home + "/hyprland-config/assets/bongocat.gif"
 }

@@ -2,7 +2,7 @@ import QtQuick
 import Qt5Compat.GraphicalEffects
 import "../../services"
 
-// Rotating cover-art frame — circular mask, spins while playing
+// Cover-art frame — circular mask
 Item {
     id: root
 
@@ -24,7 +24,7 @@ Item {
         verticalOffset: 2
     }
 
-    // Circle-cropped art, rotates while playing
+    // Circle-cropped art
     Item {
         id: artFrame
 
@@ -36,17 +36,6 @@ Item {
                 height: artFrame.height
                 radius: width / 2
             }
-        }
-
-        // paused, not running: resumes its angle instead of jumping to 0
-        NumberAnimation on rotation {
-            running: true
-            paused: !Media.isPlaying
-            from: 0
-            to: 360
-            duration: 23500
-            loops: Animation.Infinite
-            easing.type: Easing.Linear
         }
 
         Rectangle {
