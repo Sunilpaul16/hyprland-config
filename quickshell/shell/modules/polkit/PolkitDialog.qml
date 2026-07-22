@@ -43,7 +43,7 @@ Scope {
 
                 WlrLayershell.layer: WlrLayer.Overlay
                 WlrLayershell.namespace: "quickshell-polkit"
-                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
                 // Grab the password field whenever a fresh flow starts needing one
                 onFlowChanged: if (root.flow?.isResponseRequired) passwordInput.forceActiveFocus()
@@ -55,10 +55,23 @@ Scope {
                     }
                 }
 
-                // Click outside to cancel
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: root.flow?.cancelAuthenticationRequest()
+                // Click-through everywhere except the panel itself
+                mask: Region {
+                    item: panel
+                }
+
+                // Shared focus-grab registration
+                onActiveChanged: {
+                    if (root.active)
+                        GlobalFocusGrab.addDismissable(root);
+                    else
+                        GlobalFocusGrab.removeDismissable(root);
+                }
+                Connections {
+                    target: GlobalFocusGrab
+                    function onDismissed() {
+                        root.flow?.cancelAuthenticationRequest();
+                    }
                 }
 
                 // Focus scope
@@ -66,12 +79,6 @@ Scope {
                     anchors.fill: parent
                     focus: root.active
                     Keys.onEscapePressed: root.flow?.cancelAuthenticationRequest()
-
-                    // Absorb clicks on the panel itself
-                    MouseArea {
-                        anchors.fill: panel
-                        onClicked: {}
-                    }
 
                     // Panel
                     Rectangle {

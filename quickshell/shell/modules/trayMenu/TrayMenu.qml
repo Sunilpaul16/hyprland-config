@@ -42,12 +42,25 @@ Scope {
 
                 WlrLayershell.layer: WlrLayer.Overlay
                 WlrLayershell.namespace: "quickshell-tray-menu"
-                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-                // Click outside to close
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: TrayMenuState.close()
+                // Click-through everywhere except the panel itself
+                mask: Region {
+                    item: panel
+                }
+
+                // Shared focus-grab registration
+                onActiveChanged: {
+                    if (root.active)
+                        GlobalFocusGrab.addDismissable(root);
+                    else
+                        GlobalFocusGrab.removeDismissable(root);
+                }
+                Connections {
+                    target: GlobalFocusGrab
+                    function onDismissed() {
+                        TrayMenuState.close();
+                    }
                 }
 
                 // Focus scope
@@ -55,12 +68,6 @@ Scope {
                     anchors.fill: parent
                     focus: root.active
                     Keys.onEscapePressed: TrayMenuState.close()
-
-                    // Absorb clicks on panel
-                    MouseArea {
-                        anchors.fill: panel
-                        onClicked: {}
-                    }
 
                     // Panel
                     Rectangle {

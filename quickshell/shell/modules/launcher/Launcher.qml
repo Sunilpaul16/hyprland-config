@@ -42,15 +42,29 @@ Scope {
 
                 WlrLayershell.layer: WlrLayer.Overlay
                 WlrLayershell.namespace: "quickshell-launcher"
-                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-                // Click outside to close
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: LauncherState.open = false
+                // Click-through everywhere except the panel itself
+                mask: Region {
+                    item: content
+                }
+
+                // Shared focus-grab registration
+                onActiveChanged: {
+                    if (root.active)
+                        GlobalFocusGrab.addDismissable(root);
+                    else
+                        GlobalFocusGrab.removeDismissable(root);
+                }
+                Connections {
+                    target: GlobalFocusGrab
+                    function onDismissed() {
+                        LauncherState.open = false;
+                    }
                 }
 
                 Content {
+                    id: content
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 48
                     anchors.horizontalCenter: parent.horizontalCenter

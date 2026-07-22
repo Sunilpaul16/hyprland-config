@@ -27,11 +27,21 @@ Scope {
                     NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
                 }
 
-                // Right-edge stack registration
+                // Right-edge stack registration + shared focus-grab registration
                 onActiveChanged: {
                     RightEdgeStack.register(root.screen, "session", root.active, drawer.registeredWidth);
-                    if (root.active)
+                    if (root.active) {
                         SessionWarnings.refresh();
+                        GlobalFocusGrab.addDismissable(root);
+                    } else {
+                        GlobalFocusGrab.removeDismissable(root);
+                    }
+                }
+                Connections {
+                    target: GlobalFocusGrab
+                    function onDismissed() {
+                        SessionState.open = false;
+                    }
                 }
 
                 // Positioning
@@ -49,12 +59,11 @@ Scope {
 
                 WlrLayershell.layer: WlrLayer.Overlay
                 WlrLayershell.namespace: "quickshell-session"
-                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-                // Click outside to close
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: SessionState.open = false
+                // Click-through everywhere except the drawer itself
+                mask: Region {
+                    item: drawer
                 }
 
                 // Focus scope
@@ -66,12 +75,6 @@ Scope {
                     // Hand keyboard focus to the first action button so Up/Down/Enter
                     // work immediately, without a click first
                     onFocusChanged: if (focus && loader.item) loader.item.focusFirst()
-
-                    // Absorb clicks on the drawer itself
-                    MouseArea {
-                        anchors.fill: drawer
-                        onClicked: {}
-                    }
 
                     // Drawer: right-edge slide via animated rightMargin + opacity fade,
                     // resting/closed margins mirror SidebarRightPanel's 8px edge gap

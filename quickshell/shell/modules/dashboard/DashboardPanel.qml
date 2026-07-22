@@ -52,12 +52,25 @@ Scope {
 
                 WlrLayershell.layer: WlrLayer.Overlay
                 WlrLayershell.namespace: "quickshell-dashboard"
-                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-                // Click outside to close
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: DashboardState.open = false
+                // Click-through everywhere except the panel itself
+                mask: Region {
+                    item: panel
+                }
+
+                // Shared focus-grab registration
+                onActiveChanged: {
+                    if (root.active)
+                        GlobalFocusGrab.addDismissable(root);
+                    else
+                        GlobalFocusGrab.removeDismissable(root);
+                }
+                Connections {
+                    target: GlobalFocusGrab
+                    function onDismissed() {
+                        DashboardState.open = false;
+                    }
                 }
 
                 // Focus scope
@@ -65,13 +78,6 @@ Scope {
                     anchors.fill: parent
                     focus: root.active
                     Keys.onEscapePressed: DashboardState.open = false
-
-                    // Absorb clicks on the panel itself so they don't fall through
-                    // to the full-screen close catcher above.
-                    MouseArea {
-                        anchors.fill: panel
-                        onClicked: {}
-                    }
 
                     // Panel
                     Rectangle {

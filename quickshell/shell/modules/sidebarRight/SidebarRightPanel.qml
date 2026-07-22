@@ -36,10 +36,20 @@ Scope {
 
                 onActiveChanged: {
                     RightEdgeStack.register(root.screen, "sidebar", root.active, registeredWidth);
-                    if (!root.active)
+                    if (!root.active) {
                         SidebarDialogState.close();
+                        GlobalFocusGrab.removeDismissable(root);
+                    } else {
+                        GlobalFocusGrab.addDismissable(root);
+                    }
                 }
                 Component.onCompleted: RightEdgeStack.register(root.screen, "sidebar", root.active, registeredWidth)
+                Connections {
+                    target: GlobalFocusGrab
+                    function onDismissed() {
+                        SidebarRightState.open = false;
+                    }
+                }
 
                 // Positioning
                 anchors {
@@ -56,12 +66,11 @@ Scope {
 
                 WlrLayershell.layer: WlrLayer.Overlay
                 WlrLayershell.namespace: "quickshell-sidebar-right"
-                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-                // Click outside to close
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: SidebarRightState.open = false
+                // Click-through everywhere except the sidebar itself
+                mask: Region {
+                    item: backdrop
                 }
 
                 // Focus scope
@@ -73,13 +82,6 @@ Scope {
                             SidebarDialogState.close();
                         else
                             SidebarRightState.open = false;
-                    }
-
-                    // Absorb clicks on the sidebar itself so they don't fall through
-                    // to the full-screen close catcher above.
-                    MouseArea {
-                        anchors.fill: backdrop
-                        onClicked: {}
                     }
 
                     // Sidebar backdrop (slide-in panel background) — shrink-wraps to
