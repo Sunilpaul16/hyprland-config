@@ -8,7 +8,7 @@ import math
 import json
 from PIL import Image
 from materialyoucolor.quantize import QuantizeCelebi
-from materialyoucolor.score.score import Score
+from materialyoucolor.score.score import Score, ScoreOptions
 from materialyoucolor.hct import Hct
 from materialyoucolor.dynamiccolor.material_dynamic_colors import MaterialDynamicColors
 from materialyoucolor.utils.color_utils import (rgba_from_argb, argb_from_rgb, argb_from_rgba)
@@ -33,6 +33,9 @@ args = parser.parse_args()
 
 if args.path is None and args.color is None:
     parser.error('one of --path or --color is required')
+
+# Unreachable as a real scored color, which is always an opaque Hct.to_int()
+SCORE_FALLBACK_SENTINEL = 0x00000000
 
 rgba_to_hex = lambda rgba: "#{:02X}{:02X}{:02X}".format(rgba[0], rgba[1], rgba[2])
 argb_to_hex = lambda argb: "#{:02X}{:02X}{:02X}".format(*map(round, rgba_from_argb(argb)))
@@ -86,12 +89,22 @@ if args.path is not None:
     colors = QuantizeCelebi(list(image.getdata()), 128)
     argb = Score.score(colors)[0]
 
+    # Score.score() swaps in Google Blue (chroma 62) when CUTOFF_CHROMA=5 rejects
+    # every color, so a grayscale image reaches --smart looking saturated. An
+    # alpha=0 sentinel detects that swap; real results are always opaque.
+    grayscale = args.smart and Score.score(
+        colors, ScoreOptions(fallback_color_argb=SCORE_FALLBACK_SENTINEL)
+    )[0] == SCORE_FALLBACK_SENTINEL
+    if grayscale:
+        # Unfiltered re-score keeps the wallpaper's own faint tint, not that blue.
+        argb = Score.score(colors, ScoreOptions(filter=False))[0]
+
     if args.cache is not None:
         with open(args.cache, 'w') as file:
             file.write(argb_to_hex(argb))
     hct = Hct.from_int(argb)
     if(args.smart):
-        if(hct.chroma < 20):
+        if(grayscale or hct.chroma < 20):
             args.scheme = 'scheme-neutral'
 elif args.color is not None:
     argb = hex_to_argb(args.color)
