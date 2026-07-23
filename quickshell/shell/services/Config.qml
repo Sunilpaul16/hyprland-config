@@ -21,6 +21,13 @@ Singleton {
     property alias dashboardMediaProgressThickness: adapter.dashboardMediaProgressThickness
     property alias dashboardMediaProgressSweep: adapter.dashboardMediaProgressSweep
 
+    // Dashboard panel size — "auto" measures/fills as today; "fixed" uses the
+    // paired pixel value below, clamped to 95% of screen size as a safety ceiling
+    property alias dashboardPanelWidthMode: adapter.dashboardPanelWidthMode   // "auto" | "fixed"
+    property alias dashboardPanelWidth: adapter.dashboardPanelWidth
+    property alias dashboardPanelHeightMode: adapter.dashboardPanelHeightMode // "auto" | "fixed"
+    property alias dashboardPanelHeight: adapter.dashboardPanelHeight
+
     // User card avatar — set to an absolute image path to override the
     // ~/.face default (no in-app picker; edit config.json directly)
     property alias userAvatarPath: adapter.userAvatarPath
@@ -55,6 +62,10 @@ Singleton {
             property int dashboardResourceRingThickness: 6
             property int dashboardMediaProgressThickness: 6
             property int dashboardMediaProgressSweep: 180
+            property string dashboardPanelWidthMode: "auto"
+            property int dashboardPanelWidth: 1190
+            property string dashboardPanelHeightMode: "auto"
+            property int dashboardPanelHeight: 700
             property string userAvatarPath: ""
         }
     }

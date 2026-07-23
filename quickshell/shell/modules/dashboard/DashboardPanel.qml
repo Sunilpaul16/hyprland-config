@@ -37,6 +37,8 @@ Scope {
                     { text: "Weather", iconName: "cloud", component: weatherTabComponent }
                 ]
                 property int currentTab: 0
+                readonly property bool widthFixed: Config.dashboardPanelWidthMode === "fixed"
+                readonly property bool heightFixed: Config.dashboardPanelHeightMode === "fixed"
 
                 // Positioning
                 anchors {
@@ -85,15 +87,21 @@ Scope {
                         id: panel
 
                         anchors.centerIn: parent
-                        width: Math.min((root.screen?.width ?? 1280) * 0.85, 1400)
+                        width: root.widthFixed
+                            ? Math.min(Config.dashboardPanelWidth, (root.screen?.width ?? 1280) * 0.95)
+                            : Math.min((root.screen?.width ?? 1280) * 0.85, 1400)
                         // Content-driven, not a fixed screen fraction — so a tab whose
                         // cards need less room than the ceiling doesn't get stretched
                         // into dead space (caelestia's Wrapper.qml sizes the same way)
-                        height: Math.min(contentColumn.implicitHeight + 40, (root.screen?.height ?? 800) * 0.85, 900)
+                        // Fixed mode flips this: panel dictates height down to the active tab
+                        height: root.heightFixed
+                            ? Math.min(Config.dashboardPanelHeight, (root.screen?.height ?? 800) * 0.95)
+                            : Math.min(contentColumn.implicitHeight + 40, (root.screen?.height ?? 800) * 0.85, 900)
                         radius: 18
                         color: Colors.background
                         border.width: 1
                         border.color: Colors.outline
+                        clip: true
 
                         opacity: root.showProgress
                         scale: 0.96 + 0.04 * root.showProgress
@@ -235,7 +243,8 @@ Scope {
                                 property real currentPaneHeight: currentPane?.height ?? 0
 
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: currentPaneHeight
+                                Layout.fillHeight: root.heightFixed
+                                Layout.preferredHeight: root.heightFixed ? -1 : currentPaneHeight
 
                                 Behavior on currentPaneHeight {
                                     NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
@@ -284,7 +293,8 @@ Scope {
                                             // Own natural content height, not the tallest tab's —
                                             // tabView.currentPaneHeight then follows whichever pane
                                             // is current, animated on switch
-                                            height: item ? item.implicitHeight : 0
+                                            // Fixed-height mode flips this: pane fills tabView's height instead
+                                            height: root.heightFixed ? tabView.height : (item ? item.implicitHeight : 0)
 
                                             sourceComponent: modelData.component
 
