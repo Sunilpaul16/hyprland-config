@@ -8,25 +8,25 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    property alias use12Hour: adapter.use12Hour
-    property alias barHeight: adapter.barHeight
-    property alias toastDismissDuration: adapter.toastDismissDuration
+    property alias use12Hour: adapter.use12Hour                                       // true = 12-hour clock (AM/PM); false = 24-hour
+    property alias barHeight: adapter.barHeight                                       // top bar height (px)
+    property alias toastDismissDuration: adapter.toastDismissDuration                 // ms a notification toast shows before auto-dismissing
 
     // Dashboard card sizing (defaults ported from caelestia's Tokens.sizes.dashboard)
-    property alias dashboardUserWidth: adapter.dashboardUserWidth
-    property alias dashboardWeatherWidth: adapter.dashboardWeatherWidth
-    property alias dashboardMediaCardWidth: adapter.dashboardMediaCardWidth
-    property alias dashboardMediaCoverArtSize: adapter.dashboardMediaCoverArtSize
-    property alias dashboardResourceRingThickness: adapter.dashboardResourceRingThickness
-    property alias dashboardMediaProgressThickness: adapter.dashboardMediaProgressThickness
-    property alias dashboardMediaProgressSweep: adapter.dashboardMediaProgressSweep
+    property alias dashboardUserWidth: adapter.dashboardUserWidth                         // Dashboard tab: User card width (px)
+    property alias dashboardWeatherWidth: adapter.dashboardWeatherWidth                   // Dashboard tab: small Weather card width (px)
+    property alias dashboardMediaCardWidth: adapter.dashboardMediaCardWidth               // Dashboard tab: condensed Media card width (px)
+    property alias dashboardMediaCoverArtSize: adapter.dashboardMediaCoverArtSize         // Media tab: cover art side length (px)
+    property alias dashboardResourceRingThickness: adapter.dashboardResourceRingThickness // Dashboard tab: CPU/Memory/Disk ring stroke width (px)
+    property alias dashboardMediaProgressThickness: adapter.dashboardMediaProgressThickness // Media card: playback progress arc stroke width (px)
+    property alias dashboardMediaProgressSweep: adapter.dashboardMediaProgressSweep       // Media card: progress arc span in degrees (180 = half-circle)
 
     // Dashboard panel size — "auto" measures/fills as today; "fixed" uses the
     // paired pixel value below, clamped to 95% of screen size as a safety ceiling
     property alias dashboardPanelWidthMode: adapter.dashboardPanelWidthMode   // "auto" | "fixed"
-    property alias dashboardPanelWidth: adapter.dashboardPanelWidth
+    property alias dashboardPanelWidth: adapter.dashboardPanelWidth           // px width used only when widthMode is "fixed"
     property alias dashboardPanelHeightMode: adapter.dashboardPanelHeightMode // "auto" | "fixed"
-    property alias dashboardPanelHeight: adapter.dashboardPanelHeight
+    property alias dashboardPanelHeight: adapter.dashboardPanelHeight         // px height used only when heightMode is "fixed"
 
     // User card avatar — set to an absolute image path to override the
     // ~/.face default (no in-app picker; edit config.json directly)
