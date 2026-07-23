@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell
-import Quickshell.Widgets
 import Quickshell.Services.Notifications
 import "../../services"
 
@@ -11,8 +10,6 @@ Rectangle {
 
     required property Notif modelData
 
-    readonly property bool hasImage: modelData.image.length > 0
-    readonly property bool hasAppIcon: modelData.appIcon.length > 0
     readonly property string timeStr: Qt.formatDateTime(modelData.time, "hh:mm")
 
     implicitHeight: content.implicitHeight + 20
@@ -70,44 +67,11 @@ Rectangle {
         readonly property int actionsReserve: card.modelData.expanded ? 64 : 24
 
         // Icon
-        Rectangle {
+        NotifIcon {
             id: iconSlot
-            width: 26
-            height: 26
-            radius: 13
-            color: card.modelData.critical ? Colors.error : Colors.background
-            clip: true
+            notif: card.modelData
             anchors.left: parent.left
             anchors.top: parent.top
-
-            Image {
-                anchors.fill: parent
-                visible: card.hasImage
-                source: card.hasImage ? StringUtils.resolveNotifImage(card.modelData.image) : ""
-                fillMode: Image.PreserveAspectCrop
-                asynchronous: true
-                cache: false
-            }
-
-            IconImage {
-                anchors.centerIn: parent
-                width: 15
-                height: 15
-                visible: !card.hasImage && card.hasAppIcon
-                asynchronous: true
-                source: card.hasAppIcon ? Quickshell.iconPath(card.modelData.appIcon, "dialog-information") : ""
-            }
-
-            // Flat monochrome fallback glyph, not a colorful emoji
-            Text {
-                anchors.centerIn: parent
-                anchors.verticalCenterOffset: -1
-                visible: !card.hasImage && !card.hasAppIcon
-                text: "i"
-                color: card.modelData.critical ? Colors.textOnError : Colors.primary
-                font.pixelSize: 13
-                font.bold: true
-            }
         }
 
         // App name (expanded only)
