@@ -39,7 +39,7 @@ Scope {
                     }
                     implicitWidth: cornerWindow.interactive ? root.hotZoneSize : root.roundingSize
                     implicitHeight: cornerWindow.interactive ? root.hotZoneSize : root.roundingSize
-                    exclusiveZone: 0
+                    exclusionMode: ExclusionMode.Ignore
                     color: "transparent"
                     WlrLayershell.layer: WlrLayer.Overlay
                     WlrLayershell.namespace: "quickshell-screen-corner"

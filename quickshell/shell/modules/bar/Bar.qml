@@ -138,12 +138,12 @@ Scope {
                         }
 
                         // Sidebar toggle button
-                        SectionPill {
-                            Layout.alignment: Qt.AlignVCenter
-                            horizontalPadding: 8
+                        // SectionPill {
+                        //     Layout.alignment: Qt.AlignVCenter
+                        //     horizontalPadding: 8
 
-                            SidebarRightButton {}
-                        }
+                        //     SidebarRightButton {}
+                        // }
 
                         // Session/power button
                         SectionPill {
