@@ -1,36 +1,27 @@
 import QtQuick
-import QtQuick.Layouts
 import Quickshell.Services.SystemTray
-import "../../services"
-import "../sidebarRight"
 
-// System tray: row of TrayItem icons, middle-click one to hide it into the overflow popup (comparison.md #35)
+// System tray: row of TrayItem icons, reactive to SystemTray.items
 Item {
     id: root
 
-    function isHidden(item: SystemTrayItem): bool {
-        return Persistent.hiddenTrayIds.includes(item.id.toLowerCase());
-    }
+    // Status applets (network/bluetooth managers) that register a tray icon
+    // even with no user-facing background app running; hide them so the
+    // pill only reflects real apps like Discord or Steam
+    readonly property var hiddenIds: ["nm-applet", "blueman"]
 
-    function toggleHidden(itemId: string): void {
-        const id = itemId.toLowerCase();
-        if (Persistent.hiddenTrayIds.includes(id))
-            Persistent.hiddenTrayIds = Persistent.hiddenTrayIds.filter(i => i !== id);
-        else
-            Persistent.hiddenTrayIds = [...Persistent.hiddenTrayIds, id];
+    function isHidden(item: SystemTrayItem): bool {
+        return root.hiddenIds.includes(item.id.toLowerCase());
     }
 
     readonly property var visibleItems: SystemTray.items.values.filter(item => !root.isHidden(item))
-    readonly property var overflowItems: SystemTray.items.values.filter(item => root.isHidden(item))
-    readonly property bool hasItems: root.visibleItems.length > 0 || root.overflowItems.length > 0
-
-    property bool overflowOpen: false
+    readonly property bool hasItems: root.visibleItems.length > 0
 
     visible: root.hasItems
     implicitWidth: visible ? row.implicitWidth : 0
     implicitHeight: row.implicitHeight
 
-    RowLayout {
+    Row {
         id: row
         anchors.verticalCenter: parent.verticalCenter
         spacing: 10
@@ -41,39 +32,7 @@ Item {
             TrayItem {
                 required property SystemTrayItem modelData
                 item: modelData
-                onToggleHiddenRequested: root.toggleHidden(modelData.id)
             }
         }
-
-        // Overflow toggle — only shown once something's actually hidden there
-        Item {
-            id: overflowBtn
-            visible: root.overflowItems.length > 0
-            implicitWidth: 18
-            implicitHeight: 18
-
-            MaterialIcon {
-                anchors.centerIn: parent
-                text: "more_horiz"
-                color: (overflowHover.containsMouse || root.overflowOpen) ? Colors.text : Colors.textMuted
-                font.pixelSize: 16
-            }
-
-            MouseArea {
-                id: overflowHover
-                anchors.fill: parent
-                anchors.margins: -4
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.overflowOpen = !root.overflowOpen
-            }
-        }
-    }
-
-    TrayOverflowPopup {
-        anchorItem: overflowBtn
-        shown: root.overflowOpen
-        items: root.overflowItems
-        onToggleHiddenRequested: itemId => root.toggleHidden(itemId)
     }
 }

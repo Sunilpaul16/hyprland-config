@@ -19,7 +19,7 @@ Singleton {
 
     // Launch NetworkManager's connection editor — same "Edit Connections"
     // target nm-applet's tray menu used to open before it got filtered
-    // out of the tray (see Tray.qml/Persistent.hiddenTrayIds)
+    // out of the tray (see Tray.qml's hiddenIds)
     function openSettings(): void {
         settingsProc.running = true;
     }
