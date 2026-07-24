@@ -23,10 +23,17 @@ Scope {
                 readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
                 readonly property bool active: DashboardState.open && root.isFocusedScreen
 
-                property real showProgress: active ? 1 : 0
+                // Slide-down open/close (matches caelestia's Wrapper.qml offsetScale
+                // mechanism: 0 = open, 1 = closed, driving both the panel's anchor
+                // margin and its opacity together — not a size tween or scale transform)
+                property real offsetScale: root.active ? 0 : 1
 
-                Behavior on showProgress {
-                    NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
+                Behavior on offsetScale {
+                    NumberAnimation {
+                        duration: Motion.animationCurves.expressiveDefaultSpatialDuration
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Motion.animationCurves.expressiveDefaultSpatial
+                    }
                 }
 
                 // Tab state
@@ -39,6 +46,11 @@ Scope {
                 property int currentTab: 0
                 readonly property bool widthFixed: Config.dashboardPanelWidthMode === "fixed"
                 readonly property bool heightFixed: Config.dashboardPanelHeightMode === "fixed"
+                // Resting (open) position — just under the bar rather than the
+                // literal screen top, since this repo's bar is a horizontal top
+                // bar (caelestia's own reference sits flush at parent.top because
+                // its bar is a separate left-edge column, not an overlapping strip)
+                readonly property real restingTopMargin: Config.barHeight + 8
 
                 // Positioning
                 anchors {
@@ -51,7 +63,10 @@ Scope {
                 // Window setup
                 color: "transparent"
                 exclusiveZone: 0
-                visible: showProgress > 0.001
+                // Stays instantiated/visible through the whole close slide,
+                // matching caelestia's `visible: offsetScale < 1` — only hides
+                // once fully off-screen, never toggled abruptly
+                visible: offsetScale < 1
 
                 WlrLayershell.layer: WlrLayer.Overlay
                 WlrLayershell.namespace: "quickshell-dashboard"
@@ -86,7 +101,9 @@ Scope {
                     Rectangle {
                         id: panel
 
-                        anchors.centerIn: parent
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.top: parent.top
+                        anchors.topMargin: root.restingTopMargin - (panel.height + 5) * root.offsetScale
                         width: root.widthFixed
                             ? Math.min(Config.dashboardPanelWidth, (root.screen?.width ?? 1280) * 0.95)
                             : Math.min((root.screen?.width ?? 1280) * 0.85, 1400)
@@ -103,12 +120,22 @@ Scope {
                         border.color: Colors.outline
                         clip: true
 
-                        opacity: root.showProgress
-                        scale: 0.96 + 0.04 * root.showProgress
-                        transformOrigin: Item.Center
+                        opacity: 1 - root.offsetScale
 
                         Behavior on height {
                             NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
+                        }
+
+                        // Hover-to-stay-open: cancels a pending hover-close
+                        // scheduled by leaving the bar pill while the cursor
+                        // is in transit down into the panel
+                        HoverHandler {
+                            onHoveredChanged: {
+                                if (hovered)
+                                    DashboardState.cancelHoverClose();
+                                else
+                                    DashboardState.scheduleHoverClose();
+                            }
                         }
 
                         ColumnLayout {

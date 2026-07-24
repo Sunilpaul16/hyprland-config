@@ -69,6 +69,24 @@ Scope {
 
                             MediaButton {}
                         }
+                        // Hover-to-open dashboard trigger
+                        SectionPill {
+                            id: dashboardHoverPill
+                            Layout.alignment: Qt.AlignVCenter
+                            visible: Media.hasPlayer
+
+                            HoverHandler {
+                                target: dashboardHoverPill
+                                onHoveredChanged: {
+                                    if (hovered) {
+                                        DashboardState.cancelHoverClose();
+                                        DashboardState.show();
+                                    } else {
+                                        DashboardState.scheduleHoverClose();
+                                    }
+                                }
+                            }
+                        }
 
                         // Workspaces pill — scroll to switch workspace
                         MouseArea {
