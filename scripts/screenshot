@@ -18,7 +18,7 @@ case "$MODE" in
 esac
 
 # Dependency preflight
-for bin in grim slurp wl-copy jq notify-send; do
+for bin in grim slurp wl-copy jq notify-send xdg-open; do
     command -v "$bin" >/dev/null || { echo "screenshot: missing required binary: $bin" >&2; exit 1; }
 done
 if $EDIT && ! command -v swappy >/dev/null; then
@@ -48,14 +48,27 @@ capture() {
     fi
 }
 
+# Fire a clickable notification in the background: notify-send -A implies --wait,
+# blocking until the notification is closed/clicked, so this must not block the script.
+# Plain notify-send exits immediately after sending, so without -A + backgrounding here
+# there'd be nothing alive to catch a click and open the file.
+notify_and_open() {
+    local title="$1" file="$2"
+    (
+        action="$(notify-send -a screenshot -i "$file" -A "default=Open" "$title" "$file")" || true
+        [[ "$action" == "default" ]] && xdg-open "$file"
+    ) &
+    disown
+}
+
 # Capture + save/edit
 if $EDIT; then
     capture - | swappy -f - -o "$OUTFILE"
     [[ -s "$OUTFILE" ]] || exit 0   # closed swappy without saving -> nothing to copy/notify
     wl-copy < "$OUTFILE"
-    notify-send -a screenshot -i "$OUTFILE" "Screenshot saved (edited)" "$OUTFILE" || true
+    notify_and_open "Screenshot saved (edited)" "$OUTFILE"
 else
     capture "$OUTFILE"
     wl-copy < "$OUTFILE"
-    notify-send -a screenshot -i "$OUTFILE" "Screenshot saved" "$OUTFILE" || true
+    notify_and_open "Screenshot saved" "$OUTFILE"
 fi
