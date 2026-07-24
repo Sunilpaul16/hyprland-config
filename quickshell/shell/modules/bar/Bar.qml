@@ -69,14 +69,16 @@ Scope {
 
                             MediaButton {}
                         }
-                        // Hover-to-open dashboard trigger
-                        SectionPill {
-                            id: dashboardHoverPill
+                        // Hover-to-open dashboard trigger — invisible zone,
+                        // spans the bar's full content height (40h)
+                        Item {
+                            id: dashboardHoverZone
                             Layout.alignment: Qt.AlignVCenter
-                            visible: Media.hasPlayer
+                            implicitWidth: 60 // TEMP: debug sizing
+                            implicitHeight: bar.barContentHeight
 
                             HoverHandler {
-                                target: dashboardHoverPill
+                                target: dashboardHoverZone
                                 onHoveredChanged: {
                                     if (hovered) {
                                         DashboardState.cancelHoverClose();

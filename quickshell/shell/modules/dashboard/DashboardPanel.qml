@@ -46,11 +46,9 @@ Scope {
                 property int currentTab: 0
                 readonly property bool widthFixed: Config.dashboardPanelWidthMode === "fixed"
                 readonly property bool heightFixed: Config.dashboardPanelHeightMode === "fixed"
-                // Resting (open) position — just under the bar rather than the
-                // literal screen top, since this repo's bar is a horizontal top
-                // bar (caelestia's own reference sits flush at parent.top because
-                // its bar is a separate left-edge column, not an overlapping strip)
-                readonly property real restingTopMargin: Config.barHeight + 8
+                // Resting (open) position — flush with the screen top, matching
+                // caelestia's Wrapper.qml exactly (topMargin: 0 when open)
+                readonly property real restingTopMargin: 0
 
                 // Positioning
                 anchors {
