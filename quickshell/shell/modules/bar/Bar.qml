@@ -192,13 +192,6 @@ Scope {
                         //     SidebarRightButton {}
                         // }
 
-                        // Session/power button
-                        SectionPill {
-                            Layout.alignment: Qt.AlignVCenter
-                            horizontalPadding: 8
-
-                            SessionButton {}
-                        }
                     }
 
                     // Volume scroll zone — the open gap left of the tray/clock cluster

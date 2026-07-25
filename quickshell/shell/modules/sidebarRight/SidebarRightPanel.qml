@@ -112,13 +112,12 @@ Scope {
 
                         spacing: 12
 
-                        NotificationsCard {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            Layout.minimumHeight: 120
-                        }
+                        SystemHeaderCard { Layout.fillWidth: true }
+                        QuickTogglesCard { Layout.fillWidth: true }
+                        KeepAwakeCard { Layout.fillWidth: true; visible: KeepAwakeCardState.enabled }
+                        ScreenRecorderCard { Layout.fillWidth: true; visible: ScreenRecorderCardState.enabled }
 
-                        // Separates the notifications region from the utility cards
+                        // Separates the utility cards from the notifications region
                         Rectangle {
                             Layout.fillWidth: true
                             Layout.topMargin: 4
@@ -128,9 +127,11 @@ Scope {
                             opacity: 0.35
                         }
 
-                        KeepAwakeCard { Layout.fillWidth: true; visible: KeepAwakeCardState.enabled }
-                        ScreenRecorderCard { Layout.fillWidth: true; visible: ScreenRecorderCardState.enabled }
-                        QuickTogglesCard { Layout.fillWidth: true }
+                        NotificationsCard {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.minimumHeight: 120
+                        }
                     }
 
                     // In-panel toggle dialogs, same overlay area (comparison.md #25)
