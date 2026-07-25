@@ -104,7 +104,7 @@ Scope {
                         anchors.topMargin: root.restingTopMargin - (panel.height + 5) * root.offsetScale
                         width: root.widthFixed
                             ? Math.min(Config.dashboardPanelWidth, (root.screen?.width ?? 1280) * 0.95)
-                            : Math.min((root.screen?.width ?? 1280) * 0.85, 1400)
+                            : Math.min(Math.max(tabView.currentPaneWidth + 40, 700), (root.screen?.width ?? 1280) * 0.85, 1400)
                         // Content-driven, not a fixed screen fraction — so a tab whose
                         // cards need less room than the ceiling doesn't get stretched
                         // into dead space (caelestia's Wrapper.qml sizes the same way)
@@ -266,6 +266,16 @@ Scope {
                                     return repeater.itemAt(root.currentTab);
                                 }
                                 property real currentPaneHeight: currentPane?.height ?? 0
+                                // Read off the pane's own content, never off paneWidth — the
+                                // panel's auto width feeds this, so anything derived from
+                                // tabView.width here would deadlock at 0
+                                readonly property real livePaneWidth: currentPane?.item?.implicitWidth ?? 0
+                                // Latched to the last real width: the pane is destroyed while the
+                                // dashboard is closed, and letting that drop the panel to its floor
+                                // snaps it narrower mid close-animation
+                                property real currentPaneWidth: 0
+                                onLivePaneWidthChanged: if (livePaneWidth > 0)
+                                    currentPaneWidth = livePaneWidth
 
                                 Layout.fillWidth: true
                                 Layout.fillHeight: root.heightFixed
