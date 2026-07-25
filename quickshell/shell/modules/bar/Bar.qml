@@ -36,6 +36,12 @@ Scope {
                 WlrLayershell.layer: WlrLayer.Top
                 WlrLayershell.namespace: "quickshell-bar"
 
+                // Stay inside any active focus grab, otherwise the compositor
+                // cuts pointer input to the bar while an overlay is open and
+                // its hover zones go dead
+                Component.onCompleted: GlobalFocusGrab.addPersistent(bar)
+                Component.onDestruction: GlobalFocusGrab.removePersistent(bar)
+
                 // Bar content
                 Rectangle {
                     id: content
@@ -62,12 +68,33 @@ Scope {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 8
 
-                        // Media button
-                        SectionPill {
+                        // Media button — hover-to-open trigger spanning the
+                        // bar's full content height, so there's no dead gap
+                        // between leaving the pill and reaching the popup
+                        Item {
+                            id: mediaHoverZone
                             Layout.alignment: Qt.AlignVCenter
+                            implicitWidth: mediaPill.implicitWidth
+                            implicitHeight: bar.barContentHeight
                             visible: Media.hasPlayer
 
-                            MediaButton {}
+                            SectionPill {
+                                id: mediaPill
+                                anchors.centerIn: parent
+
+                                MediaButton {}
+                            }
+
+                            HoverHandler {
+                                target: mediaHoverZone
+                                onHoveredChanged: {
+                                    MediaState.setPillHovered(hovered);
+                                    if (hovered) {
+                                        const pos = mediaHoverZone.mapToItem(null, mediaHoverZone.width / 2, mediaHoverZone.height);
+                                        MediaState.showAt(pos.x, pos.y);
+                                    }
+                                }
+                            }
                         }
                         // Hover-to-open dashboard trigger — invisible zone,
                         // spans the bar's full content height (40h)

@@ -18,8 +18,8 @@ Scope {
                 screen: panelLoader.modelData
 
                 // Visibility state
-                readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
-                readonly property bool active: MediaState.open && root.isFocusedScreen
+                readonly property bool isOwnerScreen: ScreenOwner.owns(MediaState, root.screen)
+                readonly property bool active: MediaState.open && root.isOwnerScreen
 
                 property real showProgress: active ? 1 : 0
 
@@ -73,12 +73,14 @@ Scope {
                     Rectangle {
                         id: panel
 
-                        readonly property real restingY: Math.max(8, Math.min(MediaState.anchorY + 8, root.height - implicitHeight - 8))
                         readonly property int slideDistance: 20
 
                         x: Math.max(8, Math.min(MediaState.anchorX - implicitWidth / 2, root.width - implicitWidth - 8))
-                        // Slides down from the bar into restingY as showProgress animates
-                        y: restingY - (1 - root.showProgress) * slideDistance
+                        anchors.top: parent.top
+                        // Flush against the bar (topMargin: 0 when open — same
+                        // exclusive-zone offset DashboardPanel's restingTopMargin
+                        // relies on), slides up off-screen on close
+                        anchors.topMargin: -(panel.height + slideDistance) * (1 - root.showProgress)
                         implicitWidth: content.implicitWidth + 56
                         implicitHeight: content.implicitHeight + 40
                         radius: 18
@@ -89,6 +91,12 @@ Scope {
                         opacity: root.showProgress
                         scale: 0.96 + 0.04 * root.showProgress
                         transformOrigin: Item.Top
+
+                        // Hover-to-stay-open: feeds the shared hover state so
+                        // transit between pill and popup doesn't close it
+                        HoverHandler {
+                            onHoveredChanged: MediaState.setPopupHovered(hovered)
+                        }
 
                         MediaContent {
                             id: content

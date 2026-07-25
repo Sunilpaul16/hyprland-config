@@ -50,15 +50,12 @@ Item {
         }
     }
 
-    // Click to toggle popup
+    // Hover tracking for the label colors — the popup itself is opened by
+    // the bar's full-height hover zone, not from here
     MouseArea {
         id: hoverArea
         anchors.fill: parent
         hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            const pos = root.mapToItem(null, root.width / 2, root.height);
-            MediaState.toggle(pos.x, pos.y);
-        }
+        acceptedButtons: Qt.NoButton
     }
 }

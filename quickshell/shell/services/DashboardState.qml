@@ -8,12 +8,15 @@ Singleton {
     id: root
 
     property bool open: false
+    // Monitor this panel is pinned to while open
+    property string ownerScreen: ""
 
     function toggle(): void {
-        root.open = !root.open;
+        ScreenOwner.toggle(root);
     }
 
     function show(): void {
+        ScreenOwner.claim(root);
         root.open = true;
     }
 
@@ -30,9 +33,19 @@ Singleton {
 
     Timer {
         id: hoverCloseTimer
-        interval: 150
+        interval: 500
         repeat: false
         onTriggered: root.open = false
+    }
+
+    // Hover exclusivity + monitor pinning for any path that sets open directly
+    onOpenChanged: {
+        if (root.open) {
+            ScreenOwner.claim(root);
+            ExclusiveHover.claim(root);
+        } else {
+            ExclusiveHover.release(root);
+        }
     }
 
     // IPC handler
