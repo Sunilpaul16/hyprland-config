@@ -31,7 +31,7 @@ Scope {
                 // Right-edge stack registration — innermost panel, always flush to
                 // the edge itself, but other panels need to know its open+width to
                 // offset past it
-                readonly property int edgeMargin: 8
+                readonly property int edgeMargin: 0
                 readonly property real registeredWidth: backdrop.width + edgeMargin
 
                 onActiveChanged: {
