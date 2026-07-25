@@ -21,25 +21,6 @@ Rectangle {
         return faceProbe.exists ? Directories.faceIcon : Directories.bongocatGif;
     }
 
-    property string osId: ""
-    property string uptimeStr: "up —"
-
-    // Nerd Font distro glyphs, generic tux when the ID isn't mapped
-    readonly property string osGlyph: {
-        const map = {
-            arch: "",
-            endeavouros: "",
-            manjaro: "",
-            debian: "",
-            ubuntu: "",
-            fedora: "",
-            nixos: "",
-            gentoo: "",
-            opensuse: ""
-        };
-        return map[root.osId] ?? "";
-    }
-
     // Material Design container tones, derived from the single matugen primary
     readonly property color logoBg: Qt.tint(Colors.surface, Qt.alpha(Colors.primary, 0.30))
     readonly property color uptimeBg: Qt.tint(Colors.surface, Qt.alpha(root.hueShift(Colors.primary, 40), 0.30))
@@ -52,44 +33,11 @@ Rectangle {
         return Qt.hsla((c.hslHue * 360 + degrees + 360) % 360 / 360, c.hslSaturation, c.hslLightness, c.a);
     }
 
-    function formatUptime(totalSeconds: real): string {
-        const days = Math.floor(totalSeconds / 86400);
-        const hours = Math.floor((totalSeconds % 86400) / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-
-        let str = "";
-        if (days > 0)
-            str += `${days} day${days === 1 ? "" : "s"}`;
-        if (hours > 0)
-            str += `${str ? ", " : ""}${hours} hour${hours === 1 ? "" : "s"}`;
-        if (minutes > 0 || !str)
-            str += `${str ? ", " : ""}${minutes} minute${minutes === 1 ? "" : "s"}`;
-        return "up " + str;
-    }
-
-    function applyUptime(content: string): void {
-        if (!content)
-            return;
-        const seconds = parseFloat(content.split(" ")[0]);
-        if (!isNaN(seconds))
-            root.uptimeStr = root.formatUptime(seconds);
-    }
-
     radius: 18
     color: Colors.surface
     border.width: 1
     border.color: Colors.outline
     implicitHeight: root.avatarSize + 32
-
-    // Distro ID — read once, not polled
-    FileView {
-        path: "/etc/os-release"
-        onLoaded: {
-            const match = text().match(/^ID=(.+)$/m);
-            if (match)
-                root.osId = match[1].replace(/"/g, "").trim().toLowerCase();
-        }
-    }
 
     // Probes whether ~/.face exists so facePath can fall through to the bongocat
     FileView {
@@ -101,21 +49,6 @@ Rectangle {
         printErrors: false
         onLoaded: exists = true
         onLoadFailed: exists = false
-    }
-
-    // reload() is async — text() must be read from onLoaded, not right after calling reload()
-    FileView {
-        id: uptimeFile
-        path: "/proc/uptime"
-        onLoaded: root.applyUptime(text())
-    }
-
-    // Uptime doesn't need to be precise — refresh once a minute, not every second
-    Timer {
-        interval: 60000
-        running: true
-        repeat: true
-        onTriggered: uptimeFile.reload()
     }
 
     // Distro logo badge — sits top-left, overlapped by the avatar
@@ -132,7 +65,7 @@ Rectangle {
 
         Text {
             anchors.centerIn: parent
-            text: root.osGlyph
+            text: SysInfo.osGlyph
             font.family: "JetBrainsMono Nerd Font"
             font.pixelSize: Config.dashboardLogoSize * 0.62
             color: Colors.primary
@@ -204,7 +137,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.rightMargin: 16
         anchors.verticalCenter: uptimeBadge.verticalCenter
-        text: root.uptimeStr
+        text: SysInfo.uptimeLong
         color: Colors.text
         font.pixelSize: 12
         elide: Text.ElideRight
