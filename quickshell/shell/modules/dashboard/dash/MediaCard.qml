@@ -4,11 +4,18 @@ import QtQuick.Layouts
 import QtQuick.Shapes
 import "../../../services"
 
-// Condensed media summary card — cover art (progress arc wraps it), title/artist, transport controls
+// Condensed media summary card — cover art (progress arc wraps it), title/album/artist, transport controls, gif
 Rectangle {
     id: root
 
     readonly property real progress: Media.length > 0 ? Math.max(0, Math.min(1, Media.position / Media.length)) : 0
+    readonly property string gifPath: {
+        const configured = Directories.resolve(Config.dashboardMediaGifPath);
+        return configured.length > 0 ? configured : Directories.bongocatGif;
+    }
+
+    // Tonal container fill for the outer transport buttons
+    readonly property color tonalBg: Qt.tint(Colors.surface, Qt.alpha(Colors.primary, 0.28))
 
     radius: 18
     color: Colors.surface
@@ -90,6 +97,16 @@ Rectangle {
 
             Text {
                 Layout.fillWidth: true
+                visible: Media.hasPlayer && Media.album.length > 0
+                horizontalAlignment: Text.AlignHCenter
+                text: Media.album
+                color: Colors.outline
+                font.pixelSize: 11
+                elide: Text.ElideRight
+            }
+
+            Text {
+                Layout.fillWidth: true
                 visible: Media.hasPlayer && Media.artist.length > 0
                 horizontalAlignment: Text.AlignHCenter
                 text: Media.artist
@@ -108,53 +125,74 @@ Rectangle {
             }
         }
 
-        Item { Layout.fillHeight: true }
-
         // Transport controls
         RowLayout {
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignHCenter
-            spacing: 18
+            Layout.topMargin: 4
+            spacing: 6
 
             TransportButton {
-                glyph: "\u{23EE}"
+                glyph: "skip_previous"
                 enabled: Media.canGoPrevious
                 onClicked: Media.previous()
             }
 
             TransportButton {
-                glyph: Media.isPlaying ? "\u{23F8}" : "\u{25B6}"
+                Layout.fillWidth: true
+                glyph: Media.isPlaying ? "pause" : "play_arrow"
                 enabled: Media.canTogglePlaying
-                big: true
+                filled: true
                 onClicked: Media.togglePlaying()
             }
 
             TransportButton {
-                glyph: "\u{23ED}"
+                glyph: "skip_next"
                 enabled: Media.canGoNext
                 onClicked: Media.next()
             }
         }
+
+        // Fills the leftover column space rather than leaving a dead gap
+        AnimatedImage {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.margins: 6
+            visible: Config.dashboardMediaGifEnabled
+            source: "file://" + root.gifPath
+            speed: Config.dashboardMediaGifSpeed
+            playing: Media.isPlaying
+            fillMode: Image.PreserveAspectFit
+            asynchronous: true
+        }
+
+        Item {
+            Layout.fillHeight: true
+            visible: !Config.dashboardMediaGifEnabled
+        }
     }
 
-    component TransportButton: Item {
+    // Tonal circle for prev/next, filled pill for play/pause (caelestia's IconButton Tonal vs fillWidth)
+    component TransportButton: Rectangle {
         id: btn
 
         property string glyph: ""
-        property bool big: false
+        property bool filled: false
         signal clicked()
 
-        implicitWidth: icon.implicitWidth
-        implicitHeight: icon.implicitHeight
+        implicitWidth: 34
+        implicitHeight: 34
+        radius: height / 2
+        color: btn.filled ? Colors.primary : (area.containsMouse ? Qt.tint(root.tonalBg, Qt.alpha(Colors.primary, 0.18)) : root.tonalBg)
         opacity: btn.enabled ? 1 : 0.35
 
-        Text {
-            id: icon
-            text: btn.glyph
-            color: area.containsMouse ? Colors.text : Colors.textMuted
-            font.pixelSize: btn.big ? 18 : 14
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+        Text {
+            anchors.centerIn: parent
+            text: btn.glyph
+            font.family: "Material Symbols Rounded"
+            font.pixelSize: 18
+            color: btn.filled ? Colors.background : Colors.primary
         }
 
         MouseArea {

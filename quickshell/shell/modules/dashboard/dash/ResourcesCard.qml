@@ -10,10 +10,18 @@ import "../performance"
 Rectangle {
     id: root
 
+    // Rotates a colour's hue, passing achromatic colours through untouched
+    function hueShift(c: color, degrees: real): color {
+        if (c.hslSaturation <= 0.01)
+            return c;
+        return Qt.hsla((c.hslHue * 360 + degrees + 360) % 360 / 360, c.hslSaturation, c.hslLightness, c.a);
+    }
+
     radius: 18
     color: Colors.surface
     border.width: 1
     border.color: Colors.outline
+    implicitWidth: Config.dashboardResourceRingSize + 24
     implicitHeight: content.implicitHeight + 24
 
     Component.onCompleted: {
@@ -33,47 +41,46 @@ Rectangle {
         spacing: 10
 
         Ring {
-            Layout.alignment: Qt.AlignHCenter
-            Layout.fillHeight: true
             value: SystemUsage.cpuPercentage
             icon: "memory"
+            ringColor: Colors.primary
         }
 
         Ring {
-            Layout.alignment: Qt.AlignHCenter
-            Layout.fillHeight: true
             value: SystemUsage.memoryPercentage
             icon: "memory_alt"
+            ringColor: root.hueShift(Colors.primary, 40)
         }
 
         Ring {
-            Layout.alignment: Qt.AlignHCenter
-            Layout.fillHeight: true
             visible: Storage.primaryDisk !== null
             value: Storage.primaryDisk?.percentage ?? 0
             icon: "hard_disk"
+            ringColor: root.hueShift(Colors.primary, -30)
         }
     }
 
     // Icon-in-ring style (caelestia's Resources widget) — the arc alone
-    // conveys the percentage, no numeric label
+    // conveys the percentage, no numeric label. Rings grow with the card
+    // height up to the configured ceiling, matching caelestia's fillHeight.
     component Ring: UsageRing {
         id: ringItem
 
         required property string icon
 
         Layout.alignment: Qt.AlignHCenter
-        Layout.preferredWidth: 40
-        Layout.preferredHeight: 40
+        Layout.fillHeight: true
+        Layout.maximumHeight: Config.dashboardResourceRingSize
+        Layout.preferredWidth: height
         thickness: Config.dashboardResourceRingThickness
-        ringColor: Colors.primary
+        trackColor: Qt.tint(Colors.surface, Qt.alpha(Colors.outline, 0.45))
 
         Text {
             anchors.centerIn: parent
             text: ringItem.icon
             font.family: "Material Symbols Rounded"
-            font.pixelSize: 16
-            color: Colors.primary
+            font.pixelSize: Math.round(ringItem.height * 0.36)
+            color: ringItem.ringColor
         }
     }
 }

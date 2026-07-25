@@ -1,20 +1,56 @@
 import QtQuick
-import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Io
 import "../../../services"
 
-// Distro name + uptime + WM/desktop + profile picture. Avatar path is
-// config-driven (Config.userAvatarPath) — no in-app picker.
+// Distro logo + avatar + uptime badge + WM pill, laid out horizontally like
+// caelestia's dash/User.qml. Avatar path is config-driven (Config.userAvatarPath).
 Rectangle {
     id: root
 
     readonly property string wmName: Quickshell.env("XDG_CURRENT_DESKTOP") || Quickshell.env("XDG_SESSION_DESKTOP") || "Unknown"
-    readonly property string facePath: Config.userAvatarPath.length > 0 ? Config.userAvatarPath : Directories.faceIcon
+    readonly property real avatarSize: Config.dashboardAvatarSize
+    readonly property real logoBadgeSize: Config.dashboardLogoSize + 12
+    readonly property real uptimeBadgeSize: Config.dashboardUptimeSize + 8
 
-    property string osName: "Unknown OS"
+    // Config path first, then ~/.face, then the bundled bongocat
+    readonly property string facePath: {
+        const configured = Directories.resolve(Config.userAvatarPath);
+        if (configured.length > 0)
+            return configured;
+        return faceProbe.exists ? Directories.faceIcon : Directories.bongocatGif;
+    }
+
+    property string osId: ""
     property string uptimeStr: "up —"
+
+    // Nerd Font distro glyphs, generic tux when the ID isn't mapped
+    readonly property string osGlyph: {
+        const map = {
+            arch: "",
+            endeavouros: "",
+            manjaro: "",
+            debian: "",
+            ubuntu: "",
+            fedora: "",
+            nixos: "",
+            gentoo: "",
+            opensuse: ""
+        };
+        return map[root.osId] ?? "";
+    }
+
+    // Material Design container tones, derived from the single matugen primary
+    readonly property color logoBg: Qt.tint(Colors.surface, Qt.alpha(Colors.primary, 0.30))
+    readonly property color uptimeBg: Qt.tint(Colors.surface, Qt.alpha(root.hueShift(Colors.primary, 40), 0.30))
+    readonly property color wmBg: Qt.tint(Colors.surface, Qt.alpha(root.hueShift(Colors.primary, -30), 0.24))
+
+    // Rotates a colour's hue, passing achromatic colours through untouched
+    function hueShift(c: color, degrees: real): color {
+        if (c.hslSaturation <= 0.01)
+            return c;
+        return Qt.hsla((c.hslHue * 360 + degrees + 360) % 360 / 360, c.hslSaturation, c.hslLightness, c.a);
+    }
 
     function formatUptime(totalSeconds: real): string {
         const days = Math.floor(totalSeconds / 86400);
@@ -43,21 +79,28 @@ Rectangle {
     color: Colors.surface
     border.width: 1
     border.color: Colors.outline
-    // Content-driven height so the outer grid can size this card to its
-    // own content instead of stretching it to fill leftover row height
-    implicitHeight: content.implicitHeight + content.anchors.margins * 2
+    implicitHeight: root.avatarSize + 32
 
-    // Distro name — read once, not polled
+    // Distro ID — read once, not polled
     FileView {
-        id: osReleaseFile
-
         path: "/etc/os-release"
         onLoaded: {
-            const content = text();
-            const match = content.match(/^PRETTY_NAME=(.+)$/m);
+            const match = text().match(/^ID=(.+)$/m);
             if (match)
-                root.osName = match[1].replace(/"/g, "").trim();
+                root.osId = match[1].replace(/"/g, "").trim().toLowerCase();
         }
+    }
+
+    // Probes whether ~/.face exists so facePath can fall through to the bongocat
+    FileView {
+        id: faceProbe
+
+        property bool exists: false
+
+        path: Directories.faceIcon
+        printErrors: false
+        onLoaded: exists = true
+        onLoadFailed: exists = false
     }
 
     // reload() is async — text() must be read from onLoaded, not right after calling reload()
@@ -75,122 +118,158 @@ Rectangle {
         onTriggered: uptimeFile.reload()
     }
 
-    ColumnLayout {
-        id: content
+    // Distro logo badge — sits top-left, overlapped by the avatar
+    Rectangle {
+        id: logoBadge
 
-        anchors.fill: parent
-        anchors.margins: 16
-        spacing: 12
-
-        // Avatar — source path set via Config.userAvatarPath
-        Rectangle {
-            id: avatar
-
-            Layout.alignment: Qt.AlignHCenter
-            Layout.topMargin: 8
-            implicitWidth: 56
-            implicitHeight: 56
-            radius: 28
-            color: Colors.background
-            border.width: 1
-            border.color: Colors.outline
-
-            // Fallback icon — shown until a real avatar image loads
-            Text {
-                anchors.centerIn: parent
-                visible: pfp.status !== Image.Ready
-                text: "person"
-                font.family: "Material Symbols Rounded"
-                font.pixelSize: 28
-                color: Colors.textMuted
-            }
-
-            // Avatar image, circle-cropped
-            Rectangle {
-                id: pfpClip
-                anchors.fill: parent
-                radius: parent.radius
-                color: "transparent"
-                visible: pfp.status === Image.Ready
-                layer.enabled: true
-                layer.effect: OpacityMask {
-                    maskSource: Rectangle {
-                        width: pfpClip.width
-                        height: pfpClip.height
-                        radius: pfpClip.radius
-                    }
-                }
-
-                Image {
-                    id: pfp
-                    anchors.fill: parent
-                    source: root.facePath.length > 0 ? "file://" + root.facePath : ""
-                    fillMode: Image.PreserveAspectCrop
-                    asynchronous: true
-                    cache: false
-                }
-            }
-        }
+        x: 16
+        y: 12
+        z: 1
+        implicitWidth: root.logoBadgeSize
+        implicitHeight: root.logoBadgeSize
+        radius: width / 2
+        color: root.logoBg
 
         Text {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignHCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: root.osName
-            color: Colors.text
-            font.pixelSize: 13
-            font.bold: true
-            wrapMode: Text.WordWrap
-        }
-
-        Item { Layout.fillHeight: true }
-
-        InfoRow {
-            Layout.fillWidth: true
-            icon: "schedule"
-            text: root.uptimeStr
-        }
-
-        InfoRow {
-            Layout.fillWidth: true
-            icon: "select_window"
-            text: root.wmName
+            anchors.centerIn: parent
+            text: root.osGlyph
+            font.family: "JetBrainsMono Nerd Font"
+            font.pixelSize: Config.dashboardLogoSize * 0.62
+            color: Colors.primary
         }
     }
 
-    // Icon-badge + label style (caelestia's uptime/WM bubbles), plain
-    // Rectangles rather than caelestia's M3Shapes clamshell/pill shapes
-    component InfoRow: RowLayout {
-        id: info
+    // Avatar. Deliberately unclipped: ClippingRectangle's shader and a
+    // layer/OpacityMask both render nothing inside this layershell overlay
+    Rectangle {
+        id: avatar
 
-        required property string icon
-        required property string text
+        anchors.left: logoBadge.right
+        anchors.leftMargin: -root.logoBadgeSize * 0.45
+        anchors.verticalCenter: parent.verticalCenter
+        implicitWidth: root.avatarSize
+        implicitHeight: root.avatarSize
+        radius: width / 2
+        color: Colors.background
 
-        spacing: 8
+        Text {
+            anchors.centerIn: parent
+            visible: pfp.status !== Image.Ready
+            text: "person"
+            font.family: "Material Symbols Rounded"
+            font.pixelSize: root.avatarSize * 0.45
+            color: Colors.textMuted
+        }
 
-        Rectangle {
-            Layout.preferredWidth: 22
-            Layout.preferredHeight: 22
-            radius: 11
-            color: Colors.background
-            border.width: 1
-            border.color: Colors.outline
+        // AnimatedImage so a .gif avatar actually plays. Fit, not Crop —
+        // a wide source (the 200x126 bongocat) crops to empty centre pixels
+        AnimatedImage {
+            id: pfp
+
+            anchors.fill: parent
+            anchors.margins: 4
+            source: root.facePath.length > 0 ? "file://" + root.facePath : ""
+            fillMode: Image.PreserveAspectFit
+            playing: true
+            asynchronous: true
+            cache: false
+        }
+    }
+
+    // Uptime badge + label
+    Rectangle {
+        id: uptimeBadge
+
+        anchors.left: avatar.right
+        anchors.leftMargin: -root.uptimeBadgeSize * 0.5
+        anchors.bottom: avatar.bottom
+        z: 1
+        implicitWidth: root.uptimeBadgeSize
+        implicitHeight: root.uptimeBadgeSize
+        radius: width / 2
+        color: root.uptimeBg
+
+        Text {
+            anchors.centerIn: parent
+            text: "clock_arrow_up"
+            font.family: "Material Symbols Rounded"
+            font.pixelSize: Config.dashboardUptimeSize * 0.55
+            color: Colors.primary
+        }
+    }
+
+    Text {
+        anchors.left: uptimeBadge.right
+        anchors.leftMargin: 8
+        anchors.right: parent.right
+        anchors.rightMargin: 16
+        anchors.verticalCenter: uptimeBadge.verticalCenter
+        text: root.uptimeStr
+        color: Colors.text
+        font.pixelSize: 12
+        elide: Text.ElideRight
+    }
+
+    // WM pill with its bubble tail trailing back toward the avatar
+    Rectangle {
+        id: wmPill
+
+        anchors.left: avatar.right
+        anchors.leftMargin: 22
+        anchors.top: parent.top
+        anchors.topMargin: 14
+        implicitWidth: Math.min(wmLabel.implicitWidth + 20, parent.width - x - 16)
+        implicitHeight: wmLabel.implicitHeight + 12
+        radius: 12
+        color: root.wmBg
+
+        Row {
+            id: wmLabel
+
+            anchors.centerIn: parent
+            spacing: 4
 
             Text {
-                anchors.centerIn: parent
-                text: info.icon
+                anchors.verticalCenter: parent.verticalCenter
+                text: "select_window"
                 font.family: "Material Symbols Rounded"
                 font.pixelSize: 13
                 color: Colors.primary
             }
-        }
 
-        Text {
-            Layout.fillWidth: true
-            text: info.text
-            color: Colors.textMuted
-            font.pixelSize: 11
-            elide: Text.ElideRight
+            Text {
+                anchors.verticalCenter: parent.verticalCenter
+                text: root.wmName
+                color: Colors.text
+                font.pixelSize: 12
+                // Measured off the configured card width, never wmPill.width —
+                // that feeds wmPill.implicitWidth back through this Row and polish-loops
+                width: Math.min(implicitWidth, Config.dashboardUserWidth - wmPill.x - 56)
+                elide: Text.ElideRight
+            }
         }
+    }
+
+    Rectangle {
+        id: bubbleLarge
+
+        anchors.left: avatar.right
+        anchors.leftMargin: 8
+        anchors.verticalCenter: wmPill.bottom
+        implicitWidth: 13
+        implicitHeight: 13
+        radius: width / 2
+        color: root.wmBg
+    }
+
+    Rectangle {
+        anchors.right: bubbleLarge.left
+        anchors.rightMargin: 3
+        anchors.top: bubbleLarge.bottom
+        anchors.topMargin: 1
+        implicitWidth: 8
+        implicitHeight: 8
+        radius: width / 2
+        color: root.wmBg
     }
 }

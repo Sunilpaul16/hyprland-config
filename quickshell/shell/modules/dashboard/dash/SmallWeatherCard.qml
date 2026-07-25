@@ -14,14 +14,18 @@ Rectangle {
     border.width: 1
     border.color: Colors.outline
 
+    implicitHeight: weatherRow.implicitHeight + 40
+
     RowLayout {
+        id: weatherRow
+
         anchors.centerIn: parent
-        spacing: 16
+        spacing: 20
 
         Text {
             text: root.hasData ? Weather.iconFor(Weather.weatherCode) : "cloud_off"
             font.family: "Material Symbols Rounded"
-            font.pixelSize: 40
+            font.pixelSize: Config.dashboardWeatherIconSize
             color: Colors.primary
         }
 
@@ -29,16 +33,20 @@ Rectangle {
             spacing: 2
 
             Text {
+                Layout.alignment: Qt.AlignHCenter
                 text: root.hasData ? Math.round(Weather.currentTemp) + "°C" : "—"
-                color: Colors.text
-                font.pixelSize: 22
+                color: Colors.primary
+                font.pixelSize: Config.dashboardWeatherTempSize
                 font.bold: true
             }
 
             Text {
+                Layout.alignment: Qt.AlignHCenter
+                Layout.maximumWidth: root.width - Config.dashboardWeatherIconSize - 60
                 text: root.hasData ? Weather.descriptionFor(Weather.weatherCode) : (Weather.hasError ? "Unavailable" : "Loading…")
-                color: Colors.textMuted
+                color: Colors.text
                 font.pixelSize: 12
+                elide: Text.ElideRight
             }
         }
     }

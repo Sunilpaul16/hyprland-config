@@ -26,10 +26,8 @@ Item {
             Layout.row: 0
             Layout.column: 0
             Layout.columnSpan: 2
-            Layout.alignment: Qt.AlignTop
-            Layout.fillWidth: true
             Layout.preferredWidth: Config.dashboardWeatherWidth
-            Layout.preferredHeight: 200
+            Layout.fillHeight: true
         }
 
         // Content-sized, not stretched — narrower than Weather above it
@@ -44,9 +42,8 @@ Item {
             Layout.row: 0
             Layout.column: 2
             Layout.columnSpan: 3
-            Layout.alignment: Qt.AlignTop
-            Layout.fillWidth: true
             Layout.preferredWidth: Config.dashboardUserWidth
+            Layout.fillHeight: true
         }
 
         // Starts one column left of User — reads wider / left-shifted vs. User above it
@@ -62,7 +59,7 @@ Item {
         ResourcesCard {
             Layout.row: 1
             Layout.column: 4
-            Layout.preferredWidth: 100
+            Layout.preferredWidth: implicitWidth
             Layout.fillHeight: true
         }
 
@@ -83,9 +80,9 @@ Item {
         border.width: 1
         border.color: Colors.outline
         clip: true
-        // Content-driven width so this stays narrower than Weather above it
+        // Fixed width so this stays narrower than Weather above it
         // instead of stretching to match the column
-        implicitWidth: clockContent.implicitWidth + 40
+        implicitWidth: Config.dashboardDateTimeWidth
         implicitHeight: clockContent.implicitHeight + 32
 
         ColumnLayout {
@@ -97,16 +94,23 @@ Item {
             Text {
                 Layout.alignment: Qt.AlignHCenter
                 text: Time.hourStr
-                color: Colors.primary
-                font.pixelSize: 42
+                color: Colors.text
+                font.pixelSize: Config.dashboardClockFontSize
                 font.bold: true
+            }
+
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: "•••"
+                color: Colors.primary
+                font.pixelSize: Math.round(Config.dashboardClockFontSize * 0.5)
             }
 
             Text {
                 Layout.alignment: Qt.AlignHCenter
                 text: Time.minuteStr
                 color: Colors.text
-                font.pixelSize: 42
+                font.pixelSize: Config.dashboardClockFontSize
                 font.bold: true
             }
 
@@ -115,8 +119,9 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 visible: Time.use12Hour
                 text: Time.amPmStr
-                color: Colors.textMuted
-                font.pixelSize: 13
+                color: Colors.primary
+                font.pixelSize: Math.round(Config.dashboardClockFontSize * 0.43)
+                font.bold: true
             }
 
             Text {
@@ -180,13 +185,33 @@ Item {
                     onClicked: calCard.viewDate = new Date(calCard.viewYear, calCard.viewMonth - 1, 1)
                 }
 
-                Text {
+                // Clicking the month label also jumps to today (caelestia's affordance)
+                Rectangle {
                     Layout.fillWidth: true
-                    horizontalAlignment: Text.AlignHCenter
-                    text: calCard.viewDate.toLocaleDateString(Qt.locale(), "MMMM yyyy")
-                    color: Colors.text
-                    font.pixelSize: 14
-                    font.bold: true
+                    implicitHeight: monthLabel.implicitHeight + 8
+                    radius: height / 2
+                    color: monthArea.containsMouse && !calCard.onCurrentMonth ? Colors.outline : "transparent"
+
+                    Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+                    Text {
+                        id: monthLabel
+
+                        anchors.centerIn: parent
+                        text: calCard.viewDate.toLocaleDateString(Qt.locale(), "MMMM yyyy")
+                        color: Colors.primary
+                        font.pixelSize: 14
+                        font.bold: true
+                    }
+
+                    MouseArea {
+                        id: monthArea
+
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: calCard.onCurrentMonth ? Qt.ArrowCursor : Qt.PointingHandCursor
+                        onClicked: calCard.viewDate = new Date()
+                    }
                 }
 
                 NavButton {
