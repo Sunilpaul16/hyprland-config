@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../../services"
+import "../bar"
 
 // Right sidebar overlay window
 Scope {
@@ -32,6 +33,7 @@ Scope {
                 // the edge itself, but other panels need to know its open+width to
                 // offset past it
                 readonly property int edgeMargin: 0
+                readonly property int cornerSize: 14
                 readonly property real registeredWidth: backdrop.width + edgeMargin
 
                 onActiveChanged: {
@@ -93,7 +95,31 @@ Scope {
                         width: 360
                         height: parent.height - root.edgeMargin * 2
                         radius: 20
+                        // Left corners square so the fillets below can flare this edge
+                        // out into the bar above and the screen bottom
+                        topLeftRadius: 0
+                        bottomLeftRadius: 0
                         color: Colors.background
+                        opacity: root.showProgress
+                        transform: Translate { x: (1 - root.showProgress) * 24 }
+                    }
+
+                    // Concave fillets flaring the sidebar's left edge into the bar
+                    // above and the screen bottom, same treatment as the session drawer
+                    Corner {
+                        anchors { right: backdrop.left; top: backdrop.top }
+                        size: root.cornerSize
+                        color: Colors.background
+                        corner: "topRight"
+                        opacity: root.showProgress
+                        transform: Translate { x: (1 - root.showProgress) * 24 }
+                    }
+
+                    Corner {
+                        anchors { right: backdrop.left; bottom: backdrop.bottom }
+                        size: root.cornerSize
+                        color: Colors.background
+                        corner: "bottomRight"
                         opacity: root.showProgress
                         transform: Translate { x: (1 - root.showProgress) * 24 }
                     }

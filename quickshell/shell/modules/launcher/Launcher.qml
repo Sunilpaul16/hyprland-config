@@ -66,7 +66,7 @@ Scope {
                 Content {
                     id: content
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 48
+                    // anchors.bottomMargin: 48
                     anchors.horizontalCenter: parent.horizontalCenter
                     opacity: root.showProgress
                     scale: 0.94 + 0.06 * root.showProgress

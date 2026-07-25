@@ -15,7 +15,9 @@ Rectangle {
     implicitWidth: 64
     implicitHeight: 64
     radius: width / 2
-    color: hoverArea.containsMouse ? Colors.surface : Colors.background
+    // Sits on the drawer's Colors.background backdrop, so the resting fill is
+    // surface — the old background fill would disappear into it
+    color: hoverArea.containsMouse ? Qt.tint(Colors.surface, Qt.alpha(Colors.primary, 0.18)) : Colors.surface
     border.width: root.activeFocus ? 2 : 0
     border.color: Colors.primary
 

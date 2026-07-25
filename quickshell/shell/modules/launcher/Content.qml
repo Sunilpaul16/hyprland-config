@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import "../../services"
+import "../bar"
 
 
 // Launcher content
@@ -179,11 +180,17 @@ Item {
 
     // Panel background
     Rectangle {
+        id: panelBg
+
         anchors.fill: parent
         radius: 24
+        // Bottom corners square so the fillets can flare this panel into the
+        // screen edge it sits flush against
+        bottomLeftRadius: 0
+        bottomRightRadius: 0
         color: Colors.surface
-        border.width: 1
-        border.color: Colors.outline
+        // No border — a Rectangle can't outline only three sides, and the
+        // bottom edge merges into the screen edge via the fillets below
 
         // Absorb clicks
         MouseArea {
@@ -394,5 +401,21 @@ Item {
                 content.revertPreview();
             }
         }
+    }
+
+    // Concave fillets flaring the panel into the screen edge it rests on.
+    // Siblings of the background so they sit outside the panel's own bounds
+    Corner {
+        anchors { right: parent.left; bottom: parent.bottom }
+        size: 14
+        color: Colors.surface
+        corner: "bottomRight"
+    }
+
+    Corner {
+        anchors { left: parent.right; bottom: parent.bottom }
+        size: 14
+        color: Colors.surface
+        corner: "bottomLeft"
     }
 }

@@ -5,6 +5,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../../services"
 import "../sidebarRight"
+import "../bar"
 
 // Dashboard overlay window
 Scope {
@@ -49,6 +50,7 @@ Scope {
                 // Resting (open) position — flush with the screen top, matching
                 // caelestia's Wrapper.qml exactly (topMargin: 0 when open)
                 readonly property real restingTopMargin: 0
+                readonly property int cornerSize: 14
 
                 // Positioning
                 anchors {
@@ -113,9 +115,13 @@ Scope {
                             ? Math.min(Config.dashboardPanelHeight, (root.screen?.height ?? 800) * 0.95)
                             : Math.min(contentColumn.implicitHeight + 40, (root.screen?.height ?? 800) * 0.85, 900)
                         radius: 18
+                        // Top corners square so the fillets can merge them into the bar
+                        topLeftRadius: 0
+                        topRightRadius: 0
                         color: Colors.background
-                        border.width: 1
-                        border.color: Colors.outline
+                        // No border — a Rectangle can't outline only three sides, and
+                        // the top edge must merge into the bar. Matches the sidebar
+                        // and session backdrops, which are borderless too
                         clip: true
 
                         opacity: 1 - root.offsetScale
@@ -355,6 +361,24 @@ Scope {
                                 }
                             }
                         }
+                    }
+
+                    // Concave fillets merging the panel's top corners into the bar
+                    // above. Siblings, not children — panel has clip: true
+                    Corner {
+                        anchors { right: panel.left; top: panel.top }
+                        size: root.cornerSize
+                        color: Colors.background
+                        corner: "topRight"
+                        opacity: panel.opacity
+                    }
+
+                    Corner {
+                        anchors { left: panel.right; top: panel.top }
+                        size: root.cornerSize
+                        color: Colors.background
+                        corner: "topLeft"
+                        opacity: panel.opacity
                     }
                 }
 

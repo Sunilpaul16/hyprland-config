@@ -11,6 +11,7 @@ Singleton {
     property alias use12Hour: adapter.use12Hour                                       // true = 12-hour clock (AM/PM); false = 24-hour
     property alias barHeight: adapter.barHeight                                       // top bar height (px)
     property alias toastDismissDuration: adapter.toastDismissDuration                 // ms a notification toast shows before auto-dismissing
+    property alias sessionAutoCloseDuration: adapter.sessionAutoCloseDuration         // ms the session drawer stays open unhovered before closing itself
 
     // Dashboard card sizing (defaults ported from caelestia's Tokens.sizes.dashboard)
     property alias dashboardUserWidth: adapter.dashboardUserWidth                         // Dashboard tab: User card width (px)
@@ -71,6 +72,7 @@ Singleton {
             property bool use12Hour: false
             property int barHeight: 40
             property int toastDismissDuration: 5000
+            property int sessionAutoCloseDuration: 5000
             property int dashboardUserWidth: 340
             property int dashboardWeatherWidth: 275
             property int dashboardMediaCardWidth: 200
