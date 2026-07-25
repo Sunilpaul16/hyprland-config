@@ -21,5 +21,17 @@ QtObject {
     readonly property string mediaArtCache: home + "/.cache/quickshell-media-art"
     readonly property string videosDir: home + "/Videos"
     readonly property string faceIcon: home + "/.face"
-    readonly property string bongocatGif: home + "/hyprland-config/assets/bongocat.gif"
+    readonly property string repoRoot: home + "/hyprland-config"
+    readonly property string bongocatGif: repoRoot + "/assets/bongocat.gif"
+
+    // Expands a config-supplied path: absolute and ~-rooted pass through, anything else is repo-relative
+    function resolve(path: string): string {
+        if (!path)
+            return "";
+        if (path.startsWith("/"))
+            return path;
+        if (path.startsWith("~/"))
+            return home + path.slice(1);
+        return repoRoot + "/" + path.replace(/^\.\//, "");
+    }
 }
