@@ -84,27 +84,25 @@ Scope {
                             SidebarRightState.open = false;
                     }
 
-                    // Sidebar backdrop (slide-in panel background) — shrink-wraps to
-                    // content height rather than always stretching full monitor height,
-                    // capped so it never overflows past the screen edges
+                    // Sidebar backdrop (slide-in panel background) — full monitor
+                    // height so NotificationsCard below can absorb the leftover
+                    // space, the way caelestia's notif dock fills its column
                     Rectangle {
                         id: backdrop
                         anchors { top: parent.top; right: parent.right; margins: root.edgeMargin }
                         width: 360
-                        height: Math.min(column.implicitHeight + 24, parent.height - root.edgeMargin * 2)
+                        height: parent.height - root.edgeMargin * 2
                         radius: 20
                         color: Colors.background
                         opacity: root.showProgress
                         transform: Translate { x: (1 - root.showProgress) * 24 }
-
-                        Behavior on height {
-                            NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing }
-                        }
                     }
 
-
-                    // Scrollable card content
-                    Flickable {
+                    // Card stack. No outer Flickable — the notifications card
+                    // fills the slack and scrolls its own list internally, so
+                    // the cards below stay pinned to the bottom
+                    ColumnLayout {
+                        id: column
                         anchors.fill: backdrop
                         anchors.margins: 12
                         visible: SidebarDialogState.openDialog === ""
@@ -112,21 +110,27 @@ Scope {
                         opacity: root.showProgress
                         transform: Translate { x: (1 - root.showProgress) * 24 }
 
-                        contentWidth: width
-                        contentHeight: column.implicitHeight
-                        clip: true
+                        spacing: 12
 
-                        // Card stack
-                        ColumnLayout {
-                            id: column
-                            width: parent.width
-                            spacing: 12
-
-                            NotificationsCard { Layout.fillWidth: true }
-                            KeepAwakeCard { Layout.fillWidth: true; visible: KeepAwakeCardState.enabled }
-                            ScreenRecorderCard { Layout.fillWidth: true; visible: ScreenRecorderCardState.enabled }
-                            QuickTogglesCard { Layout.fillWidth: true }
+                        NotificationsCard {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.minimumHeight: 120
                         }
+
+                        // Separates the notifications region from the utility cards
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.topMargin: 4
+                            Layout.bottomMargin: 4
+                            implicitHeight: 1
+                            color: Colors.outline
+                            opacity: 0.35
+                        }
+
+                        KeepAwakeCard { Layout.fillWidth: true; visible: KeepAwakeCardState.enabled }
+                        ScreenRecorderCard { Layout.fillWidth: true; visible: ScreenRecorderCardState.enabled }
+                        QuickTogglesCard { Layout.fillWidth: true }
                     }
 
                     // In-panel toggle dialogs, same overlay area (comparison.md #25)

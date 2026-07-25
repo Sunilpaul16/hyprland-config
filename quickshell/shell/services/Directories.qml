@@ -23,6 +23,7 @@ QtObject {
     readonly property string faceIcon: home + "/.face"
     readonly property string repoRoot: home + "/hyprland-config"
     readonly property string bongocatGif: repoRoot + "/assets/bongocat.gif"
+    readonly property string dinoImage: repoRoot + "/assets/dino.png"
 
     // Expands a config-supplied path: absolute and ~-rooted pass through, anything else is repo-relative
     function resolve(path: string): string {

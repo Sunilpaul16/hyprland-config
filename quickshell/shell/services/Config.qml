@@ -45,6 +45,9 @@ Singleton {
     // User card avatar — absolute, ~-rooted or repo-relative image path; "" falls back to ~/.face then the bundled bongocat
     property alias userAvatarPath: adapter.userAvatarPath
 
+    // Sidebar notifications empty-state watermark; "" = the bundled assets/dino.png
+    property alias sidebarNoNotifsImage: adapter.sidebarNoNotifsImage
+
     // Gates panels from reading config before the FileView has loaded
     property bool ready: false
 
@@ -91,6 +94,7 @@ Singleton {
             property string dashboardPanelHeightMode: "auto"
             property int dashboardPanelHeight: 700
             property string userAvatarPath: ""
+            property string sidebarNoNotifsImage: ""
         }
     }
 
