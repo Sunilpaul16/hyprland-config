@@ -10,33 +10,36 @@ Singleton {
 
     property bool open: false
     property string pendingText: ""
+    // Monitor this panel is pinned to while open
+    property string ownerScreen: ""
 
-    // Open in each mode
-    function openApps(): void {
-        if (root.open) {
+    onOpenChanged: if (root.open) ScreenOwner.claim(root)
+
+    // Open in each mode. Open on another monitor means move here, which is
+    // done as a close/reopen so Content re-syncs its text and keyboard focus
+    function openMode(text: string): void {
+        const elsewhere = root.open && root.ownerScreen !== ScreenOwner.focusedName;
+        if (root.open && !elsewhere) {
             root.open = false;
             return;
         }
-        root.pendingText = "";
+        if (elsewhere)
+            root.open = false;
+        ScreenOwner.claim(root);
+        root.pendingText = text;
         root.open = true;
+    }
+
+    function openApps(): void {
+        root.openMode("");
     }
 
     function openWallpaper(): void {
-        if (root.open) {
-            root.open = false;
-            return;
-        }
-        root.pendingText = ">wallpaper ";
-        root.open = true;
+        root.openMode(">wallpaper ");
     }
 
     function openClip(): void {
-        if (root.open) {
-            root.open = false;
-            return;
-        }
-        root.pendingText = ">clip ";
-        root.open = true;
+        root.openMode(">clip ");
     }
 
     // IPC handler

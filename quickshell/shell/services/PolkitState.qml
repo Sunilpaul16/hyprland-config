@@ -15,6 +15,13 @@ Singleton {
     readonly property bool isActive: agent.isActive
     readonly property var flow: agent.flow
 
+    // Monitor this dialog is pinned to while shown. The agent drives visibility,
+    // so it claims on isActive rather than through an open property
+    property string ownerScreen: ""
+    readonly property bool open: root.isActive
+
+    onIsActiveChanged: if (root.isActive) ScreenOwner.claim(root)
+
     PolkitAgent {
         id: agent
     }

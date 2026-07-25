@@ -18,8 +18,8 @@ Scope {
                 screen: panelLoader.modelData
 
                 // Visibility state
-                readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
-                readonly property bool active: CheatsheetState.open && root.isFocusedScreen
+                readonly property bool isOwnerScreen: ScreenOwner.owns(CheatsheetState, root.screen)
+                readonly property bool active: CheatsheetState.open && root.isOwnerScreen
 
                 property real showProgress: active ? 1 : 0
 

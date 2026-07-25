@@ -23,8 +23,8 @@ Scope {
                 id: root
                 screen: panelLoader.modelData
 
-                readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
-                readonly property bool active: PolkitState.isActive && root.isFocusedScreen
+                readonly property bool isOwnerScreen: ScreenOwner.owns(PolkitState, root.screen)
+                readonly property bool active: PolkitState.isActive && root.isOwnerScreen
                 readonly property var flow: PolkitState.flow
 
                 property real showProgress: active ? 1 : 0

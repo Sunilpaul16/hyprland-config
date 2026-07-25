@@ -20,8 +20,8 @@ Scope {
                 screen: panelLoader.modelData
 
                 // Visibility state
-                readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
-                readonly property bool active: DashboardState.open && root.isFocusedScreen
+                readonly property bool isOwnerScreen: ScreenOwner.owns(DashboardState, root.screen)
+                readonly property bool active: DashboardState.open && root.isOwnerScreen
 
                 // Slide-down open/close (matches caelestia's Wrapper.qml offsetScale
                 // mechanism: 0 = open, 1 = closed, driving both the panel's anchor

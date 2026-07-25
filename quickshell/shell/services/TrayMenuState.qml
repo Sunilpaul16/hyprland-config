@@ -7,6 +7,8 @@ Singleton {
     id: root
 
     property bool open: false
+    // Monitor this panel is pinned to while open
+    property string ownerScreen: ""
     property var targetItem: null
     property real anchorX: 0
     property real anchorY: 0
@@ -21,6 +23,7 @@ Singleton {
 
     // Open/close controls
     function showAt(item: var, x: real, y: real): void {
+        ScreenOwner.claim(root);
         root.targetItem = item;
         root.anchorX = x;
         root.anchorY = y;

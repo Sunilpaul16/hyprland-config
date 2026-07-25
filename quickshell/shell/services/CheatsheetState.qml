@@ -8,11 +8,18 @@ Singleton {
     id: root
 
     property bool open: false
+    // Monitor this panel is pinned to while open
+    property string ownerScreen: ""
 
-    onOpenChanged: if (root.open) Binds.refresh()
+    onOpenChanged: {
+        if (!root.open)
+            return;
+        ScreenOwner.claim(root);
+        Binds.refresh();
+    }
 
     function toggle(): void {
-        root.open = !root.open;
+        ScreenOwner.toggle(root);
     }
 
     // IPC handler
@@ -24,6 +31,7 @@ Singleton {
         }
 
         function open(): void {
+            ScreenOwner.claim(root);
             root.open = true;
         }
 
