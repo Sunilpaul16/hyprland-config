@@ -16,7 +16,7 @@ Item {
     // entries without one fall back to placeholderPage below
     readonly property var pageModel: [
         // Appearance
-        { label: "Wallpaper & style", icon: "palette", description: "Wallpaper, fonts, colours", category: "appearance" },
+        { label: "Wallpaper & style", icon: "palette", description: "Wallpaper, fonts, colours", category: "appearance", component: wallpaperStylePage },
 
         // Connectivity
         { label: "Network", icon: "wifi", description: "Wi-Fi, ethernet", category: "connectivity" },
@@ -29,7 +29,10 @@ Item {
 
         // Shell
         { label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", category: "shell" },
-        { label: "Services", icon: "build", description: "Poll intervals, notifications", category: "shell" }
+        { label: "Services", icon: "build", description: "Poll intervals, notifications", category: "shell" },
+
+        // About
+        { label: "About", icon: "info", description: "System information, credits", category: "about" }
     ]
 
     NavList {
@@ -162,6 +165,13 @@ Item {
             cursorShape: Qt.PointingHandCursor
             onClicked: SettingsState.open = false
         }
+    }
+
+    // Pages
+    Component {
+        id: wallpaperStylePage
+
+        WallpaperStylePage {}
     }
 
     // Fallback body for every page that has no `component` yet

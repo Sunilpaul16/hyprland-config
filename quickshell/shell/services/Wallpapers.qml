@@ -33,6 +33,18 @@ Singleton {
         return `${root.thumbCacheDir}/${Qt.md5(path)}.png`;
     }
 
+    // Wallpaper switchwall last applied, and a still of it usable as an Image
+    // source — videos have no Image renderer, so those fall back to the thumb
+    property string current: ""
+    readonly property string currentPreview: root.current === "" ? "" : (root.isVideoName(root.current) ? root.thumbPathFor(root.current) : root.current)
+
+    FileView {
+        path: Directories.currentWallpaperFile
+        watchChanges: true
+        onLoaded: root.current = text().trim()
+        onFileChanged: reload()
+    }
+
     function randomFromCurrentFolder(): var {
         return root.list.length > 0 ? root.list[Math.floor(Math.random() * root.list.length)] : null;
     }
