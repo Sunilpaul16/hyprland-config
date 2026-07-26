@@ -26,6 +26,7 @@ kbWallpaperPicker   = "SUPER + T"
 kbRandomWallpaper   = "SUPER + SHIFT + T"
 kbCheatsheet        = "SUPER + Slash"
 kbOverview          = "SUPER + Tab" -- quickshell workspace overview
+kbSettings          = "SUPER + I" -- quickshell settings panel
 
 -- Window actions
 kbCloseWindow           = "SUPER + Q"

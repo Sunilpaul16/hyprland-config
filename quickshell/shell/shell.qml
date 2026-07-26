@@ -13,6 +13,7 @@ import "modules/overview"
 import "modules/polkit"
 import "modules/screenCorners"
 import "modules/session"
+import "modules/settings"
 import "modules/sidebarRight"
 import "modules/trayMenu"
 import "modules/volumeOsd"
@@ -36,5 +37,6 @@ ShellRoot {
     SidebarRightPanel {}
     Overview {}
     DashboardPanel {}
+    SettingsPanel {}
     ScreenCorners {}
 }

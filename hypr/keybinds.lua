@@ -27,6 +27,7 @@ hl.bind(kbCodeEditor, hl.dsp.exec_cmd(codeEditor), { description = "App: code ed
 hl.bind(kbCheatsheet, hl.dsp.exec_cmd("qs -c shell ipc call cheatsheet toggle"), { description = "Launcher: keybind cheatsheet" })
 hl.bind(kbOverview, hl.dsp.exec_cmd("qs -c shell ipc call overview toggle"), { description = "Launcher: workspace overview" })
 hl.bind("SUPER + D", hl.dsp.exec_cmd("qs -c shell ipc call dashboard toggle"), { description = "Launcher: dashboard" }) -- kb constant intentionally not added to variables.lua, out of scope for this change
+hl.bind(kbSettings, hl.dsp.exec_cmd("qs -c shell ipc call settings toggle"), { description = "Launcher: settings" })
 
 
 -- Screenshots
