@@ -1,67 +1,110 @@
 import "performance"
 import QtQuick
 import QtQuick.Layouts
+import Quickshell.Services.UPower
 import "../../services"
 
-// Performance tab: CPU / Memory / Network / Battery / GPU / Storage cards.
-// Each card loads through its own file Loader for fault isolation — a
-// broken card file only takes down that one slot.
+// Performance tab: CPU/GPU hero cards over Storage/Network/Memory, with the
+// battery tank alongside on hardware that has one. Layout ported from
+// caelestia's Performance.qml.
+//
+// Card visibility is driven by each Loader's own `active` flag, never by the
+// loaded item's `visible`: a parent whose `visible` binds to a descendant's
+// `visible` latches false forever, because `visible` reads *effective*
+// visibility, so the descendant just reports the parent's own state back.
+// That latched on every dashboard reopen, since the panes are created while
+// the window is still hidden (offsetScale is 1 at the instant they load).
 Item {
     id: root
 
-    implicitWidth: grid.implicitWidth
-    implicitHeight: grid.implicitHeight
+    implicitWidth: content.implicitWidth
+    implicitHeight: content.implicitHeight
 
-    GridLayout {
-        id: grid
+    RowLayout {
+        id: content
 
-        anchors.fill: parent
-        columns: 2
-        rowSpacing: 12
-        columnSpacing: 12
+        anchors.left: parent.left
+        anchors.right: parent.right
+        spacing: 12
 
-        CardSlot { source: "performance/CpuCard.qml" }
-        CardSlot { source: "performance/MemoryCard.qml" }
-        CardSlot { source: "performance/NetworkCard.qml" }
-        CardSlot { source: "performance/BatteryCard.qml" }
-        CardSlot { source: "performance/GpuCard.qml" }
-        CardSlot { source: "performance/StorageCard.qml" }
-    }
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 12
 
-    // Wraps a card's Loader with fault isolation (load errors show a small
-    // fallback) and collapses the grid cell when a card sets `visible: false`.
-    component CardSlot: Item {
-        id: slot
+            // Hero row
+            RowLayout {
+                spacing: 12
 
-        required property string source
+                CardLoader {
+                    active: true
+                    sourceComponent: HeroCard {
+                        iconName: "memory"
+                        label: "CPU"
+                        subLabel: SystemUsage.cpuName.length > 0 ? SystemUsage.cpuName : "Unknown CPU"
+                        usage: SystemUsage.cpuPercentage
+                        temperature: SystemUsage.cpuTemperature
+                        accent: Colors.primary
 
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-        Layout.preferredWidth: 260
-        Layout.preferredHeight: 140
+                        Component.onCompleted: SystemUsage.ref()
+                        Component.onDestruction: SystemUsage.unref()
+                    }
+                }
 
-        visible: inner.status === Loader.Error || (inner.item?.visible ?? true)
+                CardLoader {
+                    active: Gpu.available
+                    sourceComponent: HeroCard {
+                        iconName: "desktop_windows"
+                        label: "GPU"
+                        subLabel: Gpu.name.length > 0 ? Gpu.name : "Unknown GPU"
+                        usage: Gpu.percentage
+                        temperature: Gpu.temperature
+                        accent: Colors.secondary
+                    }
+                }
+            }
 
-        Loader {
-            id: inner
-            anchors.fill: parent
-            source: slot.source
-        }
+            // Detail row
+            RowLayout {
+                spacing: 12
 
-        Rectangle {
-            anchors.fill: parent
-            visible: inner.status === Loader.Error
-            radius: 18
-            color: Colors.surface
-            border.width: 1
-            border.color: Colors.error
+                CardLoader {
+                    active: Storage.disks.length > 0
+                    sourceComponent: StorageCard {}
+                }
 
-            Text {
-                anchors.centerIn: parent
-                text: "Unavailable"
-                color: Colors.error
-                font.pixelSize: 13
+                CardLoader {
+                    active: true
+                    sourceComponent: NetworkCard {}
+                }
+
+                CardLoader {
+                    active: true
+                    sourceComponent: MemoryCard {}
+                }
             }
         }
+
+        CardLoader {
+            Layout.fillWidth: false
+            active: UPower.displayDevice?.isLaptopBattery ?? false
+            sourceComponent: BatteryCard {}
+        }
+    }
+
+    // Keeps the GPU service polling only while this tab is alive, so
+    // `Gpu.available` is populated before its card is gated on it
+    Component.onCompleted: {
+        Gpu.ref();
+        Storage.ref();
+    }
+    Component.onDestruction: {
+        Gpu.unref();
+        Storage.unref();
+    }
+
+    component CardLoader: Loader {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        visible: active
     }
 }

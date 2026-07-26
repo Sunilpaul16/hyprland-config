@@ -1,21 +1,25 @@
-import "."
 import QtQuick
 import QtQuick.Layouts
+import "../../sidebarRight"
 import "../../../services"
 
-// Memory usage ring + used/total
+// Memory: 270° usage arc with percentage inside, used/total underneath.
+// Ported from caelestia's performance/MemoryCard.qml.
 Rectangle {
     id: root
 
-    radius: 18
+    readonly property color accent: Colors.tertiary
+
+    radius: 26
     color: Colors.surface
-    border.width: 1
-    border.color: Colors.outline
+
+    implicitWidth: layout.implicitWidth + 44
+    implicitHeight: layout.implicitHeight + 32
 
     Component.onCompleted: SystemUsage.ref()
     Component.onDestruction: SystemUsage.unref()
 
-    // Plain KiB -> MiB/GiB scaling helper (not a service — memory-card-local formatting only)
+    // Plain KiB -> MiB/GiB scaling helper (not a service — card-local formatting only)
     function formatKib(kib: real): string {
         if (!isFinite(kib) || kib < 0)
             return "0 KiB";
@@ -26,44 +30,68 @@ Rectangle {
         return Math.round(kib) + " KiB";
     }
 
-    RowLayout {
-        anchors.fill: parent
-        anchors.margins: 16
-        spacing: 14
+    ColumnLayout {
+        id: layout
 
-        UsageRing {
-            Layout.preferredWidth: 64
-            Layout.preferredHeight: 64
-            value: SystemUsage.memoryPercentage
-            ringColor: Colors.primary
+        anchors.centerIn: parent
+        spacing: 4
 
-            Text {
-                anchors.centerIn: parent
-                text: Math.round(SystemUsage.memoryPercentage * 100) + "%"
-                color: Colors.text
-                font.pixelSize: 14
-                font.bold: true
+        RowLayout {
+            spacing: 6
+
+            MaterialIcon {
+                text: "memory_alt"
+                color: root.accent
+                font.pixelSize: 18
+                fill: 1
             }
-        }
-
-        ColumnLayout {
-            Layout.fillWidth: true
-            spacing: 2
 
             Text {
                 text: "Memory"
                 color: Colors.text
-                font.pixelSize: 14
+                font.pixelSize: 15
                 font.bold: true
             }
+        }
 
-            Text {
-                Layout.fillWidth: true
-                text: root.formatKib(SystemUsage.memoryUsedKib) + " / " + root.formatKib(SystemUsage.memoryTotalKib)
-                color: Colors.textMuted
-                font.pixelSize: 11
-                elide: Text.ElideRight
+        CircularProgress {
+            Layout.topMargin: 8
+            Layout.alignment: Qt.AlignHCenter
+
+            implicitSize: usageColumn.implicitHeight + thickness + 26
+            startAngle: -225
+            sweepAngle: 270
+            strokeWidth: 7
+            value: SystemUsage.memoryPercentage
+            fgColor: root.accent
+
+            ColumnLayout {
+                id: usageColumn
+                anchors.centerIn: parent
+                spacing: -2
+
+                Text {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: Math.round(SystemUsage.memoryPercentage * 100) + "%"
+                    color: root.accent
+                    font.pixelSize: 24
+                    font.bold: true
+                }
+
+                Text {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: "Used"
+                    color: Colors.textMuted
+                    font.pixelSize: 11
+                }
             }
+        }
+
+        Text {
+            Layout.alignment: Qt.AlignHCenter
+            text: root.formatKib(SystemUsage.memoryUsedKib) + " / " + root.formatKib(SystemUsage.memoryTotalKib)
+            color: Colors.text
+            font.pixelSize: 12
         }
     }
 }

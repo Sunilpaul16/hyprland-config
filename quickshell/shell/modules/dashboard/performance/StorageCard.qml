@@ -1,29 +1,27 @@
-import "."
 import QtQuick
 import QtQuick.Layouts
+import "../../sidebarRight"
 import "../../../services"
 
-// Storage usage ring + used/total for the selected physical disk —
-// multiple mounts on one disk are merged by Storage.qml, not shown as
-// separate partitions. Auto-hides when no disks are found, same pattern as
-// BatteryCard/GpuCard. A disk selector (pill + dropdown, adapted from
-// MediaTab.qml's player selector) appears once there's more than one disk.
+// Storage: 270° usage arc (icon + percentage inside) beside the disk's
+// used/total, with a disk selector underneath. Multiple mounts on one disk
+// are merged by Storage.qml, not shown as separate partitions. Ported from
+// caelestia's performance/StorageCard.qml, whose selector is a plugin
+// SplitButton — this keeps the repo's own pill+dropdown instead.
 Rectangle {
     id: root
 
     property bool diskMenuOpen: false
 
+    readonly property color accent: Colors.secondary
     readonly property var disk: Storage.selectedDisk
     readonly property bool hasDisk: disk !== null
 
-    visible: hasDisk
-    implicitWidth: hasDisk ? 260 : 0
-    implicitHeight: hasDisk ? 140 : 0
-
-    radius: 18
+    radius: 26
     color: Colors.surface
-    border.width: 1
-    border.color: Colors.outline
+
+    implicitWidth: layout.implicitWidth + 40
+    implicitHeight: layout.implicitHeight + 32
 
     Component.onCompleted: Storage.ref()
     Component.onDestruction: Storage.unref()
@@ -46,143 +44,170 @@ Rectangle {
         onClicked: root.diskMenuOpen = false
     }
 
-    RowLayout {
-        anchors.fill: parent
-        anchors.margins: 16
-        spacing: 14
-        visible: root.hasDisk
+    ColumnLayout {
+        id: layout
 
-        UsageRing {
-            Layout.preferredWidth: 64
-            Layout.preferredHeight: 64
-            value: root.disk?.percentage ?? 0
-            ringColor: Colors.primary
+        anchors.centerIn: parent
+        spacing: 10
 
-            Text {
-                anchors.centerIn: parent
-                text: Math.round((root.disk?.percentage ?? 0) * 100) + "%"
-                color: Colors.text
-                font.pixelSize: 14
-                font.bold: true
-            }
-        }
+        RowLayout {
+            Layout.alignment: Qt.AlignHCenter
+            spacing: 16
 
-        ColumnLayout {
-            Layout.fillWidth: true
-            spacing: 2
+            CircularProgress {
+                implicitSize: usageColumn.implicitHeight + thickness + 24
+                startAngle: -225
+                sweepAngle: 270
+                strokeWidth: 7
+                value: root.disk?.percentage ?? 0
+                fgColor: root.accent
 
-            Text {
-                text: "Storage"
-                color: Colors.text
-                font.pixelSize: 14
-                font.bold: true
-            }
+                ColumnLayout {
+                    id: usageColumn
+                    anchors.centerIn: parent
+                    spacing: -2
 
-            Text {
-                Layout.fillWidth: true
-                text: root.disk ? root.formatKib(root.disk.usedKib) + " / " + root.formatKib(root.disk.totalKib) : ""
-                color: Colors.textMuted
-                font.pixelSize: 11
-                elide: Text.ElideRight
-            }
-        }
-    }
+                    MaterialIcon {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: "hard_drive"
+                        color: root.accent
+                        font.pixelSize: 17
+                    }
 
-    // Multi-disk selector — only shown with >1 disk found
-    Item {
-        id: diskSelector
+                    Text {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: Math.round((root.disk?.percentage ?? 0) * 100) + "%"
+                        color: root.accent
+                        font.pixelSize: 22
+                        font.bold: true
+                    }
 
-        visible: Storage.disks.length > 1
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.margins: 10
-        implicitWidth: pill.implicitWidth
-        implicitHeight: pill.implicitHeight
-
-        Rectangle {
-            id: pill
-
-            implicitWidth: pillRow.implicitWidth + 14
-            implicitHeight: pillRow.implicitHeight + 8
-            radius: implicitHeight / 2
-            color: root.diskMenuOpen ? Colors.background : (pillHover.containsMouse ? Colors.background : "transparent")
-            border.width: 1
-            border.color: Colors.outline
-
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-            RowLayout {
-                id: pillRow
-                anchors.centerIn: parent
-                spacing: 4
-
-                Text {
-                    Layout.maximumWidth: 70
-                    text: Storage.hasManualDisk ? Storage.selectedDisk.name : "Auto"
-                    color: Colors.text
-                    font.pixelSize: 10
-                    elide: Text.ElideRight
-                }
-
-                Text {
-                    text: root.diskMenuOpen ? "\u{25B4}" : "\u{25BE}"
-                    color: Colors.textMuted
-                    font.pixelSize: 9
+                    Text {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: "Used"
+                        color: Colors.textMuted
+                        font.pixelSize: 11
+                    }
                 }
             }
 
-            MouseArea {
-                id: pillHover
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.diskMenuOpen = !root.diskMenuOpen
-            }
-        }
-
-        // Dropdown list
-        Rectangle {
-            id: dropdown
-
-            visible: root.diskMenuOpen
-            anchors.top: pill.bottom
-            anchors.right: parent.right
-            anchors.topMargin: 6
-            implicitWidth: Math.max(pill.implicitWidth, list.implicitWidth + 12)
-            implicitHeight: list.implicitHeight + 12
-            radius: 12
-            color: Colors.background
-            border.width: 1
-            border.color: Colors.outline
-
-            Column {
-                id: list
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.margins: 6
+            ColumnLayout {
                 spacing: 2
 
-                DiskMenuEntry {
-                    label: "Auto"
-                    selected: !Storage.hasManualDisk
-                    onClicked: {
-                        Storage.clearDiskOverride();
-                        root.diskMenuOpen = false;
+                Text {
+                    text: "Storage"
+                    color: Colors.text
+                    font.pixelSize: 15
+                    font.bold: true
+                }
+
+                Text {
+                    text: root.hasDisk ? root.formatKib(root.disk.usedKib) + " / " + root.formatKib(root.disk.totalKib) : "No disks detected"
+                    color: root.accent
+                    font.pixelSize: 13
+                }
+            }
+        }
+
+        // Disk selector
+        Item {
+            id: diskSelector
+
+            Layout.alignment: Qt.AlignHCenter
+            implicitWidth: pill.implicitWidth
+            implicitHeight: pill.implicitHeight
+
+            Rectangle {
+                id: pill
+
+                implicitWidth: Math.max(pillRow.implicitWidth + 20, 150)
+                implicitHeight: pillRow.implicitHeight + 12
+                radius: implicitHeight / 2
+                color: (root.diskMenuOpen || pillHover.containsMouse) ? Colors.background : Colors.secondaryContainer
+
+                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+                RowLayout {
+                    id: pillRow
+                    anchors.centerIn: parent
+                    spacing: 6
+
+                    MaterialIcon {
+                        text: "storage"
+                        color: Colors.text
+                        font.pixelSize: 15
+                    }
+
+                    Text {
+                        Layout.maximumWidth: 90
+                        text: !root.hasDisk ? "No disks" : (Storage.hasManualDisk ? Storage.selectedDisk.name : (root.disk?.name ?? "Auto"))
+                        color: Colors.text
+                        font.pixelSize: 12
+                        elide: Text.ElideRight
+                    }
+
+                    Text {
+                        text: root.diskMenuOpen ? "\u{25B4}" : "\u{25BE}"
+                        color: Colors.textMuted
+                        font.pixelSize: 10
                     }
                 }
 
-                Repeater {
-                    model: Storage.disks
+                MouseArea {
+                    id: pillHover
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    enabled: Storage.disks.length > 1
+                    onClicked: root.diskMenuOpen = !root.diskMenuOpen
+                }
+            }
+
+            // Opens upward — the card sits on the panel's bottom row, so a
+            // downward menu would fall outside the panel
+            Rectangle {
+                id: dropdown
+
+                visible: root.diskMenuOpen
+                anchors.bottom: pill.top
+                anchors.horizontalCenter: pill.horizontalCenter
+                anchors.bottomMargin: 6
+                implicitWidth: Math.max(pill.implicitWidth, list.implicitWidth + 12)
+                implicitHeight: list.implicitHeight + 12
+                radius: 12
+                color: Colors.background
+                border.width: 1
+                border.color: Colors.outlineVariant
+
+                Column {
+                    id: list
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.margins: 6
+                    spacing: 2
 
                     DiskMenuEntry {
-                        required property var modelData
-
-                        label: modelData.name
-                        selected: Storage.hasManualDisk && Storage.selectedDisk === modelData
+                        label: "Auto"
+                        selected: !Storage.hasManualDisk
                         onClicked: {
-                            Storage.selectDisk(modelData);
+                            Storage.clearDiskOverride();
                             root.diskMenuOpen = false;
+                        }
+                    }
+
+                    Repeater {
+                        model: Storage.disks
+
+                        DiskMenuEntry {
+                            required property var modelData
+
+                            label: modelData.name
+                            selected: Storage.hasManualDisk && Storage.selectedDisk === modelData
+                            onClicked: {
+                                Storage.selectDisk(modelData);
+                                root.diskMenuOpen = false;
+                            }
                         }
                     }
                 }

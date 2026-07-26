@@ -152,10 +152,85 @@ Scope {
                             // Tab bar
                             Item {
                                 id: tabBar
-                                Layout.fillWidth: true
-                                implicitHeight: buttonsRow.implicitHeight
 
-                                // Stretchy active-tab indicator (comparison.md #39)
+                                // Breathing room the hover fill expands into, above and
+                                // below the icon/label stack
+                                readonly property int indicatorSpacing: 5
+
+                                Layout.fillWidth: true
+                                implicitHeight: buttonsRow.implicitHeight + tabBar.indicatorSpacing * 2 + activeIndicator.height + separator.height
+
+                                RowLayout {
+                                    id: buttonsRow
+                                    anchors.left: parent.left
+                                    anchors.right: parent.right
+                                    anchors.top: parent.top
+                                    anchors.topMargin: tabBar.indicatorSpacing
+                                    spacing: 0
+
+                                    Repeater {
+                                        id: tabRepeater
+
+                                        model: root.tabModel
+
+                                        delegate: Item {
+                                            id: tabButton
+
+                                            required property int index
+                                            required property var modelData
+                                            readonly property bool current: index === root.currentTab
+                                            // The underline hugs the label, not the whole slot
+                                            readonly property real indicatorWidth: Math.max(tabIcon.implicitWidth, tabLabel.implicitWidth)
+
+                                            Layout.fillWidth: true
+                                            Layout.preferredWidth: 1
+                                            implicitHeight: tabIcon.implicitHeight + tabLabel.implicitHeight
+
+                                            // Hover fill
+                                            Rectangle {
+                                                anchors.left: parent.left
+                                                anchors.right: parent.right
+                                                anchors.verticalCenter: parent.verticalCenter
+                                                height: parent.height + tabBar.indicatorSpacing * 2
+                                                radius: Motion.rounding.normal
+                                                color: tabHover.containsMouse ? Colors.surface : "transparent"
+
+                                                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                                            }
+
+                                            MaterialIcon {
+                                                id: tabIcon
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                                anchors.bottom: tabLabel.top
+                                                text: tabButton.modelData.iconName
+                                                color: tabButton.current ? Colors.primary : Colors.textMuted
+                                                font.pixelSize: 22
+                                                fill: tabButton.current ? 1 : 0
+
+                                                Behavior on fill { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+                                            }
+
+                                            Text {
+                                                id: tabLabel
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                                anchors.bottom: parent.bottom
+                                                text: tabButton.modelData.text
+                                                color: tabButton.current ? Colors.primary : Colors.textMuted
+                                                font.pixelSize: 13
+                                            }
+
+                                            MouseArea {
+                                                id: tabHover
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: root.currentTab = tabButton.index
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Stretchy active-tab underline (comparison.md #39)
                                 Rectangle {
                                     id: activeIndicator
 
@@ -169,78 +244,37 @@ Scope {
                                         return tabRepeater.itemAt(root.currentTab);
                                     }
 
-                                    z: 0
-                                    height: parent.height
-                                    radius: height / 2
+                                    anchors.top: buttonsRow.bottom
+                                    anchors.topMargin: tabBar.indicatorSpacing
+                                    height: 3
+                                    // Flat-bottomed: it sits directly on the divider below
+                                    topLeftRadius: height
+                                    topRightRadius: height
+                                    bottomLeftRadius: 0
+                                    bottomRightRadius: 0
                                     color: Colors.primary
 
                                     AnimatedTabIndexPair {
                                         id: leftBound
-                                        index: activeIndicator.targetItem ? activeIndicator.targetItem.x : 0
+                                        index: activeIndicator.targetItem ? activeIndicator.targetItem.x + (activeIndicator.targetItem.width - activeIndicator.targetItem.indicatorWidth) / 2 : 0
                                     }
                                     AnimatedTabIndexPair {
                                         id: rightBound
-                                        index: activeIndicator.targetItem ? (activeIndicator.targetItem.x + activeIndicator.targetItem.width) : 0
+                                        index: activeIndicator.targetItem ? activeIndicator.targetItem.x + (activeIndicator.targetItem.width + activeIndicator.targetItem.indicatorWidth) / 2 : 0
                                     }
 
                                     x: Math.min(leftBound.idx1, leftBound.idx2)
                                     width: Math.max(rightBound.idx1, rightBound.idx2) - x
                                 }
 
-                                RowLayout {
-                                    id: buttonsRow
+                                // Divider closing off the bar
+                                Rectangle {
+                                    id: separator
+                                    anchors.top: activeIndicator.bottom
                                     anchors.left: parent.left
                                     anchors.right: parent.right
-                                    z: 1
-                                    spacing: 8
-
-                                    Repeater {
-                                        id: tabRepeater
-
-                                        model: root.tabModel
-
-                                        delegate: Rectangle {
-                                            id: tabButton
-
-                                            required property int index
-                                            required property var modelData
-                                            readonly property bool current: index === root.currentTab
-
-                                            Layout.fillWidth: true
-                                            Layout.preferredWidth: 1
-                                            radius: 10
-                                            color: "transparent"
-                                            implicitHeight: tabLabelRow.implicitHeight + 12
-
-                                            Row {
-                                                id: tabLabelRow
-                                                anchors.centerIn: parent
-                                                spacing: 6
-
-                                                MaterialIcon {
-                                                    anchors.verticalCenter: parent.verticalCenter
-                                                    text: tabButton.modelData.iconName
-                                                    color: tabButton.current ? Colors.background : Colors.text
-                                                    font.pixelSize: 15
-                                                }
-
-                                                Text {
-                                                    id: tabLabel
-                                                    anchors.verticalCenter: parent.verticalCenter
-                                                    text: tabButton.modelData.text
-                                                    color: tabButton.current ? Colors.background : Colors.text
-                                                    font.pixelSize: 13
-                                                    font.bold: tabButton.current
-                                                }
-                                            }
-
-                                            MouseArea {
-                                                anchors.fill: parent
-                                                cursorShape: Qt.PointingHandCursor
-                                                onClicked: root.currentTab = tabButton.index
-                                            }
-                                        }
-                                    }
+                                    height: 1
+                                    color: Colors.outlineVariant
                                 }
 
                                 // Wheel-to-switch-tab

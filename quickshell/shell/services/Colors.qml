@@ -18,6 +18,18 @@ QtObject {
     property color primary: "#8ad0ef"
     Behavior on primary { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
 
+    // Accent roles for surfaces that need to distinguish several series at
+    // once (the Performance tab gives CPU/GPU/Memory/Storage one each)
+    property color secondary: "#b4c9d7"
+    Behavior on secondary { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+
+    property color tertiary: "#c8c0e8"
+    Behavior on tertiary { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+
+    // Tonal fill sitting a step above `surface` — progress-track backgrounds
+    property color secondaryContainer: "#37474f"
+    Behavior on secondaryContainer { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+
     // Named `text`/`textMuted`, not `onSurface`/`onSurfaceVariant` — QML
     // reserves "on<Capital>" property names for signal handlers.
     property color text: "#dfe3e6"
@@ -28,6 +40,10 @@ QtObject {
 
     property color outline: "#8a9297"
     Behavior on outline { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+
+    // Dimmer than `outline` — for dividers and hairlines, not focusable edges
+    property color outlineVariant: "#3f484c"
+    Behavior on outlineVariant { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
 
     // Error / destructive roles (M3 error, onError, errorContainer,
     // onErrorContainer). Same on<Capital> rename as text/textMuted above:

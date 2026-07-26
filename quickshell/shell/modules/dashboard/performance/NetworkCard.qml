@@ -1,11 +1,13 @@
 import QtQuick
 import QtQuick.Shapes
 import QtQuick.Layouts
+import "../../sidebarRight"
 import "../../../services"
 
-// Network throughput: auto-scaling sparkline (down/up) + current speed row.
-// Sparkline is a native QML Shape/PathPolyline off NetworkUsage's capped
-// history array.
+// Network throughput: auto-scaling sparkline (down/up) over labelled
+// Download/Upload/Total rows. Ported from caelestia's performance/
+// NetworkCard.qml, whose sparkline is a C++ SparklineItem — this keeps the
+// repo's own native QML Shape/PathPolyline one.
 Rectangle {
     id: root
 
@@ -43,33 +45,51 @@ Rectangle {
         return fmt.value.toFixed(1) + " " + fmt.unit;
     }
 
-    radius: 18
+    // Session totals, formatted without the "/s" the speed unit carries
+    function formatTotal(bytes: real): string {
+        const fmt = NetworkUsage.formatBytes(bytes);
+        return fmt.value.toFixed(1) + fmt.unit.replace("/s", "");
+    }
+
+    radius: 26
     color: Colors.surface
-    border.width: 1
-    border.color: Colors.outline
+
+    implicitWidth: 290
+    implicitHeight: 215
 
     Component.onCompleted: NetworkUsage.ref()
     Component.onDestruction: NetworkUsage.unref()
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 16
-        spacing: 8
+        anchors.margins: 18
+        spacing: 0
 
-        Text {
-            text: "Network"
-            color: Colors.text
-            font.pixelSize: 14
-            font.bold: true
+        RowLayout {
+            spacing: 6
+
+            MaterialIcon {
+                text: "swap_vert"
+                color: Colors.primary
+                font.pixelSize: 18
+            }
+
+            Text {
+                text: "Network"
+                color: Colors.text
+                font.pixelSize: 15
+                font.bold: true
+            }
         }
 
         // Sparkline
         Item {
             id: sparkline
 
+            Layout.topMargin: 10
+            Layout.bottomMargin: 8
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.minimumHeight: 40
 
             Shape {
                 anchors.fill: parent
@@ -78,7 +98,7 @@ Rectangle {
 
                 ShapePath {
                     strokeWidth: 2
-                    strokeColor: Colors.textMuted
+                    strokeColor: Colors.secondary
                     fillColor: "transparent"
                     capStyle: ShapePath.RoundCap
                     joinStyle: ShapePath.RoundJoin
@@ -90,7 +110,7 @@ Rectangle {
 
                 ShapePath {
                     strokeWidth: 2
-                    strokeColor: Colors.primary
+                    strokeColor: Colors.tertiary
                     fillColor: "transparent"
                     capStyle: ShapePath.RoundCap
                     joinStyle: ShapePath.RoundJoin
@@ -104,29 +124,68 @@ Rectangle {
             Text {
                 anchors.centerIn: parent
                 visible: NetworkUsage.downloadHistory.length < 2
-                text: "Collecting data…"
-                color: Colors.textMuted
-                font.pixelSize: 11
+                text: "Collecting data..."
+                color: Colors.outline
+                font.pixelSize: 12
             }
         }
 
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: 16
+        StatRow {
+            iconName: "download"
+            iconColor: Colors.tertiary
+            label: "Download"
+            value: root.formatSpeed(NetworkUsage.downloadSpeed)
+            valueColor: Colors.tertiary
+        }
 
-            Text {
-                text: "↓ " + root.formatSpeed(NetworkUsage.downloadSpeed)
-                color: Colors.primary
-                font.pixelSize: 12
-            }
+        StatRow {
+            iconName: "upload"
+            iconColor: Colors.secondary
+            label: "Upload"
+            value: root.formatSpeed(NetworkUsage.uploadSpeed)
+            valueColor: Colors.secondary
+        }
 
-            Text {
-                text: "↑ " + root.formatSpeed(NetworkUsage.uploadSpeed)
-                color: Colors.textMuted
-                font.pixelSize: 12
-            }
+        StatRow {
+            iconName: "history"
+            iconColor: Colors.textMuted
+            label: "Total"
+            value: "↓" + root.formatTotal(NetworkUsage.downloadTotal) + " ↑" + root.formatTotal(NetworkUsage.uploadTotal)
+            valueColor: Colors.textMuted
+        }
+    }
 
-            Item { Layout.fillWidth: true }
+    // Icon + label on the left, value right-aligned
+    component StatRow: RowLayout {
+        id: statRow
+
+        required property string iconName
+        required property color iconColor
+        required property string label
+        required property string value
+        required property color valueColor
+
+        Layout.fillWidth: true
+        spacing: 6
+
+        MaterialIcon {
+            text: statRow.iconName
+            color: statRow.iconColor
+            font.pixelSize: 16
+        }
+
+        Text {
+            text: statRow.label
+            color: Colors.textMuted
+            font.pixelSize: 12
+        }
+
+        Item { Layout.fillWidth: true }
+
+        Text {
+            text: statRow.value
+            color: statRow.valueColor
+            font.pixelSize: 12
         }
     }
 }
