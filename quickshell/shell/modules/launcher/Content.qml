@@ -72,7 +72,9 @@ Item {
     readonly property int searchHeight: 48
     readonly property int chromeHeight: panelPad * 2 + searchGap + searchHeight
 
-    readonly property int wallpaperPanelWidth: 820
+    // Wide enough for five slots with one of them enlarged
+    // (4 * 150 + 190 + 4 * 16 + 2 * panelPad)
+    readonly property int wallpaperPanelWidth: 900
     readonly property int wallpaperRowHeight: 130
     readonly property int appPanelWidth: 460
     readonly property int listItemHeight: 56
@@ -170,12 +172,20 @@ Item {
     // Debounced wallpaper preview
     Timer {
         id: applyDebounce
-        interval: 300
+        interval: Config.wallpaperPreviewDelay
         onTriggered: content.previewWallpaper(content.wallpaperResults[row.currentIndex])
     }
 
     function requestPreview(): void {
         applyDebounce.restart();
+    }
+
+    function navigateWallpaper(delta: int): void {
+        if (delta > 0)
+            row.incrementCurrentIndex();
+        else
+            row.decrementCurrentIndex();
+        content.requestPreview();
     }
 
     // Panel background
@@ -221,37 +231,78 @@ Item {
                     anchors.right: parent.right
                     height: content.wallpaperRowHeight
 
+                    // Slot widths, read back by the delegate
+                    readonly property int itemWidth: 150
+                    readonly property int currentItemWidth: 190
+
                     orientation: ListView.Horizontal
                     spacing: 16
+                    // Deliberately unclipped: a Shape renders nothing under any
+                    // clipping ancestor, and the delegates round their corners
+                    // with one. They fade out at the row's edges instead
                     clip: false
 
+                    // Begin == end pins the selection dead centre. Giving the
+                    // range a width instead lets it drift anywhere inside it,
+                    // which is what left the selection off-centre before
                     highlightRangeMode: ListView.StrictlyEnforceRange
-                    preferredHighlightBegin: (width - 150) / 2
-                    preferredHighlightEnd: preferredHighlightBegin + 150
+                    preferredHighlightBegin: (width - currentItemWidth) / 2
+                    preferredHighlightEnd: preferredHighlightBegin
 
                     model: content.wallpaperResults
                     onModelChanged: currentIndex = count > 0 ? 0 : -1
 
+                    highlightMoveDuration: Motion.deliberateDuration
+
                     delegate: WallpaperItem {
                         onActivated: content.confirmSelection(modelData)
-                        onHoverActivated: {
-                            row.currentIndex = index;
-                            content.requestPreview();
+                    }
+
+                    // Wheel cycles the selection. Deltas are accumulated to a
+                    // full notch so a trackpad's fine-grained stream steps at
+                    // the same rate a mouse wheel does
+                    WheelHandler {
+                        property real accumulated: 0
+
+                        acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+
+                        onWheel: event => {
+                            accumulated += event.angleDelta.y !== 0 ? event.angleDelta.y : -event.angleDelta.x;
+                            while (accumulated >= 120) {
+                                accumulated -= 120;
+                                content.navigateWallpaper(-1);
+                            }
+                            while (accumulated <= -120) {
+                                accumulated += 120;
+                                content.navigateWallpaper(1);
+                            }
                         }
                     }
                 }
 
+                // Caption tracks the selected thumbnail instead of the panel
+                // centre, so the name reads as belonging to it. caelestia labels
+                // each item instead — not viable at our 150px item width
                 Text {
                     id: caption
                     anchors.top: row.bottom
                     anchors.topMargin: 4
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: (row.currentIndex >= 0 && content.wallpaperResults[row.currentIndex]) ? content.wallpaperResults[row.currentIndex].name : ""
+                    text: (row.currentIndex >= 0 && content.wallpaperResults[row.currentIndex]) ? content.wallpaperResults[row.currentIndex].label : ""
                     color: Colors.text
                     font.pixelSize: 13
                     elide: Text.ElideMiddle
+                    // Measured against the panel constant, never the parent it
+                    // sits in — see the polish-loop note in CLAUDE.md
                     width: Math.min(implicitWidth, content.wallpaperPanelWidth - content.panelPad * 2)
                     horizontalAlignment: Text.AlignHCenter
+
+                    x: {
+                        const item = row.currentItem;
+                        const centre = item ? item.x + item.width / 2 - row.contentX : row.width / 2;
+                        return Math.max(0, Math.min(row.width - width, centre - width / 2));
+                    }
+
+                    Behavior on x { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
                 }
             }
 
@@ -373,18 +424,8 @@ Item {
 
                 Keys.onUpPressed: if (content.mode !== "wallpaper") verticalList.decrementCurrentIndex()
                 Keys.onDownPressed: if (content.mode !== "wallpaper") verticalList.incrementCurrentIndex()
-                Keys.onLeftPressed: {
-                    if (content.mode === "wallpaper") {
-                        row.decrementCurrentIndex();
-                        content.requestPreview();
-                    }
-                }
-                Keys.onRightPressed: {
-                    if (content.mode === "wallpaper") {
-                        row.incrementCurrentIndex();
-                        content.requestPreview();
-                    }
-                }
+                Keys.onLeftPressed: if (content.mode === "wallpaper") content.navigateWallpaper(-1)
+                Keys.onRightPressed: if (content.mode === "wallpaper") content.navigateWallpaper(1)
             }
         }
     }

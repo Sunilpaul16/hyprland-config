@@ -49,6 +49,10 @@ Singleton {
     // Sidebar notifications empty-state watermark; "" = the bundled assets/dino.png
     property alias sidebarNoNotifsImage: adapter.sidebarNoNotifsImage
 
+    // ms after the wallpaper selection settles before the preview is applied —
+    // stops a fast scroll through the carousel spawning a switchwall per step
+    property alias wallpaperPreviewDelay: adapter.wallpaperPreviewDelay
+
     // Gates panels from reading config before the FileView has loaded
     property bool ready: false
 
@@ -97,6 +101,7 @@ Singleton {
             property int dashboardPanelHeight: 700
             property string userAvatarPath: ""
             property string sidebarNoNotifsImage: ""
+            property int wallpaperPreviewDelay: 300
         }
     }
 

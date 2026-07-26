@@ -71,6 +71,9 @@ Singleton {
                     const isVideo = root.isVideoName(name);
                     return {
                         name,
+                        // Display form; `name` stays the full filename so fuzzy
+                        // search can still match on extension
+                        label: name.replace(/\.[^.]+$/, ""),
                         path,
                         isVideo,
                         thumbPath: isVideo ? root.thumbPathFor(path) : path
