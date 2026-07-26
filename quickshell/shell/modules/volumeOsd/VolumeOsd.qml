@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../../services"
+import "../bar"
 
 // Volume/mic OSD window — right-edge slide-in drawer, auto-show-on-change
 Scope {
@@ -102,7 +103,12 @@ Scope {
 
                     property bool hovered: false
 
-                    readonly property int restingMargin: 8
+                    // 0 so the drawer sits flush against the screen edge and the
+                    // fillets below have a straight edge to bridge into, matching
+                    // SessionScreen
+                    readonly property int restingMargin: 0
+                    readonly property int cornerSize: 14
+                    readonly property int contentPadding: 10
                     readonly property int closedMargin: -(drawer.implicitWidth + restingMargin)
 
                     // Pushed left by whichever right-edge panels are stacked outside
@@ -121,8 +127,8 @@ Scope {
                     anchors.rightMargin: closedMargin + (restingMargin - closedMargin) * root.showProgress + stackOffset
                     // Fallback sizing for the first open frame, before the Loader's
                     // content has laid out (same race SessionScreen's drawer guards)
-                    implicitWidth: (loader.item ? loader.item.implicitWidth : 0) || 40
-                    implicitHeight: (loader.item ? loader.item.implicitHeight : 0) || 296
+                    implicitWidth: ((loader.item ? loader.item.implicitWidth : 0) || 24) + contentPadding * 2
+                    implicitHeight: ((loader.item ? loader.item.implicitHeight : 0) || 296) + contentPadding * 2
                     opacity: root.showProgress
 
                     HoverHandler {
@@ -135,11 +141,36 @@ Scope {
                         }
                     }
 
+                    // Drawer backdrop — same shell as SessionScreen's. Right corners
+                    // are square so the joined edge reads as one surface
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: 20
+                        topRightRadius: 0
+                        bottomRightRadius: 0
+                        color: Colors.background
+                    }
+
+                    // Concave fillets bridging the drawer into the screen edge,
+                    // rounding the two reflex corners the butt joint would leave
+                    Corner {
+                        anchors { right: parent.right; bottom: parent.top }
+                        size: drawer.cornerSize
+                        color: Colors.background
+                        corner: "bottomRight"
+                    }
+
+                    Corner {
+                        anchors { right: parent.right; top: parent.bottom }
+                        size: drawer.cornerSize
+                        color: Colors.background
+                        corner: "topRight"
+                    }
+
                     // Content only instantiated while open/animating
                     Loader {
                         id: loader
-                        anchors.right: parent.right
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.centerIn: parent
                         active: root.active || root.showProgress > 0.001
                         sourceComponent: VolumeOsdContent {}
                     }
