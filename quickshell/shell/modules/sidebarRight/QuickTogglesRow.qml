@@ -73,6 +73,13 @@ ColumnLayout {
             icon: "coffee"
             toggled: KeepAwakeCardState.enabled
             mainAction: () => KeepAwakeCardState.toggle()
+        },
+        QuickToggleModel {
+            toggleId: "gamemode"
+            name: "Game Mode"
+            icon: "sports_esports"
+            toggled: GameModeState.enabled
+            mainAction: () => GameModeState.toggle()
         }
     ]
 
