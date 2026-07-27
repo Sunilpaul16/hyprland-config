@@ -19,13 +19,12 @@ Item {
         { label: "Wallpaper & style", icon: "palette", description: "Wallpaper, fonts, colours", category: "appearance", component: wallpaperStylePage },
 
         // Connectivity
-        { label: "Network", icon: "wifi", description: "Wi-Fi, ethernet", category: "connectivity", component: networkPage },
+        { label: "Network", icon: "lan", description: "Ethernet, VPN, usage", category: "connectivity", component: networkPage },
         { label: "Connected devices", icon: "devices_other", description: "Bluetooth, pairing", category: "connectivity", component: connectedDevicesPage },
         { label: "Audio", icon: "volume_up", description: "App volumes, sound devices", category: "connectivity", component: audioPage },
 
         // System
         { label: "Updates", icon: "update", description: "System updates", category: "system", component: updatesPage },
-        { label: "Plugins", icon: "extension", description: "Manage plugins", category: "system", component: pluginsPage },
 
         // Shell
         { label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", category: "shell", component: panelsPage },
@@ -196,12 +195,6 @@ Item {
         id: updatesPage
 
         UpdatesPage {}
-    }
-
-    Component {
-        id: pluginsPage
-
-        PluginsPage {}
     }
 
     Component {
