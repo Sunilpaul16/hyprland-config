@@ -19,20 +19,20 @@ Item {
         { label: "Wallpaper & style", icon: "palette", description: "Wallpaper, fonts, colours", category: "appearance", component: wallpaperStylePage },
 
         // Connectivity
-        { label: "Network", icon: "wifi", description: "Wi-Fi, ethernet", category: "connectivity" },
-        { label: "Connected devices", icon: "devices_other", description: "Bluetooth, pairing", category: "connectivity" },
-        { label: "Audio", icon: "volume_up", description: "App volumes, sound devices", category: "connectivity" },
+        { label: "Network", icon: "wifi", description: "Wi-Fi, ethernet", category: "connectivity", component: networkPage },
+        { label: "Connected devices", icon: "devices_other", description: "Bluetooth, pairing", category: "connectivity", component: connectedDevicesPage },
+        { label: "Audio", icon: "volume_up", description: "App volumes, sound devices", category: "connectivity", component: audioPage },
 
         // System
-        { label: "Updates", icon: "update", description: "System updates", category: "system" },
-        { label: "Plugins", icon: "extension", description: "Manage plugins", category: "system" },
+        { label: "Updates", icon: "update", description: "System updates", category: "system", component: updatesPage },
+        { label: "Plugins", icon: "extension", description: "Manage plugins", category: "system", component: pluginsPage },
 
         // Shell
-        { label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", category: "shell" },
-        { label: "Services", icon: "build", description: "Poll intervals, notifications", category: "shell" },
+        { label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", category: "shell", component: panelsPage },
+        { label: "Services", icon: "build", description: "Poll intervals, notifications", category: "shell", component: servicesPage },
 
         // About
-        { label: "About", icon: "info", description: "System information, credits", category: "about" }
+        { label: "About", icon: "info", description: "System information, credits", category: "about", component: aboutPage }
     ]
 
     NavList {
@@ -172,6 +172,54 @@ Item {
         id: wallpaperStylePage
 
         WallpaperStylePage {}
+    }
+
+    Component {
+        id: networkPage
+
+        NetworkPage {}
+    }
+
+    Component {
+        id: connectedDevicesPage
+
+        ConnectedDevicesPage {}
+    }
+
+    Component {
+        id: audioPage
+
+        AudioPage {}
+    }
+
+    Component {
+        id: updatesPage
+
+        UpdatesPage {}
+    }
+
+    Component {
+        id: pluginsPage
+
+        PluginsPage {}
+    }
+
+    Component {
+        id: panelsPage
+
+        PanelsPage {}
+    }
+
+    Component {
+        id: servicesPage
+
+        ServicesPage {}
+    }
+
+    Component {
+        id: aboutPage
+
+        AboutPage {}
     }
 
     // Fallback body for every page that has no `component` yet

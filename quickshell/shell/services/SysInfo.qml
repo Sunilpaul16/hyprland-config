@@ -12,6 +12,16 @@ Singleton {
     property string osName: "Unknown OS"
     property real uptimeSeconds: 0
 
+    // Static identity, read once from /proc and /etc. Kept here rather than on
+    // SystemUsage because that one is refcount-gated behind a 1s poll and none
+    // of this changes while the machine is up
+    property string kernel: ""
+    property string hostname: ""
+    property string cpuModel: ""
+    property real memoryTotalKib: 0
+
+    readonly property string memoryTotalLabel: root.memoryTotalKib > 0 ? `${Math.round(root.memoryTotalKib / 1024 / 1024)} GiB` : ""
+
     // Nerd Font distro glyphs, generic tux when the ID isn't mapped
     readonly property string osGlyph: {
         const map = {
@@ -64,6 +74,34 @@ Singleton {
             const pretty = content.match(/^PRETTY_NAME=(.+)$/m);
             if (pretty)
                 root.osName = pretty[1].replace(/"/g, "").trim();
+        }
+    }
+
+    FileView {
+        path: "/proc/sys/kernel/osrelease"
+        onLoaded: root.kernel = text().trim()
+    }
+
+    FileView {
+        path: "/etc/hostname"
+        onLoaded: root.hostname = text().trim()
+    }
+
+    FileView {
+        path: "/proc/cpuinfo"
+        onLoaded: {
+            const match = text().match(/^model name\s*:\s*(.+)$/m);
+            if (match)
+                root.cpuModel = match[1].replace(/\(R\)|\(TM\)|CPU |Processor /g, "").replace(/\s+/g, " ").trim();
+        }
+    }
+
+    FileView {
+        path: "/proc/meminfo"
+        onLoaded: {
+            const match = text().match(/^MemTotal:\s*(\d+)/m);
+            if (match)
+                root.memoryTotalKib = parseInt(match[1]);
         }
     }
 
