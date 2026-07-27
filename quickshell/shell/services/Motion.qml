@@ -5,8 +5,20 @@ import QtQuick
 QtObject {
     id: root
 
+    // Config-driven speed. Clamped because this divides every duration in the
+    // shell — a stray 0 in config.json would otherwise make each one Infinity
+    readonly property real speed: Math.min(4, Math.max(0.25, Config.motion.speed))
+    readonly property bool reduced: Config.motion.reduced
+
+    // Base ms -> effective ms. `reduced` collapses to 0 here rather than each
+    // animation gating itself: a 0ms animation still runs and still fires its
+    // completion handlers, so nothing downstream needs a reduced-motion branch
+    function scaled(ms: int): int {
+        return root.reduced ? 0 : Math.round(ms / root.speed);
+    }
+
     // quick — hover/press feedback (colors, small opacity/size nudges)
-    readonly property int quickDuration: 110
+    readonly property int quickDuration: root.scaled(110)
     readonly property int quickEasing: Easing.OutCubic
     readonly property Component quickNumberAnimation: Component {
         NumberAnimation { duration: root.quickDuration; easing.type: root.quickEasing }
@@ -16,7 +28,7 @@ QtObject {
     }
 
     // smooth — panel/overlay show-hide (the showProgress pattern)
-    readonly property int smoothDuration: 160
+    readonly property int smoothDuration: root.scaled(160)
     readonly property int smoothEasing: Easing.OutCubic
     readonly property Component smoothNumberAnimation: Component {
         NumberAnimation { duration: root.smoothDuration; easing.type: root.smoothEasing }
@@ -26,7 +38,7 @@ QtObject {
     }
 
     // deliberate — layout/resize/reflow (pill movement, panel resize, list reflow)
-    readonly property int deliberateDuration: 200
+    readonly property int deliberateDuration: root.scaled(200)
     readonly property int deliberateEasing: Easing.OutCubic
     readonly property Component deliberateNumberAnimation: Component {
         NumberAnimation { duration: root.deliberateDuration; easing.type: root.deliberateEasing }
@@ -46,10 +58,10 @@ QtObject {
         readonly property list<real> standardAccel: [0.3, 0, 1, 1, 1, 1]
         readonly property list<real> standardDecel: [0, 0, 0, 1, 1, 1]
 
-        readonly property int expressiveFastSpatialDuration: 350
-        readonly property int expressiveDefaultSpatialDuration: 500
-        readonly property int expressiveSlowSpatialDuration: 650
-        readonly property int expressiveEffectsDuration: 200
+        readonly property int expressiveFastSpatialDuration: root.scaled(350)
+        readonly property int expressiveDefaultSpatialDuration: root.scaled(500)
+        readonly property int expressiveSlowSpatialDuration: root.scaled(650)
+        readonly property int expressiveEffectsDuration: root.scaled(200)
     }
 
     // Corner-radius tokens — matched to this repo's actual in-use values

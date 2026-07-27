@@ -11,6 +11,7 @@ Singleton {
     id: root
 
     property alias time: adapter.time
+    property alias motion: adapter.motion
     property alias bar: adapter.bar
     property alias sidebar: adapter.sidebar
     property alias session: adapter.session
@@ -41,6 +42,14 @@ Singleton {
 
             property JsonObject time: JsonObject {
                 property bool use12Hour: false // true = 12-hour clock (AM/PM); false = 24-hour
+            }
+
+            // Animation timing. Only these two are user-facing — the bezier
+            // curves and rounding tokens in Motion.qml are design-system
+            // constants, not preferences
+            property JsonObject motion: JsonObject {
+                property real speed: 1.0     // higher = faster; divides every duration. Clamped to 0.25–4 in Motion.qml
+                property bool reduced: false // true = collapse all durations to 0
             }
 
             property JsonObject bar: JsonObject {

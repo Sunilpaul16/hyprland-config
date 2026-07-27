@@ -1,9 +1,38 @@
 import QtQuick.Layouts
+import "../../services"
 
 // Panels page. Layout only — the rows track keys that already exist in
-// services/Config.qml plus the panels that have no config surface yet
+// services/Config.qml plus the panels that have no config surface yet.
+// The Motion section is the exception: it reads live config rather than
+// placeholder text, shown read-only until the controls can write back
 ScrollPage {
     title: "Panels"
+
+    SectionLabel {
+        text: "Motion"
+    }
+
+    SettingGroup {
+        SettingRow {
+            first: true
+            label: "Animation speed"
+            subtext: "Config.motion.speed — divides every duration in the shell"
+
+            ValueLabel {
+                text: `${Config.motion.speed.toFixed(2)}×`
+            }
+        }
+
+        SettingRow {
+            last: true
+            label: "Reduce motion"
+            subtext: "Config.motion.reduced — collapses all durations to 0"
+
+            ValueLabel {
+                text: Config.motion.reduced ? "On" : "Off"
+            }
+        }
+    }
 
     SectionLabel {
         text: "Bar"
