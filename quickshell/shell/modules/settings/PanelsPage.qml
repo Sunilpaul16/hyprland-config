@@ -15,6 +15,7 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Animation speed"
             subtext: "Divides every duration in the shell"
 
@@ -31,6 +32,7 @@ ScrollPage {
 
         SettingRow {
             last: true
+            live: true
             label: "Reduce motion"
             subtext: "Collapses all animation durations to zero"
 
@@ -48,6 +50,7 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Bar height"
             subtext: "Height of the top bar"
 
@@ -62,6 +65,7 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "12-hour clock"
             subtext: "Show AM/PM instead of 24-hour time"
 
@@ -98,6 +102,7 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Panel width"
             subtext: "Auto measures the content; fixed uses a set size"
 
@@ -109,6 +114,7 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Panel height"
             subtext: "Auto measures the content; fixed uses a set size"
 
@@ -128,6 +134,7 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Media card animation"
             subtext: "The bongocat gif on the dashboard's Media card"
 
@@ -139,6 +146,7 @@ ScrollPage {
 
         SettingRow {
             last: true
+            live: true
             label: "Animation speed"
             subtext: "Gif playback rate (1.00 is native)"
 
@@ -204,6 +212,7 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Notifications watermark"
             subtext: "Shown when the sidebar has no notifications"
 
@@ -243,6 +252,7 @@ ScrollPage {
 
         SettingRow {
             last: true
+            live: true
             label: "Session drawer auto-close"
             subtext: "How long the drawer stays open unhovered"
 

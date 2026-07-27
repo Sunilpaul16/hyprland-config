@@ -12,6 +12,10 @@ Rectangle {
     property bool last: false
     property string label
     property string subtext
+    // Rows are mock until proven otherwise: a red label flags anything the
+    // panel displays but doesn't actually read or drive. Set live: true once
+    // the row is backed by something real
+    property bool live: false
 
     default property alias control: controlSlot.data
 
@@ -44,7 +48,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: root.label
-                color: Colors.text
+                color: root.live ? Colors.text : Colors.error
                 font.pixelSize: 15
                 elide: Text.ElideRight
             }
@@ -53,7 +57,7 @@ Rectangle {
                 Layout.fillWidth: true
                 visible: root.subtext.length > 0
                 text: root.subtext
-                color: Colors.outline
+                color: root.live ? Colors.outline : Qt.alpha(Colors.error, 0.65)
                 font.pixelSize: 12
                 elide: Text.ElideRight
             }

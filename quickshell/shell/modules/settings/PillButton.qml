@@ -10,6 +10,8 @@ Rectangle {
     property string icon
     property string text
     property bool highlighted: false
+    // Matches SettingRow.live — red text flags a pill that goes nowhere yet
+    property bool live: false
 
     signal clicked
 
@@ -33,13 +35,13 @@ Rectangle {
 
         MaterialIcon {
             text: root.icon
-            color: Colors.text
+            color: root.live ? Colors.text : Colors.error
             font.pixelSize: 19
         }
 
         Text {
             text: root.text
-            color: Colors.text
+            color: root.live ? Colors.text : Colors.error
             font.pixelSize: 15
         }
     }

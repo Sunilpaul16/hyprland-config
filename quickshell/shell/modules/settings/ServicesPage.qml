@@ -13,6 +13,7 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Toast duration"
             subtext: "How long a notification popup stays up"
 
@@ -27,6 +28,7 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Do not disturb"
             subtext: "Suppresses popups, still records them"
 

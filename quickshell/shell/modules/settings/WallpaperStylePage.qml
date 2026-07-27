@@ -136,6 +136,7 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Preview delay"
             subtext: "Settle time before a carousel pick is applied"
 

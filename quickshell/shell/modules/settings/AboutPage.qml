@@ -60,6 +60,7 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Operating system"
 
             ValueLabel {
@@ -68,6 +69,7 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Kernel"
 
             ValueLabel {
@@ -76,6 +78,7 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Hostname"
 
             ValueLabel {
@@ -84,6 +87,7 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Uptime"
 
             ValueLabel {
@@ -93,6 +97,7 @@ ScrollPage {
 
         SettingRow {
             last: true
+            live: true
             label: "Compositor"
 
             ValueLabel {
@@ -108,6 +113,7 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Processor"
 
             ValueLabel {
@@ -116,6 +122,7 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Graphics"
 
             ValueLabel {
@@ -125,6 +132,7 @@ ScrollPage {
 
         SettingRow {
             last: true
+            live: true
             label: "Memory"
 
             ValueLabel {
@@ -147,6 +155,7 @@ ScrollPage {
 
                 first: index === 0
                 last: index === AboutInfo.displays.length - 1
+                live: true
                 label: modelData.model ? `${modelData.name} · ${modelData.model}` : modelData.name
 
                 ValueLabel {
@@ -163,6 +172,7 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Quickshell"
 
             ValueLabel {
@@ -171,6 +181,7 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Config"
 
             ValueLabel {
@@ -179,6 +190,7 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Settings file"
 
             ValueLabel {
