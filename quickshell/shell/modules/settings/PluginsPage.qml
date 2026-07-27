@@ -20,6 +20,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: false
+                onToggled: v => checked = v
             }
         }
 

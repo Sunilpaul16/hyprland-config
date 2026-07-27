@@ -22,6 +22,7 @@ Singleton {
     // Gates panels from reading config before the FileView has loaded
     property bool ready: false
 
+
     // Config file
     FileView {
         id: configFile

@@ -1,18 +1,37 @@
 import QtQuick
 import "../../services"
 
-// M3 slider, display only — `value` is 0..1 and nothing writes it back
+// M3 slider. Externally driven like ToggleSwitch — dragging emits moved()
+// and never writes `value`, so an owner can bind it to config. Owners that
+// just want local state say `onMoved: nv => value = nv`
 Item {
     id: root
 
+    property real from: 0
+    property real to: 1
     property real value: 0.5
+    // 0 = continuous; otherwise the value snaps to multiples of this
+    property real stepSize: 0
+
+    signal moved(real v)
 
     implicitWidth: 170
     implicitHeight: 26
 
     readonly property real trackHeight: 6
     readonly property real handleWidth: 4
-    readonly property real fillWidth: Math.round((root.width - root.handleWidth - 8) * root.value)
+    readonly property real span: root.to - root.from
+    // Guarded: a config value outside from..to would otherwise push the
+    // handle off the end of the track
+    readonly property real position: root.span === 0 ? 0 : Math.max(0, Math.min(1, (root.value - root.from) / root.span))
+    readonly property real travel: root.width - root.handleWidth - 8
+    readonly property real fillWidth: Math.round(root.travel * root.position)
+
+    function valueAt(px: real): real {
+        const ratio = Math.max(0, Math.min(1, (px - root.handleWidth / 2) / root.travel));
+        const raw = root.from + ratio * root.span;
+        return root.stepSize > 0 ? Math.round(raw / root.stepSize) * root.stepSize : raw;
+    }
 
     // Filled track
     Rectangle {
@@ -27,7 +46,7 @@ Item {
     Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
-        width: root.width - root.fillWidth - root.handleWidth - 8
+        width: root.travel - root.fillWidth
         height: root.trackHeight
         radius: height / 2
         color: Colors.outlineVariant
@@ -40,5 +59,25 @@ Item {
         height: parent.height
         radius: width / 2
         color: Colors.primary
+
+        scale: drag.pressed ? 1.4 : 1
+
+        Behavior on scale { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+    }
+
+    MouseArea {
+        id: drag
+
+        anchors.fill: parent
+        // Widened so the 4px handle is actually grabbable
+        anchors.topMargin: -6
+        anchors.bottomMargin: -6
+        cursorShape: Qt.PointingHandCursor
+
+        onPressed: mouse => root.moved(root.valueAt(mouse.x))
+        onPositionChanged: mouse => {
+            if (drag.pressed)
+                root.moved(root.valueAt(mouse.x));
+        }
     }
 }

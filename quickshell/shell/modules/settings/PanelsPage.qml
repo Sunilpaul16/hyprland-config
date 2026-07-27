@@ -1,10 +1,11 @@
+import QtQuick
 import QtQuick.Layouts
 import "../../services"
 
-// Panels page. Layout only — the rows track keys that already exist in
+// Panels page. Mostly layout — the rows track keys that already exist in
 // services/Config.qml plus the panels that have no config surface yet.
-// The Motion section is the exception: it reads live config rather than
-// placeholder text, shown read-only until the controls can write back
+// The Motion section is the exception: it reads AND writes live config, and
+// is the worked example for wiring the rest
 ScrollPage {
     title: "Panels"
 
@@ -16,20 +17,36 @@ ScrollPage {
         SettingRow {
             first: true
             label: "Animation speed"
-            subtext: "Config.motion.speed — divides every duration in the shell"
+            subtext: "Divides every duration in the shell"
 
-            ValueLabel {
-                text: `${Config.motion.speed.toFixed(2)}×`
+            RowLayout {
+                spacing: 12
+
+                ValueLabel {
+                    // Fixed width so the slider doesn't shift as digits change
+                    Layout.preferredWidth: 42
+                    horizontalAlignment: Text.AlignRight
+                    text: `${Config.motion.speed.toFixed(2)}×`
+                }
+
+                SettingSlider {
+                    from: 0.5
+                    to: 2
+                    stepSize: 0.05
+                    value: Config.motion.speed
+                    onMoved: v => Config.motion.speed = v
+                }
             }
         }
 
         SettingRow {
             last: true
             label: "Reduce motion"
-            subtext: "Config.motion.reduced — collapses all durations to 0"
+            subtext: "Collapses all animation durations to zero"
 
-            ValueLabel {
-                text: Config.motion.reduced ? "On" : "Off"
+            ToggleSwitch {
+                checked: Config.motion.reduced
+                onToggled: value => Config.motion.reduced = value
             }
         }
     }
@@ -55,6 +72,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: true
+                onToggled: v => checked = v
             }
         }
 
@@ -63,6 +81,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: true
+                onToggled: v => checked = v
             }
         }
 
@@ -72,6 +91,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: true
+                onToggled: v => checked = v
             }
         }
     }
@@ -114,6 +134,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: true
+                onToggled: v => checked = v
             }
         }
 
@@ -124,6 +145,7 @@ ScrollPage {
 
             SettingSlider {
                 value: 0.5
+                onMoved: nv => value = nv
             }
         }
     }
@@ -139,6 +161,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: true
+                onToggled: v => checked = v
             }
         }
 
@@ -191,6 +214,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: true
+                onToggled: v => checked = v
             }
         }
     }
@@ -207,6 +231,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: true
+                onToggled: v => checked = v
             }
         }
 

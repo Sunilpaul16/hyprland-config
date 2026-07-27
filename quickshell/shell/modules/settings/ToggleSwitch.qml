@@ -2,7 +2,11 @@ import QtQuick
 import "../../services"
 import "../sidebarRight"
 
-// M3 switch — the thumb carries a check/cross glyph and grows when on
+// M3 switch — the thumb carries a check/cross glyph and grows when on.
+// Externally driven: a click only emits toggled(), it never writes `checked`
+// itself, so an owner can bind `checked` to config and have the binding
+// survive being clicked. Owners that just want local state say
+// `onToggled: v => checked = v`
 Rectangle {
     id: root
 
@@ -46,9 +50,6 @@ Rectangle {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            root.checked = !root.checked;
-            root.toggled(root.checked);
-        }
+        onClicked: root.toggled(!root.checked)
     }
 }

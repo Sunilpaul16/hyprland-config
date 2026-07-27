@@ -17,6 +17,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: true
+                onToggled: v => checked = v
             }
         }
 
@@ -45,6 +46,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: true
+                onToggled: v => checked = v
             }
         }
     }
@@ -95,6 +97,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: true
+                onToggled: v => checked = v
             }
         }
 

@@ -24,6 +24,7 @@ ScrollPage {
 
             SettingSlider {
                 value: 0.62
+                onMoved: nv => value = nv
             }
         }
 
@@ -33,6 +34,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: false
+                onToggled: v => checked = v
             }
         }
     }
@@ -56,6 +58,7 @@ ScrollPage {
 
             SettingSlider {
                 value: 0.45
+                onMoved: nv => value = nv
             }
         }
 
@@ -65,6 +68,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: true
+                onToggled: v => checked = v
             }
         }
     }
@@ -90,6 +94,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: false
+                onToggled: v => checked = v
             }
         }
 
@@ -99,6 +104,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: true
+                onToggled: v => checked = v
             }
         }
     }
@@ -114,6 +120,7 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: true
+                onToggled: v => checked = v
             }
         }
 
@@ -146,6 +153,7 @@ ScrollPage {
 
             SettingSlider {
                 value: 0.8
+                onMoved: nv => value = nv
             }
         }
 
@@ -155,6 +163,7 @@ ScrollPage {
 
             SettingSlider {
                 value: 0.55
+                onMoved: nv => value = nv
             }
         }
     }
