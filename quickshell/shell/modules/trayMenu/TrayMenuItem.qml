@@ -30,7 +30,7 @@ Item {
         visible: !root.isSep
         anchors.fill: parent
         radius: 6
-        color: hoverArea.containsMouse && root.entry.enabled ? Colors.surface : "transparent"
+        color: hoverArea.containsMouse && root.entry.enabled ? Colors.layer : "transparent"
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 

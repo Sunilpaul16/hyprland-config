@@ -74,11 +74,13 @@ Scope {
                         id: panel
 
                         x: Math.max(8, Math.min(TrayMenuState.anchorX, root.width - implicitWidth - 8))
-                        y: Math.max(8, Math.min(TrayMenuState.anchorY + 14, root.height - implicitHeight - 8))
+                        // Floored at the bar's height so the menu sits flush
+                        // against its underside whatever the icon's own bounds
+                        y: Math.max(Config.bar.height, Math.min(TrayMenuState.anchorY, root.height - implicitHeight - 8))
                         implicitWidth: Math.max(160, list.implicitWidth + 12)
                         implicitHeight: list.implicitHeight + 12
                         radius: 12
-                        color: Colors.background
+                        color: Colors.panel
                         border.width: 1
                         border.color: Colors.outline
 
