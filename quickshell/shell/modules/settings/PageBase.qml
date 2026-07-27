@@ -12,7 +12,7 @@ Item {
     property bool isSubPage: false
     // Content stops widening past this and stays left-aligned under the title,
     // so a wide panel grows the margins rather than stretching every row
-    readonly property int cappedWidth: Math.min(800, body.width)
+    readonly property int cappedWidth: Math.min(Config.settings.maxContentWidth, body.width)
 
     default property alias content: body.data
 

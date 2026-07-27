@@ -26,17 +26,25 @@ Scope {
                     NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
                 }
 
-                // Panel geometry — 16:9 at ~72% of screen height, floored at the
-                // size the two-column layout stops being usable (caelestia's
-                // NexusTokens uses the same heightMult/ratio/minWidth shape)
+                // Panel geometry — width follows the content it has to hold
+                // (nav pane + capped page column + padding) rather than an
+                // aspect ratio, which left a wide band of dead space beside
+                // the content on a landscape monitor
                 readonly property real screenW: root.screen?.width ?? 1280
                 readonly property real screenH: root.screen?.height ?? 800
-                // Both axes scale by one factor, never clamped independently —
-                // on a portrait/rotated output the 16:9 target overflows the
-                // width ceiling, and clamping width alone leaves a tall sliver
-                readonly property real fitScale: Math.min(1, (screenW * 0.9) / (screenH * 0.72 * 16 / 9))
-                readonly property real panelHeight: Math.max(500, Math.round(screenH * 0.72 * fitScale))
-                readonly property real panelWidth: Math.max(800, Math.round(panelHeight * 16 / 9))
+
+                // Content.qml's `pad` on each side, plus the gap between the
+                // two columns and the page area's extra right margin
+                readonly property int chromeWidth: 18 * 4
+                readonly property real targetWidth: Config.settings.navWidth + Config.settings.maxContentWidth + chromeWidth
+                readonly property real targetHeight: Math.min(screenH * Config.settings.heightMult, Config.settings.maxHeight)
+
+                // One factor for both axes, never clamped independently — on a
+                // portrait/rotated output an independently clamped axis leaves
+                // a sliver rather than a smaller panel
+                readonly property real fitScale: Math.min(1, (screenW * 0.9) / targetWidth, (screenH * 0.9) / targetHeight)
+                readonly property real panelWidth: Math.max(700, Math.round(targetWidth * fitScale))
+                readonly property real panelHeight: Math.max(460, Math.round(targetHeight * fitScale))
 
                 // Positioning
                 anchors {

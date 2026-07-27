@@ -316,6 +316,24 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
+            label: "Window opacity"
+            subtext: "kitty's background; needs a regenerate to apply"
+
+            NumberControl {
+                value: Config.theming.terminalOpacity
+                from: 0.3
+                to: 1
+                stepSize: 0.05
+                displayScale: 100
+                decimals: 0
+                suffix: "%"
+                labelWidth: 46
+                onMoved: v => Config.theming.terminalOpacity = v
+            }
+        }
+
+        SettingRow {
             last: true
             live: true
             label: "Always dark"

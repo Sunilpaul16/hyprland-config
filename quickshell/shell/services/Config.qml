@@ -22,6 +22,7 @@ Singleton {
     property alias nightLight: adapter.nightLight
     property alias theming: adapter.theming
     property alias appearance: adapter.appearance
+    property alias settings: adapter.settings
     property alias recorder: adapter.recorder
     property alias wallpaper: adapter.wallpaper
     property alias dashboard: adapter.dashboard
@@ -106,12 +107,23 @@ Singleton {
                 property real layerOpacity: 0.55 // cards and pills on top of a panel
             }
 
+            // Settings panel size. Width is derived from the content rather
+            // than an aspect ratio — a 16:9 panel left ~660px of dead space
+            // beside an 800px content column on a 1440p screen
+            property JsonObject settings: JsonObject {
+                property int maxContentWidth: 800 // page content column
+                property int navWidth: 340        // left nav pane
+                property real heightMult: 0.72    // fraction of screen height
+                property int maxHeight: 1000      // ceiling, so a tall screen doesn't stretch it
+            }
+
             property JsonObject theming: JsonObject {
                 property string scheme: "auto" // "auto" (picked from the image) | any scheme-* the generator supports
                 property real terminalHarmony: 0.8
                 property int terminalHarmonizeThreshold: 100
                 property real terminalFgBoost: 0.35
                 property bool terminalForceDark: false
+                property real terminalOpacity: 1.0 // kitty window opacity; 1 = solid
             }
 
             property JsonObject nightLight: JsonObject {

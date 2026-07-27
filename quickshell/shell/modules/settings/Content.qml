@@ -9,7 +9,7 @@ Item {
     property bool panelActive: false
 
     readonly property int pad: 18
-    readonly property int navWidth: Math.min(360, Math.round(width * 0.34))
+    readonly property int navWidth: Math.min(Config.settings.navWidth, Math.round(width * 0.4))
 
     // Page registry — index-aligned with SettingsState.currentPageIdx. `category`
     // drives the nav pane's corner-radius grouping; `component` is optional and

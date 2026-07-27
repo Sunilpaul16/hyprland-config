@@ -228,6 +228,16 @@ while IFS=: read -r name value; do
     sed -i "s/${name} #/${hexval}/g" "$KITTY_THEME_OUT"
 done < "$scss"
 
+# Terminal window transparency. dynamic_background_opacity is what lets kitty
+# pick this up on SIGUSR1 instead of needing a restart
+TERM_OPACITY="$(cfg '.theming.terminalOpacity' '1.0')"
+{
+    echo ""
+    echo "# Written by switchwall from theming.terminalOpacity"
+    echo "dynamic_background_opacity yes"
+    echo "background_opacity $TERM_OPACITY"
+} >> "$KITTY_THEME_OUT"
+
 # --- 5. Reload ---------------------------------------------------------------
 hyprctl reload >/dev/null
 pkill -SIGUSR1 -x kitty >/dev/null 2>&1 || true
