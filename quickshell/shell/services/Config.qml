@@ -16,6 +16,7 @@ Singleton {
     property alias sidebar: adapter.sidebar
     property alias session: adapter.session
     property alias notifications: adapter.notifications
+    property alias updates: adapter.updates
     property alias wallpaper: adapter.wallpaper
     property alias dashboard: adapter.dashboard
 
@@ -67,6 +68,12 @@ Singleton {
 
             property JsonObject notifications: JsonObject {
                 property int toastDismissDuration: 5000 // ms a toast shows before auto-dismissing
+            }
+
+            property JsonObject updates: JsonObject {
+                property bool autoCheck: true       // query for updates on start and on the interval below
+                property int intervalMinutes: 360   // floored at 15 in Updates.qml
+                property string aurHelper: "yay"    // any helper supporting -Qua ("yay" | "paru" | ...)
             }
 
             property JsonObject wallpaper: JsonObject {

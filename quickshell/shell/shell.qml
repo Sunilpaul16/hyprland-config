@@ -21,9 +21,14 @@ import "modules/volumeOsd"
 // Shell entrypoint — each panel is its own Scope owning a per-monitor
 // Variants + Config.ready-gated PanelLoader (see services/PanelLoader.qml)
 ShellRoot {
-    // Force ColorsLoader's lazy singleton to load and apply matugen's
-    // last-written theme (see ColorsLoader.qml)
-    Component.onCompleted: ColorsLoader.reapplyTheme()
+    Component.onCompleted: {
+        // Force ColorsLoader's lazy singleton to load and apply matugen's
+        // last-written theme (see ColorsLoader.qml)
+        ColorsLoader.reapplyTheme();
+        // Same lazy-singleton reason: nothing else references Updates, so
+        // without this its check-on-login timer never starts
+        Updates.backgroundChecking = true;
+    }
 
     Bar {}
     Launcher {}
