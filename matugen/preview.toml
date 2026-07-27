@@ -1,0 +1,15 @@
+# matugen config used only by `switchwall --colors-preview`.
+#
+# Deliberately a single template: previewing must not touch hyprland,
+# hyprlock, GTK, btop or kitty, because those are applied by writing real
+# config files and reloading the apps — there would be nothing to revert to.
+# The shell's own palette is different: services/Colors.qml is a plain
+# mutable QtObject fed by ColorsLoader, so it can be pointed at this file
+# and back again with no side effects.
+
+[config]
+version_check = false
+
+[templates.quickshell_colors_preview]
+input_path = '~/.config/matugen/templates/colors-json/colors.json'
+output_path = '~/.cache/matugen/preview-colors.json'

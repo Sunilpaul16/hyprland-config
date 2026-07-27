@@ -11,6 +11,37 @@ import Quickshell.Io
 Singleton {
     id: root
 
+    // True while a candidate palette is on screen instead of the real one
+    property bool previewing: false
+    property string previewPath: ""
+    // Latest request while a generation is already running; matugen takes a
+    // second or two, and a hover sweep would otherwise queue one per tile
+    property string pendingPath: ""
+
+    // Generates a palette for `path` without applying it to anything, then
+    // swaps it into Colors. The wallpaper, the real colors.json and every
+    // other themed app are untouched, so clearPreview() is a full revert
+    function preview(path: string): void {
+        if (!path || path === root.previewPath)
+            return;
+        if (previewProc.running) {
+            root.pendingPath = path;
+            return;
+        }
+        root.previewPath = path;
+        previewProc.command = [Directories.switchwallScript, "--colors-preview", path];
+        previewProc.running = true;
+    }
+
+    function clearPreview(): void {
+        root.pendingPath = "";
+        root.previewPath = "";
+        if (!root.previewing)
+            return;
+        root.previewing = false;
+        root.reapplyTheme();
+    }
+
     function reapplyTheme() {
         colorsFile.reload();
         applyTimer.restart();
@@ -33,6 +64,13 @@ Singleton {
         }
     }
 
+    function applyPreview(text: string): void {
+        if (!root.previewPath)
+            return;
+        root.previewing = true;
+        root.applyColors(text);
+    }
+
     // onLoadedChanged only fires on the loaded<->not-loaded transition, not
     // on every reload() while already loaded — so re-reads after the first
     // one go through this debounced timer instead, applying reload()'d
@@ -42,6 +80,44 @@ Singleton {
         interval: 50
         repeat: false
         onTriggered: root.applyColors(colorsFile.text())
+    }
+
+    Process {
+        id: previewProc
+
+        onExited: exitCode => {
+            const next = root.pendingPath;
+            root.pendingPath = "";
+            if (exitCode === 0 && root.previewPath) {
+                previewFile.reload();
+                previewApplyTimer.restart();
+            }
+            // A newer hover landed while this was generating
+            if (next && next !== root.previewPath) {
+                root.previewPath = "";
+                root.preview(next);
+            }
+        }
+    }
+
+    // Same reload() caveat as colorsFile below — onLoadedChanged does not
+    // fire again once loaded, so re-reads go through this timer
+    Timer {
+        id: previewApplyTimer
+        interval: 50
+        repeat: false
+        onTriggered: root.applyPreview(previewFile.text())
+    }
+
+    FileView {
+        id: previewFile
+
+        path: Directories.previewColorsFile
+
+        onLoadedChanged: {
+            if (loaded && root.previewPath)
+                root.applyPreview(text());
+        }
     }
 
     FileView {

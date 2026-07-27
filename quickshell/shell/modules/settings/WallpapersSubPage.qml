@@ -13,6 +13,30 @@ ScrollPage {
     title: "Wallpapers"
     isSubPage: true
 
+    // Hovering a tile themes the shell with that wallpaper's palette without
+    // applying anything; leaving the grid puts the real one back
+    property string hoveredPath: ""
+
+    onHoveredPathChanged: {
+        if (root.hoveredPath)
+            previewTimer.restart();
+        else {
+            previewTimer.stop();
+            ColorsLoader.clearPreview();
+        }
+    }
+
+    // Abandoning the page mid-hover must not strand the preview
+    Component.onDestruction: ColorsLoader.clearPreview()
+
+    Timer {
+        id: previewTimer
+
+        interval: Config.wallpaper.previewDelay
+        repeat: false
+        onTriggered: ColorsLoader.preview(root.hoveredPath)
+    }
+
     readonly property int columns: 3
     readonly property int gridSpacing: 12
     readonly property int tileWidth: Math.floor((root.cappedWidth - root.gridSpacing * (root.columns - 1)) / root.columns)
@@ -89,7 +113,7 @@ ScrollPage {
     }
 
     SectionLabel {
-        text: `Local wallpapers · ${Wallpapers.list.length}`
+        text: ColorsLoader.previewing ? "Local wallpapers · previewing colours" : `Local wallpapers · ${Wallpapers.list.length}`
     }
 
     // Collection grid
@@ -192,7 +216,18 @@ ScrollPage {
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: Wallpapers.apply(tile.modelData.path)
+                    onEntered: root.hoveredPath = tile.modelData.path
+                    onExited: {
+                        if (root.hoveredPath === tile.modelData.path)
+                            root.hoveredPath = "";
+                    }
+                    onClicked: {
+                        // Applying supersedes the preview; clearing after would
+                        // fight the real theme landing a moment later
+                        root.hoveredPath = "";
+                        ColorsLoader.clearPreview();
+                        Wallpapers.apply(tile.modelData.path);
+                    }
                 }
             }
         }
