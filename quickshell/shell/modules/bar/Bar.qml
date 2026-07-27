@@ -47,7 +47,7 @@ Scope {
                     id: content
                     anchors { top: parent.top; left: parent.left; right: parent.right }
                     height: bar.barContentHeight
-                    color: Colors.background
+                    color: Colors.panel
                     // Active window pill
                     SectionPill {
                         anchors.left: parent.left
@@ -228,14 +228,14 @@ Scope {
                     id: cornerTL
                     anchors { top: content.bottom; left: parent.left }
                     size: bar.cornerSize
-                    color: Colors.background
+                    color: Colors.panel
                     corner: "topLeft"
                 }
                 Corner {
                     id: cornerTR
                     anchors { top: content.bottom; right: parent.right }
                     size: bar.cornerSize
-                    color: Colors.background
+                    color: Colors.panel
                     corner: "topRight"
                 }
             }

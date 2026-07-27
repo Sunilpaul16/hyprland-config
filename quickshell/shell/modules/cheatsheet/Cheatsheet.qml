@@ -76,7 +76,7 @@ Scope {
                         width: Math.min(content.implicitWidth + 56, (root.screen?.width ?? 1280) * 0.9)
                         height: Math.min(content.implicitHeight + 56, (root.screen?.height ?? 800) * 0.85)
                         radius: 18
-                        color: Colors.background
+                        color: Colors.panel
                         border.width: 1
                         border.color: Colors.outline
 

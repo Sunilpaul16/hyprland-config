@@ -89,7 +89,7 @@ Item {
                     id: thumbClip
                     anchors.fill: parent
                     radius: 8
-                    color: Colors.surface
+                    color: Colors.layer
                     visible: !root.isAction && root.modelData.isImage
 
                     layer.enabled: !root.isAction && root.modelData.isImage

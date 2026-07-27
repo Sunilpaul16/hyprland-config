@@ -34,7 +34,7 @@ Rectangle {
     }
 
     radius: 18
-    color: Colors.surface
+    color: Colors.layer
     border.width: 1
     border.color: Colors.outline
     implicitHeight: root.avatarSize + 32

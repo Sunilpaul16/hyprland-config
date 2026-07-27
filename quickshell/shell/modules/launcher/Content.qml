@@ -198,7 +198,7 @@ Item {
         // screen edge it sits flush against
         bottomLeftRadius: 0
         bottomRightRadius: 0
-        color: Colors.surface
+        color: Colors.layer
         // No border — a Rectangle can't outline only three sides, and the
         // bottom edge merges into the screen edge via the fillets below
 
@@ -374,7 +374,7 @@ Item {
             anchors.margins: content.panelPad
             height: content.searchHeight
             radius: height / 2
-            color: Colors.background
+            color: Colors.panel
 
             Text {
                 anchors.left: parent.left
@@ -449,14 +449,14 @@ Item {
     Corner {
         anchors { right: parent.left; bottom: parent.bottom }
         size: 14
-        color: Colors.surface
+        color: Colors.layer
         corner: "bottomRight"
     }
 
     Corner {
         anchors { left: parent.right; bottom: parent.bottom }
         size: 14
-        color: Colors.surface
+        color: Colors.layer
         corner: "bottomLeft"
     }
 }

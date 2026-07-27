@@ -18,7 +18,7 @@ Rectangle {
     readonly property color tonalBg: Qt.tint(Colors.surface, Qt.alpha(Colors.primary, 0.28))
 
     radius: 18
-    color: Colors.surface
+    color: Colors.layer
     border.width: 1
     border.color: Colors.outline
     clip: true

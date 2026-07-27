@@ -10,7 +10,7 @@ Rectangle {
     implicitWidth: Math.max(text.implicitWidth + 14, height)
     implicitHeight: 20
     radius: Motion.rounding.small
-    color: Colors.surface
+    color: Colors.layer
     border.width: 1
     border.color: Colors.outline
 

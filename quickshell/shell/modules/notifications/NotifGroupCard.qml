@@ -33,7 +33,7 @@ Item {
             visible: root.grouped
             implicitHeight: header.implicitHeight + 20
             radius: 14
-            color: Colors.surface
+            color: Colors.layer
             border.width: root.group?.urgency === NotificationUrgency.Critical ? 1 : 0
             border.color: Colors.error
 

@@ -69,7 +69,7 @@ Item {
             Layout.fillWidth: true
             Layout.preferredHeight: heroRow.implicitHeight + 48
             radius: 28
-            color: Colors.surface
+            color: Colors.layer
             border.width: 1
             border.color: Colors.outline
 
@@ -217,7 +217,7 @@ Item {
         Layout.fillWidth: true
         Layout.preferredHeight: 64
         radius: 16
-        color: Colors.surface
+        color: Colors.layer
         border.width: 1
         border.color: Colors.outline
 
@@ -261,7 +261,7 @@ Item {
         required property real maxTemp
 
         radius: 16
-        color: Colors.surface
+        color: Colors.layer
         border.width: 1
         border.color: Colors.outline
         implicitWidth: dayContent.implicitWidth + 24

@@ -11,7 +11,7 @@ Rectangle {
     readonly property color accent: Colors.tertiary
 
     radius: 26
-    color: Colors.surface
+    color: Colors.layer
 
     implicitWidth: layout.implicitWidth + 44
     implicitHeight: layout.implicitHeight + 32

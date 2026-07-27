@@ -37,7 +37,7 @@ Item {
         anchors.top: parent.top
         height: root.searchHeight
         radius: height / 2
-        color: Colors.surface
+        color: Colors.layer
         border.width: 1
         border.color: searchInput.activeFocus ? Colors.primary : Colors.outlineVariant
 

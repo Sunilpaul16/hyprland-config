@@ -111,7 +111,7 @@ Item {
                     width: seekSlider.availableWidth
                     height: 4
                     radius: 2
-                    color: Colors.surface
+                    color: Colors.layer
 
                     Rectangle {
                         width: seekSlider.visualPosition * parent.width
@@ -264,7 +264,7 @@ Item {
             radius: 12
             // Surface, not background — this sits on top of the dashboard
             // panel's own Colors.background, so it needs contrast against it
-            color: Colors.surface
+            color: Colors.layer
             border.width: 1
             border.color: Colors.outline
 

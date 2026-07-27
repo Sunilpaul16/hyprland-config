@@ -99,7 +99,7 @@ Scope {
                         // out into the bar above and the screen bottom
                         topLeftRadius: 0
                         bottomLeftRadius: 0
-                        color: Colors.background
+                        color: Colors.panel
                         opacity: root.showProgress
                         transform: Translate { x: (1 - root.showProgress) * 24 }
                     }
@@ -109,7 +109,7 @@ Scope {
                     Corner {
                         anchors { right: backdrop.left; top: backdrop.top }
                         size: root.cornerSize
-                        color: Colors.background
+                        color: Colors.panel
                         corner: "topRight"
                         opacity: root.showProgress
                         transform: Translate { x: (1 - root.showProgress) * 24 }
@@ -118,7 +118,7 @@ Scope {
                     Corner {
                         anchors { right: backdrop.left; bottom: backdrop.bottom }
                         size: root.cornerSize
-                        color: Colors.background
+                        color: Colors.panel
                         corner: "bottomRight"
                         opacity: root.showProgress
                         transform: Translate { x: (1 - root.showProgress) * 24 }

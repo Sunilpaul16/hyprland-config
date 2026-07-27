@@ -90,7 +90,7 @@ ScrollPage {
 
         Rectangle {
             anchors.fill: parent
-            color: Colors.surface
+            color: Colors.layer
         }
 
         Image {
@@ -145,7 +145,7 @@ ScrollPage {
 
                 Rectangle {
                     anchors.fill: parent
-                    color: Colors.surface
+                    color: Colors.layer
                 }
 
                 Image {

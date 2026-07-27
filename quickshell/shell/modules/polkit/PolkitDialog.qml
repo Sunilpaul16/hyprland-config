@@ -140,7 +140,7 @@ Scope {
                                 visible: root.flow?.isResponseRequired ?? false
                                 implicitHeight: 40
                                 radius: 8
-                                color: Colors.surface
+                                color: Colors.layer
                                 border.width: 1
                                 border.color: Colors.outline
 

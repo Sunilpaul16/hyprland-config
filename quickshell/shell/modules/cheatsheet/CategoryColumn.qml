@@ -28,7 +28,7 @@ Rectangle {
     readonly property string categoryIcon: categoryIcons[categoryName] ?? "keyboard"
 
     radius: Motion.rounding.normal
-    color: Colors.surface
+    color: Colors.layer
     border.width: 1
     border.color: Colors.outline
 

@@ -330,7 +330,7 @@ ColumnLayout {
             height: 14
             radius: 7
             anchors { bottom: parent.bottom; left: parent.left; margins: -2 }
-            color: Colors.surface
+            color: Colors.layer
             border.color: Colors.outline
             border.width: 1
 
@@ -355,7 +355,7 @@ ColumnLayout {
             height: 14
             radius: 7
             anchors { bottom: parent.bottom; right: parent.right; margins: -2 }
-            color: Colors.surface
+            color: Colors.layer
             border.color: Colors.outline
             border.width: 1
 

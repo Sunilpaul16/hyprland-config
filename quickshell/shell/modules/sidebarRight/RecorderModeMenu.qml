@@ -31,7 +31,7 @@ Loader {
         Rectangle {
             anchors.fill: parent
             radius: 10
-            color: Colors.surface
+            color: Colors.layer
             border.width: 1
             border.color: Colors.outline
 

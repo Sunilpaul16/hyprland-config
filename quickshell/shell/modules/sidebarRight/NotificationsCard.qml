@@ -17,7 +17,7 @@ Rectangle {
     }
 
     radius: 18
-    color: Colors.surface
+    color: Colors.layer
 
     ColumnLayout {
         id: column

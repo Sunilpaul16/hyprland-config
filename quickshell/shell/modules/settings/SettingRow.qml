@@ -30,7 +30,7 @@ Rectangle {
     bottomLeftRadius: root.last ? root.endRadius : root.innerRadius
     bottomRightRadius: root.last ? root.endRadius : root.innerRadius
 
-    color: Colors.surface
+    color: Colors.layer
 
     RowLayout {
         id: layout

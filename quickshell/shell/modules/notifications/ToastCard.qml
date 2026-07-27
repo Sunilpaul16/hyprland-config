@@ -11,7 +11,7 @@ Rectangle {
 
     implicitHeight: content.implicitHeight + 20
     radius: 14
-    color: Colors.surface
+    color: Colors.layer
     border.width: modelData.critical ? 1 : 0
     border.color: Colors.error
 

@@ -52,7 +52,7 @@ Rectangle {
     }
 
     radius: 26
-    color: Colors.surface
+    color: Colors.layer
 
     implicitWidth: 290
     implicitHeight: 215

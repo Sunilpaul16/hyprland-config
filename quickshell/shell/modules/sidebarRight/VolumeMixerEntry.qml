@@ -57,7 +57,7 @@ RowLayout {
                 Layout.fillWidth: true
                 implicitHeight: 6
                 radius: height / 2
-                color: Colors.surface
+                color: Colors.layer
 
                 Rectangle {
                     anchors { left: parent.left; top: parent.top; bottom: parent.bottom }

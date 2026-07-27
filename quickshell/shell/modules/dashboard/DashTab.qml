@@ -76,7 +76,7 @@ Item {
     // Big stacked HH / MM digital clock
     component DateTimeCard: Rectangle {
         radius: 18
-        color: Colors.surface
+        color: Colors.layer
         border.width: 1
         border.color: Colors.outline
         clip: true
@@ -147,7 +147,7 @@ Item {
         }
 
         radius: 18
-        color: Colors.surface
+        color: Colors.layer
         border.width: 1
         border.color: Colors.outline
         implicitHeight: calContent.implicitHeight + 32

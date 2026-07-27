@@ -129,7 +129,7 @@ Scope {
                             radius: 20
                             topRightRadius: 0
                             bottomRightRadius: 0
-                            color: Colors.background
+                            color: Colors.panel
                         }
 
                         // Concave fillets bridging the drawer into the panel beside it,
@@ -137,14 +137,14 @@ Scope {
                         Corner {
                             anchors { right: parent.right; bottom: parent.top }
                             size: drawer.cornerSize
-                            color: Colors.background
+                            color: Colors.panel
                             corner: "bottomRight"
                         }
 
                         Corner {
                             anchors { right: parent.right; top: parent.bottom }
                             size: drawer.cornerSize
-                            color: Colors.background
+                            color: Colors.panel
                             corner: "topRight"
                         }
 

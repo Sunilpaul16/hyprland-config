@@ -94,7 +94,7 @@ Column {
                 width: control.availableWidth
                 height: control.availableHeight
                 radius: width / 2
-                color: Colors.surface
+                color: Colors.layer
 
                 // Driven off slider.value, not visualPosition, so it stays
                 // correct for drag, scroll, or external changes

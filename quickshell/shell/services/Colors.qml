@@ -9,6 +9,16 @@ import QtQuick
 // instead of restarting the whole shell. Values here are last-known-good
 // defaults, used until the first ColorsLoader.reapplyTheme() completes.
 QtObject {
+    // Outermost panel background. Only panel roots and the Corner fillets
+    // that hug them use this — inner cards keep the opaque roles above, so a
+    // card on a panel never ends up doubly transparent
+    readonly property color panel: Config.appearance.transparency ? Qt.alpha(background, Config.appearance.panelOpacity) : background
+
+    // Cards and pills that sit on a panel. Needs its own, lower alpha:
+    // stacking two 85% surfaces still covers ~98% of what is behind, so a
+    // card would read as solid even though the panel under it is not
+    readonly property color layer: Config.appearance.transparency ? Qt.alpha(surface, Config.appearance.layerOpacity) : surface
+
     property color background: "#0f1417"
     Behavior on background { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
 

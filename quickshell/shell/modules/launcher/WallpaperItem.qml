@@ -53,7 +53,7 @@ Item {
         width: root.width
         height: root.isCurrent ? 107 : 84
         radius: 10
-        color: Colors.surface
+        color: Colors.layer
         border.width: root.isCurrent ? 2 : 0
         border.color: Colors.primary
 

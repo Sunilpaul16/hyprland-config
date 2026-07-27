@@ -118,7 +118,7 @@ Scope {
                         // Top corners square so the fillets can merge them into the bar
                         topLeftRadius: 0
                         topRightRadius: 0
-                        color: Colors.background
+                        color: Colors.panel
                         // No border — a Rectangle can't outline only three sides, and
                         // the top edge must merge into the bar. Matches the sidebar
                         // and session backdrops, which are borderless too
@@ -402,7 +402,7 @@ Scope {
                     Corner {
                         anchors { right: panel.left; top: panel.top }
                         size: root.cornerSize
-                        color: Colors.background
+                        color: Colors.panel
                         corner: "topRight"
                         opacity: panel.opacity
                     }
@@ -410,7 +410,7 @@ Scope {
                     Corner {
                         anchors { left: panel.right; top: panel.top }
                         size: root.cornerSize
-                        color: Colors.background
+                        color: Colors.panel
                         corner: "topLeft"
                         opacity: panel.opacity
                     }

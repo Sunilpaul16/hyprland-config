@@ -8,7 +8,7 @@ Rectangle {
     id: root
 
     radius: 18
-    color: Colors.surface
+    color: Colors.layer
     implicitHeight: content.implicitHeight + 24
 
     RowLayout {

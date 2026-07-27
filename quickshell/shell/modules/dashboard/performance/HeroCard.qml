@@ -17,7 +17,7 @@ Rectangle {
     required property real temperature
 
     radius: 26
-    color: Colors.surface
+    color: Colors.layer
 
     implicitWidth: 320
     implicitHeight: Math.max(tempColumn.implicitHeight + usageRing.implicitHeight + 24, blob.implicitHeight + usageCaption.implicitHeight + 12) + 32

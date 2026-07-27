@@ -21,6 +21,7 @@ Singleton {
     property alias weather: adapter.weather
     property alias nightLight: adapter.nightLight
     property alias theming: adapter.theming
+    property alias appearance: adapter.appearance
     property alias recorder: adapter.recorder
     property alias wallpaper: adapter.wallpaper
     property alias dashboard: adapter.dashboard
@@ -97,6 +98,14 @@ Singleton {
             // Read by scripts/switchwall via jq, not by the shell — the shell
             // only writes them. Defaults match generate_colors_material.py's
             // own, so an absent group behaves as before these were exposed
+            // Translucency applies only to the outermost surface of each panel,
+            // so nothing compounds and no per-depth model is needed
+            property JsonObject appearance: JsonObject {
+                property bool transparency: false
+                property real panelOpacity: 0.85 // panel backgrounds; used only when transparency is on
+                property real layerOpacity: 0.55 // cards and pills on top of a panel
+            }
+
             property JsonObject theming: JsonObject {
                 property string scheme: "auto" // "auto" (picked from the image) | any scheme-* the generator supports
                 property real terminalHarmony: 0.8

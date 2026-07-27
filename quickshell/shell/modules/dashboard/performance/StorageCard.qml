@@ -18,7 +18,7 @@ Rectangle {
     readonly property bool hasDisk: disk !== null
 
     radius: 26
-    color: Colors.surface
+    color: Colors.layer
 
     implicitWidth: layout.implicitWidth + 40
     implicitHeight: layout.implicitHeight + 32

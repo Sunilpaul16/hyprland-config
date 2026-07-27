@@ -32,7 +32,7 @@ Item {
             Layout.preferredWidth: root.artSize
             Layout.preferredHeight: root.artSize
             radius: 12
-            color: Colors.surface
+            color: Colors.layer
             clip: true
 
             Image {
@@ -96,7 +96,7 @@ Item {
                 visible: Media.hasPlayer
                 height: 4
                 radius: 2
-                color: Colors.surface
+                color: Colors.layer
 
                 Rectangle {
                     height: parent.height

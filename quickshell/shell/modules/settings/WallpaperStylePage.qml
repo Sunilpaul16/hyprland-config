@@ -31,7 +31,7 @@ ScrollPage {
 
         Rectangle {
             anchors.fill: parent
-            color: Colors.surface
+            color: Colors.layer
         }
 
         Image {
@@ -123,12 +123,51 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Transparency"
-            subtext: "Base 0.9, layers 0.3"
+            subtext: "Translucent panel backgrounds, blurred by Hyprland"
 
             ToggleSwitch {
-                checked: false
-                onToggled: v => checked = v
+                checked: Config.appearance.transparency
+                onToggled: v => Config.appearance.transparency = v
+            }
+        }
+
+        SettingRow {
+            live: true
+            visible: Config.appearance.transparency
+            label: "Card opacity"
+            subtext: "Cards and pills; lower than the panel or they read as solid"
+
+            NumberControl {
+                value: Config.appearance.layerOpacity
+                from: 0.2
+                to: 1
+                stepSize: 0.05
+                displayScale: 100
+                decimals: 0
+                suffix: "%"
+                labelWidth: 46
+                onMoved: v => Config.appearance.layerOpacity = v
+            }
+        }
+
+        SettingRow {
+            live: true
+            visible: Config.appearance.transparency
+            label: "Panel opacity"
+            subtext: "The panel background behind the cards"
+
+            NumberControl {
+                value: Config.appearance.panelOpacity
+                from: 0.3
+                to: 1
+                stepSize: 0.05
+                displayScale: 100
+                decimals: 0
+                suffix: "%"
+                labelWidth: 46
+                onMoved: v => Config.appearance.panelOpacity = v
             }
         }
 
