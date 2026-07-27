@@ -1,9 +1,17 @@
+import QtQuick
 import QtQuick.Layouts
+import "../../services"
 
-// Audio page. Layout only — rows mirror services/Audio.qml's sink/source
-// bindings and the volumeOsd module, nothing is wired
+// Audio page. Output/input/per-app are live against services/Audio.qml;
+// the Behaviour and OSD sections are still mock — those would need config
+// keys that don't exist yet
 ScrollPage {
+    id: root
+
     title: "Audio"
+
+    readonly property var sinkOptions: Audio.sinks.map(n => ({ value: n.name, label: Audio.deviceDisplayName(n) }))
+    readonly property var sourceOptions: Audio.sources.map(n => ({ value: n.name, label: Audio.deviceDisplayName(n) }))
 
     SectionLabel {
         text: "Output"
@@ -12,29 +20,41 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Output device"
 
-            SelectPill {
-                value: "Family 17h HD Audio"
+            SelectMenu {
+                options: root.sinkOptions
+                current: Audio.sink?.name ?? ""
+                placeholder: "No output device"
+                onSelected: v => Audio.setSink(Audio.sinks.find(n => n.name === v))
             }
         }
 
         SettingRow {
+            live: true
             label: "Volume"
 
-            SettingSlider {
-                value: 0.62
-                onMoved: nv => value = nv
+            NumberControl {
+                value: Audio.volume
+                from: 0
+                to: 1
+                stepSize: 0.01
+                displayScale: 100
+                suffix: "%"
+                labelWidth: 46
+                onMoved: v => Audio.setVolume(v)
             }
         }
 
         SettingRow {
             last: true
+            live: true
             label: "Mute output"
 
             ToggleSwitch {
-                checked: false
-                onToggled: v => checked = v
+                checked: Audio.muted
+                onToggled: Audio.toggleMute()
             }
         }
     }
@@ -46,29 +66,41 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Input device"
 
-            SelectPill {
-                value: "Blue Yeti"
+            SelectMenu {
+                options: root.sourceOptions
+                current: Audio.source?.name ?? ""
+                placeholder: "No input device"
+                onSelected: v => Audio.setSource(Audio.sources.find(n => n.name === v))
             }
         }
 
         SettingRow {
+            live: true
             label: "Microphone volume"
 
-            SettingSlider {
-                value: 0.45
-                onMoved: nv => value = nv
+            NumberControl {
+                value: Audio.sourceVolume
+                from: 0
+                to: 1
+                stepSize: 0.01
+                displayScale: 100
+                suffix: "%"
+                labelWidth: 46
+                onMoved: v => Audio.setSourceVolume(v)
             }
         }
 
         SettingRow {
             last: true
+            live: true
             label: "Mute microphone"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Audio.micMuted
+                onToggled: Audio.toggleMicMute()
             }
         }
     }
@@ -143,27 +175,51 @@ ScrollPage {
     }
 
     SectionLabel {
-        text: "Per-app volume"
+        text: "Playing now"
     }
 
+    // Application streams — this list is whatever holds a stream right now,
+    // so it being empty is the normal case, not a failure
     SettingGroup {
-        SettingRow {
-            first: true
-            label: "Firefox"
+        Repeater {
+            model: Audio.outputAppNodes
 
-            SettingSlider {
-                value: 0.8
-                onMoved: nv => value = nv
+            AppVolumeRow {
+                required property int index
+                required property var modelData
+
+                node: modelData
+                first: index === 0
+                last: index === Audio.outputAppNodes.length - 1
             }
         }
 
         SettingRow {
+            visible: Audio.outputAppNodes.length === 0
+            first: true
             last: true
-            label: "Spotify"
+            live: true
+            label: "Nothing is playing"
+            subtext: "Applications appear here while they hold an audio stream"
+        }
+    }
 
-            SettingSlider {
-                value: 0.55
-                onMoved: nv => value = nv
+    SectionLabel {
+        visible: Audio.inputAppNodes.length > 0
+        text: "Recording now"
+    }
+
+    SettingGroup {
+        Repeater {
+            model: Audio.inputAppNodes
+
+            AppVolumeRow {
+                required property int index
+                required property var modelData
+
+                node: modelData
+                first: index === 0
+                last: index === Audio.inputAppNodes.length - 1
             }
         }
     }

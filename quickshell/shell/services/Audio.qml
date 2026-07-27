@@ -36,6 +36,34 @@ Singleton {
         return node.properties["application.name"] ?? node.description ?? node.name;
     }
 
+    // Everything that isn't an application stream. Structural, so it needs no
+    // tracking — which matters, because `properties` below is only populated
+    // for tracked nodes, and deriving the track list from a properties filter
+    // would never resolve
+    readonly property var deviceNodes: Pipewire.nodes.values.filter(n => !n.isStream)
+
+    // Real devices. media.class, not !isSink — PipeWire's own support nodes
+    // (Dummy-Driver, Freewheel-Driver, Midi-Bridge) are neither streams nor
+    // sinks, so they'd otherwise be offered as pickable microphones
+    readonly property var sinks: root.deviceNodes.filter(n => n.properties?.["media.class"] === "Audio/Sink")
+    readonly property var sources: root.deviceNodes.filter(n => n.properties?.["media.class"] === "Audio/Source")
+
+    function deviceDisplayName(node): string {
+        return node?.nickname || node?.description || node?.name || "";
+    }
+
+    // Writing `preferred*` is how the default is changed; `defaultAudioSink`
+    // itself is read-only and follows it once PipeWire agrees
+    function setSink(node): void {
+        if (node)
+            Pipewire.preferredDefaultAudioSink = node;
+    }
+
+    function setSource(node): void {
+        if (node)
+            Pipewire.preferredDefaultAudioSource = node;
+    }
+
     // Sink volume — clamped [0, 1], matching the existing keybind's -l 1 cap.
     // PipeWire can report NaN on resume-from-suspend; Math.min/max propagate
     // it straight through the clamp, so guard before it reaches the sink.
@@ -87,8 +115,10 @@ Singleton {
             source.audio.muted = false;
     }
 
-    // Keep sink/source bound for property updates
+    // Keep sink/source bound for property updates. The device lists are
+    // tracked too — an untracked node reports no description or volume, so
+    // a device picker would show blank rows
     PwObjectTracker {
-        objects: [root.sink, root.source].filter(n => n)
+        objects: [root.sink, root.source, ...root.deviceNodes].filter(n => n)
     }
 }
