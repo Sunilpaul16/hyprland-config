@@ -18,7 +18,7 @@ Rectangle {
     implicitWidth: large ? layout.implicitWidth + 24 : 40
     implicitHeight: 40
     radius: 12
-    color: root.active ? Colors.primary : (hoverArea.containsMouse ? Colors.surface : Colors.background)
+    color: root.active ? Colors.primary : (hoverArea.containsMouse ? Colors.layer : Colors.panel)
     opacity: root.enabled ? 1 : 0.4
 
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }

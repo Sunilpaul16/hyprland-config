@@ -19,7 +19,7 @@ Rectangle {
     implicitHeight: 44
     radius: height / 2
 
-    color: root.highlighted || hover.containsMouse ? Colors.secondaryContainer : Colors.surface
+    color: root.highlighted || hover.containsMouse ? Colors.secondaryContainer : Colors.layer
 
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 

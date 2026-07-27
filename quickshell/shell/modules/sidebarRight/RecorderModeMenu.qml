@@ -50,7 +50,7 @@ Loader {
                         width: column.width
                         implicitHeight: 30
                         radius: 8
-                        color: Recorder.mode === entry.modelData.value ? Colors.primary : (hoverArea.containsMouse ? Colors.background : "transparent")
+                        color: Recorder.mode === entry.modelData.value ? Colors.primary : (hoverArea.containsMouse ? Colors.panel : "transparent")
 
                         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 

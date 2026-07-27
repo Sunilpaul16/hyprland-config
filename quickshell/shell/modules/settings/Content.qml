@@ -201,7 +201,7 @@ Item {
         width: 30
         height: 30
         radius: width / 2
-        color: closeHover.containsMouse ? Colors.surface : "transparent"
+        color: closeHover.containsMouse ? Colors.layer : "transparent"
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 

@@ -87,7 +87,7 @@ Scope {
                         width: 380
                         implicitHeight: content.implicitHeight + 48
                         radius: 18
-                        color: Colors.background
+                        color: Colors.panel
                         border.width: 1
                         border.color: Colors.outline
 
@@ -200,7 +200,7 @@ Scope {
                     implicitWidth: label.implicitWidth + 24
                     implicitHeight: 32
                     radius: 8
-                    color: btn.primary ? Colors.primary : (hoverArea.containsMouse ? Colors.surface : "transparent")
+                    color: btn.primary ? Colors.primary : (hoverArea.containsMouse ? Colors.layer : "transparent")
                     border.width: btn.primary ? 0 : 1
                     border.color: Colors.outline
 

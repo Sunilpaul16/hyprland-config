@@ -13,7 +13,7 @@ Rectangle {
     implicitWidth: 24
     implicitHeight: 24
     radius: 8
-    color: hoverArea.containsMouse ? Colors.background : "transparent"
+    color: hoverArea.containsMouse ? Colors.panel : "transparent"
 
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 

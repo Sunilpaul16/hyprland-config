@@ -84,7 +84,7 @@ Scope {
                         implicitWidth: content.implicitWidth + 56
                         implicitHeight: content.implicitHeight + 40
                         radius: 18
-                        color: Colors.background
+                        color: Colors.panel
                         border.width: 1
                         border.color: Colors.outline
 

@@ -126,7 +126,7 @@ Item {
         width: 48
         height: 48
         radius: 10
-        color: Colors.background
+        color: Colors.panel
         border.width: 2
         border.color: Colors.primary
 

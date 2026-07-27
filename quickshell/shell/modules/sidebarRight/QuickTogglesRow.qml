@@ -151,7 +151,7 @@ ColumnLayout {
             Layout.preferredWidth: 26
             Layout.preferredHeight: 26
             radius: 8
-            color: root.editMode ? Colors.primary : (editHover.containsMouse ? Colors.surface : "transparent")
+            color: root.editMode ? Colors.primary : (editHover.containsMouse ? Colors.layer : "transparent")
 
             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 

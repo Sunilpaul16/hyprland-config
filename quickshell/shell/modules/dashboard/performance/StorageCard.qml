@@ -123,7 +123,7 @@ Rectangle {
                 implicitWidth: Math.max(pillRow.implicitWidth + 20, 150)
                 implicitHeight: pillRow.implicitHeight + 12
                 radius: implicitHeight / 2
-                color: (root.diskMenuOpen || pillHover.containsMouse) ? Colors.background : Colors.secondaryContainer
+                color: (root.diskMenuOpen || pillHover.containsMouse) ? Colors.panel : Colors.secondaryContainer
 
                 Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
@@ -225,7 +225,7 @@ Rectangle {
         implicitWidth: entryRow.implicitWidth + 20
         implicitHeight: entryRow.implicitHeight + 10
         radius: 6
-        color: entryHover.containsMouse ? Colors.surface : "transparent"
+        color: entryHover.containsMouse ? Colors.layer : "transparent"
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 

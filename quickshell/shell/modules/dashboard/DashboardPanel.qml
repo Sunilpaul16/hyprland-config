@@ -193,7 +193,7 @@ Scope {
                                                 anchors.verticalCenter: parent.verticalCenter
                                                 height: parent.height + tabBar.indicatorSpacing * 2
                                                 radius: Motion.rounding.normal
-                                                color: tabHover.containsMouse ? Colors.surface : "transparent"
+                                                color: tabHover.containsMouse ? Colors.layer : "transparent"
 
                                                 Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
                                             }

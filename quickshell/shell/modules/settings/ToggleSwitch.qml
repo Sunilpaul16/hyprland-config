@@ -18,7 +18,7 @@ Rectangle {
     implicitHeight: 32
     radius: height / 2
 
-    color: root.checked ? Colors.primary : Colors.surface
+    color: root.checked ? Colors.primary : Colors.layer
     border.width: root.checked ? 0 : 2
     border.color: Colors.outline
 
@@ -42,7 +42,7 @@ Rectangle {
         MaterialIcon {
             anchors.centerIn: parent
             text: root.checked ? "check" : "close"
-            color: root.checked ? Colors.primary : Colors.surface
+            color: root.checked ? Colors.primary : Colors.layer
             font.pixelSize: 14
         }
     }

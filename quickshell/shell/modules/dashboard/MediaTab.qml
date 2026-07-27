@@ -216,7 +216,7 @@ Item {
             implicitWidth: pillRow.implicitWidth + 20
             implicitHeight: pillRow.implicitHeight + 12
             radius: implicitHeight / 2
-            color: root.playerMenuOpen ? Colors.surface : (pillHover.containsMouse ? Colors.surface : "transparent")
+            color: root.playerMenuOpen ? Colors.layer : (pillHover.containsMouse ? Colors.layer : "transparent")
             border.width: 1
             border.color: Colors.outline
 
@@ -313,7 +313,7 @@ Item {
         implicitWidth: entryRow.implicitWidth + 20
         implicitHeight: entryRow.implicitHeight + 10
         radius: 6
-        color: entryHover.containsMouse ? Colors.surface : "transparent"
+        color: entryHover.containsMouse ? Colors.layer : "transparent"
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
@@ -391,7 +391,7 @@ Item {
         implicitWidth: icon.implicitWidth + 14
         implicitHeight: icon.implicitHeight + 14
         radius: implicitHeight / 2
-        color: toggleBtn.active ? Colors.primary : (area.containsMouse ? Colors.surface : "transparent")
+        color: toggleBtn.active ? Colors.primary : (area.containsMouse ? Colors.layer : "transparent")
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 

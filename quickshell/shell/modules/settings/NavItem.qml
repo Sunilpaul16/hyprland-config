@@ -35,7 +35,7 @@ Rectangle {
     bottomLeftRadius: root.bottomRadius
     bottomRightRadius: root.bottomRadius
 
-    color: root.current ? Colors.secondaryContainer : hover.containsMouse ? Colors.surface : Qt.alpha(Colors.surface, 0.55)
+    color: root.current ? Colors.secondaryContainer : hover.containsMouse ? Colors.layer : Qt.alpha(Colors.layer, 0.55)
 
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 

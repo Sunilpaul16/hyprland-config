@@ -17,7 +17,7 @@ Rectangle {
     radius: width / 2
     // Sits on the drawer's Colors.background backdrop, so the resting fill is
     // surface — the old background fill would disappear into it
-    color: hoverArea.containsMouse ? Qt.tint(Colors.surface, Qt.alpha(Colors.primary, 0.18)) : Colors.surface
+    color: hoverArea.containsMouse ? Qt.tint(Colors.layer, Qt.alpha(Colors.primary, 0.18)) : Colors.layer
     border.width: root.activeFocus ? 2 : 0
     border.color: Colors.primary
 

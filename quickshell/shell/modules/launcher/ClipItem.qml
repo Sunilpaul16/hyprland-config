@@ -58,7 +58,7 @@ Item {
         anchors.fill: parent
         anchors.margins: 2
         radius: 10
-        color: root.isAction ? (root.isCurrent ? Colors.surface : "transparent") : (root.isCurrent ? Colors.primary : "transparent")
+        color: root.isAction ? (root.isCurrent ? Colors.layer : "transparent") : (root.isCurrent ? Colors.primary : "transparent")
         border.width: root.isAction ? 1 : 0
         border.color: root.isAction ? Colors.error : Colors.outline
 

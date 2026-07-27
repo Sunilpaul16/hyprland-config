@@ -25,7 +25,7 @@ Item {
         width: 32
         height: 32
         radius: width / 2
-        color: backHover.containsMouse ? Colors.surface : "transparent"
+        color: backHover.containsMouse ? Colors.layer : "transparent"
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 

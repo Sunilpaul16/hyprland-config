@@ -7,7 +7,7 @@ Rectangle {
     id: root
 
     radius: 20
-    color: Colors.background
+    color: Colors.panel
 
     ColumnLayout {
         anchors.fill: parent

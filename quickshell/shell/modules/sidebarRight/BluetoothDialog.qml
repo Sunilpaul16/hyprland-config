@@ -7,7 +7,7 @@ Rectangle {
     id: root
 
     radius: 20
-    color: Colors.background
+    color: Colors.panel
 
     Component.onCompleted: BluetoothStatus.setDiscovering(true)
     Component.onDestruction: BluetoothStatus.setDiscovering(false)
