@@ -25,7 +25,7 @@ Rectangle {
         Text {
             text: root.hasData ? Weather.iconFor(Weather.weatherCode) : "cloud_off"
             font.family: "Material Symbols Rounded"
-            font.pixelSize: Config.dashboardWeatherIconSize
+            font.pixelSize: Config.dashboard.weather.iconSize
             color: Colors.primary
         }
 
@@ -36,13 +36,13 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter
                 text: root.hasData ? Math.round(Weather.currentTemp) + "°C" : "—"
                 color: Colors.primary
-                font.pixelSize: Config.dashboardWeatherTempSize
+                font.pixelSize: Config.dashboard.weather.tempSize
                 font.bold: true
             }
 
             Text {
                 Layout.alignment: Qt.AlignHCenter
-                Layout.maximumWidth: root.width - Config.dashboardWeatherIconSize - 60
+                Layout.maximumWidth: root.width - Config.dashboard.weather.iconSize - 60
                 text: root.hasData ? Weather.descriptionFor(Weather.weatherCode) : (Weather.hasError ? "Unavailable" : "Loading…")
                 color: Colors.text
                 font.pixelSize: 12

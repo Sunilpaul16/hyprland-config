@@ -7,7 +7,7 @@ import Quickshell
 Singleton {
     id: root
 
-    readonly property bool use12Hour: Config.use12Hour
+    readonly property bool use12Hour: Config.time.use12Hour
 
     // Passthrough properties from SystemClock
     property alias enabled: clock.enabled

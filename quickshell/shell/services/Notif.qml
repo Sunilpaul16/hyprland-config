@@ -43,7 +43,7 @@ QtObject {
     readonly property Timer timer: Timer {
         // expireTimeout: 0 = never expire, -1 = server default, >0 = explicit ms
         running: notif.popup && !notif.closed && !notif.critical && !notif.hovered && notif.expireTimeout !== 0
-        interval: notif.expireTimeout > 0 ? notif.expireTimeout : Config.toastDismissDuration
+        interval: notif.expireTimeout > 0 ? notif.expireTimeout : Config.notifications.toastDismissDuration
         onTriggered: notif.popup = false
     }
 

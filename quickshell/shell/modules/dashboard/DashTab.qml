@@ -26,7 +26,7 @@ Item {
             Layout.row: 0
             Layout.column: 0
             Layout.columnSpan: 2
-            Layout.preferredWidth: Config.dashboardWeatherWidth
+            Layout.preferredWidth: Config.dashboard.weather.width
             Layout.fillHeight: true
         }
 
@@ -42,7 +42,7 @@ Item {
             Layout.row: 0
             Layout.column: 2
             Layout.columnSpan: 3
-            Layout.preferredWidth: Config.dashboardUserWidth
+            Layout.preferredWidth: Config.dashboard.user.width
             Layout.fillHeight: true
         }
 
@@ -68,7 +68,7 @@ Item {
             Layout.row: 0
             Layout.column: 5
             Layout.rowSpan: 2
-            Layout.preferredWidth: Config.dashboardMediaCardWidth
+            Layout.preferredWidth: Config.dashboard.media.cardWidth
             Layout.fillHeight: true
         }
     }
@@ -82,7 +82,7 @@ Item {
         clip: true
         // Fixed width so this stays narrower than Weather above it
         // instead of stretching to match the column
-        implicitWidth: Config.dashboardDateTimeWidth
+        implicitWidth: Config.dashboard.clock.width
         implicitHeight: clockContent.implicitHeight + 32
 
         ColumnLayout {
@@ -95,7 +95,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 text: Time.hourStr
                 color: Colors.text
-                font.pixelSize: Config.dashboardClockFontSize
+                font.pixelSize: Config.dashboard.clock.fontSize
                 font.bold: true
             }
 
@@ -103,14 +103,14 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 text: "•••"
                 color: Colors.primary
-                font.pixelSize: Math.round(Config.dashboardClockFontSize * 0.5)
+                font.pixelSize: Math.round(Config.dashboard.clock.fontSize * 0.5)
             }
 
             Text {
                 Layout.alignment: Qt.AlignHCenter
                 text: Time.minuteStr
                 color: Colors.text
-                font.pixelSize: Config.dashboardClockFontSize
+                font.pixelSize: Config.dashboard.clock.fontSize
                 font.bold: true
             }
 
@@ -120,7 +120,7 @@ Item {
                 visible: Time.use12Hour
                 text: Time.amPmStr
                 color: Colors.primary
-                font.pixelSize: Math.round(Config.dashboardClockFontSize * 0.43)
+                font.pixelSize: Math.round(Config.dashboard.clock.fontSize * 0.43)
                 font.bold: true
             }
 

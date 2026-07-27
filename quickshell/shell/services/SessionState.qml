@@ -36,7 +36,7 @@ Singleton {
 
     Timer {
         id: autoCloseTimer
-        interval: Config.sessionAutoCloseDuration
+        interval: Config.session.autoCloseDuration
         repeat: false
         onTriggered: root.open = false
     }

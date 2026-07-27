@@ -19,7 +19,7 @@ Scope {
                 screen: panelLoader.modelData
 
                 // Dimensions
-                readonly property int barContentHeight: Config.barHeight
+                readonly property int barContentHeight: Config.bar.height
                 readonly property int cornerSize: 14
 
                 // Positioning

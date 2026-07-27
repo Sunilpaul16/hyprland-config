@@ -172,7 +172,7 @@ Item {
     // Debounced wallpaper preview
     Timer {
         id: applyDebounce
-        interval: Config.wallpaperPreviewDelay
+        interval: Config.wallpaper.previewDelay
         onTriggered: content.previewWallpaper(content.wallpaperResults[row.currentIndex])
     }
 

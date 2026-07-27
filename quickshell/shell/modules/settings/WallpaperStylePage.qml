@@ -134,7 +134,7 @@ ScrollPage {
 
         SettingRow {
             label: "Preview delay"
-            subtext: "Config.wallpaperPreviewDelay"
+            subtext: "Config.wallpaper.previewDelay"
 
             SelectPill {
                 value: "300 ms"

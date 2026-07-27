@@ -13,7 +13,7 @@ ScrollPage {
         SettingRow {
             first: true
             label: "Toast duration"
-            subtext: "Config.toastDismissDuration"
+            subtext: "Config.notifications.toastDismissDuration"
 
             SelectPill {
                 value: "5000 ms"

@@ -45,8 +45,8 @@ Scope {
                     { text: "Weather", iconName: "cloud", component: weatherTabComponent }
                 ]
                 property int currentTab: 0
-                readonly property bool widthFixed: Config.dashboardPanelWidthMode === "fixed"
-                readonly property bool heightFixed: Config.dashboardPanelHeightMode === "fixed"
+                readonly property bool widthFixed: Config.dashboard.panel.widthMode === "fixed"
+                readonly property bool heightFixed: Config.dashboard.panel.heightMode === "fixed"
                 // Resting (open) position — flush with the screen top, matching
                 // caelestia's Wrapper.qml exactly (topMargin: 0 when open)
                 readonly property real restingTopMargin: 0
@@ -105,14 +105,14 @@ Scope {
                         anchors.top: parent.top
                         anchors.topMargin: root.restingTopMargin - (panel.height + 5) * root.offsetScale
                         width: root.widthFixed
-                            ? Math.min(Config.dashboardPanelWidth, (root.screen?.width ?? 1280) * 0.95)
+                            ? Math.min(Config.dashboard.panel.width, (root.screen?.width ?? 1280) * 0.95)
                             : Math.min(Math.max(tabView.currentPaneWidth + 40, 700), (root.screen?.width ?? 1280) * 0.85, 1400)
                         // Content-driven, not a fixed screen fraction — so a tab whose
                         // cards need less room than the ceiling doesn't get stretched
                         // into dead space (caelestia's Wrapper.qml sizes the same way)
                         // Fixed mode flips this: panel dictates height down to the active tab
                         height: root.heightFixed
-                            ? Math.min(Config.dashboardPanelHeight, (root.screen?.height ?? 800) * 0.95)
+                            ? Math.min(Config.dashboard.panel.height, (root.screen?.height ?? 800) * 0.95)
                             : Math.min(contentColumn.implicitHeight + 40, (root.screen?.height ?? 800) * 0.85, 900)
                         radius: 18
                         // Top corners square so the fillets can merge them into the bar

@@ -12,7 +12,7 @@ Rectangle {
 
     readonly property bool isEmpty: Notifs.list.length === 0
     readonly property string watermarkPath: {
-        const configured = Directories.resolve(Config.sidebarNoNotifsImage);
+        const configured = Directories.resolve(Config.sidebar.noNotifsImage);
         return configured.length > 0 ? configured : Directories.dinoImage;
     }
 

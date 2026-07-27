@@ -21,7 +21,7 @@ Rectangle {
     color: Colors.surface
     border.width: 1
     border.color: Colors.outline
-    implicitWidth: Config.dashboardResourceRingSize + 24
+    implicitWidth: Config.dashboard.resourceRing.size + 24
     implicitHeight: content.implicitHeight + 24
 
     Component.onCompleted: {
@@ -70,9 +70,9 @@ Rectangle {
 
         Layout.alignment: Qt.AlignHCenter
         Layout.fillHeight: true
-        Layout.maximumHeight: Config.dashboardResourceRingSize
+        Layout.maximumHeight: Config.dashboard.resourceRing.size
         Layout.preferredWidth: height
-        thickness: Config.dashboardResourceRingThickness
+        thickness: Config.dashboard.resourceRing.thickness
         trackColor: Qt.tint(Colors.surface, Qt.alpha(Colors.outline, 0.45))
 
         Text {

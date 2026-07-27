@@ -10,7 +10,7 @@ Rectangle {
 
     readonly property real progress: Media.length > 0 ? Math.max(0, Math.min(1, Media.position / Media.length)) : 0
     readonly property string gifPath: {
-        const configured = Directories.resolve(Config.dashboardMediaGifPath);
+        const configured = Directories.resolve(Config.dashboard.media.gifPath);
         return configured.length > 0 ? configured : Directories.bongocatGif;
     }
 
@@ -51,7 +51,7 @@ Rectangle {
 
                 anchors.centerIn: cover
                 visible: Media.hasPlayer
-                width: cover.width + Config.dashboardMediaProgressThickness * 2 + 4
+                width: cover.width + Config.dashboard.media.progressThickness * 2 + 4
                 height: width
 
                 Shape {
@@ -60,7 +60,7 @@ Rectangle {
                     preferredRendererType: Shape.CurveRenderer
 
                     ShapePath {
-                        strokeWidth: Config.dashboardMediaProgressThickness
+                        strokeWidth: Config.dashboard.media.progressThickness
                         strokeColor: Colors.primary
                         fillColor: "transparent"
                         capStyle: ShapePath.RoundCap
@@ -68,10 +68,10 @@ Rectangle {
                         PathAngleArc {
                             centerX: progressArc.width / 2
                             centerY: progressArc.height / 2
-                            radiusX: (progressArc.width - Config.dashboardMediaProgressThickness) / 2
+                            radiusX: (progressArc.width - Config.dashboard.media.progressThickness) / 2
                             radiusY: radiusX
-                            startAngle: -90 - Config.dashboardMediaProgressSweep / 2
-                            sweepAngle: Config.dashboardMediaProgressSweep * root.progress
+                            startAngle: -90 - Config.dashboard.media.progressSweep / 2
+                            sweepAngle: Config.dashboard.media.progressSweep * root.progress
 
                             Behavior on sweepAngle { NumberAnimation { duration: 300; easing.type: Easing.OutSine } }
                         }
@@ -157,9 +157,9 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.margins: 6
-            visible: Config.dashboardMediaGifEnabled
+            visible: Config.dashboard.media.gifEnabled
             source: "file://" + root.gifPath
-            speed: Config.dashboardMediaGifSpeed
+            speed: Config.dashboard.media.gifSpeed
             playing: Media.isPlaying
             fillMode: Image.PreserveAspectFit
             asynchronous: true
@@ -167,7 +167,7 @@ Rectangle {
 
         Item {
             Layout.fillHeight: true
-            visible: !Config.dashboardMediaGifEnabled
+            visible: !Config.dashboard.media.gifEnabled
         }
     }
 

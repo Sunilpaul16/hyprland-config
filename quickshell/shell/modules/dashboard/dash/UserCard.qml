@@ -4,18 +4,18 @@ import Quickshell.Io
 import "../../../services"
 
 // Distro logo + avatar + uptime badge + WM pill, laid out horizontally like
-// caelestia's dash/User.qml. Avatar path is config-driven (Config.userAvatarPath).
+// caelestia's dash/User.qml. Avatar path is config-driven (Config.dashboard.user.avatarPath).
 Rectangle {
     id: root
 
     readonly property string wmName: Quickshell.env("XDG_CURRENT_DESKTOP") || Quickshell.env("XDG_SESSION_DESKTOP") || "Unknown"
-    readonly property real avatarSize: Config.dashboardAvatarSize
-    readonly property real logoBadgeSize: Config.dashboardLogoSize + 12
-    readonly property real uptimeBadgeSize: Config.dashboardUptimeSize + 8
+    readonly property real avatarSize: Config.dashboard.user.avatarSize
+    readonly property real logoBadgeSize: Config.dashboard.user.logoSize + 12
+    readonly property real uptimeBadgeSize: Config.dashboard.user.uptimeSize + 8
 
     // Config path first, then ~/.face, then the bundled bongocat
     readonly property string facePath: {
-        const configured = Directories.resolve(Config.userAvatarPath);
+        const configured = Directories.resolve(Config.dashboard.user.avatarPath);
         if (configured.length > 0)
             return configured;
         return faceProbe.exists ? Directories.faceIcon : Directories.bongocatGif;
@@ -67,7 +67,7 @@ Rectangle {
             anchors.centerIn: parent
             text: SysInfo.osGlyph
             font.family: "JetBrainsMono Nerd Font"
-            font.pixelSize: Config.dashboardLogoSize * 0.62
+            font.pixelSize: Config.dashboard.user.logoSize * 0.62
             color: Colors.primary
         }
     }
@@ -126,7 +126,7 @@ Rectangle {
             anchors.centerIn: parent
             text: "clock_arrow_up"
             font.family: "Material Symbols Rounded"
-            font.pixelSize: Config.dashboardUptimeSize * 0.55
+            font.pixelSize: Config.dashboard.user.uptimeSize * 0.55
             color: Colors.primary
         }
     }
@@ -177,7 +177,7 @@ Rectangle {
                 font.pixelSize: 12
                 // Measured off the configured card width, never wmPill.width —
                 // that feeds wmPill.implicitWidth back through this Row and polish-loops
-                width: Math.min(implicitWidth, Config.dashboardUserWidth - wmPill.x - 56)
+                width: Math.min(implicitWidth, Config.dashboard.user.width - wmPill.x - 56)
                 elide: Text.ElideRight
             }
         }

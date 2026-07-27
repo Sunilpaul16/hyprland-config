@@ -13,7 +13,7 @@ ScrollPage {
         SettingRow {
             first: true
             label: "Bar height"
-            subtext: "Config.barHeight"
+            subtext: "Config.bar.height"
 
             SelectPill {
                 value: "40 px"
@@ -22,7 +22,7 @@ ScrollPage {
 
         SettingRow {
             label: "12-hour clock"
-            subtext: "Config.use12Hour"
+            subtext: "Config.time.use12Hour"
 
             ToggleSwitch {
                 checked: true
@@ -55,7 +55,7 @@ ScrollPage {
         SettingRow {
             first: true
             label: "Panel width"
-            subtext: "Config.dashboardPanelWidthMode"
+            subtext: "Config.dashboard.panel.widthMode"
 
             SelectPill {
                 value: "Auto"
@@ -64,7 +64,7 @@ ScrollPage {
 
         SettingRow {
             label: "Panel height"
-            subtext: "Config.dashboardPanelHeightMode"
+            subtext: "Config.dashboard.panel.heightMode"
 
             SelectPill {
                 value: "Auto"
@@ -81,7 +81,7 @@ ScrollPage {
 
         SettingRow {
             label: "Media card animation"
-            subtext: "Config.dashboardMediaGifEnabled"
+            subtext: "Config.dashboard.media.gifEnabled"
 
             ToggleSwitch {
                 checked: true
@@ -91,7 +91,7 @@ ScrollPage {
         SettingRow {
             last: true
             label: "Animation speed"
-            subtext: "Config.dashboardMediaGifSpeed"
+            subtext: "Config.dashboard.media.gifSpeed"
 
             SettingSlider {
                 value: 0.5
@@ -149,7 +149,7 @@ ScrollPage {
 
         SettingRow {
             label: "Notifications watermark"
-            subtext: "Config.sidebarNoNotifsImage"
+            subtext: "Config.sidebar.noNotifsImage"
 
             ValueLabel {
                 text: "assets/dino.png"
@@ -184,7 +184,7 @@ ScrollPage {
         SettingRow {
             last: true
             label: "Session drawer auto-close"
-            subtext: "Config.sessionAutoCloseDuration"
+            subtext: "Config.session.autoCloseDuration"
 
             SelectPill {
                 value: "5000 ms"
