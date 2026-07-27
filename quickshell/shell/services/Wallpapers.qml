@@ -49,10 +49,24 @@ Singleton {
         return root.list.length > 0 ? root.list[Math.floor(Math.random() * root.list.length)] : null;
     }
 
+    // Single entry point for setting a wallpaper — switchwall owns the whole
+    // pipeline (mpvpaper, matugen, the terminal palette, app reloads)
+    function apply(path: string): void {
+        if (path)
+            Quickshell.execDetached([Directories.switchwallScript, path]);
+    }
+
+    // Themes from `path` without making it the wallpaper, so a hovered entry
+    // can be tried on and abandoned
+    function preview(path: string): void {
+        if (path)
+            Quickshell.execDetached([Directories.switchwallScript, "--preview", path]);
+    }
+
     function applyRandom(): void {
         const entry = root.randomFromCurrentFolder();
         if (entry)
-            Quickshell.execDetached([Directories.switchwallScript, entry.path]);
+            root.apply(entry.path);
     }
 
     // Bound to a Hyprland keybind via hl.dsp.global("quickshell:randomWallpaper")

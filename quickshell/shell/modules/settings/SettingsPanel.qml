@@ -80,7 +80,13 @@ Scope {
                 FocusScope {
                     anchors.fill: parent
                     focus: root.active
-                    Keys.onEscapePressed: SettingsState.open = false
+                    // A sub-page swallows the first Escape; the panel closes on the next
+            Keys.onEscapePressed: {
+                if (SettingsState.subPage)
+                    SettingsState.closeSubPage();
+                else
+                    SettingsState.open = false;
+            }
 
                     // Panel
                     Rectangle {

@@ -12,11 +12,26 @@ Singleton {
     property string ownerScreen: ""
     // Index into SettingsPanel's pageModel
     property int currentPageIdx: 0
+    // Key into Content.qml's subPageModel; "" means the page itself is shown.
+    // One level deep is enough — caelestia's Nexus stack never goes further
+    property string subPage: ""
+
+    // Leaving a page abandons any sub-page it opened
+    onCurrentPageIdxChanged: root.subPage = ""
+
+    function openSubPage(key: string): void {
+        root.subPage = key;
+    }
+
+    function closeSubPage(): void {
+        root.subPage = "";
+    }
 
     onOpenChanged: {
         if (!root.open)
             return;
         ScreenOwner.claim(root);
+        root.subPage = "";
         // Settings is a big centred overlay that covers the sidebar; neither
         // dismisses the other through GlobalFocusGrab, so close it explicitly
         SidebarRightState.open = false;
@@ -41,6 +56,14 @@ Singleton {
 
         function close(): void {
             root.open = false;
+        }
+
+        function sub(key: string): void {
+            root.subPage = key;
+        }
+
+        function back(): void {
+            root.closeSubPage();
         }
 
         // Page switching without a click — the panel clamps out-of-range values

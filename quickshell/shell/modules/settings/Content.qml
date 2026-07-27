@@ -34,6 +34,11 @@ Item {
         { label: "About", icon: "info", description: "System information, credits", category: "about", component: aboutPage }
     ]
 
+    // Sub-page registry — keyed by SettingsState.subPage
+    readonly property var subPageModel: ({
+        "wallpapers": wallpapersSubPage
+    })
+
     NavList {
         id: navList
 
@@ -68,6 +73,9 @@ Item {
         property real slideFrom: 0
 
         readonly property var page: root.pageModel[shownIdx] ?? root.pageModel[0]
+        // Lags SettingsState.subPage the same way shownIdx lags currentPageIdx
+        property string shownSubPage: ""
+        readonly property var subComponent: root.subPageModel[pageArea.shownSubPage] ?? null
 
         Loader {
             id: pageLoader
@@ -75,7 +83,18 @@ Item {
             width: pageArea.width
             height: pageArea.height
 
-            sourceComponent: pageArea.page.component ?? placeholderPage
+            sourceComponent: pageArea.subComponent ?? pageArea.page.component ?? placeholderPage
+        }
+
+        // Sub-page open/close reuses the page-switch animation, sliding in from
+        // the right going deeper and back the other way returning
+        Connections {
+            target: SettingsState
+            function onSubPageChanged() {
+                switchAnim.complete();
+                pageArea.slideFrom = SettingsState.subPage ? 18 : -18;
+                subSwitchAnim.start();
+            }
         }
 
         Connections {
@@ -94,6 +113,44 @@ Item {
                 switchAnim.complete();
                 pageArea.slideFrom = clamped > pageArea.shownIdx ? 18 : -18;
                 switchAnim.start();
+            }
+        }
+
+        SequentialAnimation {
+            id: subSwitchAnim
+
+            NumberAnimation {
+                target: pageLoader
+                property: "opacity"
+                to: 0
+                duration: Motion.quickDuration
+                easing.type: Motion.quickEasing
+            }
+            PropertyAction {
+                target: pageArea
+                property: "shownSubPage"
+                value: SettingsState.subPage
+            }
+            PropertyAction {
+                target: pageLoader
+                property: "y"
+                value: pageArea.slideFrom
+            }
+            ParallelAnimation {
+                NumberAnimation {
+                    target: pageLoader
+                    property: "opacity"
+                    to: 1
+                    duration: Motion.deliberateDuration
+                    easing.type: Motion.deliberateEasing
+                }
+                NumberAnimation {
+                    target: pageLoader
+                    property: "y"
+                    to: 0
+                    duration: Motion.deliberateDuration
+                    easing.type: Motion.deliberateEasing
+                }
             }
         }
 
@@ -164,6 +221,13 @@ Item {
             cursorShape: Qt.PointingHandCursor
             onClicked: SettingsState.open = false
         }
+    }
+
+    // Sub-pages
+    Component {
+        id: wallpapersSubPage
+
+        WallpapersSubPage {}
     }
 
     // Pages

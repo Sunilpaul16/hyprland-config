@@ -74,19 +74,16 @@ ScrollPage {
         PillButton {
             live: true
             icon: "wallpaper"
-            text: "Browse"
+            text: "Wallpapers"
             highlighted: true
-            onClicked: {
-                SettingsState.open = false;
-                LauncherState.openWallpaper();
-            }
+            onClicked: SettingsState.openSubPage("wallpapers")
         }
 
+        // caelestia's equivalent opens a "page under construction" stub, so
+        // there is nothing to port behind this one yet
         PillButton {
-            live: true
-            icon: "shuffle"
-            text: "Random"
-            onClicked: Wallpapers.applyRandom()
+            icon: "palette"
+            text: "Colours"
         }
     }
 

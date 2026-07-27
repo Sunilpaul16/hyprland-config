@@ -77,7 +77,12 @@ Item {
             // Escape handler is out of reach once this has focus, so repeat it
             focus: root.panelActive
 
-            Keys.onEscapePressed: SettingsState.open = false
+            Keys.onEscapePressed: {
+        if (SettingsState.subPage)
+            SettingsState.closeSubPage();
+        else
+            SettingsState.open = false;
+    }
         }
     }
 
