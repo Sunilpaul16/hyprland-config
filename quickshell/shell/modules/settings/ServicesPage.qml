@@ -65,39 +65,63 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "CPU & memory"
-            subtext: "services/SystemUsage.qml"
+            subtext: "Dashboard rings and the Performance tab"
 
-            SelectPill {
-                value: "1000 ms"
+            NumberControl {
+                value: Config.polling.cpu
+                from: 500
+                to: 10000
+                stepSize: 250
+                suffix: " ms"
+                onMoved: v => Config.polling.cpu = Math.round(v)
             }
         }
 
         SettingRow {
+            live: true
             label: "GPU"
-            subtext: "services/Gpu.qml"
+            subtext: "nvidia-smi query interval"
 
-            SelectPill {
-                value: "2000 ms"
+            NumberControl {
+                value: Config.polling.gpu
+                from: 1000
+                to: 15000
+                stepSize: 500
+                suffix: " ms"
+                onMoved: v => Config.polling.gpu = Math.round(v)
             }
         }
 
         SettingRow {
+            live: true
             label: "Storage"
-            subtext: "services/Storage.qml"
+            subtext: "df and lsblk interval"
 
-            SelectPill {
-                value: "10000 ms"
+            NumberControl {
+                value: Config.polling.storage
+                from: 2000
+                to: 60000
+                stepSize: 1000
+                suffix: " ms"
+                onMoved: v => Config.polling.storage = Math.round(v)
             }
         }
 
         SettingRow {
             last: true
+            live: true
             label: "Uptime"
-            subtext: "services/SysInfo.qml"
+            subtext: "Re-reads /proc/uptime"
 
-            SelectPill {
-                value: "60000 ms"
+            NumberControl {
+                value: Config.polling.uptime
+                from: 10000
+                to: 300000
+                stepSize: 10000
+                suffix: " ms"
+                onMoved: v => Config.polling.uptime = Math.round(v)
             }
         }
     }
@@ -109,27 +133,38 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Location"
+            subtext: "Geolocated by IP at startup"
 
-            SelectPill {
-                value: "Automatic"
+            ValueLabel {
+                text: Weather.city || "Locating…"
             }
         }
 
         SettingRow {
+            live: true
             label: "Units"
 
             SelectPill {
-                value: "Celsius"
+                options: [{ value: "celsius", label: "Celsius" }, { value: "fahrenheit", label: "Fahrenheit" }]
+                current: Config.weather.units
+                onSelected: v => Config.weather.units = v
             }
         }
 
         SettingRow {
             last: true
+            live: true
             label: "Refresh interval"
 
-            SelectPill {
-                value: "15 min"
+            NumberControl {
+                value: Config.weather.refreshMinutes
+                from: 5
+                to: 240
+                stepSize: 5
+                suffix: " min"
+                onMoved: v => Config.weather.refreshMinutes = Math.round(v)
             }
         }
     }
@@ -141,19 +176,23 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Default mode"
-            subtext: "services/Recorder.qml"
+            subtext: "Mode a fresh session starts in"
 
             SelectPill {
-                value: "Full screen"
+                options: [{ value: "full", label: "Full screen" }, { value: "region", label: "Region" }]
+                current: Config.recorder.defaultMode
+                onSelected: v => Config.recorder.defaultMode = v
             }
         }
 
         SettingRow {
+            live: true
             label: "Save to"
 
             ValueLabel {
-                text: "~/Videos/recordings"
+                text: Directories.videosDir
             }
         }
 
@@ -175,11 +214,17 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Night light temperature"
-            subtext: "services/NightLightState.qml"
+            subtext: "Applied by hyprsunset when enabled"
 
-            SelectPill {
-                value: "5200 K"
+            NumberControl {
+                value: Config.nightLight.temperature
+                from: 2500
+                to: 6500
+                stepSize: 100
+                suffix: " K"
+                onMoved: v => Config.nightLight.temperature = Math.round(v)
             }
         }
 

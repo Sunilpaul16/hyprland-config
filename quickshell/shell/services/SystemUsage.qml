@@ -170,7 +170,7 @@ Singleton {
     }
 
     Timer {
-        interval: 1000
+        interval: Config.polling.cpu
         running: root.refCount > 0
         repeat: true
         triggeredOnStart: true

@@ -14,7 +14,9 @@ Singleton {
     property bool active: false
     property real startedAt: 0
     property int elapsedSeconds: 0
-    property string mode: "full" // "full" | "region" — used for the next recording
+    // Seeded from config; cycleMode() overrides it for the session, which
+    // deliberately breaks the binding until the next restart
+    property string mode: Config.recorder.defaultMode // "full" | "region" — used for the next recording
 
     // Closes the window where a rapid double-toggle could double-start before the 1s poll catches up
     property bool starting: false

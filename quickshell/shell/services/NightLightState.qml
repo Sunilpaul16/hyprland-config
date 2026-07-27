@@ -7,7 +7,7 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    readonly property int temperature: 5200
+    readonly property int temperature: Config.nightLight.temperature
 
     // Restored across a shell-only restart (not a fresh Hyprland login —
     // see Persistent.isNewHyprlandInstance), so the toggle doesn't desync

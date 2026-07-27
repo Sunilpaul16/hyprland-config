@@ -34,7 +34,7 @@ Rectangle {
 
             Text {
                 Layout.alignment: Qt.AlignHCenter
-                text: root.hasData ? Math.round(Weather.currentTemp) + "°C" : "—"
+                text: root.hasData ? Math.round(Weather.currentTemp) + Weather.unitSymbol : "—"
                 color: Colors.primary
                 font.pixelSize: Config.dashboard.weather.tempSize
                 font.bold: true

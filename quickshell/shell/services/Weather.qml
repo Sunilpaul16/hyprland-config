@@ -17,6 +17,9 @@ Singleton {
     property real latitude: NaN
     property real longitude: NaN
     property string city: ""
+    // Follows Config.weather.units — the API returns bare numbers, so the
+    // symbol has to be derived here or every display hardcodes Celsius
+    readonly property string unitSymbol: Config.weather.units === "fahrenheit" ? "°F" : "°C"
     property bool loading: true
     property bool hasError: false
     // Distinguishes "never got real data" from "have cached data, latest poll failed"
@@ -126,7 +129,7 @@ Singleton {
         if (isNaN(root.latitude) || isNaN(root.longitude))
             return;
 
-        const url = "https://api.open-meteo.com/v1/forecast" + "?latitude=" + root.latitude + "&longitude=" + root.longitude + "&current=temperature_2m,weather_code,relative_humidity_2m,apparent_temperature,wind_speed_10m" + "&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset" + "&timezone=auto&forecast_days=7";
+        const url = "https://api.open-meteo.com/v1/forecast" + "?latitude=" + root.latitude + "&longitude=" + root.longitude + "&current=temperature_2m,weather_code,relative_humidity_2m,apparent_temperature,wind_speed_10m" + "&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset" + "&timezone=auto&forecast_days=7" + (Config.weather.units === "fahrenheit" ? "&temperature_unit=fahrenheit" : "");
 
         Requests.get(url, data => {
             // Current and daily are checked independently so a malformed
@@ -176,7 +179,7 @@ Singleton {
 
     // Refetch hourly; retries geolocate() too if it never succeeded at startup
     Timer {
-        interval: 3600000
+        interval: Math.max(5, Config.weather.refreshMinutes) * 60000
         running: true
         repeat: true
         onTriggered: {

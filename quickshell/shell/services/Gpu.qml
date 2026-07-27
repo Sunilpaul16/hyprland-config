@@ -63,7 +63,7 @@ Singleton {
     }
 
     Timer {
-        interval: 2000
+        interval: Config.polling.gpu
         running: root.refCount > 0
         repeat: true
         triggeredOnStart: true

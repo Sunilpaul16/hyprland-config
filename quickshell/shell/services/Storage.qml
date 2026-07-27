@@ -139,7 +139,7 @@ Singleton {
 
     // Storage doesn't change fast — poll far less often than CPU/memory
     Timer {
-        interval: 10000
+        interval: Config.polling.storage
         running: root.refCount > 0
         repeat: true
         triggeredOnStart: true

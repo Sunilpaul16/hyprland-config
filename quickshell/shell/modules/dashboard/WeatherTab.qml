@@ -89,7 +89,7 @@ Item {
                     spacing: -4
 
                     Text {
-                        text: root.hasCurrent ? Math.round(Weather.currentTemp) + "°C" : "—"
+                        text: root.hasCurrent ? Math.round(Weather.currentTemp) + Weather.unitSymbol : "—"
                         color: Colors.text
                         font.pixelSize: 48
                         font.bold: true
@@ -119,7 +119,7 @@ Item {
             DetailCard {
                 iconName: "thermostat"
                 label: "Feels Like"
-                value: root.hasCurrent && !isNaN(Weather.feelsLike) ? Math.round(Weather.feelsLike) + "°C" : "--"
+                value: root.hasCurrent && !isNaN(Weather.feelsLike) ? Math.round(Weather.feelsLike) + Weather.unitSymbol : "--"
             }
 
             DetailCard {

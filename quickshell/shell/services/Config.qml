@@ -17,6 +17,10 @@ Singleton {
     property alias session: adapter.session
     property alias notifications: adapter.notifications
     property alias updates: adapter.updates
+    property alias polling: adapter.polling
+    property alias weather: adapter.weather
+    property alias nightLight: adapter.nightLight
+    property alias recorder: adapter.recorder
     property alias wallpaper: adapter.wallpaper
     property alias dashboard: adapter.dashboard
 
@@ -74,6 +78,27 @@ Singleton {
                 property bool autoCheck: true       // query for updates on start and on the interval below
                 property int intervalMinutes: 360   // floored at 15 in Updates.qml
                 property string aurHelper: "yay"    // any helper supporting -Qua ("yay" | "paru" | ...)
+            }
+
+            // Poll intervals in ms for the refcounted stat services
+            property JsonObject polling: JsonObject {
+                property int cpu: 1000
+                property int gpu: 2000
+                property int storage: 10000
+                property int uptime: 60000
+            }
+
+            property JsonObject weather: JsonObject {
+                property string units: "celsius" // "celsius" | "fahrenheit"
+                property int refreshMinutes: 60
+            }
+
+            property JsonObject nightLight: JsonObject {
+                property int temperature: 5200 // kelvin applied by hyprsunset
+            }
+
+            property JsonObject recorder: JsonObject {
+                property string defaultMode: "full" // "full" | "region" — mode a fresh session starts in
             }
 
             property JsonObject wallpaper: JsonObject {

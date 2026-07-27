@@ -119,7 +119,7 @@ Singleton {
 
     // Uptime doesn't need to be precise — refresh once a minute, not every second
     Timer {
-        interval: 60000
+        interval: Config.polling.uptime
         running: true
         repeat: true
         onTriggered: uptimeFile.reload()
