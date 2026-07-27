@@ -13,7 +13,14 @@ Singleton {
     // Index into SettingsPanel's pageModel
     property int currentPageIdx: 0
 
-    onOpenChanged: if (root.open) ScreenOwner.claim(root)
+    onOpenChanged: {
+        if (!root.open)
+            return;
+        ScreenOwner.claim(root);
+        // Settings is a big centred overlay that covers the sidebar; neither
+        // dismisses the other through GlobalFocusGrab, so close it explicitly
+        SidebarRightState.open = false;
+    }
 
     function toggle(): void {
         ScreenOwner.toggle(root);

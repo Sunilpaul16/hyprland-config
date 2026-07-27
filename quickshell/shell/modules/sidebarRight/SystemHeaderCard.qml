@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 
 // System header (sidebar) — distro logo + uptime on the left, action icons on
-// the right. Refresh/settings are placeholders; power opens the session screen.
+// the right. Refresh is a placeholder; settings and power open their overlays.
 Rectangle {
     id: root
 
@@ -38,10 +38,10 @@ Rectangle {
             iconColor: Colors.textMuted
         }
 
-        // Placeholder — no action wired yet
         IconAction {
             iconName: "settings"
             iconColor: Colors.textMuted
+            onTriggered: SettingsState.toggle()
         }
 
         IconAction {
