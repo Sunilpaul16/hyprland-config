@@ -1,4 +1,5 @@
 import QtQuick.Layouts
+import "../../services"
 
 // Services page. Layout only — the intervals shown are the ones the polling
 // singletons already hardcode, surfaced here as if they were configurable
@@ -13,10 +14,15 @@ ScrollPage {
         SettingRow {
             first: true
             label: "Toast duration"
-            subtext: "Config.notifications.toastDismissDuration"
+            subtext: "How long a notification popup stays up"
 
-            SelectPill {
-                value: "5000 ms"
+            NumberControl {
+                value: Config.notifications.toastDismissDuration
+                from: 1000
+                to: 15000
+                stepSize: 500
+                suffix: " ms"
+                onMoved: v => Config.notifications.toastDismissDuration = Math.round(v)
             }
         }
 
@@ -25,8 +31,8 @@ ScrollPage {
             subtext: "Suppresses popups, still records them"
 
             ToggleSwitch {
-                checked: false
-                onToggled: v => checked = v
+                checked: DndState.enabled
+                onToggled: DndState.toggle()
             }
         }
 

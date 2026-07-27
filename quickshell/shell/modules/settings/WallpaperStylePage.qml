@@ -137,10 +137,15 @@ ScrollPage {
 
         SettingRow {
             label: "Preview delay"
-            subtext: "Config.wallpaper.previewDelay"
+            subtext: "Settle time before a carousel pick is applied"
 
-            SelectPill {
-                value: "300 ms"
+            NumberControl {
+                value: Config.wallpaper.previewDelay
+                from: 0
+                to: 1000
+                stepSize: 50
+                suffix: " ms"
+                onMoved: v => Config.wallpaper.previewDelay = Math.round(v)
             }
         }
 

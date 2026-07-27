@@ -2,10 +2,9 @@ import QtQuick
 import QtQuick.Layouts
 import "../../services"
 
-// Panels page. Mostly layout — the rows track keys that already exist in
-// services/Config.qml plus the panels that have no config surface yet.
-// The Motion section is the exception: it reads AND writes live config, and
-// is the worked example for wiring the rest
+// Panels page. Rows naming a real Config key read and write it live; the
+// rest hold local state and are placeholders for panels that have no config
+// surface yet (tray/title visibility, launcher limits, quick-toggle editing)
 ScrollPage {
     title: "Panels"
 
@@ -19,23 +18,14 @@ ScrollPage {
             label: "Animation speed"
             subtext: "Divides every duration in the shell"
 
-            RowLayout {
-                spacing: 12
-
-                ValueLabel {
-                    // Fixed width so the slider doesn't shift as digits change
-                    Layout.preferredWidth: 42
-                    horizontalAlignment: Text.AlignRight
-                    text: `${Config.motion.speed.toFixed(2)}×`
-                }
-
-                SettingSlider {
-                    from: 0.5
-                    to: 2
-                    stepSize: 0.05
-                    value: Config.motion.speed
-                    onMoved: v => Config.motion.speed = v
-                }
+            NumberControl {
+                value: Config.motion.speed
+                from: 0.5
+                to: 2
+                stepSize: 0.05
+                decimals: 2
+                suffix: "×"
+                onMoved: v => Config.motion.speed = v
             }
         }
 
@@ -59,20 +49,25 @@ ScrollPage {
         SettingRow {
             first: true
             label: "Bar height"
-            subtext: "Config.bar.height"
+            subtext: "Height of the top bar"
 
-            SelectPill {
-                value: "40 px"
+            NumberControl {
+                value: Config.bar.height
+                from: 24
+                to: 64
+                stepSize: 1
+                suffix: " px"
+                onMoved: v => Config.bar.height = Math.round(v)
             }
         }
 
         SettingRow {
             label: "12-hour clock"
-            subtext: "Config.time.use12Hour"
+            subtext: "Show AM/PM instead of 24-hour time"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.time.use12Hour
+                onToggled: v => Config.time.use12Hour = v
             }
         }
 
@@ -104,19 +99,23 @@ ScrollPage {
         SettingRow {
             first: true
             label: "Panel width"
-            subtext: "Config.dashboard.panel.widthMode"
+            subtext: "Auto measures the content; fixed uses a set size"
 
             SelectPill {
-                value: "Auto"
+                options: [{ value: "auto", label: "Auto" }, { value: "fixed", label: "Fixed" }]
+                current: Config.dashboard.panel.widthMode
+                onSelected: v => Config.dashboard.panel.widthMode = v
             }
         }
 
         SettingRow {
             label: "Panel height"
-            subtext: "Config.dashboard.panel.heightMode"
+            subtext: "Auto measures the content; fixed uses a set size"
 
             SelectPill {
-                value: "Auto"
+                options: [{ value: "auto", label: "Auto" }, { value: "fixed", label: "Fixed" }]
+                current: Config.dashboard.panel.heightMode
+                onSelected: v => Config.dashboard.panel.heightMode = v
             }
         }
 
@@ -130,22 +129,27 @@ ScrollPage {
 
         SettingRow {
             label: "Media card animation"
-            subtext: "Config.dashboard.media.gifEnabled"
+            subtext: "The bongocat gif on the dashboard's Media card"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.dashboard.media.gifEnabled
+                onToggled: v => Config.dashboard.media.gifEnabled = v
             }
         }
 
         SettingRow {
             last: true
             label: "Animation speed"
-            subtext: "Config.dashboard.media.gifSpeed"
+            subtext: "Gif playback rate (1.00 is native)"
 
-            SettingSlider {
-                value: 0.5
-                onMoved: nv => value = nv
+            NumberControl {
+                value: Config.dashboard.media.gifSpeed
+                from: 0.25
+                to: 3
+                stepSize: 0.05
+                decimals: 2
+                suffix: "×"
+                onMoved: v => Config.dashboard.media.gifSpeed = v
             }
         }
     }
@@ -201,10 +205,12 @@ ScrollPage {
 
         SettingRow {
             label: "Notifications watermark"
-            subtext: "Config.sidebar.noNotifsImage"
+            subtext: "Shown when the sidebar has no notifications"
 
             ValueLabel {
-                text: "assets/dino.png"
+                // Read-only: editing a path needs a text field, which the
+                // panel has no control for yet
+                text: Config.sidebar.noNotifsImage || "assets/dino.png"
             }
         }
 
@@ -238,10 +244,15 @@ ScrollPage {
         SettingRow {
             last: true
             label: "Session drawer auto-close"
-            subtext: "Config.session.autoCloseDuration"
+            subtext: "How long the drawer stays open unhovered"
 
-            SelectPill {
-                value: "5000 ms"
+            NumberControl {
+                value: Config.session.autoCloseDuration
+                from: 1000
+                to: 15000
+                stepSize: 500
+                suffix: " ms"
+                onMoved: v => Config.session.autoCloseDuration = Math.round(v)
             }
         }
     }
