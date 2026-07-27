@@ -14,11 +14,25 @@ KITTY_THEME_OUT="$HOME/.config/kitty/theme.conf"
 
 STATE_FILE="$HOME/.local/state/quickshell/current_wallpaper"
 MODE_FILE="$HOME/.local/state/quickshell/color_mode"
+# The shell's settings panel writes these; read rather than duplicate them
+# into another state file, so there is one source of truth per value
+CONFIG_FILE="$HOME/.config/quickshell/config.json"
+
+VALID_SCHEMES="scheme-tonal-spot scheme-vibrant scheme-expressive scheme-content scheme-fidelity scheme-fruit-salad scheme-monochrome scheme-neutral scheme-rainbow"
+
+# cfg <jq-path> <default> — missing file, missing key or null all fall back
+cfg() {
+    local value=""
+    if [[ -s "$CONFIG_FILE" ]]; then
+        value="$(jq -r "$1 // empty" "$CONFIG_FILE" 2>/dev/null || true)"
+    fi
+    [[ -n "$value" ]] && printf '%s' "$value" || printf '%s' "$2"
+}
 
 MPV_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 video-align-x=0.5 video-align-y=0.5 load-scripts=no"
 
 usage() {
-    echo "Usage: $(basename "$0") [--preview] [--mode auto|light|dark] <path-to-image-or-video>" >&2
+    echo "Usage: $(basename "$0") [--preview] [--mode auto|light|dark] [--scheme auto|scheme-*] <path-to-image-or-video>" >&2
     echo "       $(basename "$0") --noswitch" >&2
     echo "       $(basename "$0") --mode auto|light|dark   (re-themes the current wallpaper)" >&2
     exit 1
@@ -35,11 +49,13 @@ is_video() {
 PREVIEW=false
 NOSWITCH=false
 SET_MODE=""
+SET_SCHEME=""
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --preview)  PREVIEW=true; shift ;;
         --noswitch) NOSWITCH=true; shift ;;
         --mode)     [[ -n "${2:-}" ]] || usage; SET_MODE="$2"; shift 2 ;;
+        --scheme)   [[ -n "${2:-}" ]] || usage; SET_SCHEME="$2"; shift 2 ;;
         --)         shift; break ;;
         -*)         usage ;;
         *)          break ;;
@@ -78,7 +94,7 @@ fi
 # Dependency preflight
 command -v mpvpaper >/dev/null || { echo "switchwall: missing required binary: mpvpaper" >&2; exit 1; }
 if ! $PREVIEW; then
-    for bin in matugen ffmpeg gsettings; do
+    for bin in matugen ffmpeg gsettings jq; do
         command -v "$bin" >/dev/null || { echo "switchwall: missing required binary: $bin" >&2; exit 1; }
     done
     [[ -x "$VENV_PYTHON" ]] || { echo "switchwall: venv python not found at $VENV_PYTHON" >&2; exit 1; }
@@ -128,11 +144,21 @@ fi
 # Resolved once here so both engines below agree: matugen has neither --smart
 # nor brightness-based mode selection of its own, so a low-chroma or bright
 # wallpaper would otherwise only affect kitty.
+# "auto" keeps the previous behaviour: --smart lets the generator pick a
+# scheme from the image. A named scheme drops --smart so the choice sticks.
+SCHEME_PREF="${SET_SCHEME:-$(cfg '.theming.scheme' 'auto')}"
+if [[ "$SCHEME_PREF" != auto ]] && [[ " $VALID_SCHEMES " != *" $SCHEME_PREF "* ]]; then
+    echo "switchwall: unknown scheme '$SCHEME_PREF', falling back to auto" >&2
+    SCHEME_PREF=auto
+fi
+
+SCHEME_ARGS=(--scheme scheme-tonal-spot --smart)
+[[ "$SCHEME_PREF" != auto ]] && SCHEME_ARGS=(--scheme "$SCHEME_PREF")
+
 mapfile -t RESOLVED < <("$VENV_PYTHON" "$COLORGEN_DIR/generate_colors_material.py" \
     --path "$colorsource" \
     --luminance-path "$lumsource" \
-    --scheme scheme-tonal-spot \
-    --smart \
+    "${SCHEME_ARGS[@]}" \
     --mode "$COLOR_MODE" \
     --print-scheme \
     --print-mode)
@@ -153,12 +179,25 @@ fi
 nautilus -q || true
 
 # --- 4. materialyoucolor: kitty's 16-color terminal palette -----------------
+# Terminal-only tuning; defaults match generate_colors_material.py's own, so
+# an absent config behaves exactly as before this was configurable
+TERM_HARMONY="$(cfg '.theming.terminalHarmony' '0.8')"
+TERM_THRESHOLD="$(cfg '.theming.terminalHarmonizeThreshold' '100')"
+TERM_FG_BOOST="$(cfg '.theming.terminalFgBoost' '0.35')"
+TERM_FORCE_DARK="$(cfg '.theming.terminalForceDark' 'false')"
+
+TERM_MODE="$MODE"
+[[ "$TERM_FORCE_DARK" == true ]] && TERM_MODE=dark
+
 scss="$CACHE_DIR/material_colors.scss"
 "$VENV_PYTHON" "$COLORGEN_DIR/generate_colors_material.py" \
     --path "$colorsource" \
-    --mode "$MODE" \
+    --mode "$TERM_MODE" \
     --scheme "$SCHEME" \
     --termscheme "$COLORGEN_DIR/terminal/scheme-base.json" \
+    --harmony "$TERM_HARMONY" \
+    --harmonize_threshold "$TERM_THRESHOLD" \
+    --term_fg_boost "$TERM_FG_BOOST" \
     --blend_bg_fg \
     > "$scss"
 

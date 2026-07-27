@@ -20,6 +20,7 @@ Singleton {
     property alias polling: adapter.polling
     property alias weather: adapter.weather
     property alias nightLight: adapter.nightLight
+    property alias theming: adapter.theming
     property alias recorder: adapter.recorder
     property alias wallpaper: adapter.wallpaper
     property alias dashboard: adapter.dashboard
@@ -91,6 +92,17 @@ Singleton {
             property JsonObject weather: JsonObject {
                 property string units: "celsius" // "celsius" | "fahrenheit"
                 property int refreshMinutes: 60
+            }
+
+            // Read by scripts/switchwall via jq, not by the shell — the shell
+            // only writes them. Defaults match generate_colors_material.py's
+            // own, so an absent group behaves as before these were exposed
+            property JsonObject theming: JsonObject {
+                property string scheme: "auto" // "auto" (picked from the image) | any scheme-* the generator supports
+                property real terminalHarmony: 0.8
+                property int terminalHarmonizeThreshold: 100
+                property real terminalFgBoost: 0.35
+                property bool terminalForceDark: false
             }
 
             property JsonObject nightLight: JsonObject {
