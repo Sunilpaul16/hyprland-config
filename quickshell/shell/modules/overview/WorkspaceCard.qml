@@ -12,7 +12,8 @@ Item {
     required property var slot // HyprlandWorkspace, or {id, isPlaceholder: true}
     required property Item overviewContent
 
-    readonly property bool isPlaceholder: !!slot.isPlaceholder
+    // slot goes null for one binding pass when Hyprland destroys the workspace QObject
+    readonly property bool isPlaceholder: !slot || !!slot.isPlaceholder
     readonly property var wsMonitor: isPlaceholder ? null : slot.monitor
     readonly property var fallbackMonitor: Hyprland.monitorFor(root.screen)
     readonly property var monitor: wsMonitor ?? fallbackMonitor
@@ -59,7 +60,7 @@ Item {
 
         Text {
             anchors { top: parent.top; left: parent.left; margins: 8 }
-            text: root.slot.id
+            text: root.slot?.id ?? ""
             color: root.isFocused ? Colors.primary : Colors.textMuted
             font.pixelSize: 13
             font.bold: root.isFocused
