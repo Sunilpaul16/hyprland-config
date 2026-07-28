@@ -166,14 +166,14 @@ Item {
         else if (content.mode === "clip")
             content.copyClip(content.clipResults[verticalList.currentIndex]);
         else
-            content.confirmSelection(content.wallpaperResults[row.currentIndex]);
+            content.confirmSelection(content.wallpaperResults[carousel.currentIndex]);
     }
 
     // Debounced wallpaper preview
     Timer {
         id: applyDebounce
         interval: Config.wallpaper.previewDelay
-        onTriggered: content.previewWallpaper(content.wallpaperResults[row.currentIndex])
+        onTriggered: content.previewWallpaper(content.wallpaperResults[carousel.currentIndex])
     }
 
     function requestPreview(): void {
@@ -182,9 +182,9 @@ Item {
 
     function navigateWallpaper(delta: int): void {
         if (delta > 0)
-            row.incrementCurrentIndex();
+            carousel.increment();
         else
-            row.decrementCurrentIndex();
+            carousel.decrement();
         content.requestPreview();
     }
 
@@ -218,92 +218,19 @@ Item {
             anchors.bottomMargin: content.searchGap
 
             // Wallpaper mode
-            Item {
+            WallpaperCarousel {
+                id: carousel
+
                 anchors.fill: parent
                 visible: content.mode === "wallpaper"
 
-                // Wallpaper carousel
-                ListView {
-                    id: row
+                results: content.wallpaperResults
+                rowHeight: content.wallpaperRowHeight
+                panelWidth: content.wallpaperPanelWidth
+                panelPad: content.panelPad
 
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    height: content.wallpaperRowHeight
-
-                    // Slot widths, read back by the delegate
-                    readonly property int itemWidth: 150
-                    readonly property int currentItemWidth: 190
-
-                    orientation: ListView.Horizontal
-                    spacing: 16
-                    // Deliberately unclipped: a Shape renders nothing under any
-                    // clipping ancestor, and the delegates round their corners
-                    // with one. They fade out at the row's edges instead
-                    clip: false
-
-                    // Begin == end pins the selection dead centre. Giving the
-                    // range a width instead lets it drift anywhere inside it,
-                    // which is what left the selection off-centre before
-                    highlightRangeMode: ListView.StrictlyEnforceRange
-                    preferredHighlightBegin: (width - currentItemWidth) / 2
-                    preferredHighlightEnd: preferredHighlightBegin
-
-                    model: content.wallpaperResults
-                    onModelChanged: currentIndex = count > 0 ? 0 : -1
-
-                    highlightMoveDuration: Motion.deliberateDuration
-
-                    delegate: WallpaperItem {
-                        onActivated: content.confirmSelection(modelData)
-                    }
-
-                    // Wheel cycles the selection. Deltas are accumulated to a
-                    // full notch so a trackpad's fine-grained stream steps at
-                    // the same rate a mouse wheel does
-                    WheelHandler {
-                        property real accumulated: 0
-
-                        acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-
-                        onWheel: event => {
-                            accumulated += event.angleDelta.y !== 0 ? event.angleDelta.y : -event.angleDelta.x;
-                            while (accumulated >= 120) {
-                                accumulated -= 120;
-                                content.navigateWallpaper(-1);
-                            }
-                            while (accumulated <= -120) {
-                                accumulated += 120;
-                                content.navigateWallpaper(1);
-                            }
-                        }
-                    }
-                }
-
-                // Caption tracks the selected thumbnail instead of the panel
-                // centre, so the name reads as belonging to it. caelestia labels
-                // each item instead — not viable at our 150px item width
-                Text {
-                    id: caption
-                    anchors.top: row.bottom
-                    anchors.topMargin: 4
-                    text: (row.currentIndex >= 0 && content.wallpaperResults[row.currentIndex]) ? content.wallpaperResults[row.currentIndex].label : ""
-                    color: Colors.text
-                    font.pixelSize: 13
-                    elide: Text.ElideMiddle
-                    // Measured against the panel constant, never the parent it
-                    // sits in — see the polish-loop note in CLAUDE.md
-                    width: Math.min(implicitWidth, content.wallpaperPanelWidth - content.panelPad * 2)
-                    horizontalAlignment: Text.AlignHCenter
-
-                    x: {
-                        const item = row.currentItem;
-                        const centre = item ? item.x + item.width / 2 - row.contentX : row.width / 2;
-                        return Math.max(0, Math.min(row.width - width, centre - width / 2));
-                    }
-
-                    Behavior on x { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
-                }
+                onActivated: entry => content.confirmSelection(entry)
+                onNavigate: delta => content.navigateWallpaper(delta)
             }
 
             // App/command/clip results list
@@ -460,3 +387,4 @@ Item {
         corner: "bottomLeft"
     }
 }
+
