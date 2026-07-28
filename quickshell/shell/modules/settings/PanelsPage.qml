@@ -237,19 +237,11 @@ ScrollPage {
         text: "Overview & session"
     }
 
+    // No "live window thumbnails" toggle here on purpose: OverviewWindowThumb pins
+    // ScreencopyView.live false because live capture crashes qs (see INDEX.md)
     SettingGroup {
         SettingRow {
             first: true
-            label: "Live window thumbnails"
-            subtext: "Screencopy previews in the overview"
-
-            ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
-            }
-        }
-
-        SettingRow {
             last: true
             live: true
             label: "Session drawer auto-close"

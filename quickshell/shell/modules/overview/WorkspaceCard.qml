@@ -66,7 +66,7 @@ Item {
             z: 2
         }
 
-        // Live window thumbnails
+        // Window thumbnails (snapshots, not live — see OverviewWindowThumb)
         Repeater {
             model: root.isPlaceholder ? [] : root.slot.toplevels.values
 
