@@ -4,13 +4,11 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Services.Mpris
 import "../../services"
-import "../../components"
 
 // Media tab: full-page now-playing — cover art, draggable seek, transport controls
 Item {
     id: root
 
-    property bool playerMenuOpen: false
 
     implicitWidth: (Media.hasPlayer ? hasMediaRow.implicitWidth : emptyState.implicitWidth) + 64
     implicitHeight: (Media.hasPlayer ? hasMediaRow.implicitHeight : emptyState.implicitHeight) + 64
@@ -157,33 +155,33 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 spacing: 20
 
-                ToggleIconButton {
+                MediaToggleButton {
                     iconName: "shuffle"
                     active: Media.shuffle
                     visible: Media.shuffleSupported
                     onClicked: Media.toggleShuffle()
                 }
 
-                TransportButton {
+                MediaTransportButton {
                     glyph: "\u{23EE}"
                     enabled: Media.canGoPrevious
                     onClicked: Media.previous()
                 }
 
-                TransportButton {
+                MediaTransportButton {
                     glyph: Media.isPlaying ? "\u{23F8}" : "\u{25B6}"
                     enabled: Media.canTogglePlaying
                     big: true
                     onClicked: Media.togglePlaying()
                 }
 
-                TransportButton {
+                MediaTransportButton {
                     glyph: "\u{23ED}"
                     enabled: Media.canGoNext
                     onClicked: Media.next()
                 }
 
-                ToggleIconButton {
+                MediaToggleButton {
                     iconName: Media.loopState === MprisLoopState.Track ? "repeat_one" : "repeat"
                     active: Media.loopState !== MprisLoopState.None
                     visible: Media.loopSupported
@@ -196,221 +194,15 @@ Item {
     // Click-outside catcher for the player-menu dropdown
     MouseArea {
         anchors.fill: parent
-        visible: root.playerMenuOpen
-        onClicked: root.playerMenuOpen = false
+        visible: playerSelector.menuOpen
+        onClicked: playerSelector.closeMenu()
     }
 
-    // Multi-player selector — only shown with >1 active MPRIS player
-    Item {
+    MediaPlayerSelector {
         id: playerSelector
 
-        visible: Media.hasMultiplePlayers
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: 16
-        implicitWidth: pill.implicitWidth
-        implicitHeight: pill.implicitHeight
-
-        Rectangle {
-            id: pill
-
-            implicitWidth: pillRow.implicitWidth + 20
-            implicitHeight: pillRow.implicitHeight + 12
-            radius: implicitHeight / 2
-            color: root.playerMenuOpen ? Colors.layer : (pillHover.containsMouse ? Colors.layer : "transparent")
-            border.width: 1
-            border.color: Colors.outline
-
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-            RowLayout {
-                id: pillRow
-                anchors.centerIn: parent
-                spacing: 6
-
-                Text {
-                    text: Media.hasManualPlayer ? (Media.activePlayer?.identity || Media.activePlayer?.dbusName || "Unknown") : "Auto"
-                    color: Colors.text
-                    font.pixelSize: 12
-                    elide: Text.ElideRight
-                }
-
-                MaterialIcon {
-                    text: root.playerMenuOpen ? "expand_less" : "expand_more"
-                    font.pixelSize: 16
-                    color: Colors.textMuted
-                }
-            }
-
-            MouseArea {
-                id: pillHover
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.playerMenuOpen = !root.playerMenuOpen
-            }
-        }
-
-        // Dropdown list
-        Rectangle {
-            id: dropdown
-
-            visible: root.playerMenuOpen
-            anchors.top: pill.bottom
-            anchors.right: parent.right
-            anchors.topMargin: 6
-            implicitWidth: Math.max(pill.implicitWidth, list.implicitWidth + 12)
-            implicitHeight: list.implicitHeight + 12
-            radius: 12
-            // Surface, not background — this sits on top of the dashboard
-            // panel's own Colors.background, so it needs contrast against it
-            color: Colors.layer
-            border.width: 1
-            border.color: Colors.outline
-
-            Column {
-                id: list
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.margins: 6
-                spacing: 2
-
-                PlayerMenuEntry {
-                    label: "Auto"
-                    selected: !Media.hasManualPlayer
-                    onClicked: {
-                        Media.clearPlayerOverride();
-                        root.playerMenuOpen = false;
-                    }
-                }
-
-                Repeater {
-                    model: Media.players
-
-                    PlayerMenuEntry {
-                        required property var modelData
-
-                        label: modelData.identity || modelData.dbusName || "Unknown"
-                        selected: Media.hasManualPlayer && Media.activePlayer === modelData
-                        onClicked: {
-                            Media.selectPlayer(modelData);
-                            root.playerMenuOpen = false;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    component PlayerMenuEntry: Rectangle {
-        id: entry
-
-        required property string label
-        property bool selected: false
-        signal clicked()
-
-        implicitWidth: entryRow.implicitWidth + 20
-        implicitHeight: entryRow.implicitHeight + 10
-        radius: 6
-        color: entryHover.containsMouse ? Colors.layer : "transparent"
-
-        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-        RowLayout {
-            id: entryRow
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-            anchors.leftMargin: 10
-            anchors.right: parent.right
-            anchors.rightMargin: 10
-            spacing: 8
-
-            Text {
-                text: entry.selected ? "\u{25CF}" : ""
-                color: Colors.primary
-                font.pixelSize: 9
-                Layout.preferredWidth: 9
-            }
-
-            Text {
-                Layout.fillWidth: true
-                text: entry.label
-                color: Colors.text
-                font.pixelSize: 12
-                elide: Text.ElideRight
-            }
-        }
-
-        MouseArea {
-            id: entryHover
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: entry.clicked()
-        }
-    }
-
-    component TransportButton: Item {
-        id: btn
-
-        property string glyph: ""
-        property bool big: false
-        signal clicked()
-
-        implicitWidth: icon.implicitWidth
-        implicitHeight: icon.implicitHeight
-        opacity: btn.enabled ? 1 : 0.35
-
-        Text {
-            id: icon
-            text: btn.glyph
-            color: area.containsMouse ? Colors.text : Colors.textMuted
-            font.pixelSize: btn.big ? 26 : 18
-
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-        }
-
-        MouseArea {
-            id: area
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: btn.clicked()
-        }
-    }
-
-    // Shuffle/loop toggle — active-fill pill, same treatment as sidebarRight's TogglePill
-    component ToggleIconButton: Rectangle {
-        id: toggleBtn
-
-        required property string iconName
-        property bool active: false
-        signal clicked()
-
-        implicitWidth: icon.implicitWidth + 14
-        implicitHeight: icon.implicitHeight + 14
-        radius: implicitHeight / 2
-        color: toggleBtn.active ? Colors.primary : (area.containsMouse ? Colors.layer : "transparent")
-
-        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-        MaterialIcon {
-            id: icon
-            anchors.centerIn: parent
-            text: toggleBtn.iconName
-            font.pixelSize: 16
-            color: toggleBtn.active ? Colors.background : Colors.textMuted
-
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-        }
-
-        MouseArea {
-            id: area
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: toggleBtn.clicked()
-        }
     }
 }
