@@ -80,18 +80,47 @@ Singleton {
         }
     }
 
-    // Fetch binds from hyprctl
+    // Parses `hyprctl binds`' plain-text form: blank-line-separated records, each a
+    // type line then tab-indented `field: value` pairs. Split on the FIRST colon only —
+    // every description carries one ("App: terminal") and that's what rows splits on
+    function parseBinds(text: string): var {
+        const out = [];
+        for (const block of text.split("\n\n")) {
+            const lines = block.split("\n").filter(l => l.trim().length > 0);
+            if (lines.length < 2)
+                continue;
+
+            const rec = {};
+            for (const line of lines.slice(1)) {
+                const idx = line.indexOf(":");
+                if (idx < 0)
+                    continue;
+                rec[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
+            }
+
+            if (!rec.key)
+                continue;
+            rec.modmask = parseInt(rec.modmask) || 0;
+            out.push(rec);
+        }
+        return out;
+    }
+
+    // Fetch binds from hyprctl.
+    // Deliberately NOT `-j`: Hyprland 0.56.0's JSON serializer emits values shifted
+    // against their keys and leaves strings unquoted, so the output doesn't parse at
+    // all. The plain-text form carries the same fields correctly.
+    // See review/upstream-hyprland-screencopy-crash.md for the reporting convention
     Process {
         id: getBinds
-        command: ["hyprctl", "binds", "-j"]
+        command: ["hyprctl", "binds"]
 
         stdout: StdioCollector {
             onStreamFinished: {
-                try {
-                    root.binds = JSON.parse(text);
-                } catch (e) {
-                    console.error("[Cheatsheet Binds] failed to parse hyprctl binds -j:", e);
-                }
+                const parsed = root.parseBinds(text);
+                if (parsed.length === 0)
+                    console.error("[Cheatsheet Binds] hyprctl binds returned no parsable binds");
+                root.binds = parsed;
             }
         }
     }
