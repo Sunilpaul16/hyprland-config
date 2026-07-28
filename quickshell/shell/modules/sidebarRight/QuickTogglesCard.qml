@@ -5,7 +5,7 @@ import "../../services"
 Rectangle {
     id: root
 
-    radius: 18
+    radius: Motion.rounding.large
     color: Colors.layer
     implicitHeight: content.implicitHeight + 32
 

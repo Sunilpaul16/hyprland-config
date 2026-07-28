@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../../../services"
 import "../performance"
+import "../../../components"
 
 // Compact CPU/memory/disk summary — three small rings. CPU/memory bind to
 // the same services/SystemUsage.qml singleton the Performance tab's
@@ -17,7 +18,7 @@ Rectangle {
         return Qt.hsla((c.hslHue * 360 + degrees + 360) % 360 / 360, c.hslSaturation, c.hslLightness, c.a);
     }
 
-    radius: 18
+    radius: Motion.rounding.large
     color: Colors.layer
     border.width: 1
     border.color: Colors.outline
@@ -75,10 +76,9 @@ Rectangle {
         thickness: Config.dashboard.resourceRing.thickness
         trackColor: Qt.tint(Colors.surface, Qt.alpha(Colors.outline, 0.45))
 
-        Text {
+        MaterialIcon {
             anchors.centerIn: parent
             text: ringItem.icon
-            font.family: "Material Symbols Rounded"
             font.pixelSize: Math.round(ringItem.height * 0.36)
             color: ringItem.ringColor
         }

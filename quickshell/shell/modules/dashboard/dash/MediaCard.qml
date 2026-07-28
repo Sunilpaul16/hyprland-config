@@ -3,6 +3,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Shapes
 import "../../../services"
+import "../../../components"
 
 // Condensed media summary card — cover art (progress arc wraps it), title/album/artist, transport controls, gif
 Rectangle {
@@ -17,7 +18,7 @@ Rectangle {
     // Tonal container fill for the outer transport buttons
     readonly property color tonalBg: Qt.tint(Colors.surface, Qt.alpha(Colors.primary, 0.28))
 
-    radius: 18
+    radius: Motion.rounding.large
     color: Colors.layer
     border.width: 1
     border.color: Colors.outline
@@ -187,10 +188,9 @@ Rectangle {
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-        Text {
+        MaterialIcon {
             anchors.centerIn: parent
             text: btn.glyph
-            font.family: "Material Symbols Rounded"
             font.pixelSize: 18
             color: btn.filled ? Colors.background : Colors.primary
         }

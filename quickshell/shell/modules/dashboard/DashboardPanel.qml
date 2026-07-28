@@ -113,7 +113,7 @@ Scope {
                         height: root.heightFixed
                             ? Math.min(Config.dashboard.panel.height, (root.screen?.height ?? 800) * 0.95)
                             : Math.min(contentColumn.implicitHeight + 40, (root.screen?.height ?? 800) * 0.85, 900)
-                        radius: 18
+                        radius: Motion.rounding.large
                         // Top corners square so the fillets can merge them into the bar
                         topLeftRadius: 0
                         topRightRadius: 0

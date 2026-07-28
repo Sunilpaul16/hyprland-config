@@ -75,7 +75,7 @@ Item {
 
     // Big stacked HH / MM digital clock
     component DateTimeCard: Rectangle {
-        radius: 18
+        radius: Motion.rounding.large
         color: Colors.layer
         border.width: 1
         border.color: Colors.outline
@@ -146,7 +146,7 @@ Item {
             return viewMonth === now.getMonth() && viewYear === now.getFullYear();
         }
 
-        radius: 18
+        radius: Motion.rounding.large
         color: Colors.layer
         border.width: 1
         border.color: Colors.outline
@@ -287,7 +287,7 @@ Item {
 
                     implicitWidth: 26
                     implicitHeight: 26
-                    radius: 13
+                    radius: width / 2
                     color: dayCell.model.today ? Colors.primary : "transparent"
 
                     Text {
@@ -310,7 +310,7 @@ Item {
 
         implicitWidth: 26
         implicitHeight: 26
-        radius: 13
+        radius: width / 2
         color: navArea.containsMouse ? Colors.outline : "transparent"
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }

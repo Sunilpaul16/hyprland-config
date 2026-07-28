@@ -86,7 +86,7 @@ Scope {
                         anchors.centerIn: parent
                         width: 380
                         implicitHeight: content.implicitHeight + 48
-                        radius: 18
+                        radius: Motion.rounding.large
                         color: Colors.panel
                         border.width: 1
                         border.color: Colors.outline
@@ -139,7 +139,7 @@ Scope {
                                 Layout.fillWidth: true
                                 visible: root.flow?.isResponseRequired ?? false
                                 implicitHeight: 40
-                                radius: 8
+                                radius: Motion.rounding.small
                                 color: Colors.layer
                                 border.width: 1
                                 border.color: Colors.outline
@@ -199,7 +199,7 @@ Scope {
 
                     implicitWidth: label.implicitWidth + 24
                     implicitHeight: 32
-                    radius: 8
+                    radius: Motion.rounding.small
                     color: btn.primary ? Colors.primary : (hoverArea.containsMouse ? Colors.layer : "transparent")
                     border.width: btn.primary ? 0 : 1
                     border.color: Colors.outline

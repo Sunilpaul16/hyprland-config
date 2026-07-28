@@ -7,7 +7,7 @@ import "../../components"
 Rectangle {
     id: root
 
-    radius: 18
+    radius: Motion.rounding.large
     color: Colors.layer
     implicitHeight: row.implicitHeight + 32
 
@@ -41,7 +41,7 @@ Rectangle {
 
             Rectangle {
                 Layout.topMargin: 6
-                radius: 8
+                radius: Motion.rounding.small
                 color: Colors.background
                 implicitWidth: activeSinceText.implicitWidth + 16
                 implicitHeight: activeSinceText.implicitHeight + 6

@@ -25,7 +25,7 @@ ScrollPage {
             maskSource: Rectangle {
                 width: preview.width
                 height: preview.height
-                radius: 18
+                radius: Motion.rounding.large
             }
         }
 

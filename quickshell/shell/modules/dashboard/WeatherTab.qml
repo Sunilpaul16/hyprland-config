@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
+import "../../components"
 
 // Weather tab: header, hero card, detail cards, 7-day forecast strip.
 // Auto-geolocated only — manual location config is out of scope for now
@@ -78,9 +79,8 @@ Item {
                 anchors.centerIn: parent
                 spacing: 24
 
-                Text {
+                MaterialIcon {
                     text: root.hasCurrent ? Weather.iconFor(Weather.weatherCode) : "cloud_off"
-                    font.family: "Material Symbols Rounded"
                     font.pixelSize: 72
                     color: Colors.primary
                 }
@@ -182,9 +182,8 @@ Item {
 
         spacing: 8
 
-        Text {
+        MaterialIcon {
             text: stat.iconName
-            font.family: "Material Symbols Rounded"
             font.pixelSize: 22
             color: Colors.primary
         }
@@ -225,9 +224,8 @@ Item {
             anchors.centerIn: parent
             spacing: 12
 
-            Text {
+            MaterialIcon {
                 text: card.iconName
-                font.family: "Material Symbols Rounded"
                 font.pixelSize: 24
                 color: Colors.primary
             }
@@ -288,10 +286,9 @@ Item {
                 font.pixelSize: 11
             }
 
-            Text {
+            MaterialIcon {
                 Layout.alignment: Qt.AlignHCenter
                 text: Weather.iconFor(dayCard.weatherCode)
-                font.family: "Material Symbols Rounded"
                 font.pixelSize: 28
                 color: Colors.primary
             }

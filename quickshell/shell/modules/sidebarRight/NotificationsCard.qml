@@ -16,7 +16,7 @@ Rectangle {
         return configured.length > 0 ? configured : Directories.dinoImage;
     }
 
-    radius: 18
+    radius: Motion.rounding.large
     color: Colors.layer
 
     ColumnLayout {
@@ -39,7 +39,7 @@ Rectangle {
 
             Rectangle {
                 visible: Notifs.list.length > 0
-                radius: 8
+                radius: Motion.rounding.small
                 color: clearArea.containsMouse ? Colors.outline : Colors.background
                 implicitWidth: clearText.implicitWidth + 20
                 implicitHeight: clearText.implicitHeight + 12

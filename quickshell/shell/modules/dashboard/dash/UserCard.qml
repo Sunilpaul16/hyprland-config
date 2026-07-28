@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import "../../../services"
+import "../../../components"
 
 // Distro logo + avatar + uptime badge + WM pill, laid out horizontally like
 // caelestia's dash/User.qml. Avatar path is config-driven (Config.dashboard.user.avatarPath).
@@ -33,7 +34,7 @@ Rectangle {
         return Qt.hsla((c.hslHue * 360 + degrees + 360) % 360 / 360, c.hslSaturation, c.hslLightness, c.a);
     }
 
-    radius: 18
+    radius: Motion.rounding.large
     color: Colors.layer
     border.width: 1
     border.color: Colors.outline
@@ -85,11 +86,10 @@ Rectangle {
         radius: width / 2
         color: Colors.background
 
-        Text {
+        MaterialIcon {
             anchors.centerIn: parent
             visible: pfp.status !== Image.Ready
             text: "person"
-            font.family: "Material Symbols Rounded"
             font.pixelSize: root.avatarSize * 0.45
             color: Colors.textMuted
         }
@@ -122,10 +122,9 @@ Rectangle {
         radius: width / 2
         color: root.uptimeBg
 
-        Text {
+        MaterialIcon {
             anchors.centerIn: parent
             text: "clock_arrow_up"
-            font.family: "Material Symbols Rounded"
             font.pixelSize: Config.dashboard.user.uptimeSize * 0.55
             color: Colors.primary
         }
@@ -162,10 +161,9 @@ Rectangle {
             anchors.centerIn: parent
             spacing: 4
 
-            Text {
+            MaterialIcon {
                 anchors.verticalCenter: parent.verticalCenter
                 text: "select_window"
-                font.family: "Material Symbols Rounded"
                 font.pixelSize: 13
                 color: Colors.primary
             }

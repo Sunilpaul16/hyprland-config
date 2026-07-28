@@ -4,6 +4,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Services.Mpris
 import "../../services"
+import "../../components"
 
 // Media tab: full-page now-playing — cover art, draggable seek, transport controls
 Item {
@@ -234,9 +235,8 @@ Item {
                     elide: Text.ElideRight
                 }
 
-                Text {
+                MaterialIcon {
                     text: root.playerMenuOpen ? "expand_less" : "expand_more"
-                    font.family: "Material Symbols Rounded"
                     font.pixelSize: 16
                     color: Colors.textMuted
                 }
@@ -395,11 +395,10 @@ Item {
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-        Text {
+        MaterialIcon {
             id: icon
             anchors.centerIn: parent
             text: toggleBtn.iconName
-            font.family: "Material Symbols Rounded"
             font.pixelSize: 16
             color: toggleBtn.active ? Colors.background : Colors.textMuted
 

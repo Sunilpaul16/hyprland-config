@@ -160,7 +160,7 @@ Rectangle {
                         readonly property int count: card.modelData.actions.length
                         width: (headerCol.width - (count - 1) * 8) / count
                         height: 28
-                        radius: 8
+                        radius: Motion.rounding.small
                         color: btnArea.containsMouse ? Colors.outline : Colors.background
 
                         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
@@ -196,7 +196,7 @@ Rectangle {
             anchors.rightMargin: 2
             width: 16
             height: 16
-            radius: 8
+            radius: Motion.rounding.small
             visible: card.modelData.expanded && card.modelData.body.length > 0
             color: copyArea.containsMouse ? Colors.outline : "transparent"
 
@@ -226,7 +226,7 @@ Rectangle {
             anchors.rightMargin: 2
             width: 16
             height: 16
-            radius: 8
+            radius: Motion.rounding.small
             visible: card.modelData.expanded
             color: closeArea.containsMouse ? Colors.outline : "transparent"
 

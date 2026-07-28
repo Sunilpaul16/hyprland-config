@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../../services"
+import "../../../components"
 
 // Icon + temp + one-line description — compact weather summary.
 // See WeatherTab.qml for the full page.
@@ -9,7 +10,7 @@ Rectangle {
 
     readonly property bool hasData: !Weather.loading && !Weather.hasError && !isNaN(Weather.currentTemp)
 
-    radius: 18
+    radius: Motion.rounding.large
     color: Colors.layer
     border.width: 1
     border.color: Colors.outline
@@ -22,9 +23,8 @@ Rectangle {
         anchors.centerIn: parent
         spacing: 20
 
-        Text {
+        MaterialIcon {
             text: root.hasData ? Weather.iconFor(Weather.weatherCode) : "cloud_off"
-            font.family: "Material Symbols Rounded"
             font.pixelSize: Config.dashboard.weather.iconSize
             color: Colors.primary
         }

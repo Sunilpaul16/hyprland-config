@@ -14,7 +14,7 @@ Rectangle {
 
     width: 26
     height: 26
-    radius: 13
+    radius: width / 2
     color: notif.critical ? Colors.error : Colors.background
     clip: true
 

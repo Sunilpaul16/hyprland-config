@@ -75,7 +75,7 @@ Scope {
                         anchors.centerIn: parent
                         width: Math.min(content.implicitWidth + 56, (root.screen?.width ?? 1280) * 0.92)
                         height: content.implicitHeight + 56
-                        radius: 18
+                        radius: Motion.rounding.large
                         color: Colors.panel
                         border.width: 1
                         border.color: Colors.outline

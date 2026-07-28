@@ -84,7 +84,7 @@ ScrollPage {
             maskSource: Rectangle {
                 width: hero.width
                 height: hero.height
-                radius: 18
+                radius: Motion.rounding.large
             }
         }
 

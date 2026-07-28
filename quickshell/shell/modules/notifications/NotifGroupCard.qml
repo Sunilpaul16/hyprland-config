@@ -46,7 +46,7 @@ Item {
                 Rectangle {
                     width: 26
                     height: 26
-                    radius: 13
+                    radius: width / 2
                     color: root.group?.urgency === NotificationUrgency.Critical ? Colors.error : Colors.background
                     clip: true
 

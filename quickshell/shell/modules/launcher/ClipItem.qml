@@ -88,7 +88,7 @@ Item {
                 Rectangle {
                     id: thumbClip
                     anchors.fill: parent
-                    radius: 8
+                    radius: Motion.rounding.small
                     color: Colors.layer
                     visible: !root.isAction && root.modelData.isImage
 

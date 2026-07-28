@@ -65,7 +65,7 @@ Item {
 
             anchors.fill: parent
             anchors.margins: root.isCurrent ? 3 : 2
-            radius: 8
+            radius: Motion.rounding.small
             color: Colors.background
 
             Image {
