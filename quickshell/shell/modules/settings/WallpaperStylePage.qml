@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../../services"
 
-// Wallpaper & style page. Layout only — the pills navigate nowhere and the
-// switches hold their own state rather than writing any config
+// Wallpaper & style page — preview, wallpaper/colour settings, fonts
 ScrollPage {
     id: root
 

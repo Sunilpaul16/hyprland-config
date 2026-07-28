@@ -134,6 +134,7 @@ Item {
     // Tracks whether a not-yet-confirmed --preview needs reverting on close
     property bool hasPreviewed: false
 
+    // Wallpaper preview lifecycle
     function previewWallpaper(entry): void {
         if (!entry)
             return;
@@ -158,6 +159,7 @@ Item {
         Quickshell.execDetached(["bash", "-c", `"${Directories.switchwallScript}" "$(cat "${Directories.currentWallpaperFile}")"`]);
     }
 
+    // Acting on the current selection
     function activateCurrent(): void {
         if (content.mode === "apps")
             content.launchApp(content.appResults[verticalList.currentIndex]);

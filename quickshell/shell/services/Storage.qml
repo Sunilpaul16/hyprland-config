@@ -41,6 +41,7 @@ Singleton {
 
     property string _dfText: ""
 
+    // df + lsblk parsing
     function flattenLsblk(node, map): void {
         map[node.name] = { pkname: node.pkname, mountpoint: node.mountpoint };
         if (node.children) {

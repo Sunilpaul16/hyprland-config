@@ -169,6 +169,7 @@ Singleton {
         }
     }
 
+    // Poll tick
     Timer {
         interval: Config.polling.cpu
         running: root.refCount > 0

@@ -79,6 +79,7 @@ Rectangle {
         width: root.width * 0.55
         spacing: 4
 
+        // Temperature readout
         RowLayout {
             spacing: 4
 

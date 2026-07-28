@@ -38,6 +38,7 @@ Item {
             }
         }
 
+        // Backing disc behind the art
         Rectangle {
             anchors.fill: parent
             radius: width / 2

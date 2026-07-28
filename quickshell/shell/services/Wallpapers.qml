@@ -38,6 +38,7 @@ Singleton {
     property string current: ""
     readonly property string currentPreview: root.current === "" ? "" : (root.isVideoName(root.current) ? root.thumbPathFor(root.current) : root.current)
 
+    // Current wallpaper, tracked live
     FileView {
         path: Directories.currentWallpaperFile
         watchChanges: true

@@ -166,6 +166,7 @@ Rectangle {
             asynchronous: true
         }
 
+        // Takes the gif's space when it is disabled
         Item {
             Layout.fillHeight: true
             visible: !Config.dashboard.media.gifEnabled

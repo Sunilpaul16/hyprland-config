@@ -104,6 +104,7 @@ ColumnLayout {
         return root.toggleModels.find(t => t.toggleId === toggleId);
     }
 
+    // Layout mutations — each writes Persistent.quickToggleLayout
     function addToggle(toggleId) {
         const list = Persistent.quickToggleLayout.slice();
         list.push({ type: toggleId, size: "small" });

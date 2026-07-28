@@ -151,6 +151,7 @@ Singleton {
         path: "/proc/net/dev"
     }
 
+    // Per-second sampling tick
     Timer {
         interval: 1000
         running: root.refCount > 0

@@ -123,6 +123,7 @@ Singleton {
         onTriggered: root.refresh()
     }
 
+    // Background check schedule
     Timer {
         interval: Math.max(15, Config.updates.intervalMinutes) * 60000
         running: root.backgroundChecking && Config.ready && Config.updates.autoCheck
@@ -130,6 +131,7 @@ Singleton {
         onTriggered: root.refresh()
     }
 
+    // Keeps relative "x ago" labels fresh
     Timer {
         interval: 60000
         running: true

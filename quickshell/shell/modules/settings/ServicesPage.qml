@@ -1,8 +1,7 @@
 import QtQuick.Layouts
 import "../../services"
 
-// Services page. Layout only — the intervals shown are the ones the polling
-// singletons already hardcode, surfaced here as if they were configurable
+// Services page — notification, polling, weather and recorder settings
 ScrollPage {
     title: "Services"
 

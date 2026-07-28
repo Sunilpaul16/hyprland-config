@@ -181,6 +181,7 @@ Rectangle {
         }
     }
 
+    // Speech-bubble dots trailing the WM pill
     Rectangle {
         id: bubbleLarge
 

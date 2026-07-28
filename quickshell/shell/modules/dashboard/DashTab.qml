@@ -162,6 +162,7 @@ Item {
             }
         }
 
+        // Middle-click jumps back to today
         MouseArea {
             anchors.fill: parent
             acceptedButtons: Qt.MiddleButton
