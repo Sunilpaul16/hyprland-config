@@ -181,7 +181,7 @@ ColumnLayout {
         Repeater {
             model: root.orderedVisible
 
-            ToggleSlot {
+            QuickToggleSlot {
                 required property var modelData
                 required property int index
 
@@ -190,188 +190,18 @@ ColumnLayout {
                 editMode: root.editMode
                 isFirst: index === 0
                 isLast: index === root.orderedVisible.length - 1
+
+                onResizeRequested: root.cycleSize(modelData.type)
+                onHideRequested: root.removeToggle(modelData.type)
+                onMoveRequested: delta => root.moveToggle(modelData.type, delta)
             }
         }
     }
 
-    // Hidden/unused toggles — edit mode only, tap "+" to bring one back
-    ColumnLayout {
+    QuickTogglesHiddenPanel {
         Layout.fillWidth: true
         visible: root.editMode && root.hiddenModels.length > 0
-        spacing: 6
-
-        Text {
-            text: "Hidden"
-            color: Colors.textMuted
-            font.pixelSize: 11
-        }
-
-        Flow {
-            Layout.fillWidth: true
-            spacing: 8
-
-            Repeater {
-                model: root.hiddenModels
-
-                Item {
-                    id: hiddenSlot
-                    required property QuickToggleModel modelData
-
-                    implicitWidth: 40
-                    implicitHeight: 40
-
-                    TogglePill {
-                        anchors.fill: parent
-                        iconName: hiddenSlot.modelData.icon
-                        active: false
-                        enabled: false
-                        opacity: 0.5
-                    }
-
-                    // Add-back badge
-                    Rectangle {
-                        width: 14
-                        height: 14
-                        radius: 7
-                        anchors { top: parent.top; right: parent.right; margins: -2 }
-                        color: Colors.primary
-                        border.color: Colors.surface
-                        border.width: 1.5
-
-                        MaterialIcon {
-                            anchors.centerIn: parent
-                            text: "add"
-                            color: Colors.background
-                            font.pixelSize: 9
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.addToggle(hiddenSlot.modelData.toggleId)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // A single visible toggle: the pill, plus edit-mode hide/move/resize controls
-    component ToggleSlot: Item {
-        id: slot
-
-        required property QuickToggleModel toggleModel
-        required property string size // "small" | "large"
-        property bool editMode: false
-        property bool isFirst: false
-        property bool isLast: false
-
-        readonly property bool large: slot.size === "large"
-
-        implicitWidth: pill.implicitWidth
-        implicitHeight: 40
-
-        TogglePill {
-            id: pill
-            anchors.fill: parent
-            iconName: slot.toggleModel.icon
-            active: slot.toggleModel.toggled
-            enabled: slot.toggleModel.available && !slot.editMode
-            large: slot.large
-            label: slot.toggleModel.name
-            onClicked: slot.toggleModel.mainAction()
-            onAltClicked: if (slot.toggleModel.altAction) slot.toggleModel.altAction()
-        }
-
-        // Edit-mode outline + tap-to-resize
-        MouseArea {
-            anchors.fill: parent
-            enabled: slot.editMode
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.cycleSize(slot.toggleModel.toggleId)
-
-            Rectangle {
-                anchors.fill: parent
-                radius: 12
-                color: "transparent"
-                border.width: 1
-                border.color: Colors.outline
-            }
-        }
-
-        // Hide badge
-        Rectangle {
-            visible: slot.editMode
-            width: 14
-            height: 14
-            radius: 7
-            anchors { top: parent.top; right: parent.right; margins: -2 }
-            color: Colors.outline
-            border.color: Colors.surface
-            border.width: 1.5
-
-            MaterialIcon {
-                anchors.centerIn: parent
-                text: "close"
-                color: Colors.background
-                font.pixelSize: 9
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.removeToggle(slot.toggleModel.toggleId)
-            }
-        }
-
-        // Move earlier badge
-        Rectangle {
-            visible: slot.editMode && !slot.isFirst
-            width: 14
-            height: 14
-            radius: 7
-            anchors { bottom: parent.bottom; left: parent.left; margins: -2 }
-            color: Colors.layer
-            border.color: Colors.outline
-            border.width: 1
-
-            MaterialIcon {
-                anchors.centerIn: parent
-                text: "chevron_left"
-                color: Colors.text
-                font.pixelSize: 9
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.moveToggle(slot.toggleModel.toggleId, -1)
-            }
-        }
-
-        // Move later badge
-        Rectangle {
-            visible: slot.editMode && !slot.isLast
-            width: 14
-            height: 14
-            radius: 7
-            anchors { bottom: parent.bottom; right: parent.right; margins: -2 }
-            color: Colors.layer
-            border.color: Colors.outline
-            border.width: 1
-
-            MaterialIcon {
-                anchors.centerIn: parent
-                text: "chevron_right"
-                color: Colors.text
-                font.pixelSize: 9
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.moveToggle(slot.toggleModel.toggleId, 1)
-            }
-        }
+        models: root.hiddenModels
+        onAddRequested: toggleId => root.addToggle(toggleId)
     }
 }
