@@ -94,7 +94,7 @@ Item {
                 id: track
                 Layout.fillWidth: true
                 visible: Media.hasPlayer
-                height: 4
+                implicitHeight: 4
                 radius: 2
                 color: Colors.layer
 

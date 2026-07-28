@@ -20,8 +20,8 @@ Item {
         Rectangle {
             id: dot
             Layout.alignment: Qt.AlignVCenter
-            width: 10
-            height: 10
+            implicitWidth: 10
+            implicitHeight: 10
             radius: 5
             color: "#e64553"
 

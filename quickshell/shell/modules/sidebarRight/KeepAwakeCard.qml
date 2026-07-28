@@ -61,8 +61,8 @@ Rectangle {
         // Keep Awake toggle switch
         Rectangle {
             Layout.alignment: Qt.AlignVCenter
-            width: 40
-            height: 22
+            implicitWidth: 40
+            implicitHeight: 22
             radius: height / 2
             color: IdleInhibitState.enabled ? Colors.primary : Colors.outline
 

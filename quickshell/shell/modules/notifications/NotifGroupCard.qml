@@ -44,8 +44,8 @@ Item {
 
                 // Representative icon
                 Rectangle {
-                    width: 26
-                    height: 26
+                    implicitWidth: 26
+                    implicitHeight: 26
                     radius: width / 2
                     color: root.group?.urgency === NotificationUrgency.Critical ? Colors.error : Colors.background
                     clip: true
