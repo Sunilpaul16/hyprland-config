@@ -1,9 +1,10 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import "../../services"
 
 // System header (sidebar) — distro logo + uptime on the left, action icons on
-// the right. Refresh is a placeholder; settings and power open their overlays.
+// the right: restart the shell, open settings, open the session screen.
 Rectangle {
     id: root
 
@@ -32,10 +33,11 @@ Rectangle {
             elide: Text.ElideRight
         }
 
-        // Placeholder — no action wired yet
+        // Restart the shell — same command as SUPER + CTRL + R
         IconAction {
             iconName: "refresh"
             iconColor: Colors.textMuted
+            onTriggered: Quickshell.execDetached(["bash", "-c", "pkill -x qs; qs -n -c shell"])
         }
 
         IconAction {
