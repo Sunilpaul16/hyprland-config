@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Layouts
 import "../../services"
 
 // Connected devices page. Live against services/BluetoothStatus.qml — every

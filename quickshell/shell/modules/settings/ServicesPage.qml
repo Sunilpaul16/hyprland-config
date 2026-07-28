@@ -1,4 +1,3 @@
-import QtQuick.Layouts
 import "../../services"
 
 // Services page — notification, polling, weather and recorder settings

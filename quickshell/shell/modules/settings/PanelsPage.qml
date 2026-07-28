@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Layouts
 import "../../services"
 
 // Panels page. Rows naming a real Config key read and write it live; the

@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Layouts
 import "../../services"
 
 // Updates page. Live against services/Updates.qml. The notification rows at

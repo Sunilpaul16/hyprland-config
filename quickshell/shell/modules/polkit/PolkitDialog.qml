@@ -3,7 +3,6 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
-import Quickshell.Hyprland
 import "../../services"
 
 // Polkit authentication dialog — replaces the system's default (unthemed)

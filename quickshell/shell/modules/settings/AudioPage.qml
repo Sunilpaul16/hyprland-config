@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Layouts
 import "../../services"
 
 // Audio page. Output/input/per-app are live against services/Audio.qml;
