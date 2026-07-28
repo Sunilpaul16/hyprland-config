@@ -46,7 +46,7 @@ ColumnLayout {
                 Rectangle {
                     width: 14
                     height: 14
-                    radius: 7
+                    radius: width / 2
                     anchors { top: parent.top; right: parent.right; margins: -2 }
                     color: Colors.primary
                     border.color: Colors.surface

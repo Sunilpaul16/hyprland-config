@@ -124,7 +124,7 @@ Item {
         z: 100
         width: 48
         height: 48
-        radius: 10
+        radius: Motion.rounding.item
         color: Colors.panel
         border.width: 2
         border.color: Colors.primary

@@ -69,7 +69,7 @@ Item {
         anchors.topMargin: 6
         implicitWidth: Math.max(pill.implicitWidth, list.implicitWidth + 12)
         implicitHeight: list.implicitHeight + 12
-        radius: 12
+        radius: Motion.rounding.normal
         // Surface, not background — this sits on top of the dashboard
         // panel's own Colors.background, so it needs contrast against it
         color: Colors.layer

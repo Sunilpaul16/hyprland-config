@@ -30,7 +30,7 @@ Item {
     Rectangle {
         id: bg
         anchors.fill: parent
-        radius: 12
+        radius: Motion.rounding.normal
         color: Colors.layer
         border.width: dropArea.containsDrag ? 3 : (root.isFocused ? 2 : 1)
         border.color: dropArea.containsDrag || root.isFocused ? Colors.primary : Colors.outline

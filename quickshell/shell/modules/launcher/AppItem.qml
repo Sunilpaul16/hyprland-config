@@ -19,7 +19,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         anchors.margins: 2
-        radius: 10
+        radius: Motion.rounding.item
         color: root.isCurrent ? Colors.primary : "transparent"
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }

@@ -17,7 +17,7 @@ Item {
     // Drop-shadow glow, same effect module as UserCard's avatar
     layer.enabled: true
     layer.effect: DropShadow {
-        radius: 10
+        radius: Motion.rounding.item
         samples: 21
         color: Colors.background
         opacity: 0.4

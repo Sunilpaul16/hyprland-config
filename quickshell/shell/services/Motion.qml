@@ -66,9 +66,14 @@ QtObject {
 
     // Corner-radius tokens — matched to this repo's actual in-use values
     // (18 is overwhelmingly the most common card radius already)
+    // Corner radius ladder, 8-18 in 2px steps. Names say where each step is used —
+    // pick an existing one rather than introducing a new value
     readonly property QtObject rounding: QtObject {
-        readonly property int small: 8
-        readonly property int normal: 13
-        readonly property int large: 18
+        readonly property int small: 8   // chips, small buttons, inner elements
+        readonly property int item: 10   // launcher and overview list/grid items
+        readonly property int normal: 12 // toggles, pills, inner menu rows
+        readonly property int card: 14   // notification cards, dropdown surfaces
+        readonly property int nested: 16 // cards nested inside a dashboard tab
+        readonly property int large: 18  // top-level cards and panels
     }
 }

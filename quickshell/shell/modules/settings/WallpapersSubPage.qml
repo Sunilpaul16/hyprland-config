@@ -139,7 +139,7 @@ ScrollPage {
                     maskSource: Rectangle {
                         width: tile.width
                         height: tile.height
-                        radius: 14
+                        radius: Motion.rounding.card
                     }
                 }
 

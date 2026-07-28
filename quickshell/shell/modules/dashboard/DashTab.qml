@@ -225,7 +225,7 @@ Item {
 
                     implicitWidth: todayLabel.implicitWidth + 16
                     implicitHeight: 24
-                    radius: 12
+                    radius: Motion.rounding.normal
                     color: calCard.onCurrentMonth ? "transparent" : Colors.primary
                     border.width: calCard.onCurrentMonth ? 1 : 0
                     border.color: Colors.outline

@@ -8,7 +8,7 @@ Rectangle {
     required property Notif modelData
 
     implicitHeight: content.implicitHeight + 20
-    radius: 14
+    radius: Motion.rounding.card
     color: Colors.layer
     border.width: modelData.critical ? 1 : 0
     border.color: Colors.error

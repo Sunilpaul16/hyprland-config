@@ -52,7 +52,7 @@ Item {
         // Fills the slot, so the row's spacing is the only gap between cards
         width: root.width
         height: root.isCurrent ? 107 : 84
-        radius: 10
+        radius: Motion.rounding.item
         color: Colors.layer
         border.width: root.isCurrent ? 2 : 0
         border.color: Colors.primary

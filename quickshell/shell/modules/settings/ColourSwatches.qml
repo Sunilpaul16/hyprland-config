@@ -33,7 +33,7 @@ Flow {
 
             implicitWidth: 46
             implicitHeight: 46
-            radius: 12
+            radius: Motion.rounding.normal
             color: modelData.color
             // Dark roles would vanish against the page, so outline everything
             border.width: 1

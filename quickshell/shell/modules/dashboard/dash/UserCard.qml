@@ -152,7 +152,7 @@ Rectangle {
         anchors.topMargin: 14
         implicitWidth: Math.min(wmLabel.implicitWidth + 20, parent.width - x - 16)
         implicitHeight: wmLabel.implicitHeight + 12
-        radius: 12
+        radius: Motion.rounding.normal
         color: root.wmBg
 
         Row {

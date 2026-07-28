@@ -125,7 +125,7 @@ Item {
                     y: seekSlider.topPadding + seekSlider.availableHeight / 2 - height / 2
                     implicitWidth: 14
                     implicitHeight: 14
-                    radius: 7
+                    radius: width / 2
                     color: seekSlider.pressed ? Colors.text : Colors.primary
                 }
             }

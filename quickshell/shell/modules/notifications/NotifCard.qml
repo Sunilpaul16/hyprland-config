@@ -12,7 +12,7 @@ Rectangle {
     readonly property string timeStr: Qt.formatDateTime(modelData.time, "hh:mm")
 
     implicitHeight: content.implicitHeight + 20
-    radius: 14
+    radius: Motion.rounding.card
     color: Colors.layer
     border.width: modelData.critical ? 1 : 0
     border.color: Colors.error

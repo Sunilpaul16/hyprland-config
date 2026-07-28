@@ -31,7 +31,7 @@ Item {
         Rectangle {
             Layout.preferredWidth: root.artSize
             Layout.preferredHeight: root.artSize
-            radius: 12
+            radius: Motion.rounding.normal
             color: Colors.layer
             clip: true
 

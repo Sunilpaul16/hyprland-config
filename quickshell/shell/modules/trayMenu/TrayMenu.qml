@@ -78,7 +78,7 @@ Scope {
                         y: Math.max(Config.bar.height, Math.min(TrayMenuState.anchorY, root.height - implicitHeight - 8))
                         implicitWidth: Math.max(160, list.implicitWidth + 12)
                         implicitHeight: list.implicitHeight + 12
-                        radius: 12
+                        radius: Motion.rounding.normal
                         color: Colors.panel
                         border.width: 1
                         border.color: Colors.outline

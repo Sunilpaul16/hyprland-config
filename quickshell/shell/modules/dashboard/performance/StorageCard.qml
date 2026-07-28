@@ -174,7 +174,7 @@ Rectangle {
                 anchors.bottomMargin: 6
                 implicitWidth: Math.max(pill.implicitWidth, list.implicitWidth + 12)
                 implicitHeight: list.implicitHeight + 12
-                radius: 12
+                radius: Motion.rounding.normal
                 color: Colors.background
                 border.width: 1
                 border.color: Colors.outlineVariant

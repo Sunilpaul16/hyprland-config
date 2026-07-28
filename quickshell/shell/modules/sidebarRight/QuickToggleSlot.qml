@@ -44,7 +44,7 @@ Item {
 
         Rectangle {
             anchors.fill: parent
-            radius: 12
+            radius: Motion.rounding.normal
             color: "transparent"
             border.width: 1
             border.color: Colors.outline
@@ -56,7 +56,7 @@ Item {
         visible: slot.editMode
         width: 14
         height: 14
-        radius: 7
+        radius: width / 2
         anchors { top: parent.top; right: parent.right; margins: -2 }
         color: Colors.outline
         border.color: Colors.surface
@@ -81,7 +81,7 @@ Item {
         visible: slot.editMode && !slot.isFirst
         width: 14
         height: 14
-        radius: 7
+        radius: width / 2
         anchors { bottom: parent.bottom; left: parent.left; margins: -2 }
         color: Colors.layer
         border.color: Colors.outline
@@ -106,7 +106,7 @@ Item {
         visible: slot.editMode && !slot.isLast
         width: 14
         height: 14
-        radius: 7
+        radius: width / 2
         anchors { bottom: parent.bottom; right: parent.right; margins: -2 }
         color: Colors.layer
         border.color: Colors.outline

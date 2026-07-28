@@ -18,7 +18,7 @@ Rectangle {
 
     implicitWidth: large ? layout.implicitWidth + 24 : 40
     implicitHeight: 40
-    radius: 12
+    radius: Motion.rounding.normal
     color: root.active ? Colors.primary : (hoverArea.containsMouse ? Colors.layer : Colors.panel)
     opacity: root.enabled ? 1 : 0.4
 

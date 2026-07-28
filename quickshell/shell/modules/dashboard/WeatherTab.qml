@@ -215,7 +215,7 @@ Item {
 
         Layout.fillWidth: true
         Layout.preferredHeight: 64
-        radius: 16
+        radius: Motion.rounding.nested
         color: Colors.layer
         border.width: 1
         border.color: Colors.outline
@@ -258,7 +258,7 @@ Item {
         required property real minTemp
         required property real maxTemp
 
-        radius: 16
+        radius: Motion.rounding.nested
         color: Colors.layer
         border.width: 1
         border.color: Colors.outline

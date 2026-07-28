@@ -106,7 +106,7 @@ Item {
 
             Rectangle {
                 anchors.fill: parent
-                radius: 14
+                radius: Motion.rounding.card
                 color: Colors.surface
                 border.width: 1
                 border.color: Colors.outlineVariant
@@ -128,7 +128,7 @@ Item {
                             Layout.fillWidth: true
                             implicitWidth: itemLabel.implicitWidth + 16 * 2 + 26
                             implicitHeight: 36
-                            radius: 12
+                            radius: Motion.rounding.normal
                             color: modelData.value === root.current ? Colors.secondaryContainer : itemHover.containsMouse ? Colors.background : "transparent"
 
                             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
