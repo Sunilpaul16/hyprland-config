@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
+import "../../components"
 
 
 // Toggle pill button; `large` widens the pill and reveals a label (comparison.md #36)

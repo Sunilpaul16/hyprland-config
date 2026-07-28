@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
-import "../sidebarRight"
 
 // About page. Every value here is real: SysInfo reads /etc and /proc directly,
 // AboutInfo shells out for the three facts a file can't answer, and the display

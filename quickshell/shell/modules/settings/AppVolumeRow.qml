@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.Pipewire
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // One application's volume, as a settings row. The sidebar's
 // VolumeMixerEntry does the same job in its own layout; this shares the

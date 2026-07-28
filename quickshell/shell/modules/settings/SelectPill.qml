@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // Dropdown-style control — current value plus a chevron.
 //

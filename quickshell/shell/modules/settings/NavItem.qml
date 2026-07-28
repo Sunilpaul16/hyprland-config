@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // Nav pane row — icon chip + label/description, with corner radii encoding
 // where it sits in its category run

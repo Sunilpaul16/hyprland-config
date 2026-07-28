@@ -1,6 +1,6 @@
 import QtQuick
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // M3 switch — the thumb carries a check/cross glyph and grows when on.
 // Externally driven: a click only emits toggled(), it never writes `checked`

@@ -1,6 +1,6 @@
 import QtQuick
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // Page contract — large title above a content area filling the rest. Real
 // pages subclass this and set `title`; children land in the body Item

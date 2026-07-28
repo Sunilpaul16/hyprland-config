@@ -1,6 +1,5 @@
 import QtQuick
 import "../../services"
-import "../sidebarRight"
 
 // Session/power actions column — right-edge drawer content
 Column {

@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // Tonal pill — leading icon + label, used for a page's sub-navigation
 Rectangle {

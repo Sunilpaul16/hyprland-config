@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../../services"
 import "quickToggles"
+import "../../components"
 
 // Quick toggles row
 ColumnLayout {

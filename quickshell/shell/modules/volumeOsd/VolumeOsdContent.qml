@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // Speaker + mic vertical sliders — right-edge drawer content
 Column {

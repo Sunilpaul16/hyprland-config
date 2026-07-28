@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // Single session action: round icon button, executes immediately on click
 Rectangle {

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Bluetooth
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // One Bluetooth device, as a settings row. The sidebar's
 // BluetoothDeviceItem does the same job in its own layout; this shares the

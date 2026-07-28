@@ -3,7 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../../services"
-import "../bar"
+import "../../components"
 
 // Session/power overlay window — right-edge slide-in drawer
 Scope {

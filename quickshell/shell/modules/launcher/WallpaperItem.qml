@@ -1,6 +1,6 @@
 import QtQuick
 import "../../services"
-import "../bar"
+import "../../components"
 
 
 // Wallpaper list item

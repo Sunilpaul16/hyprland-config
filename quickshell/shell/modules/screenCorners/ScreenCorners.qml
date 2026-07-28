@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import "../../services"
-import "../bar"
+import "../../components"
 
 // Fake full-screen corner rounding + right-corner hot zones toggling the sidebar (comparison.md #30)
 Scope {

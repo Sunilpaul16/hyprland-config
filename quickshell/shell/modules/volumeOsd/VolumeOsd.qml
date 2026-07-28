@@ -3,7 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../../services"
-import "../bar"
+import "../../components"
 
 // Volume/mic OSD window — right-edge slide-in drawer, auto-show-on-change
 Scope {

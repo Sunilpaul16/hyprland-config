@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // Wallpaper picker, reached from Wallpaper & style's Wallpapers pill.
 // Modelled on caelestia's WallpaperSelect — Browse/Random above a large

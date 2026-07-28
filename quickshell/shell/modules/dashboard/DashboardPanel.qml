@@ -4,8 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../../services"
-import "../sidebarRight"
-import "../bar"
+import "../../components"
 
 // Dashboard overlay window
 Scope {

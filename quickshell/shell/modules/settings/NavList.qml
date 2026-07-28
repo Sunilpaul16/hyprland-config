@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // Nav pane — search field above a scrolling, category-grouped page list
 Item {

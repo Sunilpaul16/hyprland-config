@@ -1,6 +1,6 @@
 import QtQuick
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // Settings panel content — nav pane on the left, page area on the right
 Item {

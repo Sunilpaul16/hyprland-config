@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // Wallpaper & style page. Layout only — the pills navigate nowhere and the
 // switches hold their own state rather than writing any config

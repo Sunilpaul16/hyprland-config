@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
+import "../../components"
 
 // Bluetooth device picker, overlaid on the sidebar's card stack (comparison.md #25)
 Rectangle {

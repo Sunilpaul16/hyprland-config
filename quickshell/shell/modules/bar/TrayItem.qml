@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell.Services.SystemTray
 import "../../services"
+import "../../components"
 
 // Single tray icon: pixmap, hover highlight, click handling, tooltip
 Item {

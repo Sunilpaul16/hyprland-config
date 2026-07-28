@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Bluetooth
 import "../../services"
+import "../../components"
 
 // One Bluetooth device row inside BluetoothDialog.qml (comparison.md #25)
 RowLayout {

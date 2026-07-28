@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import "../../sidebarRight"
+import "../../../components"
 import "../../../services"
 
 // CPU/GPU hero card: usage ring + icon top-left, name beside it, temperature

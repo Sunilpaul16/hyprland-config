@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // Dropdown for option lists too long to cycle through (SelectPill's mode).
 // The list is a PopupWindow rather than an Item inside the panel: a menu of

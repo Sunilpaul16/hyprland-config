@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Shapes
 import QtQuick.Layouts
-import "../../sidebarRight"
+import "../../../components"
 import "../../../services"
 
 // Network throughput: auto-scaling sparkline (down/up) over labelled

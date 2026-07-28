@@ -1,6 +1,6 @@
 import QtQuick
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // Fading up/icon/down affordance for a scroll-to-adjust zone
 Column {

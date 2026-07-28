@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
-import "../bar"
+import "../../components"
 
 // The generated palette, shown rather than described. Reads Colors directly,
 // so it re-tints the moment switchwall rewrites the theme

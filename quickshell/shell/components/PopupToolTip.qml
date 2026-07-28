@@ -1,6 +1,6 @@
 import QtQuick
 import Quickshell
-import "../../services"
+import "../services"
 
 // Hover tooltip as its own PopupWindow, escaping the bar's clip bounds (comparison.md #22)
 Loader {

@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import "../../services"
+import "../../components"
 
 // System header (sidebar) — distro logo + uptime on the left, action icons on
 // the right: restart the shell, open settings, open the session screen.

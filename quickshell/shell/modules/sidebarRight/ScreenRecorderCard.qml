@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import "../../services"
+import "../../components"
 
 // Screen Recorder + Recordings card (sidebar)
 Rectangle {

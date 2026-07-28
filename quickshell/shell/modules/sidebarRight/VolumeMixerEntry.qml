@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.Pipewire
 import "../../services"
+import "../../components"
 
 // One app's volume row inside VolumeMixerDialog.qml (comparison.md #25)
 RowLayout {

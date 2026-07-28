@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import "../../sidebarRight"
+import "../../../components"
 import "../../../services"
 
 // Storage: 270° usage arc (icon + percentage inside) beside the disk's

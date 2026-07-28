@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // Body used by every page that has no real content yet
 PageBase {

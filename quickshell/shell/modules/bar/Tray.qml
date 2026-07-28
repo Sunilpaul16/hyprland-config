@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell.Services.SystemTray
 import "../../services"
-import "../sidebarRight"
+import "../../components"
 
 // System tray: row of TrayItem icons, reactive to SystemTray.items
 Item {

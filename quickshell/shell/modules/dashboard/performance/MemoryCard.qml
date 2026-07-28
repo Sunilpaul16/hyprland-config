@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import "../../sidebarRight"
+import "../../../components"
 import "../../../services"
 
 // Memory: 270° usage arc with percentage inside, used/total underneath.
