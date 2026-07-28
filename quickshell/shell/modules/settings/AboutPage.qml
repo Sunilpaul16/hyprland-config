@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import "../../services"
 
 // About page. Every value here is real: SysInfo reads /etc and /proc directly,
@@ -199,12 +200,14 @@ ScrollPage {
 
         SettingRow {
             last: true
+            live: true
             label: "Restart shell"
             subtext: "Same as SUPER+CTRL+R"
 
             SelectPill {
                 value: "Restart"
                 icon: "restart_alt"
+                onClicked: Quickshell.execDetached(["bash", "-c", "pkill -x qs; qs -n -c shell"])
             }
         }
     }
@@ -216,23 +219,27 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "end-4/dots-hyprland"
             subtext: "Panel loader, focus grab, settings layout ideas"
 
             SelectPill {
                 value: "GitHub"
                 icon: "open_in_new"
+                onClicked: Quickshell.execDetached(["xdg-open", "https://github.com/end-4/dots-hyprland"])
             }
         }
 
         SettingRow {
             last: true
+            live: true
             label: "caelestia-dots/shell"
             subtext: "Nexus settings vocabulary, dashboard card sizing"
 
             SelectPill {
                 value: "GitHub"
                 icon: "open_in_new"
+                onClicked: Quickshell.execDetached(["xdg-open", "https://github.com/caelestia-dots/shell"])
             }
         }
     }

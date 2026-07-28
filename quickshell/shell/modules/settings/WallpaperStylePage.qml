@@ -50,6 +50,9 @@ ScrollPage {
 
         SettingRow {
             live: true
+            // The two opacity rows below only exist while transparency is on,
+            // so this row is the run's end whenever it's off
+            last: !Config.appearance.transparency
             label: "Transparency"
             subtext: "Translucent panel backgrounds, blurred by Hyprland"
 
@@ -80,6 +83,7 @@ ScrollPage {
 
         SettingRow {
             live: true
+            last: true
             visible: Config.appearance.transparency
             label: "Panel opacity"
             subtext: "The panel background behind the cards"
@@ -96,17 +100,9 @@ ScrollPage {
                 onMoved: v => Config.appearance.panelOpacity = v
             }
         }
-
-        SettingRow {
-            last: true
-            label: "Dark theme"
-
-            ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
-            }
-        }
     }
+    // No "dark theme" boolean here: the Colour mode row below is the real control
+    // and is tri-state (automatic/light/dark), which a checkbox can't express
 
     SectionLabel {
         text: "Colours"
