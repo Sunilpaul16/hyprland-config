@@ -33,11 +33,11 @@ Item {
 
     Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-    // Live capture -- only wired up while the overview is actually open
+    // Snapshot capture while the overview is open -- live:true crashes qs on window close (INDEX.md)
     ScreencopyView {
         anchors.fill: parent
         captureSource: root.overviewActive ? (root.toplevel?.wayland ?? null) : null
-        live: true
+        live: false
     }
 
     // Hover tint
