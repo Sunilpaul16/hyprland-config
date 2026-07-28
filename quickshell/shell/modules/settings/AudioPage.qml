@@ -1,9 +1,9 @@
 import QtQuick
 import "../../services"
 
-// Audio page. Output/input/per-app are live against services/Audio.qml;
-// the Behaviour and OSD sections are still mock — those would need config
-// keys that don't exist yet
+// Audio page. Devices, levels, per-app and the volume-step/unmute behaviour
+// are live against services/Audio.qml; the OSD section and the over-100%
+// boost are still mock — the shell has no path for either yet
 ScrollPage {
     id: root
 
@@ -111,11 +111,20 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Volume step"
-            subtext: "Applied by the media keys"
+            subtext: "Applied by the media keys and scroll"
 
-            SelectPill {
-                value: "5%"
+            NumberControl {
+                value: Config.audio.volumeStep
+                from: 0.01
+                to: 0.25
+                stepSize: 0.01
+                displayScale: 100
+                decimals: 0
+                suffix: "%"
+                labelWidth: 46
+                onMoved: v => Config.audio.volumeStep = v
             }
         }
 
@@ -131,11 +140,13 @@ ScrollPage {
 
         SettingRow {
             last: true
+            live: true
             label: "Unmute on volume change"
+            subtext: "Raising the volume clears mute"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.audio.unmuteOnChange
+                onToggled: v => Config.audio.unmuteOnChange = v
             }
         }
     }

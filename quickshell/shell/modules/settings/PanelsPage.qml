@@ -1,9 +1,9 @@
 import QtQuick
 import "../../services"
 
-// Panels page. Rows naming a real Config key read and write it live; the
-// rest hold local state and are placeholders for panels that have no config
-// surface yet (tray/title visibility, launcher limits, quick-toggle editing)
+// Panels page — bar, dashboard, launcher, sidebar and overview settings.
+// Still mock: launcher fuzzy matching, quick-toggle editing, sidebar
+// close-on-settings — each needs shell behaviour that doesn't exist yet
 ScrollPage {
     title: "Panels"
 
@@ -75,21 +75,23 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Show system tray"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.bar.showTray
+                onToggled: v => Config.bar.showTray = v
             }
         }
 
         SettingRow {
             last: true
+            live: true
             label: "Show active window title"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.bar.showWindowTitle
+                onToggled: v => Config.bar.showWindowTitle = v
             }
         }
     }
@@ -125,10 +127,14 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Default tab"
+            subtext: "Tab a fresh open lands on"
 
             SelectPill {
-                value: "Dashboard"
+                options: [{ value: 0, label: "Dashboard" }, { value: 1, label: "Media" }, { value: 2, label: "Performance" }, { value: 3, label: "Weather" }]
+                current: Config.dashboard.panel.defaultTab
+                onSelected: v => Config.dashboard.panel.defaultTab = v
             }
         }
 
@@ -177,19 +183,31 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Maximum results"
+            subtext: "App and command rows shown at once"
 
-            SelectPill {
-                value: "8"
+            NumberControl {
+                value: Config.launcher.maxResults
+                from: 3
+                to: 20
+                stepSize: 1
+                onMoved: v => Config.launcher.maxResults = Math.round(v)
             }
         }
 
         SettingRow {
             last: true
-            label: "Clipboard history entries"
+            live: true
+            label: "Clipboard results"
+            subtext: "Clipboard rows shown at once"
 
-            SelectPill {
-                value: "100"
+            NumberControl {
+                value: Config.launcher.maxClipResults
+                from: 3
+                to: 20
+                stepSize: 1
+                onMoved: v => Config.launcher.maxClipResults = Math.round(v)
             }
         }
     }

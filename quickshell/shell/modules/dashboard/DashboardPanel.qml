@@ -42,7 +42,7 @@ Scope {
                     { text: "Performance", iconName: "speed", component: performanceTabComponent },
                     { text: "Weather", iconName: "cloud", component: weatherTabComponent }
                 ]
-                property int currentTab: 0
+                property int currentTab: Config.dashboard.panel.defaultTab
                 readonly property bool widthFixed: Config.dashboard.panel.widthMode === "fixed"
                 readonly property bool heightFixed: Config.dashboard.panel.heightMode === "fixed"
                 // Resting (open) position — flush with the screen top, matching

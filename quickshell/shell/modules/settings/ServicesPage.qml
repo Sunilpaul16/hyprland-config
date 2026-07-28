@@ -37,12 +37,13 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Keep across restarts"
-            subtext: "Persisted by services/Notifs.qml"
+            subtext: "Notification history survives a restart"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.notifications.keepAcrossRestarts
+                onToggled: v => Config.notifications.keepAcrossRestarts = v
             }
         }
 
@@ -196,11 +197,13 @@ ScrollPage {
 
         SettingRow {
             last: true
+            live: true
             label: "Record audio"
+            subtext: "Captures the default output alongside video"
 
             ToggleSwitch {
-                checked: false
-                onToggled: v => checked = v
+                checked: Config.recorder.audio
+                onToggled: v => Config.recorder.audio = v
             }
         }
     }
@@ -228,11 +231,13 @@ ScrollPage {
 
         SettingRow {
             last: true
+            live: true
             label: "Keep awake by default"
+            subtext: "Holds the inhibitor from the start of a session"
 
             ToggleSwitch {
-                checked: false
-                onToggled: v => checked = v
+                checked: Config.session.keepAwakeDefault
+                onToggled: v => Config.session.keepAwakeDefault = v
             }
         }
     }

@@ -24,6 +24,8 @@ Singleton {
     property alias appearance: adapter.appearance
     property alias settings: adapter.settings
     property alias recorder: adapter.recorder
+    property alias launcher: adapter.launcher
+    property alias audio: adapter.audio
     property alias wallpaper: adapter.wallpaper
     property alias dashboard: adapter.dashboard
 
@@ -63,6 +65,8 @@ Singleton {
 
             property JsonObject bar: JsonObject {
                 property int height: 40 // top bar height (px)
+                property bool showTray: true        // system tray pill
+                property bool showWindowTitle: true // active-window pill
             }
 
             property JsonObject sidebar: JsonObject {
@@ -71,10 +75,12 @@ Singleton {
 
             property JsonObject session: JsonObject {
                 property int autoCloseDuration: 5000 // ms the drawer stays open unhovered before closing itself
+                property bool keepAwakeDefault: false // hold the idle inhibitor from shell start
             }
 
             property JsonObject notifications: JsonObject {
                 property int toastDismissDuration: 5000 // ms a toast shows before auto-dismissing
+                property bool keepAcrossRestarts: true  // persist history to disk
             }
 
             property JsonObject updates: JsonObject {
@@ -132,6 +138,17 @@ Singleton {
 
             property JsonObject recorder: JsonObject {
                 property string defaultMode: "full" // "full" | "region" — mode a fresh session starts in
+                property bool audio: false          // capture the default sink's monitor alongside video
+            }
+
+            property JsonObject launcher: JsonObject {
+                property int maxResults: 8     // app/command rows shown at once
+                property int maxClipResults: 6 // clipboard rows shown at once
+            }
+
+            property JsonObject audio: JsonObject {
+                property real volumeStep: 0.05    // fraction per increment/decrement
+                property bool unmuteOnChange: true // raising volume clears mute
             }
 
             property JsonObject wallpaper: JsonObject {
@@ -150,6 +167,7 @@ Singleton {
                     property int width: 1190           // px, used only when widthMode is "fixed"
                     property string heightMode: "auto" // "auto" | "fixed"
                     property int height: 700           // px, used only when heightMode is "fixed"
+                    property int defaultTab: 0         // tab index a fresh open lands on
                 }
 
                 property JsonObject user: JsonObject {

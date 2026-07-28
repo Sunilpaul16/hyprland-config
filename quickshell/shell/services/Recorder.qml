@@ -33,7 +33,11 @@ Singleton {
             root.stop();
         } else if (!root.starting) {
             root.starting = true;
-            Quickshell.execDetached([root.recordBin, root.mode]);
+            // The script takes --sound as its second argument
+            const args = [root.recordBin, root.mode];
+            if (Config.recorder.audio)
+                args.push("--sound");
+            Quickshell.execDetached(args);
         }
     }
 

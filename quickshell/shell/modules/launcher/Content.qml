@@ -81,9 +81,9 @@ Item {
 
     readonly property int clipItemHeight: 76
     readonly property int listSpacing: 4
-    readonly property int maxListItems: 8
+    readonly property int maxListItems: Config.launcher.maxResults
 
-    readonly property int maxClipItems: 6
+    readonly property int maxClipItems: Config.launcher.maxClipResults
 
     implicitWidth: mode === "wallpaper" ? wallpaperPanelWidth : appPanelWidth
     implicitHeight: {

@@ -83,6 +83,12 @@ Singleton {
     }
 
     function persist(): void {
+        // Disabled means the file is actively emptied, not just left unwritten,
+        // so turning it off doesn't leave an old history to restore later
+        if (!Config.notifications.keepAcrossRestarts) {
+            historyFile.setText("[]");
+            return;
+        }
         historyFile.setText(JSON.stringify(root.list.filter(n => !n.closed).map(n => root.notifToJSON(n)), null, 2));
     }
 
@@ -139,6 +145,11 @@ Singleton {
         path: Directories.notificationsFile
 
         onLoaded: {
+            if (!Config.notifications.keepAcrossRestarts) {
+                root.list = [];
+                return;
+            }
+
             let parsed = [];
             try {
                 parsed = JSON.parse(historyFile.text() || "[]");

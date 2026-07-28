@@ -54,7 +54,7 @@ Scope {
                         anchors.left: parent.left
                         anchors.leftMargin: 14
                         anchors.verticalCenter: parent.verticalCenter
-                        visible: activeWindow.hasContent
+                        visible: Config.bar.showWindowTitle && activeWindow.hasContent
 
                         ActiveWindow {
                             id: activeWindow
@@ -171,7 +171,7 @@ Scope {
                         // Tray
                         SectionPill {
                             Layout.alignment: Qt.AlignVCenter
-                            visible: tray.hasItems
+                            visible: Config.bar.showTray && tray.hasItems
 
                             Tray {
                                 id: tray

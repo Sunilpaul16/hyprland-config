@@ -77,13 +77,13 @@ Singleton {
     // Unmutes before raising, matching kbVolumeUp's set-mute-then-raise;
     // decrementVolume deliberately doesn't touch mute, matching kbVolumeDown
     function incrementVolume(): void {
-        if (sink?.ready && sink?.audio)
+        if (Config.audio.unmuteOnChange && sink?.ready && sink?.audio)
             sink.audio.muted = false;
-        setVolume(volume + 0.05);
+        setVolume(volume + Config.audio.volumeStep);
     }
 
     function decrementVolume(): void {
-        setVolume(volume - 0.05);
+        setVolume(volume - Config.audio.volumeStep);
     }
 
     function unmuteVolume(): void {
@@ -101,13 +101,13 @@ Singleton {
     }
 
     function incrementSourceVolume(): void {
-        if (source?.ready && source?.audio)
+        if (Config.audio.unmuteOnChange && source?.ready && source?.audio)
             source.audio.muted = false;
-        setSourceVolume(sourceVolume + 0.05);
+        setSourceVolume(sourceVolume + Config.audio.volumeStep);
     }
 
     function decrementSourceVolume(): void {
-        setSourceVolume(sourceVolume - 0.05);
+        setSourceVolume(sourceVolume - Config.audio.volumeStep);
     }
 
     function unmuteSourceVolume(): void {
