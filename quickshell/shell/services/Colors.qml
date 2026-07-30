@@ -9,15 +9,26 @@ import QtQuick
 // instead of restarting the whole shell. Values here are last-known-good
 // defaults, used until the first ColorsLoader.reapplyTheme() completes.
 QtObject {
-    // Outermost panel background. Only panel roots and the Corner fillets
-    // that hug them use this — inner cards keep the opaque roles above, so a
-    // card on a panel never ends up doubly transparent
+    // Outermost panel background. Every panel root and the Corner fillets that
+    // hug them use this one role — a second panel alpha makes two adjacent
+    // panels disagree, and the bar/dashboard joint shows the step as a hard line
     readonly property color panel: Config.appearance.transparency ? Qt.alpha(background, Config.appearance.panelOpacity) : background
 
-    // Cards and pills that sit on a panel. Needs its own, lower alpha:
-    // stacking two 85% surfaces still covers ~98% of what is behind, so a
-    // card would read as solid even though the panel under it is not
-    readonly property color layer: Config.appearance.transparency ? Qt.alpha(surface, Config.appearance.layerOpacity) : surface
+    // Cards and pills that sit on a panel. A card can't avoid compositing more
+    // opaque than the panel under it — two translucent layers always do — so
+    // rather than fight that, lift the card's colour and let it read as raised
+    // instead of heavier. Ported from caelestia's Colours.alterColour: scale
+    // the tint by luminance so the lift is even across dark and light bases,
+    // and size it by how transparent the panel is, since an opaque panel needs
+    // none. Its wallpaper-luminance term is dropped — nothing tracks that here
+    readonly property color layer: {
+        if (!Config.appearance.transparency)
+            return surface;
+        const lift = 0.3 * (1 - Config.appearance.panelOpacity);
+        const lum = Math.sqrt(0.299 * surface.r ** 2 + 0.587 * surface.g ** 2 + 0.114 * surface.b ** 2);
+        const scale = lum > 0 ? (lum + lift) / lum : 1;
+        return Qt.rgba(Math.min(1, surface.r * scale), Math.min(1, surface.g * scale), Math.min(1, surface.b * scale), Config.appearance.layerOpacity);
+    }
 
     property color background: "#0f1417"
     Behavior on background { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
