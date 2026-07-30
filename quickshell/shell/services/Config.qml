@@ -71,6 +71,7 @@ Singleton {
 
             property JsonObject sidebar: JsonObject {
                 property string noNotifsImage: "" // notifications empty-state watermark; "" = the bundled assets/dino.png
+                property bool calendarCollapsed: false // sidebar calendar card starts collapsed
             }
 
             property JsonObject session: JsonObject {
