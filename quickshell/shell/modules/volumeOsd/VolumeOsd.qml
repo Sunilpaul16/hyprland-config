@@ -43,7 +43,7 @@ Scope {
 
                 // Show (and restart the auto-hide timer) on any sink/source change
                 function show(): void {
-                    if (!root.startupGraceOver)
+                    if (!root.startupGraceOver || !Config.audio.osdEnabled)
                         return;
                     root.triggered = true;
                     armHideTimer();
@@ -69,7 +69,7 @@ Scope {
                 // Auto-hide timer
                 Timer {
                     id: hideTimer
-                    interval: 1500
+                    interval: Config.audio.osdTimeout
                     onTriggered: root.triggered = false
                 }
 
@@ -84,7 +84,7 @@ Scope {
                 // Window setup
                 color: "transparent"
                 exclusiveZone: 0
-                visible: showProgress > 0.001
+                visible: Config.audio.osdEnabled && showProgress > 0.001
 
                 WlrLayershell.layer: WlrLayer.Overlay
                 WlrLayershell.namespace: "quickshell-volume-osd"

@@ -158,19 +158,26 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Show volume OSD"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.audio.osdEnabled
+                onToggled: v => Config.audio.osdEnabled = v
             }
         }
 
         SettingRow {
+            live: true
             label: "Dismiss after"
 
-            SelectPill {
-                value: "1500 ms"
+            NumberControl {
+                value: Config.audio.osdTimeout
+                from: 500
+                to: 5000
+                stepSize: 250
+                suffix: " ms"
+                onMoved: v => Config.audio.osdTimeout = Math.round(v)
             }
         }
 
