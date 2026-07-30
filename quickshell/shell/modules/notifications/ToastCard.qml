@@ -25,7 +25,10 @@ Rectangle {
     }
     Component.onDestruction: modelData.unlock(card)
 
+    // Off while dragging, so the card tracks the cursor instead of lagging
+    // behind it, but still springs back when a swipe falls short
     Behavior on x {
+        enabled: !swipeArea.drag.active
         NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
     }
 
@@ -34,10 +37,23 @@ Rectangle {
         onHoveredChanged: card.modelData.hovered = hovered
     }
 
-    // Click anywhere to dismiss immediately
+    // Click to dismiss outright, or swipe sideways to send it to history
     MouseArea {
+        id: swipeArea
         anchors.fill: parent
-        cursorShape: Qt.PointingHandCursor
+        cursorShape: pressed ? Qt.ClosedHandCursor : Qt.PointingHandCursor
+        preventStealing: true
+
+        drag.target: card
+        drag.axis: Drag.XAxis
+
+        onReleased: {
+            if (Math.abs(card.x) < card.width * Config.notifications.swipeThreshold)
+                card.x = 0;
+            else
+                card.modelData.popup = false;
+        }
+        // Suppressed by QML when the press turned into a drag
         onClicked: card.modelData.close()
     }
 

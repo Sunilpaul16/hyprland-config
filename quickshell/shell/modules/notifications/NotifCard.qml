@@ -27,7 +27,10 @@ Rectangle {
     }
     Component.onDestruction: modelData.unlock(card)
 
+    // Off while dragging, so the card tracks the cursor instead of lagging
+    // behind it, but still springs back when a swipe falls short
     Behavior on x {
+        enabled: !swipeArea.drag.active
         NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
     }
 
@@ -37,10 +40,24 @@ Rectangle {
         onHoveredChanged: card.modelData.hovered = hovered
     }
 
-    // Click to invoke action (collapsed only — chevron handles expand)
+    // Click to invoke action (collapsed only — chevron handles expand),
+    // or swipe sideways to dismiss
     MouseArea {
+        id: swipeArea
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton | Qt.MiddleButton
+        cursorShape: pressed ? Qt.ClosedHandCursor : Qt.ArrowCursor
+        preventStealing: true
+
+        drag.target: card
+        drag.axis: Drag.XAxis
+
+        onReleased: {
+            if (Math.abs(card.x) < card.width * Config.notifications.swipeThreshold)
+                card.x = 0;
+            else
+                card.modelData.close();
+        }
         onClicked: mouse => {
             if (mouse.button === Qt.MiddleButton) {
                 card.modelData.close();
