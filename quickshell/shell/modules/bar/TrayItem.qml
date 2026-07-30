@@ -49,10 +49,10 @@ Item {
                 root.item.activate();
             } else if (mouse.button === Qt.RightButton) {
                 if (root.item.hasMenu) {
-                    // The icon's bottom-left, not the cursor — the menu hangs
+                    // The icon's left edge, not the cursor — the menu hangs
                     // off the item so it lands in the same place every time
-                    const pos = hoverArea.mapToItem(null, 0, hoverArea.height);
-                    TrayMenuState.showAt(root.item, pos.x, pos.y);
+                    const pos = hoverArea.mapToItem(null, 0, 0);
+                    TrayMenuState.showAt(root.item, pos.x);
                 } else {
                     root.item.secondaryActivate();
                 }

@@ -10,8 +10,9 @@ Singleton {
     // Monitor this panel is pinned to while open
     property string ownerScreen: ""
     property var targetItem: null
+    // Left edge of the tray icon, in bar-window coordinates — the menu
+    // hangs off the bar, so it needs no vertical anchor
     property real anchorX: 0
-    property real anchorY: 0
 
     readonly property var entries: opener.children ? opener.children.values : []
 
@@ -22,11 +23,11 @@ Singleton {
     }
 
     // Open/close controls
-    function showAt(item: var, x: real, y: real): void {
+    function showAt(item: var, x: real): void {
         ScreenOwner.claim(root);
         root.targetItem = item;
-        root.anchorX = x;
-        root.anchorY = y;
+        if (!isNaN(x))
+            root.anchorX = x;
         root.open = true;
     }
 
