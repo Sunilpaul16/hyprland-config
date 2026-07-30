@@ -11,6 +11,11 @@ ColumnLayout {
 
     required property real cappedWidth
 
+    // Span the page column explicitly — Layout.fillWidth alone leaves this
+    // nested layout at its implicit width, so the children below centre
+    // against the preview rather than against the column
+    Layout.preferredWidth: cappedWidth
+
     spacing: 14
 
     // Wallpaper preview
