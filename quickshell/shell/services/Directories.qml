@@ -21,6 +21,7 @@ QtObject {
     readonly property string wallpaperThumbCache: home + "/.cache/wallpaper-thumbs"
     readonly property string currentWallpaperFile: home + "/.local/state/quickshell/current_wallpaper"
     readonly property string mediaArtCache: home + "/.cache/quickshell-media-art"
+    readonly property string notifImageCache: home + "/.cache/quickshell-notif-images"
     readonly property string videosDir: home + "/Videos"
     readonly property string faceIcon: home + "/.face"
     readonly property string repoRoot: home + "/hyprland-config"

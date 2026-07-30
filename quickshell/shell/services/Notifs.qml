@@ -171,6 +171,14 @@ Singleton {
         Notif {}
     }
 
+    // Creates the image cache, then drops any file the restored history no
+    // longer references — nothing else prunes it, so it would grow forever
+    Process {
+        id: cachePrune
+        running: true
+        command: ["bash", "-c", `mkdir -p '${Directories.notifImageCache}' && find '${Directories.notifImageCache}' -type f -printf '%f\\n' 2>/dev/null | while read -r f; do grep -qF "$f" '${Directories.notificationsFile}' 2>/dev/null || rm -f '${Directories.notifImageCache}'/"$f"; done`]
+    }
+
     // Debounced write — avoids hammering disk on a burst of rapid notifications
     Timer {
         id: writeTimer

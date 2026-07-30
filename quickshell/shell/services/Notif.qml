@@ -1,6 +1,8 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell
+import Quickshell.Wayland
 import Quickshell.Services.Notifications
 
 
@@ -49,6 +51,62 @@ QtObject {
     // mentioning <something> doesn't get parsed as markup
     readonly property bool bodyHasMarkup: /<\/?(b|i|u|a|img)\b[^>]*>/i.test(body)
 
+    // image-data arrives as an in-process provider URL, so it dies with the
+    // shell — those have to be copied to disk to survive a restart
+    readonly property bool imageIsVolatile: image.startsWith("image://qsimage/")
+
+    function cacheKey(): string {
+        const s = notif.appName + notif.summary + notif.notificationId + notif.image;
+        let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+        for (let i = 0; i < s.length; i++) {
+            const ch = s.charCodeAt(i);
+            h1 = Math.imul(h1 ^ ch, 2654435761);
+            h2 = Math.imul(h2 ^ ch, 1597334677);
+        }
+        h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+        h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+        return ((h2 >>> 0).toString(16).padStart(8, "0") + (h1 >>> 0).toString(16).padStart(8, "0"));
+    }
+
+    function cacheImageIfVolatile(): void {
+        if (notif.imageIsVolatile)
+            grabLoader.active = true;
+    }
+
+    // Offscreen surface the grab needs — an Item only renders inside a window
+    readonly property LazyLoader grabLoader: LazyLoader {
+        id: grabLoader
+        active: false
+
+        PanelWindow {
+            color: "transparent"
+            implicitWidth: 64
+            implicitHeight: 64
+            WlrLayershell.layer: WlrLayer.Background
+            WlrLayershell.namespace: "quickshell-notif-imagecache"
+            mask: Region {}
+
+            Image {
+                anchors.fill: parent
+                source: notif.image
+                fillMode: Image.PreserveAspectFit
+                cache: false
+                asynchronous: true
+
+                onStatusChanged: {
+                    if (status !== Image.Ready)
+                        return;
+                    const dest = `${Directories.notifImageCache}/${notif.cacheKey()}.png`;
+                    grabToImage(result => {
+                        if (result.saveToFile(dest))
+                            notif.image = dest;
+                        grabLoader.active = false;
+                    });
+                }
+            }
+        }
+    }
+
     // Auto-dismiss timer
     readonly property Timer timer: Timer {
         // expireTimeout: 0 = never expire, -1 = server default, >0 = explicit ms
@@ -71,7 +129,7 @@ QtObject {
         function onBodyChanged(): void { notif.body = notif.notification.body; }
         function onAppIconChanged(): void { notif.appIcon = notif.notification.appIcon; }
         function onAppNameChanged(): void { notif.appName = notif.notification.appName; }
-        function onImageChanged(): void { notif.image = notif.notification.image; }
+        function onImageChanged(): void { notif.image = notif.notification.image; notif.cacheImageIfVolatile(); }
         function onUrgencyChanged(): void { notif.urgency = notif.notification.urgency; }
         function onTransientChanged(): void { notif.isTransient = notif.notification.transient; }
         function onActionsChanged(): void { notif.actions = notif.mapActions(); }
@@ -123,5 +181,6 @@ QtObject {
         isTransient = notification.transient;
         expireTimeout = notification.expireTimeout;
         actions = mapActions();
+        cacheImageIfVolatile();
     }
 }
