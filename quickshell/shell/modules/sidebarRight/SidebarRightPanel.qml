@@ -98,6 +98,10 @@ Scope {
                         // out into the bar above and the screen bottom
                         topLeftRadius: 0
                         bottomLeftRadius: 0
+                        // Top-right too: it butts the bar above and the screen edge
+                        // right, and rounding it left a crescent of wallpaper showing
+                        // through the bar's own concave bottom-right fillet
+                        topRightRadius: 0
                         color: Colors.panel
                         opacity: root.showProgress
                         transform: Translate { x: (1 - root.showProgress) * 24 }
