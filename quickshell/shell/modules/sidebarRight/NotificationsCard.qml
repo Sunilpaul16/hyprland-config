@@ -11,6 +11,40 @@ Rectangle {
     id: root
 
     readonly property bool isEmpty: Notifs.list.length === 0
+
+    // Footer pill (end-4's NotificationStatusButton) — full-height rounded ends
+    component StatusButton: Rectangle {
+        id: sb
+
+        property string glyph: ""
+        property string label: ""
+        property bool toggled: false
+        property bool interactive: true
+        signal triggered
+
+        implicitHeight: 36
+        radius: height / 2
+        color: sb.toggled ? Colors.primary : (sb.interactive && sbArea.containsMouse ? Colors.outline : Colors.background)
+
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+        Text {
+            anchors.centerIn: parent
+            text: sb.glyph.length > 0 ? sb.glyph : sb.label
+            color: sb.toggled ? Colors.background : Colors.text
+            font.family: sb.glyph.length > 0 ? "JetBrainsMono Nerd Font" : Qt.application.font.family
+            font.pixelSize: sb.glyph.length > 0 ? 14 : 12
+        }
+
+        MouseArea {
+            id: sbArea
+            anchors.fill: parent
+            enabled: sb.interactive
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: sb.triggered()
+        }
+    }
     readonly property string watermarkPath: {
         const configured = Directories.resolve(Config.sidebar.noNotifsImage);
         return configured.length > 0 ? configured : Directories.dinoImage;
@@ -24,44 +58,13 @@ Rectangle {
         anchors { fill: parent; margins: 16 }
         spacing: 12
 
-        // Header: title + clear-all
-        RowLayout {
+        // Header — clear-all moved to the footer row
+        Text {
             Layout.fillWidth: true
-            spacing: 8
-
-            Text {
-                Layout.fillWidth: true
-                text: "Notifications"
-                color: Colors.text
-                font.pixelSize: 15
-                font.bold: true
-            }
-
-            Rectangle {
-                visible: Notifs.list.length > 0
-                radius: Motion.rounding.small
-                color: clearArea.containsMouse ? Colors.outline : Colors.background
-                implicitWidth: clearText.implicitWidth + 20
-                implicitHeight: clearText.implicitHeight + 12
-
-                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-                Text {
-                    id: clearText
-                    anchors.centerIn: parent
-                    text: "Clear all"
-                    color: Colors.text
-                    font.pixelSize: 12
-                }
-
-                MouseArea {
-                    id: clearArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: Notifs.clearAll()
-                }
-            }
+            text: "Notifications"
+            color: Colors.text
+            font.pixelSize: 15
+            font.bold: true
         }
 
         // Body — the empty-state watermark and the history list share this area
@@ -153,6 +156,31 @@ Rectangle {
                         list.scrollByDelta(event.angleDelta.y / 2);
                     }
                 }
+            }
+        }
+
+        // Footer: DND toggle · count · clear all (end-4's statusRow)
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 6
+
+            StatusButton {
+                Layout.preferredWidth: 46
+                glyph: DndState.enabled ? "\uf1f6" : "\uf0f3" // bell-slash / bell
+                toggled: DndState.enabled
+                onTriggered: DndState.toggle()
+            }
+
+            StatusButton {
+                Layout.fillWidth: true
+                interactive: false
+                label: root.isEmpty ? "No notifications" : `${Notifs.list.length} notification${Notifs.list.length === 1 ? "" : "s"}`
+            }
+
+            StatusButton {
+                Layout.preferredWidth: 46
+                glyph: "\uf1f8" // trash
+                onTriggered: Notifs.clearAll()
             }
         }
     }

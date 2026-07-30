@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import Quickshell
 import "../../services"
 
@@ -8,6 +9,40 @@ Rectangle {
     id: card
 
     required property Notif modelData
+
+    // Pill used by the expanded card's close / action / copy row
+    component CardButton: Rectangle {
+        id: btn
+
+        property string label: ""
+        property string glyph: ""
+        signal triggered
+
+        implicitHeight: 32
+        radius: Motion.rounding.normal
+        color: btnArea.containsMouse ? Colors.outline : Colors.background
+
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+        Text {
+            anchors.centerIn: parent
+            width: parent.width - 16
+            text: btn.glyph.length > 0 ? btn.glyph : btn.label
+            color: Colors.text
+            font.pixelSize: btn.glyph.length > 0 ? 13 : 12
+            horizontalAlignment: Text.AlignHCenter
+            elide: Text.ElideRight
+            maximumLineCount: 1
+        }
+
+        MouseArea {
+            id: btnArea
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: btn.triggered()
+        }
+    }
 
     implicitHeight: content.implicitHeight + 20
     radius: Motion.rounding.card
@@ -77,8 +112,8 @@ Rectangle {
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
         implicitHeight: Math.max(iconSlot.height, appNameText.height + headerCol.implicitHeight)
 
-        // Reserve room for chevron (always) + close/copy buttons (expanded only)
-        readonly property int actionsReserve: card.modelData.expanded ? 64 : 24
+        // Reserve room for the chevron; close/copy now live in the button row
+        readonly property int actionsReserve: 24
 
         // Icon
         NotifIcon {
@@ -173,106 +208,52 @@ Rectangle {
                 }
             }
 
-            // Action buttons (expanded only)
-            Row {
+            // Button row (expanded only): close, the app's own actions, copy.
+            // With no actions the two icon buttons split the width (end-4)
+            Item {
                 width: parent.width
-                spacing: 8
-                visible: card.modelData.expanded && card.modelData.actions.length > 0
+                height: card.modelData.expanded ? 32 : 0
+                visible: height > 0
 
-                Repeater {
-                    model: card.modelData.actions
+                RowLayout {
+                    anchors.fill: parent
+                    spacing: 8
 
-                    Rectangle {
-                        required property var modelData
+                    CardButton {
+                        Layout.fillWidth: true
+                        glyph: "✕"
+                        onTriggered: card.modelData.close()
+                    }
 
-                        readonly property int count: card.modelData.actions.length
-                        width: (headerCol.width - (count - 1) * 8) / count
-                        height: 28
-                        radius: Motion.rounding.small
-                        color: btnArea.containsMouse ? Colors.outline : Colors.background
+                    Repeater {
+                        model: card.modelData.actions
 
-                        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                        CardButton {
+                            required property var modelData
+                            Layout.fillWidth: true
+                            label: modelData.text
+                            onTriggered: modelData.invoke()
+                        }
+                    }
 
-                        Text {
-                            anchors.centerIn: parent
-                            width: parent.width - 16
-                            text: parent.modelData.text
-                            color: Colors.text
-                            font.pixelSize: 12
-                            horizontalAlignment: Text.AlignHCenter
-                            elide: Text.ElideRight
-                            maximumLineCount: 1
+                    CardButton {
+                        id: copyBtn
+                        Layout.fillWidth: true
+                        visible: card.modelData.body.length > 0
+                        glyph: copiedTimer.running ? "✓" : "⧉"
+
+                        onTriggered: {
+                            Quickshell.clipboardText = card.modelData.body;
+                            copiedTimer.restart();
                         }
 
-                        MouseArea {
-                            id: btnArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: parent.modelData.invoke()
+                        // Brief tick as copy confirmation
+                        Timer {
+                            id: copiedTimer
+                            interval: 1500
                         }
                     }
                 }
-            }
-        }
-
-        // Copy body to clipboard (expanded only)
-        Rectangle {
-            id: copyBtn
-            anchors.right: closeBtn.left
-            anchors.top: parent.top
-            anchors.rightMargin: 2
-            width: 16
-            height: 16
-            radius: Motion.rounding.small
-            visible: card.modelData.expanded && card.modelData.body.length > 0
-            color: copyArea.containsMouse ? Colors.outline : "transparent"
-
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-            Text {
-                anchors.centerIn: parent
-                text: "⧉"
-                color: Colors.textMuted
-                font.pixelSize: 10
-            }
-
-            MouseArea {
-                id: copyArea
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: Quickshell.clipboardText = card.modelData.body
-            }
-        }
-
-        // Close button (expanded only)
-        Rectangle {
-            id: closeBtn
-            anchors.right: chevron.left
-            anchors.top: parent.top
-            anchors.rightMargin: 2
-            width: 16
-            height: 16
-            radius: Motion.rounding.small
-            visible: card.modelData.expanded
-            color: closeArea.containsMouse ? Colors.outline : "transparent"
-
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-            Text {
-                anchors.centerIn: parent
-                text: "✕" // ✕
-                color: Colors.textMuted
-                font.pixelSize: 10
-            }
-
-            MouseArea {
-                id: closeArea
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: card.modelData.close()
             }
         }
 
