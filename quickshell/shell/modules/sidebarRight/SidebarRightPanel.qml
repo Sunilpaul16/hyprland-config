@@ -127,45 +127,52 @@ Scope {
                         transform: Translate { x: (1 - root.showProgress) * 24 }
                     }
 
-                    // Card stack. No outer Flickable — the notifications card
-                    // fills the slack and scrolls its own list internally, so
-                    // the cards below stay pinned to the bottom
-                    ColumnLayout {
-                        id: column
+                    // Slide-in wrapper. The animation lives here rather than on
+                    // the ColumnLayout so qmllint stops reading the Translate's
+                    // x as layout-managed item geometry — layouts don't manage
+                    // transforms, but the check can't tell the two apart
+                    Item {
                         anchors.fill: backdrop
-                        anchors.margins: 12
                         visible: SidebarDialogState.openDialog === ""
 
                         opacity: root.showProgress
                         transform: Translate { x: (1 - root.showProgress) * 24 }
 
-                        spacing: 12
+                        // Card stack. No outer Flickable — the notifications card
+                        // fills the slack and scrolls its own list internally, so
+                        // the cards below stay pinned to the bottom
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
 
-                        SystemHeaderCard { Layout.fillWidth: true }
-                        QuickTogglesCard { Layout.fillWidth: true }
-                        KeepAwakeCard { Layout.fillWidth: true; visible: KeepAwakeCardState.enabled }
-                        ScreenRecorderCard { Layout.fillWidth: true; visible: ScreenRecorderCardState.enabled }
+                            spacing: 12
 
-                        // Separates the utility cards from the notifications region
-                        Rectangle {
-                            Layout.fillWidth: true
-                            Layout.topMargin: 4
-                            Layout.bottomMargin: 4
-                            implicitHeight: 1
-                            color: Colors.outline
-                            opacity: 0.35
-                        }
+                            SystemHeaderCard { Layout.fillWidth: true }
+                            QuickTogglesCard { Layout.fillWidth: true }
+                            KeepAwakeCard { Layout.fillWidth: true; visible: KeepAwakeCardState.enabled }
+                            ScreenRecorderCard { Layout.fillWidth: true; visible: ScreenRecorderCardState.enabled }
 
-                        NotificationsCard {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            Layout.minimumHeight: 120
-                        }
+                            // Separates the utility cards from the notifications region
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.topMargin: 4
+                                Layout.bottomMargin: 4
+                                implicitHeight: 1
+                                color: Colors.outline
+                                opacity: 0.35
+                            }
 
-                        CalendarCard {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: false
-                            Layout.preferredHeight: implicitHeight
+                            NotificationsCard {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Layout.minimumHeight: 120
+                            }
+
+                            CalendarCard {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: false
+                                Layout.preferredHeight: implicitHeight
+                            }
                         }
                     }
 
