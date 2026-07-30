@@ -183,10 +183,16 @@ ScrollPage {
 
         SettingRow {
             last: true
+            live: true
             label: "Position"
 
             SelectPill {
-                value: "Bottom centre"
+                options: [
+                    { value: "right", label: "Right edge" },
+                    { value: "left", label: "Left edge" }
+                ]
+                current: Config.audio.osdEdge
+                onSelected: v => Config.audio.osdEdge = v
             }
         }
     }
