@@ -93,7 +93,9 @@ Rectangle {
                 text: card.modelData.body
                 color: Colors.textMuted
                 font.pixelSize: 12
-                textFormat: card.modelData.bodyHasMarkdown ? Text.MarkdownText : Text.PlainText
+                // No onLinkActivated here — the toast closes on click, so a
+                // link target inside it would be unhittable
+                textFormat: card.modelData.bodyHasMarkup ? Text.StyledText : card.modelData.bodyHasMarkdown ? Text.MarkdownText : Text.PlainText
                 wrapMode: Text.NoWrap
                 elide: Text.ElideRight
                 maximumLineCount: 1

@@ -13,7 +13,10 @@ Item {
 
     readonly property var group: Notifs.groupsByAppName[root.appName]
     readonly property list<var> notifs: root.group?.notifs ?? []
-    readonly property bool grouped: root.notifs.length > 1
+    readonly property int previewNum: Config.notifications.groupPreviewNum
+    // Header only earns its place once it hides something
+    readonly property bool grouped: root.notifs.length > root.previewNum
+    readonly property int hiddenCount: root.notifs.length - root.previewNum
     readonly property bool expanded: Notifs.expandedApps.includes(root.appName)
 
     implicitHeight: column.implicitHeight
@@ -89,7 +92,7 @@ Item {
                 }
 
                 Text {
-                    text: root.group ? Qt.formatDateTime(root.group.time, "hh:mm") : ""
+                    text: root.group ? StringUtils.notifTime(root.group.time, Time.minutes) : ""
                     color: Colors.textMuted
                     font.pixelSize: 11
                 }
@@ -109,7 +112,8 @@ Item {
 
                         Text {
                             id: countLabel
-                            text: root.notifs.length
+                            // Hidden count, not the total — the rest are already on screen
+                            text: root.expanded ? root.notifs.length : `+${root.hiddenCount}`
                             color: root.group?.urgency === NotificationUrgency.Critical ? Colors.textOnError : Colors.textMuted
                             font.pixelSize: 11
                         }
@@ -133,10 +137,10 @@ Item {
             }
         }
 
-        // Member cards — always shown when ungrouped, else gated on expanded
+        // Member cards — all of them when ungrouped or expanded, else the newest few
         Repeater {
             model: ScriptModel {
-                values: (!root.grouped || root.expanded) ? root.notifs : []
+                values: (!root.grouped || root.expanded) ? root.notifs : root.notifs.slice(0, root.previewNum)
             }
 
             NotifCard {

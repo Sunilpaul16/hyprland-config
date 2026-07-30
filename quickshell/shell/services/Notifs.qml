@@ -89,7 +89,7 @@ Singleton {
             historyFile.setText("[]");
             return;
         }
-        historyFile.setText(JSON.stringify(root.list.filter(n => !n.closed).map(n => root.notifToJSON(n)), null, 2));
+        historyFile.setText(JSON.stringify(root.list.filter(n => !n.closed && !n.isTransient).map(n => root.notifToJSON(n)), null, 2));
     }
 
     // Notification server
@@ -100,8 +100,11 @@ Singleton {
         actionsSupported: true
         bodySupported: true
         bodyMarkupSupported: true
+        bodyHyperlinksSupported: true
         bodyImagesSupported: true
         imageSupported: true
+        // Don't claim persistence to senders when history is turned off
+        persistenceSupported: Config.notifications.keepAcrossRestarts
 
         onNotification: notif => {
             notif.tracked = true;
@@ -113,6 +116,10 @@ Singleton {
                 notification: notif
             });
             root.list = [wrapper, ...root.list];
+
+            // No popup means no dismiss timer, so a transient would never expire
+            if (wrapper.isTransient && !wrapper.popup)
+                wrapper.close();
         }
     }
 

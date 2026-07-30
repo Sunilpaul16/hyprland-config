@@ -82,6 +82,7 @@ Singleton {
             property JsonObject notifications: JsonObject {
                 property int toastDismissDuration: 5000 // ms a toast shows before auto-dismissing
                 property bool keepAcrossRestarts: true  // persist history to disk
+                property int groupPreviewNum: 3         // newest N shown in a collapsed app group
             }
 
             property JsonObject updates: JsonObject {

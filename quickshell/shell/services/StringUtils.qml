@@ -17,6 +17,33 @@ QtObject {
         return Qt.resolvedUrl(image);
     }
 
+    // Notification timestamp: relative under an hour, absolute after.
+    // `tick` is unused — it's the binding dependency that reruns this each minute
+    function notifTime(time: date, tick: int): string {
+        const then = time.getTime();
+        if (isNaN(then))
+            return "";
+
+        const clock = Config.time.use12Hour ? "h:mm AP" : "hh:mm";
+        const mins = Math.floor((Date.now() - then) / 60000);
+
+        if (mins < 1)
+            return "now";
+        if (mins < 60)
+            return `${mins}m`;
+
+        // Calendar days apart, not elapsed hours — 00:30 is "yesterday" at 01:00
+        const startOfDay = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+        const days = Math.round((startOfDay(new Date()) - startOfDay(time)) / 86400000);
+
+        if (days < 1)
+            return Qt.formatDateTime(time, clock);
+        // Capped at 6: at 7 the weekday matches today's and reads as this morning
+        if (days < 7)
+            return Qt.formatDateTime(time, `ddd ${clock}`);
+        return Qt.formatDateTime(time, "MMM d");
+    }
+
     // Formats seconds as m:ss, or h:mm:ss once an hour is crossed
     function friendlyTimeForSeconds(seconds: real): string {
         if (isNaN(seconds) || seconds < 0)

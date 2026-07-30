@@ -9,8 +9,6 @@ Rectangle {
 
     required property Notif modelData
 
-    readonly property string timeStr: Qt.formatDateTime(modelData.time, "hh:mm")
-
     implicitHeight: content.implicitHeight + 20
     radius: Motion.rounding.card
     color: Colors.layer
@@ -125,7 +123,7 @@ Rectangle {
 
                 Text {
                     id: timeText
-                    text: card.timeStr
+                    text: card.modelData.timeStr
                     color: Colors.textMuted
                     font.pixelSize: 11
                 }
@@ -133,15 +131,29 @@ Rectangle {
 
             // Body: one-line preview collapsed, full wrapped expanded
             Text {
+                id: bodyText
                 width: parent.width
                 visible: card.modelData.body.length > 0
                 text: card.modelData.body
                 color: Colors.textMuted
                 font.pixelSize: 12
-                textFormat: card.modelData.bodyHasMarkdown ? Text.MarkdownText : Text.PlainText
+                // Markup wins over markdown — a body with both is far more
+                // likely HTML with a stray asterisk than the reverse
+                textFormat: card.modelData.bodyHasMarkup ? Text.StyledText : card.modelData.bodyHasMarkdown ? Text.MarkdownText : Text.PlainText
                 wrapMode: card.modelData.expanded ? Text.WordWrap : Text.NoWrap
                 elide: Text.ElideRight
                 maximumLineCount: card.modelData.expanded ? 8 : 1
+                linkColor: Colors.primary
+
+                onLinkActivated: link => Qt.openUrlExternally(link)
+
+                // NoButton so link clicks still reach the Text underneath
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.NoButton
+                    hoverEnabled: true
+                    cursorShape: bodyText.hoveredLink.length > 0 ? Qt.PointingHandCursor : Qt.ArrowCursor
+                }
             }
 
             // Action buttons (expanded only)

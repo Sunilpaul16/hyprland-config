@@ -32,19 +32,30 @@ QtObject {
     property real expireTimeout: -1
     property list<var> actions
 
+    // "Show it, don't keep it" — volume/brightness/progress popups set this
+    property bool isTransient
+
     readonly property bool critical: urgency === NotificationUrgency.Critical
+
+    // Ticks off the shared clock rather than a timer per notification
+    readonly property string timeStr: StringUtils.notifTime(time, Time.minutes)
 
     // Heuristic: **bold**, `code`, and [text](url) are distinctive enough
     // not to false-positive on plain text (unlike single */_ for italics,
     // which collide with things like "5 * 3")
     readonly property bool bodyHasMarkdown: /\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\)/.test(body)
 
+    // Only the five tags the freedesktop spec defines, so a body merely
+    // mentioning <something> doesn't get parsed as markup
+    readonly property bool bodyHasMarkup: /<\/?(b|i|u|a|img)\b[^>]*>/i.test(body)
+
     // Auto-dismiss timer
     readonly property Timer timer: Timer {
         // expireTimeout: 0 = never expire, -1 = server default, >0 = explicit ms
         running: notif.popup && !notif.closed && !notif.critical && !notif.hovered && notif.expireTimeout !== 0
         interval: notif.expireTimeout > 0 ? notif.expireTimeout : Config.notifications.toastDismissDuration
-        onTriggered: notif.popup = false
+        // A transient leaves entirely rather than falling back into history
+        onTriggered: if (notif.isTransient) notif.close(); else notif.popup = false;
     }
 
 
@@ -61,6 +72,7 @@ QtObject {
         function onAppNameChanged(): void { notif.appName = notif.notification.appName; }
         function onImageChanged(): void { notif.image = notif.notification.image; }
         function onUrgencyChanged(): void { notif.urgency = notif.notification.urgency; }
+        function onTransientChanged(): void { notif.isTransient = notif.notification.transient; }
         function onActionsChanged(): void { notif.actions = notif.mapActions(); }
     }
 
@@ -107,6 +119,7 @@ QtObject {
         appName = notification.appName;
         image = notification.image;
         urgency = notification.urgency;
+        isTransient = notification.transient;
         expireTimeout = notification.expireTimeout;
         actions = mapActions();
     }
