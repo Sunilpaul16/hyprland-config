@@ -113,14 +113,14 @@ Singleton {
                 property real layerOpacity: 0.55 // cards and pills on top of a panel
             }
 
-            // Settings panel size. Width is derived from the content rather
-            // than an aspect ratio — a 16:9 panel left ~660px of dead space
-            // beside an 800px content column on a 1440p screen
+            // Settings panel size. Both axes are derived from the content —
+            // width from the nav pane plus the capped page column, height from
+            // the nav list itself — rather than from an aspect ratio, which
+            // leaves gutters beside the column and an empty tail below the list
             property JsonObject settings: JsonObject {
                 property int maxContentWidth: 800 // page content column
                 property int navWidth: 340        // left nav pane
-                property real heightMult: 0.72    // fraction of screen height
-                property int maxHeight: 1000      // ceiling, so a tall screen doesn't stretch it
+                property real heightMult: 0.8     // ceiling only, as a fraction of screen height
             }
 
             property JsonObject theming: JsonObject {

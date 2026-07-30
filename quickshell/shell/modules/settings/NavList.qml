@@ -11,6 +11,26 @@ Item {
     property bool panelActive: false
 
     readonly property int searchHeight: 46
+    readonly property int listTopMargin: 14
+    readonly property int rowSpacing: 3
+    readonly property int runGap: 12
+    // Mirrors NavItem's implicitHeight (38px icon chip + 14 padding a side);
+    // it can't be read off a delegate without instantiating one
+    readonly property int rowHeight: 66
+
+    // Height the unfiltered list wants, derived from the model rather than
+    // from listColumn — the panel sizes itself off this, and reading a live
+    // child that the panel's own width feeds is the polish() loop trap
+    readonly property int naturalHeight: {
+        const n = root.pageModel.length;
+        if (n === 0)
+            return root.searchHeight;
+        let h = root.searchHeight + root.listTopMargin + n * root.rowHeight + (n - 1) * root.rowSpacing;
+        for (let i = 1; i < n; i++)
+            if (root.pageModel[i].category !== root.pageModel[i - 1].category)
+                h += root.runGap;
+        return h;
+    }
 
     // Pages matching the search text, each carrying its index in the unfiltered
     // pageModel so a click still selects the right page while filtered
@@ -94,7 +114,7 @@ Item {
         anchors.right: parent.right
         anchors.top: searchBg.bottom
         anchors.bottom: parent.bottom
-        anchors.topMargin: 14
+        anchors.topMargin: root.listTopMargin
 
         contentWidth: width
         contentHeight: listColumn.implicitHeight
@@ -106,7 +126,7 @@ Item {
 
             anchors.left: parent.left
             anchors.right: parent.right
-            spacing: 3
+            spacing: root.rowSpacing
 
             Repeater {
                 model: root.filteredPages
@@ -119,7 +139,7 @@ Item {
                     // Categories read as runs of connected pills — a gap opens
                     // where the category changes, and the radii below round off
                     // only the ends of each run
-                    Layout.topMargin: index !== 0 && runStart ? 12 : 0
+                    Layout.topMargin: index !== 0 && runStart ? root.runGap : 0
 
                     page: modelData.page
                     pageIndex: modelData.idx

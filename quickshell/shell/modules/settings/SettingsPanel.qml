@@ -26,10 +26,11 @@ Scope {
                     NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
                 }
 
-                // Panel geometry — width follows the content it has to hold
-                // (nav pane + capped page column + padding) rather than an
-                // aspect ratio, which left a wide band of dead space beside
-                // the content on a landscape monitor
+                // Panel geometry — both axes hug the content. Width is the nav
+                // pane plus the capped page column, so the column meets the
+                // panel edge instead of floating between two gutters; height
+                // is the nav list's own, so no empty tail hangs below it. An
+                // aspect ratio on either axis just reintroduces that dead space
                 readonly property real screenW: root.screen?.width ?? 1280
                 readonly property real screenH: root.screen?.height ?? 800
 
@@ -37,7 +38,7 @@ Scope {
                 // two columns and the page area's extra right margin
                 readonly property int chromeWidth: 18 * 4
                 readonly property real targetWidth: Config.settings.navWidth + Config.settings.maxContentWidth + chromeWidth
-                readonly property real targetHeight: Math.min(screenH * Config.settings.heightMult, Config.settings.maxHeight)
+                readonly property real targetHeight: Math.min(content.naturalHeight, screenH * Config.settings.heightMult)
 
                 // One factor for both axes, never clamped independently — on a
                 // portrait/rotated output an independently clamped axis leaves
@@ -114,6 +115,8 @@ Scope {
                         transformOrigin: Item.Center
 
                         Content {
+                            id: content
+
                             anchors.fill: parent
                             panelActive: root.active
                         }

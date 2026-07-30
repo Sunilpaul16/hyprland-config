@@ -11,6 +11,9 @@ Item {
     readonly property int pad: 18
     readonly property int navWidth: Math.min(Config.settings.navWidth, Math.round(width * 0.4))
 
+    // What the panel needs to be tall enough to show the whole nav list
+    readonly property int naturalHeight: navList.naturalHeight + root.pad * 2
+
     // Page registry — index-aligned with SettingsState.currentPageIdx. `category`
     // drives the nav pane's corner-radius grouping; `component` is optional and
     // entries without one fall back to placeholderPage below
