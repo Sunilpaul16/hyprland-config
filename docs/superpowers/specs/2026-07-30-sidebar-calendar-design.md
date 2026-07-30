@@ -37,22 +37,44 @@ later does not require redoing this work.
 **Not ported:** end-4's `calendar_layout.js` (113 lines of hand-rolled month layout).
 Qt's `MonthGrid` already backs the dashboard card and produces the same result.
 
-## Pre-existing bug this fixes
+## How `MonthGrid` actually sizes its cells
 
-`MonthGrid`'s `contentItem` is a plain `Grid` positioner and `DayOfWeekRow`'s is a plain
-`Row` (verified in `/usr/lib/qt6/qml/QtQuick/Controls/Basic/`). Positioners never resize
-their children — they lay them out at whatever implicit size the delegate declares, so
-`Layout.fillWidth` widens the control while leaving the cells at their implicit size,
-left-aligned in the extra space.
+Measured at runtime, not read from a file — the on-disk
+`/usr/lib/qt6/qml/QtQuick/Controls/Basic/MonthGrid.qml` shows a plain `Grid` positioner
+and is **not what runs**. `MonthGrid` resolves to the qrc-embedded copy at
+`qrc:/qt-project.org/imports/QtQuick/Controls/Basic/MonthGrid.qml`, whose behaviour
+differs. Probe results at a control width of 400px:
 
-`DashTab.qml` gives day cells a fixed 26px with `spacing: 4`, while the weekday headers
-are bare `Text` at natural text width under `DayOfWeekRow`'s default `spacing: 6`. The
-two rows are laid out on different pitches, so the headers cannot sit over their
-columns. end-4 avoids this by reusing one button type for both rows.
+| control | delegate width | pitch |
+|---|---|---|
+| `MonthGrid` (`spacing: 4`) | 53.71 = `(400 - 6*4) / 7` | 57.71 |
+| `DayOfWeekRow` (`spacing: 6`) | 52 | 58 |
 
-The shared component fixes it by driving both delegates and both spacings from one
-`cellSize`. **This is a claim from reading Qt's sources — confirm it on screen against
-the current dashboard before and after the change.**
+Both controls **stretch their delegates to fill the available width**. Two consequences
+that shape the design:
+
+1. **Column alignment is already correct** and needs no fixing. Differing `spacing`
+   values drift the two pitches by ~0.9px at the last column — invisible.
+2. **A day cell is wide and short.** Width stretches to ~54px while `implicitHeight`
+   stays 26, so `DashTab.qml`'s `radius: 13` marker renders as a **stadium pill**, not
+   the circle its author presumably intended.
+
+An earlier draft of this spec asserted a header-misalignment bug based on the on-disk
+file. That was wrong; the screenshot and the probe both disprove it.
+
+### Day marker
+
+Because cells stretch, the marker cannot simply be the cell's own background. The
+delegate is an `Item` at the cell's stretched width, holding a **centred `cellSize` x
+`cellSize` marker** — which makes `dayRadius` honest (`cellSize / 2` is a real circle)
+and matches end-4's square day buttons.
+
+This changes the dashboard's existing look: its today marker goes from a wide stadium
+pill to a 26px circle. Accepted deliberately.
+
+Sizing follows from this too: the sidebar needs **no width arithmetic**. Cells stretch
+to `(304 - 6*5) / 7 ≈ 39px` on their own. `cellSize` controls only row height and marker
+size.
 
 ## Design
 
@@ -63,9 +85,11 @@ caller owns its own surface. Knows nothing about the sidebar or the dashboard.
 
 | property | type | default | purpose |
 |---|---|---|---|
-| `cellSize` | int | 26 | drives day cells, weekday headers and both spacings |
+| `cellSize` | int | 26 | row height and the centred marker's size; **not** cell width, which stretches |
+| `cellSpacing` | int | 4 | passed to both `MonthGrid` and `DayOfWeekRow` |
 | `dayRadius` | int | `Motion.rounding.small` | end-4's rounded squares; dashboard passes `cellSize / 2` for circles |
 | `showTodayButton` | bool | true | sidebar sets false — its header carries the chevron instead |
+| `headerLeftInset` | int | 0 | reserves room at the head of the nav row for a caller's own button |
 
 Internal state: `property date viewDate: new Date()`, plus `viewMonth` / `viewYear` /
 `onCurrentMonth` derived from it, as the existing card already has.
@@ -103,24 +127,20 @@ Rectangle
   Behavior on implicitHeight { NumberAnimation { Motion.smoothDuration / smoothEasing } }
 ```
 
-**Expanded height is derived, not the 350 literal end-4 uses.** At a 39px square cell,
-seven rows (one weekday + six month) plus spacing is `39 * 7 + 5 * 6 = 303`, and adding
-the ~32px header, its 8px gap and 32px of margins gives ~375. Hardcoding 350 would clip
-the last week, and `clip: true` would hide that it was happening. Deriving from content
-also keeps the card correct if `cellSize` changes with the sidebar's width.
+**Expanded height is derived, not the 350 literal end-4 uses.** At `cellSize: 36` and
+`cellSpacing: 5`, the grid is `36 * 6 + 5 * 5 = 241`, plus the ~26px weekday row, the
+~26px nav row, two 8px column gaps and 32px of margins — about 341, near end-4's 350
+without having to guess. Hardcoding a literal risks clipping the last week, and
+`clip: true` would hide that it was happening.
 
 `readonly property bool collapsed: Config.sidebar.calendarCollapsed`.
 
 **Expanded:** chevron-down button at the header's left, then `CalendarGrid` with
-`showTodayButton: false` and
+`showTodayButton: false`, `cellSize: 36`, `cellSpacing: 5` and `headerLeftInset: 30`.
 
-```qml
-cellSize: Math.floor((width - 32 - 5 * 6) / 7)   // 336 - 32 margins → ~39px
-```
-
-This is safe against the `polish()` loop in CLAUDE.md: width flows *down* from the
-sidebar's fixed 360px backdrop, height flows *up* from the grid's content. Different
-axes, no cycle.
+No width arithmetic is needed — cells stretch to `(304 - 30) / 7 ≈ 39px` on their own.
+An earlier draft computed `cellSize` from the card's width; that both was unnecessary
+and would have coupled height to width for no reason.
 
 **Collapsed:** a single row, chevron-up plus `Time.dateStr` (already formatted
 `"ddd, MMM d"`, giving `Thu, Jul 30`). No `• N tasks` — there is no todo service.
@@ -161,12 +181,14 @@ the calendar takes its fixed height and notifications absorbs the remainder.
 `border.width: 1`, unlike the sidebar's) wrapping:
 
 ```qml
-CalendarGrid { cellSize: 26; dayRadius: 13 }
+CalendarGrid { cellSize: 26; dayRadius: cellSize / 2 }
 ```
 
-`dayRadius: 13` preserves the current circular day pills at 26px. The `NavButton`
-component moves into `CalendarGrid` along with the header it serves; check whether
-anything else in `DashTab.qml` still uses it before deleting it there.
+`dayRadius: cellSize / 2` gives a true circle on the centred 26x26 marker — a visible
+change from the wide stadium pill this card renders today, accepted per the day-marker
+section above. The `NavButton` component moves into `CalendarGrid` along with the header
+it serves; check whether anything else in `DashTab.qml` still uses it before deleting it
+there.
 
 ### `services/Config.qml` (edit)
 
@@ -210,7 +232,8 @@ Per CLAUDE.md, a code read is not evidence.
    survived via `config.json`.
 5. **Dashboard regression** — `qs -c shell ipc call dashboard toggle`, screenshot the
    calendar card. This refactor is the only part of the change that can break something
-   that already works. Day pills must still be circles.
+   that already works. Everything must match the pre-change shot except today's marker,
+   which becomes a 26px circle instead of a wide stadium pill.
 6. **Nav** — ydotool-click `‹`, `›` and the month label. Per prior session notes the
    scroll wheel cannot be simulated, so **wheel-to-change-month needs manual testing by
    the user**.

@@ -4,7 +4,7 @@
 
 **Goal:** Add a collapsible month-calendar card to the bottom of the right sidebar, below notifications, by extracting the dashboard's existing inline month grid into a shared component used by both.
 
-**Architecture:** One new `components/CalendarGrid.qml` owns all month-grid logic and draws no card chrome. Two thin callers wrap it in their own surface: the dashboard's existing `CalendarCard` (26px cells, circular day pills, "Today" button) and a new `modules/sidebarRight/CalendarCard.qml` (~39px cells filling the column, rounded-square pills, a collapse chevron instead of the Today button). Collapse state lives in `Config.sidebar.calendarCollapsed`.
+**Architecture:** One new `components/CalendarGrid.qml` owns all month-grid logic and draws no card chrome. Two thin callers wrap it in their own surface: the dashboard's existing `CalendarCard` (26px cells, circular day markers, "Today" button) and a new `modules/sidebarRight/CalendarCard.qml` (~39px cells filling the column, rounded-square markers, a collapse chevron instead of the Today button). Collapse state lives in `Config.sidebar.calendarCollapsed`.
 
 **Tech Stack:** QML (Qt 6), Quickshell. Qt Quick Controls' `MonthGrid` / `DayOfWeekRow` back the grid. No new services, no new dependencies.
 
@@ -27,7 +27,13 @@
 
 ### Task 1: Extract `CalendarGrid` and refactor the dashboard onto it
 
-Pure refactor plus one bug fix. The dashboard must look identical afterwards **except** that its weekday headers become aligned with their columns.
+Near-pure refactor. The dashboard must look identical afterwards **except** today's marker, which becomes a 26px circle instead of the wide stadium pill it renders now.
+
+**Measured facts this task depends on** (probed at runtime, not read from a file — the on-disk `Basic/MonthGrid.qml` is *not* what runs; `MonthGrid` resolves to the qrc-embedded copy, which behaves differently):
+
+- Both `MonthGrid` and `DayOfWeekRow` **stretch their delegates to fill the control's width**. At width 400 with `spacing: 4`, each cell is `53.71 = (400 - 24) / 7`.
+- So columns already line up — there is no alignment bug — and a cell is **wide and short**: ~54px across but only `implicitHeight` (26) tall. That is why the current `radius: 13` renders as a stadium pill rather than a circle.
+- The marker therefore must be a **centred child** of the stretched cell, never the cell's own background.
 
 **Files:**
 - Create: `quickshell/shell/components/CalendarGrid.qml`
@@ -40,7 +46,7 @@ Pure refactor plus one bug fix. The dashboard must look identical afterwards **e
 
 - [ ] **Step 1: Capture the current dashboard calendar as a "before" reference**
 
-The alignment bug this task fixes is a claim from reading Qt's sources. Prove it on screen first, so the after-shot has something to be compared against.
+Capture the current state so the after-shot has something to be compared against. **Already done** — `cal-before.png` and the zoomed `cal-before-zoom.png` are in the scratchpad, and they are what disproved this plan's original alignment claim.
 
 ```bash
 hyprctl monitors -j | jq -r '.[] | "\(.name) focused=\(.focused)"'
@@ -51,9 +57,7 @@ grim -o "$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')" \
 qs -c shell ipc call dashboard toggle
 ```
 
-Open `cal-before.png` and look at the calendar card. Expected: the `M T W T F S S` header letters do **not** line up over the day-number columns — the headers are on a different pitch (natural text width, `spacing: 6`) than the cells (fixed 26px, `spacing: 4`).
-
-**If they turn out to be aligned,** the premise is wrong: stop and report it rather than "fixing" a non-bug. The extraction is still worth doing, but drop the alignment claim from the commit message.
+Observed in `cal-before-zoom.png`: headers **are** aligned over their columns, columns span the card's full width, and today's `30` is a wide stadium pill. Those three observations are the baseline the after-shot must match — except the pill, which becomes a circle.
 
 - [ ] **Step 2: Create `components/CalendarGrid.qml`**
 
@@ -67,8 +71,7 @@ import "../services"
 Item {
     id: root
 
-    // MonthGrid and DayOfWeekRow are plain positioners that never resize their
-    // delegates, so both rows must be driven from one size to stay on the same pitch
+    // Cells stretch to fill their column, so this is row height and marker size, not width
     property int cellSize: 26
     property int cellSpacing: 4
     property int dayRadius: Motion.rounding.small
@@ -197,8 +200,7 @@ Item {
             }
         }
 
-        // Weekday header row — same cell width and spacing as the grid below,
-        // which is what keeps the two on the same pitch
+        // Weekday header row
         DayOfWeekRow {
             id: dayRow
 
@@ -212,7 +214,6 @@ Item {
                 // Qt::DayOfWeek: Monday=1 .. Sunday=7
                 readonly property bool isWeekend: model.day === 6 || model.day === 7
 
-                width: root.cellSize
                 horizontalAlignment: Text.AlignHCenter
                 text: model.shortName
                 color: isWeekend ? Colors.primary : Colors.textMuted
@@ -229,7 +230,9 @@ Item {
             locale: Qt.locale()
             spacing: root.cellSpacing
 
-            delegate: Rectangle {
+            // The cell stretches to fill its column, so the marker is a centred
+            // child rather than the cell's own background
+            delegate: Item {
                 id: dayCell
 
                 required property var model
@@ -243,8 +246,14 @@ Item {
 
                 implicitWidth: root.cellSize
                 implicitHeight: root.cellSize
-                radius: root.dayRadius
-                color: isToday ? Colors.primary : "transparent"
+
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: root.cellSize
+                    height: root.cellSize
+                    radius: root.dayRadius
+                    color: dayCell.isToday ? Colors.primary : "transparent"
+                }
 
                 Text {
                     anchors.centerIn: parent
@@ -292,7 +301,7 @@ Item {
 Two deliberate differences from the code being replaced, both from the spec:
 
 1. `isToday` compares against `root.todayKey` instead of using `model.today`. `model.today` is computed by the calendar model and will not re-evaluate while the component stays alive, so the highlight would stick to the wrong day past midnight.
-2. `DayOfWeekRow` and `MonthGrid` now share `root.cellSpacing`, and the weekday delegate has an explicit `width: root.cellSize`. This is the alignment fix.
+2. The day delegate is an `Item` holding a **centred** `cellSize` x `cellSize` marker, instead of a `Rectangle` colouring the whole cell. Since cells stretch to ~54px wide against a 26px height, colouring the cell itself is what makes today's marker a stadium pill today.
 
 - [ ] **Step 3: Replace the dashboard's inline calendar with the shared grid**
 
@@ -313,7 +322,7 @@ In `quickshell/shell/modules/dashboard/DashTab.qml`, delete everything from `// 
             anchors.fill: parent
             anchors.margins: 16
             cellSize: 26
-            // Circular day pills, the look this card already had
+            // True circle on the centred 26x26 marker
             dayRadius: cellSize / 2
         }
     }
@@ -384,9 +393,9 @@ Any other visual difference is a regression in the extraction — fix it before 
 git add quickshell/shell/components/CalendarGrid.qml quickshell/shell/modules/dashboard/DashTab.qml
 git commit -m "shell: extract the month grid into a shared CalendarGrid component
 
-Aligns the weekday headers with their columns as a side effect: MonthGrid
-and DayOfWeekRow are plain positioners that never resize delegates, so the
-two rows were laid out on different pitches."
+MonthGrid stretches cells to fill their column while implicitHeight stays
+26, so colouring the cell made today's marker a stadium pill. It is now a
+centred square, which also makes dayRadius mean what it says."
 ```
 
 ---
@@ -427,8 +436,8 @@ Rectangle {
         anchors.margins: 16
         showTodayButton: false
         cellSpacing: 5
-        // Seven cells and six gaps across the card's content width
-        cellSize: Math.floor((root.width - 32 - cellSpacing * 6) / 7)
+        // Row height and marker size only; cell width stretches to fill the column
+        cellSize: 36
     }
 
     // The sidebar's LazyLoader keeps this alive between opens, so a month
@@ -444,7 +453,7 @@ Rectangle {
 }
 ```
 
-The `cellSize` binding cannot cause a `QQuickItem::polish()` loop: width flows *down* from the sidebar backdrop's fixed 360px, height flows *up* from the grid's content. Different axes.
+No width arithmetic is needed: `MonthGrid` stretches each cell to `(304 - 30) / 7 ~= 39px` on its own. `cellSize: 36` sets only the row height and the centred marker's size, so the marker sits as a near-square inside a slightly wider cell.
 
 - [ ] **Step 2: Wire it into the sidebar column**
 
@@ -595,8 +604,8 @@ Rectangle {
         anchors.margins: 16
         showTodayButton: false
         cellSpacing: 5
-        // Seven cells and six gaps across the card's content width
-        cellSize: Math.floor((root.width - 32 - cellSpacing * 6) / 7)
+        // Row height and marker size only; cell width stretches to fill the column
+        cellSize: 36
         // Room for the collapse chevron at the head of the nav row
         headerLeftInset: 30
 
