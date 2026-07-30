@@ -13,6 +13,10 @@ Singleton {
     readonly property bool muted: !!sink?.audio?.muted
     readonly property real volume: isNaN(sink?.audio?.volume) ? 0 : sink.audio.volume
 
+    // Ceiling for both setters and every slider that drives them. 1.5 rather than
+    // a larger boost because most sinks clip hard above it
+    readonly property real maxVolume: Config.audio.allowBoost ? 1.5 : 1
+
     // Source (mic input)
     readonly property PwNode source: Pipewire.defaultAudioSource
     readonly property bool micMuted: !!source?.audio?.muted
@@ -64,14 +68,14 @@ Singleton {
             Pipewire.preferredDefaultAudioSource = node;
     }
 
-    // Sink volume — clamped [0, 1], matching the existing keybind's -l 1 cap.
-    // PipeWire can report NaN on resume-from-suspend; Math.min/max propagate
-    // it straight through the clamp, so guard before it reaches the sink.
+    // Sink volume — clamped [0, maxVolume]. PipeWire can report NaN on
+    // resume-from-suspend; Math.min/max propagate it straight through the
+    // clamp, so guard before it reaches the sink.
     function setVolume(newVolume: real): void {
         if (isNaN(newVolume))
             return;
         if (sink?.ready && sink?.audio)
-            sink.audio.volume = Math.max(0, Math.min(1, newVolume));
+            sink.audio.volume = Math.max(0, Math.min(root.maxVolume, newVolume));
     }
 
     // Unmutes before raising, matching kbVolumeUp's set-mute-then-raise;
@@ -97,7 +101,7 @@ Singleton {
         if (isNaN(newVolume))
             return;
         if (source?.ready && source?.audio)
-            source.audio.volume = Math.max(0, Math.min(1, newVolume));
+            source.audio.volume = Math.max(0, Math.min(root.maxVolume, newVolume));
     }
 
     function incrementSourceVolume(): void {

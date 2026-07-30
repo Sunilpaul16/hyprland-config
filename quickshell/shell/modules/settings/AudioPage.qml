@@ -37,7 +37,7 @@ ScrollPage {
             NumberControl {
                 value: Audio.volume
                 from: 0
-                to: 1
+                to: Audio.maxVolume
                 stepSize: 0.01
                 displayScale: 100
                 suffix: "%"
@@ -83,7 +83,7 @@ ScrollPage {
             NumberControl {
                 value: Audio.sourceVolume
                 from: 0
-                to: 1
+                to: Audio.maxVolume
                 stepSize: 0.01
                 displayScale: 100
                 suffix: "%"
@@ -129,12 +129,13 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Allow over 100%"
             subtext: "Lets the sink boost past unity gain"
 
             ToggleSwitch {
-                checked: false
-                onToggled: v => checked = v
+                checked: Config.audio.allowBoost
+                onToggled: v => Config.audio.allowBoost = v
             }
         }
 
