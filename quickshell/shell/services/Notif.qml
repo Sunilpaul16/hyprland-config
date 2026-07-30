@@ -53,7 +53,8 @@ QtObject {
     readonly property Timer timer: Timer {
         // expireTimeout: 0 = never expire, -1 = server default, >0 = explicit ms
         running: notif.popup && !notif.closed && !notif.critical && !notif.hovered && notif.expireTimeout !== 0
-        interval: notif.expireTimeout > 0 ? notif.expireTimeout : Config.notifications.toastDismissDuration
+        // A sender's explicit timeout wins; otherwise fullscreen gets the brief one
+        interval: notif.expireTimeout > 0 ? notif.expireTimeout : Notifs.anyFullscreen ? Config.notifications.fullscreenExpireDuration : Config.notifications.toastDismissDuration
         // A transient leaves entirely rather than falling back into history
         onTriggered: if (notif.isTransient) notif.close(); else notif.popup = false;
     }

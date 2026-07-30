@@ -1,0 +1,60 @@
+import QtQuick
+import "../../services"
+
+// Unread-notification bell, hidden while there's nothing to report (end-4's NotificationUnreadCount)
+Item {
+    id: root
+
+    readonly property bool active: DndState.enabled || Notifs.unread > 0
+
+    // Extra width so the count sits beside the bell rather than on it —
+    // the root clips, so anything outside these bounds would be cut off
+    implicitWidth: active ? icon.implicitWidth + 7 : 0
+    implicitHeight: icon.implicitHeight
+    visible: implicitWidth > 0
+    clip: true
+
+    Behavior on implicitWidth {
+        NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing }
+    }
+
+    Text {
+        id: icon
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        // Escapes, not literals — tooling strips private-use glyphs on write
+        text: DndState.enabled ? "\uf1f6" : "\uf0f3" // bell-slash / bell
+        font.family: "JetBrainsMono Nerd Font"
+        color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
+        font.pixelSize: 13
+
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+    }
+
+    // Unread count, suppressed under Do Not Disturb since nothing popped up
+    Rectangle {
+        anchors { right: parent.right; top: parent.top; topMargin: 1 }
+        visible: !DndState.enabled && Notifs.unread > 0
+        implicitWidth: Math.max(countText.implicitWidth + 4, height)
+        implicitHeight: countText.implicitHeight + 1
+        radius: height / 2
+        color: Colors.primary
+
+        Text {
+            id: countText
+            anchors.centerIn: parent
+            text: Notifs.unread > 9 ? "9+" : Notifs.unread
+            color: Colors.background
+            font.pixelSize: 8
+            font.bold: true
+        }
+    }
+
+    MouseArea {
+        id: hoverArea
+        anchors.fill: parent
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: SidebarRightState.toggle()
+    }
+}

@@ -4,6 +4,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
 import Quickshell.Services.Notifications
 
 // Notification list singleton
@@ -66,6 +67,34 @@ Singleton {
             n.close();
     }
 
+    // A fullscreen window on the focused monitor — the special workspace wins
+    // when one is open, since that's what's actually on screen
+    readonly property bool anyFullscreen: {
+        const monitor = Hyprland.focusedMonitor;
+        const specialName = monitor?.lastIpcObject.specialWorkspace?.name ?? "";
+        if (specialName.length > 0)
+            return Hyprland.workspaces.values.find(ws => ws.name === specialName)?.hasFullscreen ?? false;
+        return monitor?.activeWorkspace?.hasFullscreen ?? false;
+    }
+
+    // Counts only what actually toasted — something suppressed by DND or an
+    // open sidebar was never unseen
+    property int unread: 0
+
+    function markAllRead(): void {
+        root.unread = 0;
+    }
+
+    // Opening the sidebar is reading them
+    Connections {
+        target: SidebarRightState
+
+        function onOpenChanged(): void {
+            if (SidebarRightState.open)
+                root.markAllRead();
+        }
+    }
+
     // idOffset keeps a fresh session's ids from colliding with history — applied in Notif.qml (comparison.md #27)
     property int idOffset: 0
 
@@ -110,12 +139,16 @@ Singleton {
             notif.tracked = true;
             const wrapper = notifComp.createObject(root, {
                 // Don't pop up a toast for something already visible live in
-                // the sidebar's Notifications card, or while Do Not Disturb
-                // is on — still lands in history either way.
-                popup: !SidebarRightState.open && !DndState.enabled,
+                // the sidebar's Notifications card, while Do Not Disturb is
+                // on, or over a fullscreen window if that's been turned off
+                // — still lands in history either way.
+                popup: !SidebarRightState.open && !DndState.enabled && !(Config.notifications.fullscreen === "off" && root.anyFullscreen),
                 notification: notif
             });
             root.list = [wrapper, ...root.list];
+
+            if (wrapper.popup && !wrapper.isTransient)
+                root.unread++;
 
             // No popup means no dismiss timer, so a transient would never expire
             if (wrapper.isTransient && !wrapper.popup)

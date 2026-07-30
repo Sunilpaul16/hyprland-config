@@ -168,6 +168,16 @@ Scope {
                             Layout.alignment: Qt.AlignVCenter
                         }
 
+                        SectionPill {
+                            Layout.alignment: Qt.AlignVCenter
+                            horizontalPadding: 8
+                            visible: notifIndicator.active
+
+                            NotifIndicator {
+                                id: notifIndicator
+                            }
+                        }
+
                         // Tray
                         SectionPill {
                             Layout.alignment: Qt.AlignVCenter

@@ -83,6 +83,8 @@ Singleton {
                 property int toastDismissDuration: 5000 // ms a toast shows before auto-dismissing
                 property bool keepAcrossRestarts: true  // persist history to disk
                 property int groupPreviewNum: 3         // newest N shown in a collapsed app group
+                property string fullscreen: "on"        // toasts over a fullscreen window: "on" (brief) | "off" (suppressed)
+                property int fullscreenExpireDuration: 2000 // ms a toast shows while a window is fullscreen
             }
 
             property JsonObject updates: JsonObject {
