@@ -157,6 +157,12 @@ Scope {
                             Layout.fillHeight: true
                             Layout.minimumHeight: 120
                         }
+
+                        CalendarCard {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: false
+                            Layout.preferredHeight: implicitHeight
+                        }
                     }
 
                     // In-panel toggle dialogs, same overlay area (comparison.md #25)
