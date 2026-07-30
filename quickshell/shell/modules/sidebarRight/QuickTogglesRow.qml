@@ -174,10 +174,22 @@ ColumnLayout {
         }
     }
 
-    // Visible toggles — wraps to fit the card's width
+    // Visible toggles — wraps to fit the card's width, with the leftover
+    // width dealt into the gaps so the row has no ragged right edge.
+    // Only exact while every toggle is the same width; a "large" one varies,
+    // so that case keeps the plain minimum spacing.
     Flow {
+        id: togglesFlow
+
         Layout.fillWidth: true
-        spacing: 8
+
+        readonly property int minSpacing: 8
+        readonly property int cellWidth: 40 // small TogglePill
+        readonly property bool allSmall: root.orderedVisible.every(e => e.size === "small")
+        // Most that fit at minimum spacing, capped by how many there actually are
+        readonly property int perRow: Math.min(root.orderedVisible.length, Math.max(1, Math.floor((width + minSpacing) / (cellWidth + minSpacing))))
+
+        spacing: allSmall && perRow > 1 ? Math.max(minSpacing, (width - perRow * cellWidth) / (perRow - 1)) : minSpacing
 
         Repeater {
             model: root.orderedVisible
