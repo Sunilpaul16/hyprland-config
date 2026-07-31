@@ -10,8 +10,6 @@ ColumnLayout {
 
     spacing: 12
 
-    property bool editMode: false
-
     // Feature/state only — visibility/order/size live in Persistent.quickToggleLayout (comparison.md #24)
     readonly property list<QuickToggleModel> toggleModels: [
         QuickToggleModel {
@@ -153,14 +151,14 @@ ColumnLayout {
             Layout.preferredWidth: 26
             Layout.preferredHeight: 26
             radius: Motion.rounding.small
-            color: root.editMode ? Colors.primary : (editHover.containsMouse ? Colors.layer : "transparent")
+            color: SidebarRightState.quickTogglesEditMode ? Colors.primary : (editHover.containsMouse ? Colors.layer : "transparent")
 
             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
             MaterialIcon {
                 anchors.centerIn: parent
-                text: root.editMode ? "check" : "edit"
-                color: root.editMode ? Colors.background : Colors.text
+                text: SidebarRightState.quickTogglesEditMode ? "check" : "edit"
+                color: SidebarRightState.quickTogglesEditMode ? Colors.background : Colors.text
                 font.pixelSize: 15
             }
 
@@ -169,7 +167,7 @@ ColumnLayout {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: root.editMode = !root.editMode
+                onClicked: SidebarRightState.quickTogglesEditMode = !SidebarRightState.quickTogglesEditMode
             }
         }
     }
@@ -200,7 +198,7 @@ ColumnLayout {
 
                 toggleModel: root.modelFor(modelData.type)
                 size: modelData.size
-                editMode: root.editMode
+                editMode: SidebarRightState.quickTogglesEditMode
                 isFirst: index === 0
                 isLast: index === root.orderedVisible.length - 1
 
@@ -213,7 +211,7 @@ ColumnLayout {
 
     QuickTogglesHiddenPanel {
         Layout.fillWidth: true
-        visible: root.editMode && root.hiddenModels.length > 0
+        visible: SidebarRightState.quickTogglesEditMode && root.hiddenModels.length > 0
         models: root.hiddenModels
         onAddRequested: toggleId => root.addToggle(toggleId)
     }
