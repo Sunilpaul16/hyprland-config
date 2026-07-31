@@ -17,7 +17,6 @@ Loader {
     sourceComponent: PopupWindow {
         visible: true
         anchor {
-            window: root.anchorItem.QsWindow.window
             item: root.anchorItem
             edges: Edges.Bottom
             gravity: Edges.Bottom

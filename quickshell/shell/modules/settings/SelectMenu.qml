@@ -91,8 +91,10 @@ Item {
         sourceComponent: PopupWindow {
             visible: true
 
+            // Only `item` is set, never `window`: PopupAnchor::setWindow() calls
+            // setItem(nullptr) then dereferences it, so assigning window while
+            // item is set segfaults. item alone resolves the window anyway
             anchor {
-                window: root.QsWindow.window
                 item: pill
                 edges: Edges.Bottom
                 gravity: Edges.Bottom

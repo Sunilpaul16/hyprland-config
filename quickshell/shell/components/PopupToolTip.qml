@@ -15,7 +15,6 @@ Loader {
     sourceComponent: PopupWindow {
         visible: true
         anchor {
-            window: root.hoverTarget.QsWindow.window
             item: root.hoverTarget
             edges: Edges.Bottom
             gravity: Edges.Bottom
