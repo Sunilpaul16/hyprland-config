@@ -21,7 +21,7 @@ Rectangle {
 
         Text {
             text: SysInfo.osGlyph
-            font.family: "JetBrainsMono Nerd Font"
+            font.family: Config.appearance.fontMono
             font.pixelSize: 16
             color: Colors.text
         }

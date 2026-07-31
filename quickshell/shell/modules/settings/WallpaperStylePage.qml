@@ -220,6 +220,10 @@ ScrollPage {
             }
         }
 
+        // Stays mock: every consumer of appearance.fontMono renders a Nerd Font
+        // glyph, and Qt's fallback supplies those regardless of family, so the
+        // setting has no observable effect. Needs comparison.md #33's StyledText
+        // tier before there is any real text to apply a font to
         SettingRow {
             last: true
             label: "Monospace font"

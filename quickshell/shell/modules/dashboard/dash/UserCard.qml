@@ -67,7 +67,7 @@ Rectangle {
         Text {
             anchors.centerIn: parent
             text: SysInfo.osGlyph
-            font.family: "JetBrainsMono Nerd Font"
+            font.family: Config.appearance.fontMono
             font.pixelSize: Config.dashboard.user.logoSize * 0.62
             color: Colors.primary
         }

@@ -31,7 +31,7 @@ ScrollPage {
             Text {
                 Layout.alignment: Qt.AlignHCenter
                 text: SysInfo.osGlyph
-                font.family: "JetBrainsMono Nerd Font"
+                font.family: Config.appearance.fontMono
                 font.pixelSize: 52
                 color: Colors.primary
             }
