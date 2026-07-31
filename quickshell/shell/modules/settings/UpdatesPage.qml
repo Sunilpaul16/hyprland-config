@@ -150,11 +150,12 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Show count in the bar"
 
             ToggleSwitch {
-                checked: false
-                onToggled: v => checked = v
+                checked: Config.updates.showInBar
+                onToggled: v => Config.updates.showInBar = v
             }
         }
 
