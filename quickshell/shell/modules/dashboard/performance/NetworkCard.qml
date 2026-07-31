@@ -74,9 +74,8 @@ Rectangle {
                 font.pixelSize: 18
             }
 
-            Text {
+            StyledText {
                 text: "Network"
-                color: Colors.text
                 font.pixelSize: 15
                 font.bold: true
             }
@@ -121,7 +120,7 @@ Rectangle {
                 }
             }
 
-            Text {
+            StyledText {
                 anchors.centerIn: parent
                 visible: NetworkUsage.downloadHistory.length < 2
                 text: "Collecting data..."
@@ -174,7 +173,7 @@ Rectangle {
             font.pixelSize: 16
         }
 
-        Text {
+        StyledText {
             text: statRow.label
             color: Colors.textMuted
             font.pixelSize: 12
@@ -182,7 +181,7 @@ Rectangle {
 
         Item { Layout.fillWidth: true }
 
-        Text {
+        StyledText {
             text: statRow.value
             color: statRow.valueColor
             font.pixelSize: 12

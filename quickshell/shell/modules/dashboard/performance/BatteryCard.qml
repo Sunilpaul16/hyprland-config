@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.UPower
 import "../../../services"
+import "../../../components"
 
 // Battery ring. PerformanceTab gates this on UPower.displayDevice
 // .isLaptopBattery, so nothing here hides itself.
@@ -23,10 +24,9 @@ Rectangle {
         anchors.centerIn: parent
         spacing: 8
 
-        Text {
+        StyledText {
             Layout.alignment: Qt.AlignHCenter
             text: "Battery"
-            color: Colors.text
             font.pixelSize: 15
             font.bold: true
         }
@@ -41,7 +41,7 @@ Rectangle {
             value: root.device?.percentage ?? 0
             fgColor: Colors.primary
 
-            Text {
+            StyledText {
                 anchors.centerIn: parent
                 text: Math.round((root.device?.percentage ?? 0) * 100) + "%"
                 color: Colors.primary
@@ -50,7 +50,7 @@ Rectangle {
             }
         }
 
-        Text {
+        StyledText {
             Layout.alignment: Qt.AlignHCenter
             text: root.charging ? "Charging" : "On battery"
             color: Colors.textMuted

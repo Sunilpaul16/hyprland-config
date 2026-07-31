@@ -31,14 +31,13 @@ Item {
             ColumnLayout {
                 spacing: 2
 
-                Text {
+                StyledText {
                     text: Weather.city.length > 0 ? Weather.city : "Loading…"
-                    color: Colors.text
                     font.pixelSize: 24
                     font.bold: true
                 }
 
-                Text {
+                StyledText {
                     text: new Date().toLocaleDateString(Qt.locale(), "dddd, MMMM d")
                     color: Colors.textMuted
                     font.pixelSize: 13
@@ -88,14 +87,13 @@ Item {
                 ColumnLayout {
                     spacing: -4
 
-                    Text {
+                    StyledText {
                         text: root.hasCurrent ? Math.round(Weather.currentTemp) + Weather.unitSymbol : "—"
-                        color: Colors.text
                         font.pixelSize: 48
                         font.bold: true
                     }
 
-                    Text {
+                    StyledText {
                         Layout.topMargin: 8
                         text: root.hasCurrent ? Weather.descriptionFor(Weather.weatherCode) : (Weather.hasError ? "Unavailable" : "Loading…")
                         color: Colors.textMuted
@@ -130,11 +128,10 @@ Item {
         }
 
         // 7-day forecast strip
-        Text {
+        StyledText {
             Layout.topMargin: 4
             visible: root.hasForecast
             text: "7-Day Forecast"
-            color: Colors.text
             font.pixelSize: 14
             font.bold: true
         }
@@ -164,7 +161,7 @@ Item {
         }
 
         // Forecast placeholder — current data can still be showing above
-        Text {
+        StyledText {
             Layout.alignment: Qt.AlignHCenter
             visible: !root.hasForecast
             text: Weather.hasError ? "Forecast unavailable" : "Loading forecast…"
@@ -191,15 +188,14 @@ Item {
         ColumnLayout {
             spacing: -2
 
-            Text {
+            StyledText {
                 text: stat.label
                 color: Colors.textMuted
                 font.pixelSize: 11
             }
 
-            Text {
+            StyledText {
                 text: stat.value
-                color: Colors.text
                 font.pixelSize: 13
                 font.bold: true
             }
@@ -233,15 +229,14 @@ Item {
             ColumnLayout {
                 spacing: -2
 
-                Text {
+                StyledText {
                     text: card.label
                     color: Colors.textMuted
                     font.pixelSize: 11
                 }
 
-                Text {
+                StyledText {
                     text: card.value
-                    color: Colors.text
                     font.pixelSize: 14
                     font.bold: true
                 }
@@ -271,7 +266,7 @@ Item {
             anchors.centerIn: parent
             spacing: 6
 
-            Text {
+            StyledText {
                 Layout.alignment: Qt.AlignHCenter
                 text: dayCard.dayIndex === 0 ? "Today" : new Date(dayCard.date).toLocaleDateString(Qt.locale(), "ddd")
                 color: Colors.primary
@@ -279,7 +274,7 @@ Item {
                 font.bold: true
             }
 
-            Text {
+            StyledText {
                 Layout.alignment: Qt.AlignHCenter
                 text: new Date(dayCard.date).toLocaleDateString(Qt.locale(), "MMM d")
                 color: Colors.textMuted
@@ -293,7 +288,7 @@ Item {
                 color: Colors.primary
             }
 
-            Text {
+            StyledText {
                 Layout.alignment: Qt.AlignHCenter
                 text: Math.round(dayCard.minTemp) + "° / " + Math.round(dayCard.maxTemp) + "°"
                 color: Colors.textMuted

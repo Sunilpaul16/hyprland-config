@@ -1,6 +1,7 @@
 import QtQuick
 import Qt5Compat.GraphicalEffects
 import "../../services"
+import "../../components"
 
 // Cover-art frame — circular mask
 Item {
@@ -57,7 +58,7 @@ Item {
     }
 
     // Fallback glyph — no track, or art failed to load
-    Text {
+    StyledText {
         anchors.centerIn: parent
         visible: (art.status === Image.Null || art.status === Image.Error) && !root.artPending
         text: "\u{266A}"
@@ -66,7 +67,7 @@ Item {
     }
 
     // Loading indicator while remote art downloads
-    Text {
+    StyledText {
         anchors.centerIn: parent
         visible: art.status === Image.Loading || root.artPending
         text: "Loading…"

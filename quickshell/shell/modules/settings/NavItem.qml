@@ -73,15 +73,14 @@ Rectangle {
             Layout.fillWidth: true
             spacing: 0
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 text: root.page.label
-                color: Colors.text
                 font.pixelSize: 15
                 elide: Text.ElideRight
             }
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 text: root.page.description
                 color: Colors.textMuted

@@ -19,10 +19,9 @@ Rectangle {
         RowLayout {
             Layout.fillWidth: true
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 text: "Volume Mixer"
-                color: Colors.text
                 font.pixelSize: 15
                 font.bold: true
             }
@@ -50,7 +49,7 @@ Rectangle {
                     spacing: 10
                     visible: Audio.outputAppNodes.length > 0
 
-                    Text { text: "Playing"; color: Colors.textMuted; font.pixelSize: 11 }
+                    StyledText { text: "Playing"; color: Colors.textMuted; font.pixelSize: 11 }
 
                     Repeater {
                         model: Audio.outputAppNodes
@@ -67,7 +66,7 @@ Rectangle {
                     spacing: 10
                     visible: Audio.inputAppNodes.length > 0
 
-                    Text { text: "Recording"; color: Colors.textMuted; font.pixelSize: 11 }
+                    StyledText { text: "Recording"; color: Colors.textMuted; font.pixelSize: 11 }
 
                     Repeater {
                         model: Audio.inputAppNodes
@@ -79,7 +78,7 @@ Rectangle {
                     }
                 }
 
-                Text {
+                StyledText {
                     Layout.fillWidth: true
                     Layout.topMargin: 24
                     horizontalAlignment: Text.AlignHCenter

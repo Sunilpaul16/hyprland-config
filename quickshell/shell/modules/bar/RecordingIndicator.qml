@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
+import "../../components"
 
 // Recording indicator widget
 Item {
@@ -33,10 +34,9 @@ Item {
             }
         }
 
-        Text {
+        StyledText {
             Layout.alignment: Qt.AlignVCenter
             text: Recorder.elapsedLabel
-            color: Colors.text
             font.pixelSize: 12
         }
     }

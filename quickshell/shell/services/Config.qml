@@ -120,7 +120,11 @@ Singleton {
                 property bool transparency: false
                 property real panelOpacity: 0.85 // panel backgrounds; used only when transparency is on
                 property real layerOpacity: 0.55 // cards and pills on top of a panel
-                property string fontMono: "JetBrainsMono Nerd Font"
+                // Families are validated against the installed set by Fonts.qml,
+                // which falls back to these defaults rather than letting Qt
+                // silently substitute with no indication why
+                property string fontInterface: "Noto Sans" // all shell text, via StyledText
+                property string fontGlyph: "JetBrainsMono Nerd Font" // Nerd Font icon glyphs only
             }
 
             // Settings panel size. Both axes are derived from the content —

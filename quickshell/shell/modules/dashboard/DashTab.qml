@@ -91,30 +91,28 @@ Item {
             anchors.centerIn: parent
             spacing: -6
 
-            Text {
+            StyledText {
                 Layout.alignment: Qt.AlignHCenter
                 text: Time.hourStr
-                color: Colors.text
                 font.pixelSize: Config.dashboard.clock.fontSize
                 font.bold: true
             }
 
-            Text {
+            StyledText {
                 Layout.alignment: Qt.AlignHCenter
                 text: "•••"
                 color: Colors.primary
                 font.pixelSize: Math.round(Config.dashboard.clock.fontSize * 0.5)
             }
 
-            Text {
+            StyledText {
                 Layout.alignment: Qt.AlignHCenter
                 text: Time.minuteStr
-                color: Colors.text
                 font.pixelSize: Config.dashboard.clock.fontSize
                 font.bold: true
             }
 
-            Text {
+            StyledText {
                 Layout.topMargin: 6
                 Layout.alignment: Qt.AlignHCenter
                 visible: Time.use12Hour
@@ -124,7 +122,7 @@ Item {
                 font.bold: true
             }
 
-            Text {
+            StyledText {
                 Layout.topMargin: 10
                 Layout.alignment: Qt.AlignHCenter
                 text: Time.dateStr

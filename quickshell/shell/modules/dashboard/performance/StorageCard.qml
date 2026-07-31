@@ -74,7 +74,7 @@ Rectangle {
                         font.pixelSize: 17
                     }
 
-                    Text {
+                    StyledText {
                         Layout.alignment: Qt.AlignHCenter
                         text: Math.round((root.disk?.percentage ?? 0) * 100) + "%"
                         color: root.accent
@@ -82,7 +82,7 @@ Rectangle {
                         font.bold: true
                     }
 
-                    Text {
+                    StyledText {
                         Layout.alignment: Qt.AlignHCenter
                         text: "Used"
                         color: Colors.textMuted
@@ -94,14 +94,13 @@ Rectangle {
             ColumnLayout {
                 spacing: 2
 
-                Text {
+                StyledText {
                     text: "Storage"
-                    color: Colors.text
                     font.pixelSize: 15
                     font.bold: true
                 }
 
-                Text {
+                StyledText {
                     text: root.hasDisk ? root.formatKib(root.disk.usedKib) + " / " + root.formatKib(root.disk.totalKib) : "No disks detected"
                     color: root.accent
                     font.pixelSize: 13
@@ -138,15 +137,14 @@ Rectangle {
                         font.pixelSize: 15
                     }
 
-                    Text {
+                    StyledText {
                         Layout.maximumWidth: 90
                         text: !root.hasDisk ? "No disks" : (Storage.hasManualDisk ? Storage.selectedDisk.name : (root.disk?.name ?? "Auto"))
-                        color: Colors.text
                         font.pixelSize: 12
                         elide: Text.ElideRight
                     }
 
-                    Text {
+                    StyledText {
                         text: root.diskMenuOpen ? "\u{25B4}" : "\u{25BE}"
                         color: Colors.textMuted
                         font.pixelSize: 10
@@ -238,17 +236,16 @@ Rectangle {
             anchors.rightMargin: 10
             spacing: 8
 
-            Text {
+            StyledText {
                 text: entry.selected ? "\u{25CF}" : ""
                 color: Colors.primary
                 font.pixelSize: 9
                 Layout.preferredWidth: 9
             }
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 text: entry.label
-                color: Colors.text
                 font.pixelSize: 12
                 elide: Text.ElideRight
             }

@@ -1,5 +1,6 @@
 import QtQuick
 import "../../services"
+import "../../components"
 
 // Media player icon + track title, opens MediaPopup
 Item {
@@ -17,7 +18,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         spacing: 6
 
-        Text {
+        StyledText {
             id: playPauseIcon
             anchors.verticalCenter: parent.verticalCenter
             text: Media.isPlaying ? "\u{23F8}" : "\u{25B6}" // pause / play
@@ -38,7 +39,7 @@ Item {
             }
         }
 
-        Text {
+        StyledText {
             anchors.verticalCenter: parent.verticalCenter
             width: Math.min(implicitWidth, root.maxTitleWidth)
             text: Media.artist.length > 0 ? `${Media.title} · ${Media.artist}` : Media.title

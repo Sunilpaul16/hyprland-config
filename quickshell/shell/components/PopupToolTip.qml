@@ -37,11 +37,10 @@ Loader {
             border.width: 1
             border.color: Colors.outline
 
-            Text {
+            StyledText {
                 id: label
                 anchors.centerIn: parent
                 text: root.text
-                color: Colors.text
                 font.pixelSize: 12
             }
         }

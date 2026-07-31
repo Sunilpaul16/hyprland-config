@@ -1,5 +1,6 @@
 import QtQuick
 import "../../services"
+import "../../components"
 
 // Unread-notification bell, hidden while there's nothing to report (end-4's NotificationUnreadCount)
 Item {
@@ -18,13 +19,13 @@ Item {
         NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing }
     }
 
-    Text {
+    StyledText {
         id: icon
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
         // Escapes, not literals — tooling strips private-use glyphs on write
         text: DndState.enabled ? "\uf1f6" : "\uf0f3" // bell-slash / bell
-        font.family: Config.appearance.fontMono
+        font.family: Fonts.glyphFamily
         color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
         font.pixelSize: 13
 
@@ -40,7 +41,7 @@ Item {
         radius: height / 2
         color: Colors.primary
 
-        Text {
+        StyledText {
             id: countText
             anchors.centerIn: parent
             text: Notifs.unread > 9 ? "9+" : Notifs.unread

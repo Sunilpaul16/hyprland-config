@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Widgets
 import "../../services"
+import "../../components"
 
 // App list item
 Item {
@@ -43,7 +44,7 @@ Item {
                 width: parent.width - 36 - parent.spacing
                 spacing: 2
 
-                Text {
+                StyledText {
                     width: parent.width
                     text: root.modelData.name
                     color: root.isCurrent ? Colors.background : Colors.text
@@ -51,7 +52,7 @@ Item {
                     elide: Text.ElideRight
                 }
 
-                Text {
+                StyledText {
                     width: parent.width
                     text: root.modelData.comment || root.modelData.genericName || ""
                     color: root.isCurrent ? Colors.background : Colors.textMuted

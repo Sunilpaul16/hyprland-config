@@ -1,5 +1,6 @@
 import QtQuick
 import "../../services"
+import "../../components"
 
 // Key cap badge
 Rectangle {
@@ -14,11 +15,10 @@ Rectangle {
     border.width: 1
     border.color: Colors.outline
 
-    Text {
+    StyledText {
         id: text
         anchors.centerIn: parent
         text: root.label
-        color: Colors.text
         font.pixelSize: 11
         font.bold: true
     }//

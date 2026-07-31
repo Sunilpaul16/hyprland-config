@@ -1,5 +1,6 @@
 import QtQuick
 import "../../services"
+import "../../components"
 
 // Clock widget: time + date
 Item {
@@ -11,22 +12,21 @@ Item {
         anchors.centerIn: parent
         spacing: 6
 
-        Text {
+        StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: Time.timeStr
-            color: Colors.text
             font.pixelSize: 16
             font.bold: true
         }
 
-        Text {
+        StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: "·"
             color: Colors.textMuted
             font.pixelSize: 14
         }
 
-        Text {
+        StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: Time.dateStr
             color: Colors.textMuted

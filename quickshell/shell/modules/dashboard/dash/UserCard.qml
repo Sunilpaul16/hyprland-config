@@ -64,10 +64,10 @@ Rectangle {
         radius: width / 2
         color: root.logoBg
 
-        Text {
+        StyledText {
             anchors.centerIn: parent
             text: SysInfo.osGlyph
-            font.family: Config.appearance.fontMono
+            font.family: Fonts.glyphFamily
             font.pixelSize: Config.dashboard.user.logoSize * 0.62
             color: Colors.primary
         }
@@ -130,14 +130,13 @@ Rectangle {
         }
     }
 
-    Text {
+    StyledText {
         anchors.left: uptimeBadge.right
         anchors.leftMargin: 8
         anchors.right: parent.right
         anchors.rightMargin: 16
         anchors.verticalCenter: uptimeBadge.verticalCenter
         text: SysInfo.uptimeLong
-        color: Colors.text
         font.pixelSize: 12
         elide: Text.ElideRight
     }
@@ -168,10 +167,9 @@ Rectangle {
                 color: Colors.primary
             }
 
-            Text {
+            StyledText {
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.wmName
-                color: Colors.text
                 font.pixelSize: 12
                 // Measured off the configured card width, never wmPill.width —
                 // that feeds wmPill.implicitWidth back through this Row and polish-loops

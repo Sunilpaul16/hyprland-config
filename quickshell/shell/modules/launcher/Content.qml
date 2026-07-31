@@ -284,7 +284,7 @@ Item {
             }
 
             // Empty state
-            Text {
+            StyledText {
                 anchors.centerIn: parent
                 visible: content.currentModeResults.length === 0
                 text: content.mode === "wallpaper" ? "No wallpapers found" : (content.mode === "commands" ? "No commands found" : (content.mode === "clip" ? "No clipboard entries found" : "No apps found"))
@@ -305,7 +305,7 @@ Item {
             radius: height / 2
             color: Colors.panel
 
-            Text {
+            StyledText {
                 anchors.left: parent.left
                 anchors.leftMargin: 44
                 anchors.verticalCenter: parent.verticalCenter
@@ -315,7 +315,7 @@ Item {
                 visible: input.text.length === 0
             }
 
-            Text {
+            StyledText {
                 anchors.left: parent.left
                 anchors.leftMargin: 16
                 anchors.verticalCenter: parent.verticalCenter

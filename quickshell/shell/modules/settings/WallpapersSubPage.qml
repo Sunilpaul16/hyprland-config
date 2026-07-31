@@ -103,7 +103,7 @@ ScrollPage {
             cache: false
         }
 
-        Text {
+        StyledText {
             anchors.centerIn: parent
             visible: heroImage.status !== Image.Ready
             text: "No wallpaper set"
@@ -188,7 +188,7 @@ ScrollPage {
                     color: Qt.alpha(Colors.background, 0.82)
                     visible: tileHover.containsMouse || tile.isCurrent
 
-                    Text {
+                    StyledText {
                         anchors.fill: parent
                         anchors.leftMargin: 8
                         anchors.rightMargin: 8

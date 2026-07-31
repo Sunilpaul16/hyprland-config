@@ -35,9 +35,8 @@ Rectangle {
                 RowLayout {
                     spacing: 6
 
-                    Text {
+                    StyledText {
                         text: "Screen Recorder"
-                        color: Colors.text
                         font.pixelSize: 14
                         font.bold: true
                     }
@@ -57,7 +56,7 @@ Rectangle {
                             NumberAnimation { from: 0.25; to: 1; duration: 1000; easing.type: Easing.OutQuad }
                         }
 
-                        Text {
+                        StyledText {
                             id: recText
                             anchors.centerIn: parent
                             text: "REC"
@@ -68,7 +67,7 @@ Rectangle {
                     }
                 }
 
-                Text {
+                StyledText {
                     text: Recorder.active ? "Recording — " + Recorder.elapsedLabel : "Recording off"
                     color: Colors.textMuted
                     font.pixelSize: 12
@@ -89,7 +88,7 @@ Rectangle {
 
                     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-                    Text {
+                    StyledText {
                         id: mainText
                         anchors.centerIn: parent
                         text: Recorder.active ? "Stop" : (Recorder.mode === "full" ? "Full" : "Region")
@@ -180,14 +179,13 @@ Rectangle {
                         font.pixelSize: 16
                     }
 
-                    Text {
+                    StyledText {
                         Layout.fillWidth: true
                         text: "Recordings"
-                        color: Colors.text
                         font.pixelSize: 13
                     }
 
-                    Text {
+                    StyledText {
                         text: Recordings.entries.length + (Recordings.entries.length === 1 ? " recording" : " recordings")
                         color: Colors.textMuted
                         font.pixelSize: 11
@@ -216,7 +214,7 @@ Rectangle {
                 visible: recordingsSection.expanded
                 spacing: 6
 
-                Text {
+                StyledText {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.topMargin: 4
                     visible: Recordings.entries.length === 0

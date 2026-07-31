@@ -46,7 +46,7 @@ Item {
         }
     }
 
-    Text {
+    StyledText {
         id: header
 
         anchors.left: root.isSubPage ? backButton.right : parent.left
@@ -54,7 +54,6 @@ Item {
         anchors.right: parent.right
         anchors.top: parent.top
         text: root.title
-        color: Colors.text
         font.pixelSize: 26
         elide: Text.ElideRight
     }

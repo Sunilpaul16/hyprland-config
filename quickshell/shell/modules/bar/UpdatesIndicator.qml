@@ -31,7 +31,7 @@ Item {
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }
 
-    Text {
+    StyledText {
         id: count
 
         anchors.left: icon.right

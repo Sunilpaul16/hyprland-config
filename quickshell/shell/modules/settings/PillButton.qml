@@ -39,7 +39,7 @@ Rectangle {
             font.pixelSize: 19
         }
 
-        Text {
+        StyledText {
             text: root.text
             color: root.live ? Colors.text : Colors.error
             font.pixelSize: 15

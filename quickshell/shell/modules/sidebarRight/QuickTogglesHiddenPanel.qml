@@ -14,7 +14,7 @@ ColumnLayout {
 
     spacing: 6
 
-    Text {
+    StyledText {
         text: "Hidden"
         color: Colors.textMuted
         font.pixelSize: 11

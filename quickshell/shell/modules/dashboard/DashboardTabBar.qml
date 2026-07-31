@@ -70,7 +70,7 @@ Item {
                     Behavior on fill { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
                 }
 
-                Text {
+                StyledText {
                     id: tabLabel
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.bottom: parent.bottom

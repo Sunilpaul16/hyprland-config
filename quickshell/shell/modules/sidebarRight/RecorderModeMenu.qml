@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import "../../services"
+import "../../components"
 
 // Small dropdown for picking the recording mode, anchored to the SplitButton's chevron (comparison.md #49)
 Loader {
@@ -53,7 +54,7 @@ Loader {
 
                         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-                        Text {
+                        StyledText {
                             anchors.centerIn: parent
                             text: entry.modelData.label
                             color: Recorder.mode === entry.modelData.value ? Colors.background : Colors.text

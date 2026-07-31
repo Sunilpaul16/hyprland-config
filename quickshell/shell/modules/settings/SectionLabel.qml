@@ -1,9 +1,10 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
+import "../../components"
 
 // Heading above a run of SettingRows
-Text {
+StyledText {
     Layout.fillWidth: true
     Layout.topMargin: 8
     Layout.bottomMargin: -6

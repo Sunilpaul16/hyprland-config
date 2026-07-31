@@ -37,7 +37,7 @@ Rectangle {
             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
         }
 
-        Text {
+        StyledText {
             visible: root.large
             text: root.label
             color: root.active ? Colors.background : Colors.text

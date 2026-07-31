@@ -1,5 +1,6 @@
 import QtQuick
 import "../../services"
+import "../../components"
 
 // Wallpaper mode: horizontal thumbnail carousel plus the caption tracking it.
 // Selection movement is exposed rather than driven here — the launcher pairs
@@ -86,12 +87,11 @@ Item {
     // Caption tracks the selected thumbnail instead of the panel
     // centre, so the name reads as belonging to it. caelestia labels
     // each item instead — not viable at our 150px item width
-    Text {
+    StyledText {
         id: caption
         anchors.top: row.bottom
         anchors.topMargin: 4
         text: (row.currentIndex >= 0 && root.results[row.currentIndex]) ? root.results[row.currentIndex].label : ""
-        color: Colors.text
         font.pixelSize: 13
         elide: Text.ElideMiddle
         // Measured against the panel constant, never the parent it

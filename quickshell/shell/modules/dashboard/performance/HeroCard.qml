@@ -53,14 +53,14 @@ Rectangle {
         anchors.rightMargin: 12
         spacing: 1
 
-        Text {
+        StyledText {
             text: root.label
             color: root.accent
             font.pixelSize: 17
             font.bold: true
         }
 
-        Text {
+        StyledText {
             Layout.fillWidth: true
             text: root.subLabel
             color: Colors.textMuted
@@ -90,9 +90,8 @@ Rectangle {
                 fill: 1
             }
 
-            Text {
+            StyledText {
                 text: isNaN(root.temperature) || root.temperature <= 0 ? "--°C" : Math.ceil(root.temperature) + "°C"
-                color: Colors.text
                 font.pixelSize: 13
             }
         }
@@ -125,7 +124,7 @@ Rectangle {
         implicitSize: 76
         value: root.usage
 
-        Text {
+        StyledText {
             id: usageCaption
             anchors.bottom: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
@@ -134,7 +133,7 @@ Rectangle {
             font.pixelSize: 11
         }
 
-        Text {
+        StyledText {
             anchors.centerIn: parent
             text: isNaN(root.usage) ? "..." : Math.round(root.usage * 100) + "%"
             color: root.accent

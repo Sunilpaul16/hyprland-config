@@ -73,7 +73,7 @@ Item {
             font.pixelSize: 20
         }
 
-        Text {
+        StyledText {
             anchors.left: searchIcon.right
             anchors.leftMargin: 12
             anchors.verticalCenter: parent.verticalCenter
@@ -150,7 +150,7 @@ Item {
         }
 
         // Empty state
-        Text {
+        StyledText {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: 24

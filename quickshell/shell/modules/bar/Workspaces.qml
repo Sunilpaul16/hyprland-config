@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Widgets
 import Quickshell.Hyprland
 import "../../services"
+import "../../components"
 
 // Workspaces widget
 Item {
@@ -153,7 +154,7 @@ Item {
                     }
                 }
 
-                Text {
+                StyledText {
                     visible: slot.modelData.extra > 0
                     text: "+" + slot.modelData.extra
                     font.pixelSize: 10
@@ -162,7 +163,7 @@ Item {
                 }
             }
 
-            Text {
+            StyledText {
                 visible: !slot.hasIcons
                 anchors.centerIn: parent
                 text: modelData.ws.id

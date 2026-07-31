@@ -46,9 +46,8 @@ Rectangle {
                 fill: 1
             }
 
-            Text {
+            StyledText {
                 text: "Memory"
-                color: Colors.text
                 font.pixelSize: 15
                 font.bold: true
             }
@@ -70,7 +69,7 @@ Rectangle {
                 anchors.centerIn: parent
                 spacing: -2
 
-                Text {
+                StyledText {
                     Layout.alignment: Qt.AlignHCenter
                     text: Math.round(SystemUsage.memoryPercentage * 100) + "%"
                     color: root.accent
@@ -78,7 +77,7 @@ Rectangle {
                     font.bold: true
                 }
 
-                Text {
+                StyledText {
                     Layout.alignment: Qt.AlignHCenter
                     text: "Used"
                     color: Colors.textMuted
@@ -87,10 +86,9 @@ Rectangle {
             }
         }
 
-        Text {
+        StyledText {
             Layout.alignment: Qt.AlignHCenter
             text: root.formatKib(SystemUsage.memoryUsedKib) + " / " + root.formatKib(SystemUsage.memoryTotalKib)
-            color: Colors.text
             font.pixelSize: 12
         }
     }

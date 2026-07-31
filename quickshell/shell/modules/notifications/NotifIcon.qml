@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Widgets
 import "../../services"
+import "../../components"
 
 // Notification icon — image, app icon, or flat glyph fallback
 Rectangle {
@@ -37,7 +38,7 @@ Rectangle {
     }
 
     // Flat monochrome fallback glyph, not a colorful emoji
-    Text {
+    StyledText {
         anchors.centerIn: parent
         anchors.verticalCenterOffset: -1
         visible: !root.hasImage && !root.hasAppIcon

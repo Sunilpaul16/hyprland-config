@@ -22,10 +22,9 @@ Rectangle {
         RowLayout {
             Layout.fillWidth: true
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 text: "Bluetooth"
-                color: Colors.text
                 font.pixelSize: 15
                 font.bold: true
             }
@@ -53,7 +52,7 @@ Rectangle {
                     spacing: 6
                     visible: BluetoothStatus.connectedDevices.length > 0
 
-                    Text { text: "Connected"; color: Colors.textMuted; font.pixelSize: 11 }
+                    StyledText { text: "Connected"; color: Colors.textMuted; font.pixelSize: 11 }
 
                     Repeater {
                         model: BluetoothStatus.connectedDevices
@@ -70,7 +69,7 @@ Rectangle {
                     spacing: 6
                     visible: BluetoothStatus.pairedDevices.length > 0
 
-                    Text { text: "Paired"; color: Colors.textMuted; font.pixelSize: 11 }
+                    StyledText { text: "Paired"; color: Colors.textMuted; font.pixelSize: 11 }
 
                     Repeater {
                         model: BluetoothStatus.pairedDevices
@@ -87,7 +86,7 @@ Rectangle {
                     spacing: 6
                     visible: BluetoothStatus.availableDevices.length > 0
 
-                    Text { text: "Available"; color: Colors.textMuted; font.pixelSize: 11 }
+                    StyledText { text: "Available"; color: Colors.textMuted; font.pixelSize: 11 }
 
                     Repeater {
                         model: BluetoothStatus.availableDevices
@@ -99,7 +98,7 @@ Rectangle {
                     }
                 }
 
-                Text {
+                StyledText {
                     Layout.fillWidth: true
                     Layout.topMargin: 24
                     horizontalAlignment: Text.AlignHCenter

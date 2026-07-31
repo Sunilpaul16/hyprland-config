@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
+import "../../components"
 
 // Media popup content: cover art + title/artist + progress + controls
 Item {
@@ -45,7 +46,7 @@ Item {
             }
 
             // Flat monochrome fallback glyph, not a colorful emoji
-            Text {
+            StyledText {
                 anchors.centerIn: parent
                 visible: Media.artSource.length === 0
                 text: "\u{266A}" // eighth note
@@ -60,17 +61,16 @@ Item {
             Layout.fillHeight: true
             spacing: 4
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 visible: Media.hasPlayer
                 text: Media.title.length > 0 ? Media.title : "Unknown title"
-                color: Colors.text
                 font.pixelSize: 15
                 font.bold: true
                 elide: Text.ElideRight
             }
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 visible: Media.hasPlayer && Media.artist.length > 0
                 text: Media.artist
@@ -79,7 +79,7 @@ Item {
                 elide: Text.ElideRight
             }
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 visible: !Media.hasPlayer
                 text: "No media playing"
@@ -115,7 +115,7 @@ Item {
                 visible: Media.hasPlayer
                 spacing: 6
 
-                Text {
+                StyledText {
                     text: root.formatTime(Media.position) + " / " + root.formatTime(Media.length)
                     color: Colors.textMuted
                     font.pixelSize: 11

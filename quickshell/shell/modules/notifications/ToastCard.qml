@@ -1,5 +1,6 @@
 import QtQuick
 import "../../services"
+import "../../components"
 
 // Notification toast card
 Rectangle {
@@ -83,18 +84,17 @@ Rectangle {
                 width: parent.width
                 spacing: 6
 
-                Text {
+                StyledText {
                     id: summaryText
                     visible: card.modelData.summary.length > 0
                     text: card.modelData.summary
-                    color: Colors.text
                     font.pixelSize: 13
                     font.bold: true
                     elide: Text.ElideRight
                     width: parent.width - appNameText.implicitWidth - parent.spacing
                 }
 
-                Text {
+                StyledText {
                     id: appNameText
                     visible: card.modelData.appName.length > 0
                     text: card.modelData.appName
@@ -103,7 +103,7 @@ Rectangle {
                 }
             }
 
-            Text {
+            StyledText {
                 width: parent.width
                 visible: card.modelData.body.length > 0
                 text: card.modelData.body

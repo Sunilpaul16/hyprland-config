@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Widgets
 import Quickshell.Services.Notifications
 import "../../services"
+import "../../components"
 
 // Per-app notification group — a single NotifCard, or a collapsible header over the member cards (comparison.md #26)
 Item {
@@ -71,7 +72,7 @@ Item {
                         source: root.group?.appIcon.length > 0 ? Quickshell.iconPath(root.group.appIcon, "dialog-information") : ""
                     }
 
-                    Text {
+                    StyledText {
                         anchors.centerIn: parent
                         anchors.verticalCenterOffset: -1
                         visible: root.group?.image.length === 0 && root.group?.appIcon.length === 0
@@ -82,16 +83,15 @@ Item {
                     }
                 }
 
-                Text {
+                StyledText {
                     Layout.fillWidth: true
                     text: root.appName
-                    color: Colors.text
                     font.pixelSize: 13
                     font.bold: true
                     elide: Text.ElideRight
                 }
 
-                Text {
+                StyledText {
                     text: root.group ? StringUtils.notifTime(root.group.time, Time.minutes) : ""
                     color: Colors.textMuted
                     font.pixelSize: 11
@@ -110,7 +110,7 @@ Item {
                         anchors.centerIn: parent
                         spacing: 2
 
-                        Text {
+                        StyledText {
                             id: countLabel
                             // Hidden count, not the total — the rest are already on screen
                             text: root.expanded ? root.notifs.length : `+${root.hiddenCount}`
@@ -118,7 +118,7 @@ Item {
                             font.pixelSize: 11
                         }
 
-                        Text {
+                        StyledText {
                             text: "⌄"
                             color: root.group?.urgency === NotificationUrgency.Critical ? Colors.textOnError : Colors.textMuted
                             font.pixelSize: 13

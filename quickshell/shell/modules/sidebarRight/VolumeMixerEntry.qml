@@ -27,10 +27,9 @@ RowLayout {
         Layout.fillWidth: true
         spacing: 2
 
-        Text {
+        StyledText {
             Layout.fillWidth: true
             text: Audio.appNodeDisplayName(root.node)
-            color: Colors.text
             font.pixelSize: 12
             elide: Text.ElideRight
         }

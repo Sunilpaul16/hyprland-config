@@ -4,6 +4,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Services.Mpris
 import "../../services"
+import "../../components"
 
 // Media tab: full-page now-playing — cover art, draggable seek, transport controls
 Item {
@@ -30,14 +31,14 @@ Item {
         visible: !Media.hasPlayer
         spacing: 12
 
-        Text {
+        StyledText {
             Layout.alignment: Qt.AlignHCenter
             text: "\u{266A}"
             color: Colors.textMuted
             font.pixelSize: 56
         }
 
-        Text {
+        StyledText {
             Layout.alignment: Qt.AlignHCenter
             text: "Nothing playing"
             color: Colors.textMuted
@@ -63,16 +64,15 @@ Item {
             Layout.preferredWidth: 320
             spacing: 6
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 text: Media.title.length > 0 ? Media.title : "Unknown title"
-                color: Colors.text
                 font.pixelSize: 22
                 font.bold: true
                 elide: Text.ElideRight
             }
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 text: Media.artist.length > 0 ? Media.artist : "Unknown artist"
                 color: Colors.textMuted
@@ -134,7 +134,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.topMargin: -4
 
-                Text {
+                StyledText {
                     text: root.formatTime(Media.position)
                     color: Colors.textMuted
                     font.pixelSize: 11
@@ -142,7 +142,7 @@ Item {
 
                 Item { Layout.fillWidth: true }
 
-                Text {
+                StyledText {
                     text: root.formatTime(Media.length)
                     color: Colors.textMuted
                     font.pixelSize: 11

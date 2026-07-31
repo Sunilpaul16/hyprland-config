@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import "../../services"
+import "../../components"
 
 // Single tray-menu entry (item or separator)
 Item {
@@ -45,7 +46,7 @@ Item {
             opacity: root.entry.enabled ? 1 : 0.4
 
             // Checkbox / radio glyph
-            Text {
+            StyledText {
                 visible: root.entry.buttonType !== QsMenuButtonType.None
                 anchors.verticalCenter: parent.verticalCenter
                 text: {
@@ -69,17 +70,16 @@ Item {
             }
 
             // Entry label
-            Text {
+            StyledText {
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.entry.text
-                color: Colors.text
                 font.pixelSize: 13
                 elide: Text.ElideRight
                 width: Math.min(implicitWidth, 220)
             }
 
             // Submenu indicator (not expandable this pass)
-            Text {
+            StyledText {
                 visible: root.entry.hasChildren
                 anchors.verticalCenter: parent.verticalCenter
                 text: "▸"

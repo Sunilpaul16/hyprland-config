@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import "../../services"
+import "../../components"
 
 
 // Notification card
@@ -24,11 +25,10 @@ Rectangle {
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-        Text {
+        StyledText {
             anchors.centerIn: parent
             width: parent.width - 16
             text: btn.glyph.length > 0 ? btn.glyph : btn.label
-            color: Colors.text
             font.pixelSize: btn.glyph.length > 0 ? 13 : 12
             horizontalAlignment: Text.AlignHCenter
             elide: Text.ElideRight
@@ -124,7 +124,7 @@ Rectangle {
         }
 
         // App name (expanded only)
-        Text {
+        StyledText {
             id: appNameText
             anchors.left: iconSlot.right
             anchors.right: parent.right
@@ -154,18 +154,17 @@ Rectangle {
                 width: parent.width
                 spacing: 6
 
-                Text {
+                StyledText {
                     id: summaryText
                     visible: card.modelData.summary.length > 0
                     text: card.modelData.summary
-                    color: Colors.text
                     font.pixelSize: 13
                     font.bold: true
                     elide: Text.ElideRight
                     width: parent.width - sepText.implicitWidth - timeText.implicitWidth - parent.spacing * 2
                 }
 
-                Text {
+                StyledText {
                     id: sepText
                     visible: card.modelData.summary.length > 0
                     text: "·"
@@ -173,7 +172,7 @@ Rectangle {
                     font.pixelSize: 12
                 }
 
-                Text {
+                StyledText {
                     id: timeText
                     text: card.modelData.timeStr
                     color: Colors.textMuted
@@ -182,7 +181,7 @@ Rectangle {
             }
 
             // Body: one-line preview collapsed, full wrapped expanded
-            Text {
+            StyledText {
                 id: bodyText
                 width: parent.width
                 visible: card.modelData.body.length > 0
@@ -265,7 +264,7 @@ Rectangle {
             width: 18
             height: 18
 
-            Text {
+            StyledText {
                 anchors.centerIn: parent
                 text: "⌄" // chevron down
                 color: chevronArea.containsMouse ? Colors.text : Colors.textMuted

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
+import "../../components"
 
 // One row of a settings group — label (+ optional subtext) on the left, a
 // control slotted on the right. `first`/`last` round off the ends of a run of
@@ -45,7 +46,7 @@ Rectangle {
             Layout.alignment: Qt.AlignVCenter
             spacing: 1
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 text: root.label
                 color: root.live ? Colors.text : Colors.error
@@ -53,7 +54,7 @@ Rectangle {
                 elide: Text.ElideRight
             }
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 visible: root.subtext.length > 0
                 text: root.subtext

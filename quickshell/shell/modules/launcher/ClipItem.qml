@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Io
 import Qt5Compat.GraphicalEffects
 import "../../services"
+import "../../components"
 
 
 // Clipboard list item
@@ -78,7 +79,7 @@ Item {
                 width: 36
                 height: 36
 
-                Text {
+                StyledText {
                     anchors.centerIn: parent
                     visible: root.isAction || !root.modelData.isImage
                     text: root.isAction ? root.modelData.icon : "\u{1F4CB}"
@@ -111,7 +112,7 @@ Item {
                 }
             }
 
-            Text {
+            StyledText {
                 anchors.verticalCenter: parent.verticalCenter
                 width: parent.width - iconSlot.width - parent.spacing
                 text: root.isAction ? root.modelData.label : root.modelData.text

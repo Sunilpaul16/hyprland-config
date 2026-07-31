@@ -22,15 +22,14 @@ RowLayout {
         Layout.fillWidth: true
         spacing: 0
 
-        Text {
+        StyledText {
             Layout.fillWidth: true
             text: root.device.name.length > 0 ? root.device.name : root.device.deviceName
-            color: Colors.text
             font.pixelSize: 13
             elide: Text.ElideRight
         }
 
-        Text {
+        StyledText {
             visible: root.device.batteryAvailable
             text: Math.round(root.device.battery * 100) + "%"
             color: Colors.textMuted

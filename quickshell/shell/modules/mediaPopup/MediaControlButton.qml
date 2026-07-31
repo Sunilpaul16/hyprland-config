@@ -1,5 +1,6 @@
 import QtQuick
 import "../../services"
+import "../../components"
 
 // Transport control icon button
 Item {
@@ -13,7 +14,7 @@ Item {
     implicitHeight: icon.implicitHeight
     opacity: root.enabled ? 1 : 0.35
 
-    Text {
+    StyledText {
         id: icon
         text: root.glyph
         color: area.containsMouse ? Colors.text : Colors.textMuted

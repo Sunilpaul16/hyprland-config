@@ -85,18 +85,17 @@ Rectangle {
             Layout.fillWidth: true
             spacing: 2
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 visible: Media.hasPlayer
                 horizontalAlignment: Text.AlignHCenter
                 text: Media.title.length > 0 ? Media.title : "Unknown title"
-                color: Colors.text
                 font.pixelSize: 13
                 font.bold: true
                 elide: Text.ElideRight
             }
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 visible: Media.hasPlayer && Media.album.length > 0
                 horizontalAlignment: Text.AlignHCenter
@@ -106,7 +105,7 @@ Rectangle {
                 elide: Text.ElideRight
             }
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 visible: Media.hasPlayer && Media.artist.length > 0
                 horizontalAlignment: Text.AlignHCenter
@@ -116,7 +115,7 @@ Rectangle {
                 elide: Text.ElideRight
             }
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 visible: !Media.hasPlayer
                 horizontalAlignment: Text.AlignHCenter

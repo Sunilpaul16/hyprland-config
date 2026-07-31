@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
 import "../../services"
+import "../../components"
 
 // Polkit authentication dialog — replaces the system's default (unthemed)
 // agent UI for auth prompts. Binds to services/PolkitState.qml's
@@ -113,17 +114,16 @@ Scope {
                                     source: root.flow?.iconName ? Quickshell.iconPath(root.flow.iconName, "dialog-password") : ""
                                 }
 
-                                Text {
+                                StyledText {
                                     Layout.fillWidth: true
                                     text: root.flow?.message ?? ""
-                                    color: Colors.text
                                     font.pixelSize: 14
                                     wrapMode: Text.WordWrap
                                 }
                             }
 
                             // Error / supplementary message
-                            Text {
+                            StyledText {
                                 Layout.fillWidth: true
                                 visible: (root.flow?.supplementaryMessage ?? "").length > 0
                                 text: root.flow?.supplementaryMessage ?? ""
@@ -205,7 +205,7 @@ Scope {
 
                     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-                    Text {
+                    StyledText {
                         id: label
                         anchors.centerIn: parent
                         text: btn.text

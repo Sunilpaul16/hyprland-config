@@ -36,9 +36,8 @@ Item {
             anchors.centerIn: parent
             spacing: 6
 
-            Text {
+            StyledText {
                 text: Media.hasManualPlayer ? (Media.activePlayer?.identity || Media.activePlayer?.dbusName || "Unknown") : "Auto"
-                color: Colors.text
                 font.pixelSize: 12
                 elide: Text.ElideRight
             }
@@ -133,17 +132,16 @@ Item {
             anchors.rightMargin: 10
             spacing: 8
 
-            Text {
+            StyledText {
                 text: entry.selected ? "\u{25CF}" : ""
                 color: Colors.primary
                 font.pixelSize: 9
                 Layout.preferredWidth: 9
             }
 
-            Text {
+            StyledText {
                 Layout.fillWidth: true
                 text: entry.label
-                color: Colors.text
                 font.pixelSize: 12
                 elide: Text.ElideRight
             }

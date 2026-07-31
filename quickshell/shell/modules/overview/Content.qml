@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import "../../services"
+import "../../components"
 
 // Workspace overview content (horizontal card row)
 Item {
@@ -82,12 +83,11 @@ Item {
         root.dragTargetWorkspace = -1;
     }
 
-    Text {
+    StyledText {
         anchors.bottom: list.top
         anchors.bottomMargin: 8
         anchors.left: list.left
         text: "Workspaces"
-        color: Colors.text
         font.pixelSize: 15
         font.bold: true
     }

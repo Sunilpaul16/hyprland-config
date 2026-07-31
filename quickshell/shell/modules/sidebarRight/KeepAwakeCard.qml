@@ -26,14 +26,13 @@ Rectangle {
             Layout.fillWidth: true
             spacing: 2
 
-            Text {
+            StyledText {
                 text: "Keep Awake"
-                color: Colors.text
                 font.pixelSize: 14
                 font.bold: true
             }
 
-            Text {
+            StyledText {
                 text: IdleInhibitState.enabled ? "Preventing sleep mode" : "Sleep as normal"
                 color: Colors.textMuted
                 font.pixelSize: 12
@@ -46,7 +45,7 @@ Rectangle {
                 implicitWidth: activeSinceText.implicitWidth + 16
                 implicitHeight: activeSinceText.implicitHeight + 6
 
-                Text {
+                StyledText {
                     id: activeSinceText
                     anchors.centerIn: parent
                     text: IdleInhibitState.enabled

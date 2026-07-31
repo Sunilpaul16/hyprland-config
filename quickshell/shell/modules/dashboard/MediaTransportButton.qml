@@ -1,5 +1,6 @@
 import QtQuick
 import "../../services"
+import "../../components"
 
 // Prev/play-pause/next glyph button; `big` sizes up the centre one
 Item {
@@ -13,7 +14,7 @@ Item {
     implicitHeight: icon.implicitHeight
     opacity: btn.enabled ? 1 : 0.35
 
-    Text {
+    StyledText {
         id: icon
         text: btn.glyph
         color: area.containsMouse ? Colors.text : Colors.textMuted

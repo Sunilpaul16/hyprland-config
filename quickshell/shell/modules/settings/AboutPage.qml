@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import "../../services"
+import "../../components"
 
 // About page. Every value here is real: SysInfo reads /etc and /proc directly,
 // AboutInfo shells out for the three facts a file can't answer, and the display
@@ -28,23 +29,22 @@ ScrollPage {
             width: parent.width - 30 * 2
             spacing: 4
 
-            Text {
+            StyledText {
                 Layout.alignment: Qt.AlignHCenter
                 text: SysInfo.osGlyph
-                font.family: Config.appearance.fontMono
+                font.family: Fonts.glyphFamily
                 font.pixelSize: 52
                 color: Colors.primary
             }
 
-            Text {
+            StyledText {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: 8
                 text: SysInfo.osName
-                color: Colors.text
                 font.pixelSize: 22
             }
 
-            Text {
+            StyledText {
                 Layout.alignment: Qt.AlignHCenter
                 text: SysInfo.uptimeLong
                 color: Colors.outline

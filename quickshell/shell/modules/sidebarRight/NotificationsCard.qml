@@ -4,6 +4,7 @@ import Qt5Compat.GraphicalEffects
 import Quickshell
 import "../../services"
 import "../notifications"
+import "../../components"
 
 // Notifications card (sidebar) — fills the panel's leftover height so the
 // empty-state watermark has room, matching caelestia's NotifDock
@@ -28,11 +29,11 @@ Rectangle {
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-        Text {
+        StyledText {
             anchors.centerIn: parent
             text: sb.glyph.length > 0 ? sb.glyph : sb.label
             color: sb.toggled ? Colors.background : Colors.text
-            font.family: sb.glyph.length > 0 ? Config.appearance.fontMono : Qt.application.font.family
+            font.family: sb.glyph.length > 0 ? Fonts.glyphFamily : Fonts.interfaceFamily
             font.pixelSize: sb.glyph.length > 0 ? 14 : 12
         }
 
@@ -59,10 +60,9 @@ Rectangle {
         spacing: 12
 
         // Header — clear-all moved to the footer row
-        Text {
+        StyledText {
             Layout.fillWidth: true
             text: "Notifications"
-            color: Colors.text
             font.pixelSize: 15
             font.bold: true
         }
@@ -101,7 +101,7 @@ Rectangle {
                     layer.effect: ColorOverlay { color: Colors.outline }
                 }
 
-                Text {
+                StyledText {
                     Layout.alignment: Qt.AlignHCenter
                     text: "No Notifications"
                     color: Colors.outline

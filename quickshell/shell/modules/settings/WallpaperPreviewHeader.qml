@@ -64,7 +64,7 @@ ColumnLayout {
                 font.pixelSize: 42
             }
 
-            Text {
+            StyledText {
                 Layout.alignment: Qt.AlignHCenter
                 text: "No wallpaper preview"
                 color: Colors.textMuted

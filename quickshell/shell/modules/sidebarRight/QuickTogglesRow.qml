@@ -137,9 +137,8 @@ ColumnLayout {
     RowLayout {
         Layout.fillWidth: true
 
-        Text {
+        StyledText {
             text: "Quick Toggles"
-            color: Colors.text
             font.pixelSize: 15
             font.bold: true
         }

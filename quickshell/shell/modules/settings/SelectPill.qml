@@ -41,9 +41,8 @@ Rectangle {
         anchors.centerIn: parent
         spacing: 6
 
-        Text {
+        StyledText {
             text: root.displayText
-            color: Colors.text
             font.pixelSize: 14
         }
 

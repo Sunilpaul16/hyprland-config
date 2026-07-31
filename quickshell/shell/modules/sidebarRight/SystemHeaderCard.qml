@@ -19,14 +19,13 @@ Rectangle {
         anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; margins: 16 }
         spacing: 8
 
-        Text {
+        StyledText {
             text: SysInfo.osGlyph
-            font.family: Config.appearance.fontMono
+            font.family: Fonts.glyphFamily
             font.pixelSize: 16
-            color: Colors.text
         }
 
-        Text {
+        StyledText {
             Layout.fillWidth: true
             text: `Uptime: ${SysInfo.uptimeShort}`
             color: Colors.text

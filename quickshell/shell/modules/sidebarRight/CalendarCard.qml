@@ -58,10 +58,9 @@ Rectangle {
             Layout.preferredHeight: 26
         }
 
-        Text {
+        StyledText {
             Layout.fillWidth: true
             text: Time.dateStr
-            color: Colors.text
             font.pixelSize: 14
         }
     }

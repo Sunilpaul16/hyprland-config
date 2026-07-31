@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Widgets
 import Quickshell.Hyprland
 import "../../services"
+import "../../components"
 
 
 // Active window widget
@@ -42,7 +43,7 @@ Item {
             implicitSize: 18
         }
 
-        Text {
+        StyledText {
             anchors.verticalCenter: parent.verticalCenter
             width: Math.min(implicitWidth, root.maxTitleWidth)
             text: root.title

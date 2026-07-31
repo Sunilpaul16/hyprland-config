@@ -1,5 +1,6 @@
 import QtQuick
 import "../../services"
+import "../../components"
 
 // Key combo widget
 Row {
@@ -61,7 +62,7 @@ Row {
             Item {
                 implicitWidth: plus.implicitWidth
                 implicitHeight: 20
-                Text { id: plus; anchors.centerIn: parent; text: "+"; color: Colors.textMuted; font.pixelSize: 11 }
+                StyledText { id: plus; anchors.centerIn: parent; text: "+"; color: Colors.textMuted; font.pixelSize: 11 }
             }
         }
     }

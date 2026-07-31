@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell.Hyprland
 import "../../services"
+import "../../components"
 
 // Single workspace card (real or placeholder)
 Item {
@@ -57,7 +58,7 @@ Item {
             }
         }
 
-        Text {
+        StyledText {
             anchors { top: parent.top; left: parent.left; margins: 8 }
             text: root.slot?.id ?? ""
             color: root.isFocused ? Colors.primary : Colors.textMuted

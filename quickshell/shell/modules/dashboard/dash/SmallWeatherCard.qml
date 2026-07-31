@@ -32,7 +32,7 @@ Rectangle {
         ColumnLayout {
             spacing: 2
 
-            Text {
+            StyledText {
                 Layout.alignment: Qt.AlignHCenter
                 text: root.hasData ? Math.round(Weather.currentTemp) + Weather.unitSymbol : "—"
                 color: Colors.primary
@@ -40,11 +40,10 @@ Rectangle {
                 font.bold: true
             }
 
-            Text {
+            StyledText {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.maximumWidth: root.width - Config.dashboard.weather.iconSize - 60
                 text: root.hasData ? Weather.descriptionFor(Weather.weatherCode) : (Weather.hasError ? "Unavailable" : "Loading…")
-                color: Colors.text
                 font.pixelSize: 12
                 elide: Text.ElideRight
             }

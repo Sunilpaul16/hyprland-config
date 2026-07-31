@@ -51,14 +51,13 @@ Item {
             anchors.centerIn: parent
             spacing: 6
 
-            Text {
+            StyledText {
                 id: label
 
                 // Constant ceiling, so a long device name elides instead of
                 // stretching the row
                 Layout.maximumWidth: root.maxPillWidth - 16 * 2 - 24
                 text: root.displayText
-                color: Colors.text
                 font.pixelSize: 14
                 elide: Text.ElideRight
             }
@@ -139,12 +138,11 @@ Item {
                                 anchors.rightMargin: 10
                                 spacing: 8
 
-                                Text {
+                                StyledText {
                                     id: itemLabel
 
                                     Layout.fillWidth: true
                                     text: modelData.label
-                                    color: Colors.text
                                     font.pixelSize: 14
                                     elide: Text.ElideRight
                                 }

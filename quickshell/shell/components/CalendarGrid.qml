@@ -85,7 +85,7 @@ Item {
 
                 Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-                Text {
+                StyledText {
                     id: monthLabel
 
                     anchors.centerIn: parent
@@ -119,7 +119,7 @@ Item {
                 border.width: root.onCurrentMonth ? 1 : 0
                 border.color: Colors.outline
 
-                Text {
+                StyledText {
                     id: todayLabel
 
                     anchors.centerIn: parent
@@ -190,7 +190,7 @@ Item {
                     color: dayCell.isToday ? Colors.primary : "transparent"
                 }
 
-                Text {
+                StyledText {
                     anchors.centerIn: parent
                     text: dayCell.model.day
                     font.pixelSize: 12
@@ -214,10 +214,9 @@ Item {
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-        Text {
+        StyledText {
             anchors.centerIn: parent
             text: navBtn.glyph
-            color: Colors.text
             font.pixelSize: 15
         }
 

@@ -1,5 +1,6 @@
 import QtQuick
 import "../../services"
+import "../../components"
 
 // Command list item
 Item {
@@ -29,7 +30,7 @@ Item {
             anchors.rightMargin: 12
             spacing: 12
 
-            Text {
+            StyledText {
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.modelData.icon
                 font.pixelSize: 22
@@ -42,7 +43,7 @@ Item {
                 width: parent.width - 36 - parent.spacing
                 spacing: 2
 
-                Text {
+                StyledText {
                     width: parent.width
                     text: root.modelData.title
                     color: root.isCurrent ? Colors.background : Colors.text
@@ -50,7 +51,7 @@ Item {
                     elide: Text.ElideRight
                 }
 
-                Text {
+                StyledText {
                     width: parent.width
                     text: root.modelData.description
                     color: root.isCurrent ? Colors.background : Colors.textMuted

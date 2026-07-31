@@ -1,5 +1,6 @@
 import QtQuick
 import "../../services"
+import "../../components"
 
 // Sidebar toggle icon widget, opens right sidebar
 Item {
@@ -8,7 +9,7 @@ Item {
     implicitWidth: icon.implicitWidth
     implicitHeight: icon.implicitHeight
 
-    Text {
+    StyledText {
         id: icon
         anchors.centerIn: parent
         text: "\u{25A4}" // sidebar-panel glyph

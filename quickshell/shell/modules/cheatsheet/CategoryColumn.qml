@@ -53,9 +53,8 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
             }
 
-            Text {
+            StyledText {
                 text: root.categoryName
-                color: Colors.text
                 font.pixelSize: 14
                 font.bold: true
                 anchors.verticalCenter: parent.verticalCenter
@@ -83,7 +82,7 @@ Rectangle {
 
                     KeyCombo { rowData: modelData; Layout.alignment: Qt.AlignVCenter }
 
-                    Text {
+                    StyledText {
                         text: modelData.label
                         color: Colors.textMuted
                         font.pixelSize: 12
