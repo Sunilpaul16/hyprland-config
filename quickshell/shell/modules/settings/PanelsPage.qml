@@ -244,11 +244,12 @@ ScrollPage {
 
         SettingRow {
             last: true
+            live: true
             label: "Close when settings opens"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.sidebar.closeOnSettings
+                onToggled: v => Config.sidebar.closeOnSettings = v
             }
         }
     }

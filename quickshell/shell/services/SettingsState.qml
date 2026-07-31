@@ -34,7 +34,8 @@ Singleton {
         root.subPage = "";
         // Settings is a big centred overlay that covers the sidebar; neither
         // dismisses the other through GlobalFocusGrab, so close it explicitly
-        SidebarRightState.open = false;
+        if (Config.sidebar.closeOnSettings)
+            SidebarRightState.open = false;
     }
 
     function toggle(): void {
