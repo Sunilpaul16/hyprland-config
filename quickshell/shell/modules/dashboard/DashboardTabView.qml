@@ -86,6 +86,10 @@ Flickable {
 
                 x: index * root.paneWidth
                 width: root.paneWidth
+                // The panel sizes to the *current* pane, so a wider pane
+                // (Media) would otherwise paint over its neighbour's slot
+                // whenever a narrower tab is showing
+                clip: true
                 // Own natural content height, not the tallest tab's —
                 // root.currentPaneHeight then follows whichever pane
                 // is current, animated on switch

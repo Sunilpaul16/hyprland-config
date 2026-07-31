@@ -1,15 +1,20 @@
 import "."
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Services.Mpris
 import "../../services"
 import "../../components"
 
-// Media tab: full-page now-playing — cover art, draggable seek, transport controls
+// Media tab: full-page now-playing — cover art, title block, wavy seek bar,
+// transport controls, and the bongocat gif where caelestia puts its lyrics pane
 Item {
     id: root
 
+    readonly property bool hasLength: Media.length > 0
+    readonly property string gifPath: {
+        const configured = Directories.resolve(Config.dashboard.media.gifPath);
+        return configured.length > 0 ? configured : Directories.bongocatGif;
+    }
 
     implicitWidth: (Media.hasPlayer ? hasMediaRow.implicitWidth : emptyState.implicitWidth) + 64
     implicitHeight: (Media.hasPlayer ? hasMediaRow.implicitHeight : emptyState.implicitHeight) + 64
@@ -54,15 +59,15 @@ Item {
         visible: Media.hasPlayer
         spacing: 32
 
-        // Cover art
         CoverArt {
+            Layout.alignment: Qt.AlignVCenter
             size: Config.dashboard.media.coverArtSize
         }
 
-        // Info + seek + controls
+        // Title block, seek bar, transport controls
         ColumnLayout {
-            Layout.preferredWidth: 320
-            spacing: 6
+            Layout.preferredWidth: 360
+            spacing: 4
 
             StyledText {
                 Layout.fillWidth: true
@@ -80,114 +85,114 @@ Item {
                 elide: Text.ElideRight
             }
 
-            Item { Layout.preferredHeight: 20 }
-
-            // Draggable seek slider — writes straight to the MPRIS player
-            // object Media.qml already exposes (Media.qml itself has no
-            // seek/write API, and isn't being extended for it this session)
-            Slider {
-                id: seekSlider
-
+            StyledText {
                 Layout.fillWidth: true
+                text: Media.album.length > 0 ? Media.album : "Unknown album"
+                color: Colors.secondary
+                font.pixelSize: 15
+                elide: Text.ElideRight
+            }
 
-                from: 0
-                to: 1
-                value: Media.length > 0 ? Media.position / Media.length : 0
-                enabled: Media.activePlayer?.canSeek ?? false
+            // Seek row — labels are width-locked so ticking digits can't jog the slider
+            RowLayout {
+                Layout.topMargin: 24
+                Layout.fillWidth: true
+                spacing: 8
 
-                onPressedChanged: {
-                    if (pressed)
-                        return;
-                    const player = Media.activePlayer;
-                    if (player && player.canSeek)
-                        player.position = seekSlider.value * Media.length;
-                    seekSlider.value = Qt.binding(() => Media.length > 0 ? Media.position / Media.length : 0);
+                TextMetrics {
+                    id: timeMetrics
+
+                    text: root.formatTime(Math.max(Media.position, Media.length)).replace(/[1-9]/g, "0")
+                    font.family: Fonts.interfaceFamily
+                    font.pixelSize: 12
                 }
 
-                background: Rectangle {
-                    x: seekSlider.leftPadding
-                    y: seekSlider.topPadding + seekSlider.availableHeight / 2 - height / 2
-                    width: seekSlider.availableWidth
-                    height: 4
-                    radius: 2
-                    color: Colors.layer
+                StyledText {
+                    Layout.preferredWidth: timeMetrics.width
+                    text: root.formatTime(seek.dragging ? seek.displayValue * Media.length : Media.position)
+                    color: Colors.textMuted
+                    font.pixelSize: timeMetrics.font.pixelSize
+                    horizontalAlignment: Text.AlignHCenter
+                }
 
-                    Rectangle {
-                        width: seekSlider.visualPosition * parent.width
-                        height: parent.height
-                        radius: parent.radius
-                        color: Colors.primary
+                WavySlider {
+                    id: seek
+
+                    Layout.fillWidth: true
+                    value: root.hasLength ? Media.position / Media.length : 0
+                    enabled: (Media.activePlayer?.canSeek ?? false) && root.hasLength
+                    animate: Media.isPlaying
+                    onSeeked: position => {
+                        const player = Media.activePlayer;
+                        if (player && player.canSeek)
+                            player.position = position * Media.length;
                     }
                 }
 
-                handle: Rectangle {
-                    x: seekSlider.leftPadding + seekSlider.visualPosition * (seekSlider.availableWidth - width)
-                    y: seekSlider.topPadding + seekSlider.availableHeight / 2 - height / 2
-                    implicitWidth: 14
-                    implicitHeight: 14
-                    radius: width / 2
-                    color: seekSlider.pressed ? Colors.text : Colors.primary
+                StyledText {
+                    Layout.preferredWidth: timeMetrics.width
+                    text: root.hasLength ? root.formatTime(Media.length) : "--:--"
+                    color: Colors.textMuted
+                    font.pixelSize: timeMetrics.font.pixelSize
+                    horizontalAlignment: Text.AlignHCenter
                 }
             }
 
+            // Transport controls
             RowLayout {
-                Layout.fillWidth: true
-                Layout.topMargin: -4
-
-                StyledText {
-                    text: root.formatTime(Media.position)
-                    color: Colors.textMuted
-                    font.pixelSize: 11
-                }
-
-                Item { Layout.fillWidth: true }
-
-                StyledText {
-                    text: root.formatTime(Media.length)
-                    color: Colors.textMuted
-                    font.pixelSize: 11
-                }
-            }
-
-            Item { Layout.preferredHeight: 16 }
-
-            RowLayout {
+                Layout.topMargin: 16
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 20
+                spacing: 10
 
-                MediaToggleButton {
-                    iconName: "shuffle"
-                    active: Media.shuffle
-                    visible: Media.shuffleSupported
+                MediaTransportButton {
+                    glyph: "shuffle"
+                    iconSize: 16
+                    checked: Media.shuffle
+                    enabled: Media.shuffleSupported
                     onClicked: Media.toggleShuffle()
                 }
 
                 MediaTransportButton {
-                    glyph: "\u{23EE}"
+                    glyph: "skip_previous"
                     enabled: Media.canGoPrevious
                     onClicked: Media.previous()
                 }
 
                 MediaTransportButton {
-                    glyph: Media.isPlaying ? "\u{23F8}" : "\u{25B6}"
+                    Layout.preferredWidth: 92
+                    glyph: Media.isPlaying ? "pause" : "play_arrow"
+                    filled: true
+                    iconSize: 22
                     enabled: Media.canTogglePlaying
-                    big: true
                     onClicked: Media.togglePlaying()
                 }
 
                 MediaTransportButton {
-                    glyph: "\u{23ED}"
+                    glyph: "skip_next"
                     enabled: Media.canGoNext
                     onClicked: Media.next()
                 }
 
-                MediaToggleButton {
-                    iconName: Media.loopState === MprisLoopState.Track ? "repeat_one" : "repeat"
-                    active: Media.loopState !== MprisLoopState.None
-                    visible: Media.loopSupported
+                MediaTransportButton {
+                    glyph: Media.loopState === MprisLoopState.Track ? "repeat_one" : "repeat"
+                    iconSize: 16
+                    checked: Media.loopState !== MprisLoopState.None
+                    enabled: Media.loopSupported
                     onClicked: Media.cycleLoopState()
                 }
             }
+        }
+
+        AnimatedImage {
+            Layout.preferredWidth: Config.dashboard.media.coverArtSize
+            Layout.preferredHeight: Config.dashboard.media.coverArtSize
+            Layout.alignment: Qt.AlignVCenter
+            visible: Config.dashboard.media.gifEnabled
+            source: "file://" + root.gifPath
+            speed: Config.dashboard.media.gifSpeed
+            playing: Media.isPlaying
+            fillMode: Image.PreserveAspectFit
+            asynchronous: true
         }
     }
 

@@ -2,23 +2,34 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Prev/play-pause/next glyph button; `big` sizes up the centre one
-Item {
+// Transport button — tonal circle by default, accent-filled for play/pause
+// (`filled`) and for an engaged shuffle/loop toggle (`checked`)
+Rectangle {
     id: btn
 
     property string glyph: ""
-    property bool big: false
+    property bool filled: false
+    property bool checked: false
+    property int size: 34
+    property int iconSize: 18
     signal clicked()
 
-    implicitWidth: icon.implicitWidth
-    implicitHeight: icon.implicitHeight
+    readonly property color tonalBg: Qt.tint(Colors.surface, Qt.alpha(Colors.primary, 0.28))
+    readonly property bool accented: btn.filled || btn.checked
+
+    implicitWidth: btn.size
+    implicitHeight: btn.size
+    radius: height / 2
+    color: btn.accented ? Colors.primary : (area.containsMouse ? Qt.tint(btn.tonalBg, Qt.alpha(Colors.primary, 0.18)) : btn.tonalBg)
     opacity: btn.enabled ? 1 : 0.35
 
-    StyledText {
-        id: icon
+    Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+    MaterialIcon {
+        anchors.centerIn: parent
         text: btn.glyph
-        color: area.containsMouse ? Colors.text : Colors.textMuted
-        font.pixelSize: btn.big ? 26 : 18
+        font.pixelSize: btn.iconSize
+        color: btn.accented ? Colors.background : Colors.primary
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }

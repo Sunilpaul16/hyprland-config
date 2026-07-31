@@ -15,9 +15,6 @@ Rectangle {
         return configured.length > 0 ? configured : Directories.bongocatGif;
     }
 
-    // Tonal container fill for the outer transport buttons
-    readonly property color tonalBg: Qt.tint(Colors.surface, Qt.alpha(Colors.primary, 0.28))
-
     radius: Motion.rounding.large
     color: Colors.layer
     border.width: 1
@@ -131,13 +128,13 @@ Rectangle {
             Layout.topMargin: 4
             spacing: 6
 
-            TransportButton {
+            MediaTransportButton {
                 glyph: "skip_previous"
                 enabled: Media.canGoPrevious
                 onClicked: Media.previous()
             }
 
-            TransportButton {
+            MediaTransportButton {
                 Layout.fillWidth: true
                 glyph: Media.isPlaying ? "pause" : "play_arrow"
                 enabled: Media.canTogglePlaying
@@ -145,7 +142,7 @@ Rectangle {
                 onClicked: Media.togglePlaying()
             }
 
-            TransportButton {
+            MediaTransportButton {
                 glyph: "skip_next"
                 enabled: Media.canGoNext
                 onClicked: Media.next()
@@ -169,38 +166,6 @@ Rectangle {
         Item {
             Layout.fillHeight: true
             visible: !Config.dashboard.media.gifEnabled
-        }
-    }
-
-    // Tonal circle for prev/next, filled pill for play/pause (caelestia's IconButton Tonal vs fillWidth)
-    component TransportButton: Rectangle {
-        id: btn
-
-        property string glyph: ""
-        property bool filled: false
-        signal clicked()
-
-        implicitWidth: 34
-        implicitHeight: 34
-        radius: height / 2
-        color: btn.filled ? Colors.primary : (area.containsMouse ? Qt.tint(root.tonalBg, Qt.alpha(Colors.primary, 0.18)) : root.tonalBg)
-        opacity: btn.enabled ? 1 : 0.35
-
-        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-        MaterialIcon {
-            anchors.centerIn: parent
-            text: btn.glyph
-            font.pixelSize: 18
-            color: btn.filled ? Colors.background : Colors.primary
-        }
-
-        MouseArea {
-            id: area
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: btn.clicked()
         }
     }
 }
