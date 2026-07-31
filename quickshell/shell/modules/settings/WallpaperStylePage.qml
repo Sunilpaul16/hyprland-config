@@ -229,25 +229,33 @@ ScrollPage {
     }
 
     SettingGroup {
+        // Curated shortlist — nothing distinguishes a UI-suitable family from
+        // the ~700 installed, and SelectMenu's popup neither scrolls nor caps
+        // its height
         SettingRow {
             first: true
+            live: true
             label: "Interface font"
 
-            SelectPill {
-                value: "Rubik"
+            SelectMenu {
+                options: Fonts.interfaceOptions
+                current: Fonts.interfaceFamily
+                onSelected: v => Config.appearance.fontInterface = v
             }
         }
 
-        // Stays mock: every consumer of appearance.fontMono renders a Nerd Font
-        // glyph, and Qt's fallback supplies those regardless of family, so the
-        // setting has no observable effect. Needs comparison.md #33's StyledText
-        // tier before there is any real text to apply a font to
+        // Icon glyphs only — the distro logo, the bar's bell, the sidebar and
+        // dashboard headers. Enumerated rather than curated: "ends in Nerd
+        // Font" is unambiguous and grows as fonts are installed
         SettingRow {
             last: true
-            label: "Monospace font"
+            live: true
+            label: "Glyph font"
 
-            SelectPill {
-                value: "JetBrainsMono Nerd Font"
+            SelectMenu {
+                options: Fonts.glyphOptions
+                current: Fonts.glyphFamily
+                onSelected: v => Config.appearance.fontGlyph = v
             }
         }
     }
