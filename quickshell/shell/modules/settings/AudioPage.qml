@@ -37,7 +37,7 @@ ScrollPage {
             NumberControl {
                 value: Audio.volume
                 from: 0
-                to: 1
+                to: Audio.maxVolume
                 stepSize: 0.01
                 displayScale: 100
                 suffix: "%"
@@ -83,7 +83,7 @@ ScrollPage {
             NumberControl {
                 value: Audio.sourceVolume
                 from: 0
-                to: 1
+                to: Audio.maxVolume
                 stepSize: 0.01
                 displayScale: 100
                 suffix: "%"
@@ -129,12 +129,13 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Allow over 100%"
             subtext: "Lets the sink boost past unity gain"
 
             ToggleSwitch {
-                checked: false
-                onToggled: v => checked = v
+                checked: Config.audio.allowBoost
+                onToggled: v => Config.audio.allowBoost = v
             }
         }
 
@@ -158,28 +159,41 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Show volume OSD"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.audio.osdEnabled
+                onToggled: v => Config.audio.osdEnabled = v
             }
         }
 
         SettingRow {
+            live: true
             label: "Dismiss after"
 
-            SelectPill {
-                value: "1500 ms"
+            NumberControl {
+                value: Config.audio.osdTimeout
+                from: 500
+                to: 5000
+                stepSize: 250
+                suffix: " ms"
+                onMoved: v => Config.audio.osdTimeout = Math.round(v)
             }
         }
 
         SettingRow {
             last: true
+            live: true
             label: "Position"
 
             SelectPill {
-                value: "Bottom centre"
+                options: [
+                    { value: "right", label: "Right edge" },
+                    { value: "left", label: "Left edge" }
+                ]
+                current: Config.audio.osdEdge
+                onSelected: v => Config.audio.osdEdge = v
             }
         }
     }

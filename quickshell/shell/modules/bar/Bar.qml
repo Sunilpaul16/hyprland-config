@@ -178,6 +178,16 @@ Scope {
                             }
                         }
 
+                        SectionPill {
+                            Layout.alignment: Qt.AlignVCenter
+                            horizontalPadding: 8
+                            visible: updatesIndicator.active
+
+                            UpdatesIndicator {
+                                id: updatesIndicator
+                            }
+                        }
+
                         // Tray
                         SectionPill {
                             Layout.alignment: Qt.AlignVCenter

@@ -32,6 +32,17 @@ cfg() {
     [[ -n "$value" ]] && printf '%s' "$value" || printf '%s' "$2"
 }
 
+# cfgbool <jq-path> <default> — booleans cannot go through cfg: jq's `//`
+# treats a literal `false` as absent, so `false` would read back as the
+# default. Only null/missing falls back here.
+cfgbool() {
+    local value=""
+    if [[ -s "$CONFIG_FILE" ]]; then
+        value="$(jq -r "$1 | if . == null then empty else . end" "$CONFIG_FILE" 2>/dev/null || true)"
+    fi
+    [[ -n "$value" ]] && printf '%s' "$value" || printf '%s' "$2"
+}
+
 MPV_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 video-align-x=0.5 video-align-y=0.5 load-scripts=no"
 
 usage() {
@@ -113,7 +124,9 @@ fi
 mkdir -p "$CACHE_DIR"
 
 # --- 1. Wallpaper display: mpvpaper on both monitors ------------------------
-if ! $NOSWITCH && ! $COLORS_PREVIEW; then
+# --preview is an explicit display request and always spawns; a normal run
+# respects wallpaper.display, so turning it off survives a re-theme
+if ! $NOSWITCH && ! $COLORS_PREVIEW && { $PREVIEW || [[ "$(cfgbool '.wallpaper.display' true)" != "false" ]]; }; then
     pkill -f -9 mpvpaper >/dev/null 2>&1 || true
     for mon in "${MONITORS[@]}"; do
         mpvpaper -o "$MPV_OPTS" "$mon" "$wallpaper" &

@@ -72,6 +72,7 @@ Singleton {
             property JsonObject sidebar: JsonObject {
                 property string noNotifsImage: "" // notifications empty-state watermark; "" = the bundled assets/dino.png
                 property bool calendarCollapsed: false // sidebar calendar card starts collapsed
+                property bool closeOnSettings: true // close the sidebar when settings opens
             }
 
             property JsonObject session: JsonObject {
@@ -86,12 +87,15 @@ Singleton {
                 property real swipeThreshold: 0.3       // fraction of card width a swipe must cross to dismiss
                 property string fullscreen: "on"        // toasts over a fullscreen window: "on" (brief) | "off" (suppressed)
                 property int fullscreenExpireDuration: 2000 // ms a toast shows while a window is fullscreen
+                property string popupPosition: "top-right" // "top-right" | "top-left" | "bottom-right" | "bottom-left"
             }
 
             property JsonObject updates: JsonObject {
                 property bool autoCheck: true       // query for updates on start and on the interval below
                 property int intervalMinutes: 360   // floored at 15 in Updates.qml
                 property string aurHelper: "yay"    // any helper supporting -Qua ("yay" | "paru" | ...)
+                property bool notify: true     // desktop notification when the pending count grows
+                property bool showInBar: false // pending-count pill in the bar
             }
 
             // Poll intervals in ms for the refcounted stat services
@@ -116,6 +120,7 @@ Singleton {
                 property bool transparency: false
                 property real panelOpacity: 0.85 // panel backgrounds; used only when transparency is on
                 property real layerOpacity: 0.55 // cards and pills on top of a panel
+                property string fontMono: "JetBrainsMono Nerd Font"
             }
 
             // Settings panel size. Both axes are derived from the content —
@@ -149,11 +154,16 @@ Singleton {
             property JsonObject launcher: JsonObject {
                 property int maxResults: 8     // app/command rows shown at once
                 property int maxClipResults: 6 // clipboard rows shown at once
+                property bool fuzzy: true      // subsequence matching; off = plain substring
             }
 
             property JsonObject audio: JsonObject {
                 property real volumeStep: 0.05    // fraction per increment/decrement
                 property bool unmuteOnChange: true // raising volume clears mute
+                property bool allowBoost: false   // let the sink exceed unity gain
+                property bool osdEnabled: true    // show the volume OSD on change
+                property int osdTimeout: 1500     // ms before the OSD auto-hides
+                property string osdEdge: "right"  // "right" | "left"
             }
 
             property JsonObject wallpaper: JsonObject {
@@ -161,6 +171,7 @@ Singleton {
                 // applied — stops a fast scroll through the carousel spawning a
                 // switchwall per step
                 property int previewDelay: 300
+                property bool display: true    // false kills mpvpaper and shows misc:background_color
             }
 
             // Dashboard card sizing (defaults ported from caelestia's Tokens.sizes.dashboard)

@@ -174,11 +174,13 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Fuzzy matching"
+            subtext: "Off matches plain substrings only"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.launcher.fuzzy
+                onToggled: v => Config.launcher.fuzzy = v
             }
         }
 
@@ -219,12 +221,20 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Quick toggles"
-            subtext: "Choose which pills are shown"
+            subtext: "Opens the sidebar's edit mode"
 
             SelectPill {
                 value: "Edit"
                 icon: "chevron_right"
+                // Closes settings first so this can't fight closeOnSettings
+                onClicked: {
+                    SettingsState.open = false;
+                    ScreenOwner.claim(SidebarRightState);
+                    SidebarRightState.open = true;
+                    SidebarRightState.quickTogglesEditMode = true;
+                }
             }
         }
 
@@ -242,11 +252,12 @@ ScrollPage {
 
         SettingRow {
             last: true
+            live: true
             label: "Close when settings opens"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.sidebar.closeOnSettings
+                onToggled: v => Config.sidebar.closeOnSettings = v
             }
         }
     }

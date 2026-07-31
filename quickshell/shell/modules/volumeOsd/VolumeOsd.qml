@@ -39,11 +39,11 @@ Scope {
                 }
 
                 // Right-edge stack registration
-                onActiveChanged: RightEdgeStack.register(root.screen, "volume", root.active, drawer.registeredWidth)
+                onActiveChanged: RightEdgeStack.register(root.screen, "volume", root.active && drawer.onRight, drawer.registeredWidth)
 
                 // Show (and restart the auto-hide timer) on any sink/source change
                 function show(): void {
-                    if (!root.startupGraceOver)
+                    if (!root.startupGraceOver || !Config.audio.osdEnabled)
                         return;
                     root.triggered = true;
                     armHideTimer();
@@ -69,7 +69,7 @@ Scope {
                 // Auto-hide timer
                 Timer {
                     id: hideTimer
-                    interval: 1500
+                    interval: Config.audio.osdTimeout
                     onTriggered: root.triggered = false
                 }
 
@@ -84,7 +84,7 @@ Scope {
                 // Window setup
                 color: "transparent"
                 exclusiveZone: 0
-                visible: showProgress > 0.001
+                visible: Config.audio.osdEnabled && showProgress > 0.001
 
                 WlrLayershell.layer: WlrLayer.Overlay
                 WlrLayershell.namespace: "quickshell-volume-osd"
@@ -111,20 +111,27 @@ Scope {
                     readonly property int contentPadding: 10
                     readonly property int closedMargin: -(drawer.implicitWidth + restingMargin)
 
+                    // Which edge the drawer hugs
+                    readonly property bool onRight: Config.audio.osdEdge !== "left"
+
                     // Pushed left by whichever right-edge panels are stacked outside
-                    // this one (Sidebar and/or Session, if open)
+                    // this one (Sidebar and/or Session, if open). Left-edge has no
+                    // stackmates, so it never offsets
                     property real stackOffset: RightEdgeStack.offsetFor(root.screen, "volume")
                     Behavior on stackOffset {
                         NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
                     }
 
                     property real registeredWidth: implicitWidth + restingMargin
-                    onRegisteredWidthChanged: RightEdgeStack.register(root.screen, "volume", root.active, registeredWidth)
-                    Component.onCompleted: RightEdgeStack.register(root.screen, "volume", root.active, registeredWidth)
+                    onRegisteredWidthChanged: RightEdgeStack.register(root.screen, "volume", root.active && drawer.onRight, registeredWidth)
+                    onOnRightChanged: RightEdgeStack.register(root.screen, "volume", root.active && drawer.onRight, registeredWidth)
+                    Component.onCompleted: RightEdgeStack.register(root.screen, "volume", root.active && drawer.onRight, registeredWidth)
 
                     anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: closedMargin + (restingMargin - closedMargin) * root.showProgress + stackOffset
+                    anchors.right: drawer.onRight ? parent.right : undefined
+                    anchors.left: drawer.onRight ? undefined : parent.left
+                    anchors.rightMargin: drawer.onRight ? (closedMargin + (restingMargin - closedMargin) * root.showProgress + stackOffset) : 0
+                    anchors.leftMargin: drawer.onRight ? 0 : (closedMargin + (restingMargin - closedMargin) * root.showProgress)
                     // Fallback sizing for the first open frame, before the Loader's
                     // content has laid out (same race SessionScreen's drawer guards)
                     implicitWidth: ((loader.item ? loader.item.implicitWidth : 0) || 24) + contentPadding * 2
@@ -141,30 +148,40 @@ Scope {
                         }
                     }
 
-                    // Drawer backdrop — same shell as SessionScreen's. Right corners
-                    // are square so the joined edge reads as one surface
+                    // Drawer backdrop — same shell as SessionScreen's. The corners
+                    // on the hugged edge are square so the joint reads as one surface
                     Rectangle {
                         anchors.fill: parent
                         radius: 20
-                        topRightRadius: 0
-                        bottomRightRadius: 0
+                        topRightRadius: drawer.onRight ? 0 : 20
+                        bottomRightRadius: drawer.onRight ? 0 : 20
+                        topLeftRadius: drawer.onRight ? 20 : 0
+                        bottomLeftRadius: drawer.onRight ? 20 : 0
                         color: Colors.panel
                     }
 
                     // Concave fillets bridging the drawer into the screen edge,
                     // rounding the two reflex corners the butt joint would leave
                     Corner {
-                        anchors { right: parent.right; bottom: parent.top }
+                        anchors {
+                            right: drawer.onRight ? parent.right : undefined
+                            left: drawer.onRight ? undefined : parent.left
+                            bottom: parent.top
+                        }
                         size: drawer.cornerSize
                         color: Colors.panel
-                        corner: "bottomRight"
+                        corner: drawer.onRight ? "bottomRight" : "bottomLeft"
                     }
 
                     Corner {
-                        anchors { right: parent.right; top: parent.bottom }
+                        anchors {
+                            right: drawer.onRight ? parent.right : undefined
+                            left: drawer.onRight ? undefined : parent.left
+                            top: parent.bottom
+                        }
                         size: drawer.cornerSize
                         color: Colors.panel
-                        corner: "topRight"
+                        corner: drawer.onRight ? "topRight" : "topLeft"
                     }
 
                     // Content only instantiated while open/animating

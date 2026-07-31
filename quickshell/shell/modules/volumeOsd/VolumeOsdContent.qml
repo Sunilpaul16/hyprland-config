@@ -72,7 +72,7 @@ Column {
 
             orientation: Qt.Vertical
             from: 0
-            to: 1
+            to: Audio.maxVolume
             value: slider.value
 
             onMoved: {

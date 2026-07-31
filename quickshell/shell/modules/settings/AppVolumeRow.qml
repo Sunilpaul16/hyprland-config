@@ -37,7 +37,7 @@ SettingRow {
         NumberControl {
             value: root.node.audio.volume
             from: 0
-            to: 1
+            to: Audio.maxVolume
             stepSize: 0.01
             displayScale: 100
             suffix: "%"

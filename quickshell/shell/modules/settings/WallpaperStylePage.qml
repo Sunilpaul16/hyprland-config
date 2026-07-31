@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell.Io
 import "../../services"
 
 // Wallpaper & style page — preview, wallpaper/colour settings, fonts
@@ -7,6 +8,18 @@ ScrollPage {
     id: root
 
     title: "Wallpaper & style"
+
+    // Applies the wallpaper-display toggle without waiting for the next
+    // switchwall run. --preview sets the wallpaper and exits before any colour
+    // generation, which keeps the mpvpaper invocation in switchwall alone
+    Process {
+        id: wallpaperDisplayProc
+    }
+
+    function applyWallpaperDisplay(on: bool): void {
+        wallpaperDisplayProc.command = on ? ["sh", "-c", "switchwall --preview \"$(cat \"$HOME/.local/state/quickshell/current_wallpaper\")\""] : ["pkill", "-f", "mpvpaper"];
+        wallpaperDisplayProc.running = true;
+    }
 
     WallpaperPreviewHeader {
         Layout.fillWidth: true
@@ -40,11 +53,16 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
             label: "Display wallpaper"
+            subtext: "Off shows the themed background colour instead"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.wallpaper.display
+                onToggled: v => {
+                    Config.wallpaper.display = v;
+                    root.applyWallpaperDisplay(v);
+                }
             }
         }
 
@@ -220,6 +238,10 @@ ScrollPage {
             }
         }
 
+        // Stays mock: every consumer of appearance.fontMono renders a Nerd Font
+        // glyph, and Qt's fallback supplies those regardless of family, so the
+        // setting has no observable effect. Needs comparison.md #33's StyledText
+        // tier before there is any real text to apply a font to
         SettingRow {
             last: true
             label: "Monospace font"

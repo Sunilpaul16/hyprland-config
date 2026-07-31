@@ -24,7 +24,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         // Escapes, not literals — tooling strips private-use glyphs on write
         text: DndState.enabled ? "\uf1f6" : "\uf0f3" // bell-slash / bell
-        font.family: "JetBrainsMono Nerd Font"
+        font.family: Config.appearance.fontMono
         color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
         font.pixelSize: 13
 

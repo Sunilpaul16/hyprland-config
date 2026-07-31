@@ -32,7 +32,7 @@ Rectangle {
             anchors.centerIn: parent
             text: sb.glyph.length > 0 ? sb.glyph : sb.label
             color: sb.toggled ? Colors.background : Colors.text
-            font.family: sb.glyph.length > 0 ? "JetBrainsMono Nerd Font" : Qt.application.font.family
+            font.family: sb.glyph.length > 0 ? Config.appearance.fontMono : Qt.application.font.family
             font.pixelSize: sb.glyph.length > 0 ? 14 : 12
         }
 
