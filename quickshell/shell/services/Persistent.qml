@@ -24,6 +24,8 @@ Singleton {
     property alias dndEnabled: adapter.dndEnabled
     // Ordered [{type, size}] — a missing entry is new since the layout was last saved (comparison.md #36)
     property alias quickToggleLayout: adapter.quickToggleLayout
+    // Pending-update count last announced, so a shell restart doesn't re-notify
+    property alias lastNotifiedUpdateTotal: adapter.lastNotifiedUpdateTotal
 
     // State file
     FileView {
@@ -55,6 +57,7 @@ Singleton {
             property bool keepAwakeCardEnabled: false
             property bool dndEnabled: false
             property list<var> quickToggleLayout: []
+            property int lastNotifiedUpdateTotal: 0
             property string lastHyprlandInstanceSignature: ""
         }
     }

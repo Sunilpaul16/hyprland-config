@@ -62,8 +62,10 @@ Singleton {
     property bool _repoDone: false
     property bool _aurDone: false
 
-    // Last count announced, so a re-check finding the same updates stays quiet
-    property int _lastNotifiedTotal: 0
+    // Last count announced, so a re-check finding the same updates stays quiet.
+    // Restored from Persistent so a shell-only restart stays quiet too; a fresh
+    // Hyprland login starts at 0 and announces once
+    property int _lastNotifiedTotal: Persistent.isNewHyprlandInstance ? 0 : Persistent.lastNotifiedUpdateTotal
 
     function _settle(): void {
         if (!root._repoDone || !root._aurDone)
@@ -78,7 +80,9 @@ Singleton {
     function _notifyIfGrown(): void {
         if (Config.updates.notify && root.total > root._lastNotifiedTotal)
             Quickshell.execDetached(["notify-send", "-a", "quickshell", "-i", "system-software-update", `${root.total} update${root.total === 1 ? "" : "s"} available`, `${root.repoCount} from the repos, ${root.aurCount} from the AUR.`]);
+        // Assigning breaks the binding above, so this owns the value from here on
         root._lastNotifiedTotal = root.total;
+        Persistent.lastNotifiedUpdateTotal = root.total;
     }
 
     // "hyprland 0.56.0-2 -> 0.56.1-1"
