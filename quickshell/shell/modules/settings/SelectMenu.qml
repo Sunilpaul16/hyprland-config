@@ -17,6 +17,11 @@ Item {
     // Ceiling for the pill; long device names elide rather than stretch the row
     property int maxPillWidth: 330
 
+    // Menu height ceiling, in rows. Past this the list scrolls — a popup is a
+    // separate surface, so an uncapped one renders outside the panel entirely
+    property int maxVisibleItems: 6
+    readonly property int itemHeight: 36
+
     signal selected(string v)
 
     readonly property int currentIndex: root.options.findIndex(o => o.value === root.current)
@@ -99,11 +104,13 @@ Item {
                 edges: Edges.Bottom
                 gravity: Edges.Bottom
                 margins.top: 6
+                // Flip above the pill rather than running off the screen edge
+                adjustment: PopupAdjustment.All
             }
 
             color: "transparent"
             implicitWidth: Math.max(pill.width, menuColumn.implicitWidth + 2 * 2)
-            implicitHeight: menuColumn.implicitHeight + 2 * 2
+            implicitHeight: Math.min(menuColumn.implicitHeight, root.maxVisibleItems * root.itemHeight) + 2 * 2
 
             Rectangle {
                 anchors.fill: parent
@@ -112,60 +119,70 @@ Item {
                 border.width: 1
                 border.color: Colors.outlineVariant
 
-                ColumnLayout {
-                    id: menuColumn
-
+                // Scrolls past the cap. Without it a long list renders at full
+                // height and spills well outside the panel it belongs to
+                Flickable {
                     anchors.fill: parent
                     anchors.margins: 2
-                    spacing: 0
+                    contentHeight: menuColumn.implicitHeight
+                    interactive: contentHeight > height
+                    clip: true
+                    boundsBehavior: Flickable.StopAtBounds
 
-                    Repeater {
-                        model: root.options
+                    ColumnLayout {
+                        id: menuColumn
 
-                        Rectangle {
-                            required property int index
-                            required property var modelData
+                        width: parent.width
+                        spacing: 0
 
-                            Layout.fillWidth: true
-                            implicitWidth: itemLabel.implicitWidth + 16 * 2 + 26
-                            implicitHeight: 36
-                            radius: Motion.rounding.normal
-                            color: modelData.value === root.current ? Colors.secondaryContainer : itemHover.containsMouse ? Colors.background : "transparent"
+                        Repeater {
+                            model: root.options
 
-                            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                            Rectangle {
+                                required property int index
+                                required property var modelData
 
-                            RowLayout {
-                                anchors.fill: parent
-                                anchors.leftMargin: 16
-                                anchors.rightMargin: 10
-                                spacing: 8
+                                Layout.fillWidth: true
+                                implicitWidth: itemLabel.implicitWidth + 16 * 2 + 26
+                                implicitHeight: root.itemHeight
+                                radius: Motion.rounding.normal
+                                color: modelData.value === root.current ? Colors.secondaryContainer : itemHover.containsMouse ? Colors.background : "transparent"
 
-                                StyledText {
-                                    id: itemLabel
+                                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-                                    Layout.fillWidth: true
-                                    text: modelData.label
-                                    font.pixelSize: 14
-                                    elide: Text.ElideRight
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 16
+                                    anchors.rightMargin: 10
+                                    spacing: 8
+
+                                    StyledText {
+                                        id: itemLabel
+
+                                        Layout.fillWidth: true
+                                        text: modelData.label
+                                        font.pixelSize: 14
+                                        elide: Text.ElideRight
+                                    }
+
+                                    MaterialIcon {
+                                        visible: modelData.value === root.current
+                                        text: "check"
+                                        color: Colors.primary
+                                        font.pixelSize: 16
+                                    }
                                 }
 
-                                MaterialIcon {
-                                    visible: modelData.value === root.current
-                                    text: "check"
-                                    color: Colors.primary
-                                    font.pixelSize: 16
-                                }
-                            }
+                                MouseArea {
+                                    id: itemHover
 
-                            MouseArea {
-                                id: itemHover
-
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    root.selected(modelData.value);
-                                    root.close();
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        root.selected(modelData.value);
+                                        root.close();
+                                    }
                                 }
                             }
                         }
