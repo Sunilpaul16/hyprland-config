@@ -101,6 +101,11 @@ Scope {
                     Rectangle {
                         id: panel
 
+                        // The surface SelectMenu reparents its dropdown onto:
+                        // inside this card's clip, above the page's scrolling
+                        // content
+                        property bool isSettingsCard: true
+
                         anchors.centerIn: parent
                         width: root.panelWidth
                         height: root.panelHeight

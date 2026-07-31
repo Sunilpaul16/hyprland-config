@@ -5,8 +5,10 @@ import "../../services"
 import "../../components"
 
 // Dropdown for option lists too long to cycle through (SelectPill's mode).
-// The list is a PopupWindow rather than an Item inside the panel: a menu of
-// any height would otherwise be clipped at the panel window's own bounds
+// The list reparents onto the settings card rather than living in its own
+// PopupWindow (caelestia's components/controls/Menu.qml does the same): that
+// clears the page's clipping without a second Wayland surface, keeps the menu
+// inside the panel, and avoids PopupAnchor, whose window property segfaults
 Item {
     id: root
 
@@ -34,6 +36,17 @@ Item {
 
     function close(): void {
         root.menuOpen = false;
+    }
+
+    // Found by walking up rather than threaded through every page
+    function menuSurface(): var {
+        let p = root.parent;
+        while (p) {
+            if (p.isSettingsCard === true)
+                return p;
+            p = p.parent;
+        }
+        return null;
     }
 
     Rectangle {
@@ -89,100 +102,129 @@ Item {
         }
     }
 
-    // Menu
-    Loader {
-        active: root.menuOpen && root.options.length > 0
+    // Menu. A child of the card, not a popup surface, so it draws above the
+    // page and doubles as its own click-outside catcher
+    MouseArea {
+        id: menuLayer
 
-        sourceComponent: PopupWindow {
-            visible: true
+        parent: root.menuSurface()
+        anchors.fill: parent
 
-            // Only `item` is set, never `window`: PopupAnchor::setWindow() calls
-            // setItem(nullptr) then dereferences it, so assigning window while
-            // item is set segfaults. item alone resolves the window anyway
-            anchor {
-                item: pill
-                edges: Edges.Bottom
-                gravity: Edges.Bottom
-                margins.top: 6
-                // Flip above the pill rather than running off the screen edge
-                adjustment: PopupAdjustment.All
+        enabled: root.menuOpen && root.options.length > 0
+        hoverEnabled: enabled
+        visible: opacity > 0
+        opacity: menuLayer.enabled ? 1 : 0
+
+        onClicked: root.close()
+
+        Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+
+        // mapToItem is not reactive, so the bindings below read this to be
+        // recomputed whenever an ancestor moves -- notably on page scroll
+        TransformWatcher {
+            id: watcher
+
+            a: menuLayer.parent
+            b: pill
+        }
+
+        Rectangle {
+            id: menu
+
+            readonly property real belowY: {
+                watcher.transform;
+                return pill.mapToItem(menuLayer, 0, pill.height + 6).y;
             }
+            readonly property real aboveY: {
+                watcher.transform;
+                return pill.mapToItem(menuLayer, 0, 0).y - height - 6;
+            }
+            // Flips above the pill when the menu would overrun the card
+            readonly property bool flipped: belowY + height > menuLayer.height && aboveY >= 0
 
-            color: "transparent"
+            x: {
+                watcher.transform;
+                const raw = pill.mapToItem(menuLayer, 0, 0).x;
+                return Math.max(6, Math.min(raw, menuLayer.width - width - 6));
+            }
+            y: menu.flipped ? menu.aboveY : menu.belowY
+
             implicitWidth: Math.max(pill.width, menuColumn.implicitWidth + 2 * 2)
             implicitHeight: Math.min(menuColumn.implicitHeight, root.maxVisibleItems * root.itemHeight) + 2 * 2
 
-            Rectangle {
+            radius: Motion.rounding.card
+            color: Colors.surface
+            border.width: 1
+            border.color: Colors.outlineVariant
+
+            // Absorbs clicks and wheel so they do not reach the catcher behind
+            MouseArea {
                 anchors.fill: parent
-                radius: Motion.rounding.card
-                color: Colors.surface
-                border.width: 1
-                border.color: Colors.outlineVariant
+                hoverEnabled: true
+                onWheel: e => e.accepted = true
+            }
 
-                // Scrolls past the cap. Without it a long list renders at full
-                // height and spills well outside the panel it belongs to
-                Flickable {
-                    anchors.fill: parent
-                    anchors.margins: 2
-                    contentHeight: menuColumn.implicitHeight
-                    interactive: contentHeight > height
-                    clip: true
-                    boundsBehavior: Flickable.StopAtBounds
+            Flickable {
+                anchors.fill: parent
+                anchors.margins: 2
+                contentHeight: menuColumn.implicitHeight
+                interactive: contentHeight > height
+                clip: true
+                boundsBehavior: Flickable.StopAtBounds
 
-                    ColumnLayout {
-                        id: menuColumn
+                ColumnLayout {
+                    id: menuColumn
 
-                        width: parent.width
-                        spacing: 0
+                    width: parent.width
+                    spacing: 0
 
-                        Repeater {
-                            model: root.options
+                    Repeater {
+                        model: root.options
 
-                            Rectangle {
-                                required property int index
-                                required property var modelData
+                        Rectangle {
+                            required property int index
+                            required property var modelData
 
-                                Layout.fillWidth: true
-                                implicitWidth: itemLabel.implicitWidth + 16 * 2 + 26
-                                implicitHeight: root.itemHeight
-                                radius: Motion.rounding.normal
-                                color: modelData.value === root.current ? Colors.secondaryContainer : itemHover.containsMouse ? Colors.background : "transparent"
+                            Layout.fillWidth: true
+                            implicitWidth: itemLabel.implicitWidth + 16 * 2 + 26
+                            implicitHeight: root.itemHeight
+                            radius: Motion.rounding.normal
+                            color: modelData.value === root.current ? Colors.secondaryContainer : itemHover.containsMouse ? Colors.background : "transparent"
 
-                                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-                                RowLayout {
-                                    anchors.fill: parent
-                                    anchors.leftMargin: 16
-                                    anchors.rightMargin: 10
-                                    spacing: 8
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.leftMargin: 16
+                                anchors.rightMargin: 10
+                                spacing: 8
 
-                                    StyledText {
-                                        id: itemLabel
+                                StyledText {
+                                    id: itemLabel
 
-                                        Layout.fillWidth: true
-                                        text: modelData.label
-                                        font.pixelSize: 14
-                                        elide: Text.ElideRight
-                                    }
-
-                                    MaterialIcon {
-                                        visible: modelData.value === root.current
-                                        text: "check"
-                                        color: Colors.primary
-                                        font.pixelSize: 16
-                                    }
+                                    Layout.fillWidth: true
+                                    text: modelData.label
+                                    font.pixelSize: 14
+                                    elide: Text.ElideRight
                                 }
 
-                                MouseArea {
-                                    id: itemHover
+                                MaterialIcon {
+                                    visible: modelData.value === root.current
+                                    text: "check"
+                                    color: Colors.primary
+                                    font.pixelSize: 16
+                                }
+                            }
 
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: {
-                                        root.selected(modelData.value);
-                                        root.close();
-                                    }
+                            MouseArea {
+                                id: itemHover
+
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    root.selected(modelData.value);
+                                    root.close();
                                 }
                             }
                         }
