@@ -2,8 +2,10 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Clock widget: time + date
+// Clock widget: time + date, opens the right sidebar on click
 Item {
+    id: root
+
     implicitWidth: row.implicitWidth
     implicitHeight: row.implicitHeight
 
@@ -22,15 +24,28 @@ Item {
         StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: "·"
-            color: Colors.textMuted
+            color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
             font.pixelSize: 14
+
+            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
         }
 
         StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: Time.dateStr
-            color: Colors.textMuted
+            color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
             font.pixelSize: 13
+
+            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
         }
+    }
+
+    // Click to toggle the right sidebar
+    MouseArea {
+        id: hoverArea
+        anchors.fill: parent
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: SidebarRightState.toggle()
     }
 }
