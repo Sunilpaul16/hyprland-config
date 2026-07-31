@@ -174,11 +174,13 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Fuzzy matching"
+            subtext: "Off matches plain substrings only"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.launcher.fuzzy
+                onToggled: v => Config.launcher.fuzzy = v
             }
         }
 
