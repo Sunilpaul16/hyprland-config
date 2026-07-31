@@ -62,11 +62,23 @@ Singleton {
     property bool _repoDone: false
     property bool _aurDone: false
 
+    // Last count announced, so a re-check finding the same updates stays quiet
+    property int _lastNotifiedTotal: 0
+
     function _settle(): void {
         if (!root._repoDone || !root._aurDone)
             return;
         root.checking = false;
         root.lastChecked = Date.now();
+        root._notifyIfGrown();
+    }
+
+    // Fires only when the pending count grows. Assigning unconditionally means
+    // an upgrade that drops the count re-arms it for the next batch
+    function _notifyIfGrown(): void {
+        if (Config.updates.notify && root.total > root._lastNotifiedTotal)
+            Quickshell.execDetached(["notify-send", "-a", "quickshell", "-i", "system-software-update", `${root.total} update${root.total === 1 ? "" : "s"} available`, `${root.repoCount} from the repos, ${root.aurCount} from the AUR.`]);
+        root._lastNotifiedTotal = root.total;
     }
 
     // "hyprland 0.56.0-2 -> 0.56.1-1"

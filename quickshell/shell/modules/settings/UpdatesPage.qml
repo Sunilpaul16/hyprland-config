@@ -140,11 +140,12 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
             label: "Notify when updates land"
 
             ToggleSwitch {
-                checked: true
-                onToggled: v => checked = v
+                checked: Config.updates.notify
+                onToggled: v => Config.updates.notify = v
             }
         }
 
