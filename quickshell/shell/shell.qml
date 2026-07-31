@@ -7,7 +7,6 @@ import "modules/bar"
 import "modules/dashboard"
 import "modules/launcher"
 import "modules/cheatsheet"
-import "modules/mediaPopup"
 import "modules/notifications"
 import "modules/overview"
 import "modules/polkit"
@@ -37,7 +36,6 @@ ShellRoot {
     NotifPopups {}
     SessionScreen {}
     PolkitDialog {}
-    MediaPopup {}
     TrayMenu {}
     SidebarRightPanel {}
     Overview {}

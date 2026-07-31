@@ -69,34 +69,13 @@ Scope {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 8
 
-                        // Media button — hover-to-open trigger spanning the
-                        // bar's full content height, so there's no dead gap
-                        // between leaving the pill and reaching the popup
-                        Item {
-                            id: mediaHoverZone
+                        SectionPill {
                             Layout.alignment: Qt.AlignVCenter
-                            implicitWidth: mediaPill.implicitWidth
-                            implicitHeight: bar.barContentHeight
                             visible: Media.hasPlayer
 
-                            SectionPill {
-                                id: mediaPill
-                                anchors.centerIn: parent
-
-                                MediaButton {}
-                            }
-
-                            HoverHandler {
-                                target: mediaHoverZone
-                                onHoveredChanged: {
-                                    MediaState.setPillHovered(hovered);
-                                    if (hovered) {
-                                        const pos = mediaHoverZone.mapToItem(null, mediaHoverZone.width / 2, mediaHoverZone.height);
-                                        MediaState.showAt(pos.x, pos.y);
-                                    }
-                                }
-                            }
+                            MediaButton {}
                         }
+
                         // Hover-to-open dashboard trigger — invisible zone,
                         // spans the bar's full content height (40h)
                         Item {

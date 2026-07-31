@@ -2,7 +2,7 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Media player icon + track title, opens MediaPopup
+// Media player icon + track title
 Item {
     id: root
 
@@ -51,8 +51,7 @@ Item {
         }
     }
 
-    // Hover tracking for the label colors — the popup itself is opened by
-    // the bar's full-height hover zone, not from here
+    // Hover tracking for the label colors
     MouseArea {
         id: hoverArea
         anchors.fill: parent
