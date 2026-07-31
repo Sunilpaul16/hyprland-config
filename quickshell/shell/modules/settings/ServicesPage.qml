@@ -49,10 +49,18 @@ ScrollPage {
 
         SettingRow {
             last: true
+            live: true
             label: "Popup position"
 
-            SelectPill {
-                value: "Top right"
+            SelectMenu {
+                options: [
+                    { value: "top-right", label: "Top right" },
+                    { value: "top-left", label: "Top left" },
+                    { value: "bottom-right", label: "Bottom right" },
+                    { value: "bottom-left", label: "Bottom left" }
+                ]
+                current: Config.notifications.popupPosition
+                onSelected: v => Config.notifications.popupPosition = v
             }
         }
     }

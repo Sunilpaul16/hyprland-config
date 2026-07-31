@@ -28,6 +28,10 @@ Scope {
                 readonly property int sideGap: 10
                 readonly property int cardSpacing: 8
 
+                // Popup corner
+                readonly property bool atTop: Config.notifications.popupPosition.startsWith("top")
+                readonly property bool atRight: Config.notifications.popupPosition.endsWith("right")
+
                 // Positioning
                 anchors {
                     top: true
@@ -56,10 +60,14 @@ Scope {
                 Item {
                     id: stack
 
-                    anchors.top: parent.top
-                    anchors.right: parent.right
-                    anchors.topMargin: root.topGap
-                    anchors.rightMargin: root.sideGap
+                    anchors.top: root.atTop ? parent.top : undefined
+                    anchors.bottom: root.atTop ? undefined : parent.bottom
+                    anchors.right: root.atRight ? parent.right : undefined
+                    anchors.left: root.atRight ? undefined : parent.left
+                    anchors.topMargin: root.atTop ? root.topGap : 0
+                    anchors.bottomMargin: root.atTop ? 0 : root.topGap
+                    anchors.rightMargin: root.atRight ? root.sideGap : 0
+                    anchors.leftMargin: root.atRight ? 0 : root.sideGap
 
                     width: root.cardWidth
                     height: Math.min(list.contentHeight, root.height - root.topGap - root.sideGap)
@@ -73,6 +81,8 @@ Scope {
                         interactive: contentHeight > height
                         spacing: 0
                         cacheBuffer: root.height
+                        // Newest toast stays nearest the screen edge
+                        verticalLayoutDirection: root.atTop ? ListView.TopToBottom : ListView.BottomToTop
 
                         model: ScriptModel {
                             values: root.isFocusedScreen ? Notifs.popups.filter(n => !n.closed) : []
@@ -117,7 +127,8 @@ Scope {
                         NumberAnimation {
                             target: card
                             property: "x"
-                            to: stack.width
+                            // Slides out past whichever edge the stack hugs
+                            to: root.atRight ? stack.width : -stack.width
                             duration: Motion.deliberateDuration
                             easing.type: Motion.deliberateEasing
                         }
