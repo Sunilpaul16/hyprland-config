@@ -8,6 +8,18 @@
 
 **Tech Stack:** bash, python3 (stdlib only), matugen 4.1.0, QML/Quickshell (Qt 6).
 
+**Status: implemented 2026-08-01**, all 9 tasks and the final sweep verified. Three
+defects in this plan were found during execution and fixed in the code:
+
+1. **Swatches drew from `Colors.surface`** — the active theme, not each preset's own
+   palette, so all 24 rendered identically. Fixed by adding a `listall` helper command
+   that returns every preset's swatch colours in one process.
+2. **Row labels were not `Layout.fillWidth`**, so the layout centred them away from
+   the swatch.
+3. **`setscheme` overwrote an `auto` mode preference** with the concrete mode a preset
+   happened to have, stranding the user on it after returning to `dynamic`. An `auto`
+   preference is now left untouched.
+
 ## Global Constraints
 
 - **No test suite, no CI, no build.** Verification is: lint the QML, run the command, **diff generated output against source values**, exercise live. A zero exit code is never sufficient evidence.
@@ -57,7 +69,7 @@ Runs once; after this, nothing reads the caelestia package ever again.
 **Interfaces:**
 - Produces: `matugen/schemes/` as the sole corpus location, every file lowercase-hex and newline-terminated.
 
-- [ ] **Step 1: Copy and normalise**
+- [x] **Step 1: Copy and normalise**
 
 ```bash
 cd ~/hyprland-config
@@ -77,7 +89,7 @@ find matugen/schemes -name '*.txt' | wc -l
 
 Expected: `29`.
 
-- [ ] **Step 2: Verify the normalisation and that nothing was lost**
+- [x] **Step 2: Verify the normalisation and that nothing was lost**
 
 ```bash
 # Every file must now end in a newline
@@ -102,7 +114,7 @@ echo "key counts checked"
 
 Expected: `ALL NEWLINE-TERMINATED`, `ALL LOWERCASE`, and no mismatch lines. The key-count check is the one that matters — it proves the `awk` rewrite dropped nothing.
 
-- [ ] **Step 3: Add the licence**
+- [x] **Step 3: Add the licence**
 
 ```bash
 SRC=$(ls -d /usr/lib/python3.*/site-packages/caelestia-*.dist-info/licenses/LICENSE | tail -1)
@@ -112,7 +124,7 @@ head -3 matugen/schemes/LICENSE
 
 Expected: the GPLv3 header.
 
-- [ ] **Step 4: Record provenance**
+- [x] **Step 4: Record provenance**
 
 Create `matugen/schemes/PROVENANCE.md`:
 
@@ -150,7 +162,7 @@ caelestia will not appear here without repeating the copy in
 `docs/superpowers/plans/2026-08-01-static-preset-schemes.md`, Task 0.
 ```
 
-- [ ] **Step 5: Confirm nothing is gitignored**
+- [x] **Step 5: Confirm nothing is gitignored**
 
 ```bash
 git status --short matugen/schemes | head -5
@@ -159,7 +171,7 @@ git check-ignore -v matugen/schemes/gruvbox/medium/dark.txt || echo "NOT IGNORED
 
 Expected: untracked files listed, and `NOT IGNORED`. If anything is ignored the corpus will not commit and every later task fails.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add matugen/schemes
@@ -186,7 +198,7 @@ Behaviour-preserving refactor. `switchwall` must produce byte-identical output a
 **Interfaces:**
 - Produces: `cfg <jq-path> <default>`, `cfgbool <jq-path> <default>`, `apply_kitty_from_scss <scss-path>`, `apply_gsettings <light|dark>`, `reload_all`. All read `$CONFIG_FILE`, `$COLORGEN_DIR`, `$KITTY_THEME_OUT` from the caller's environment.
 
-- [ ] **Step 1: Capture a baseline of the current output**
+- [x] **Step 1: Capture a baseline of the current output**
 
 ```bash
 cd ~/hyprland-config
@@ -202,7 +214,7 @@ cat /tmp/baseline/before.md5
 
 Expected: seven checksums printed.
 
-- [ ] **Step 2: Create the library**
+- [x] **Step 2: Create the library**
 
 ```bash
 mkdir -p scripts/lib
@@ -279,7 +291,7 @@ reload_all() {
 }
 ```
 
-- [ ] **Step 3: Move monitor derivation behind the wallpaper branch**
+- [x] **Step 3: Move monitor derivation behind the wallpaper branch**
 
 In `scripts/switchwall`, delete lines 8-9 (the `mapfile` and the guard) from the top block. Insert them inside the wallpaper-display `if` at what is currently line 129, immediately after the `if` line:
 
@@ -296,7 +308,7 @@ Then move the `mpvpaper` preflight (line 116) from the unconditional block into 
 
 This fixes the pre-existing bug where `--colors-preview` and `--noswitch` die on an unreadable `general.lua` despite setting no wallpaper.
 
-- [ ] **Step 4: Source the library and delete the duplicated bodies**
+- [x] **Step 4: Source the library and delete the duplicated bodies**
 
 In `scripts/switchwall`, immediately after the `KITTY_THEME_OUT` assignment (line 13), add:
 
@@ -323,7 +335,7 @@ Replace lines 255-256 (`hyprctl reload` and `pkill`) with:
 reload_all
 ```
 
-- [ ] **Step 5: Verify byte-identical output**
+- [x] **Step 5: Verify byte-identical output**
 
 ```bash
 switchwall --noswitch
@@ -337,7 +349,7 @@ diff /tmp/baseline/before.md5 /tmp/baseline/after.md5 && echo "IDENTICAL"
 
 Expected: `IDENTICAL`. Any difference means the refactor changed behaviour — fix before continuing.
 
-- [ ] **Step 6: Verify the ordering fix**
+- [x] **Step 6: Verify the ordering fix**
 
 ```bash
 WALL="$(cat ~/.local/state/quickshell/current_wallpaper)"
@@ -349,7 +361,7 @@ echo "exit was $rc"
 
 Expected: prints `switchwall: colours preview written (...)` and `exit was 0`. Before this task it exited 1. The `mv` back runs regardless — **if you interrupt this step, restore `general.lua` by hand before doing anything else.**
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add scripts/lib/apply-colors.sh scripts/switchwall
@@ -376,7 +388,7 @@ Pure data, no side effects. Everything that can go wrong with the corpus is caug
 **Interfaces:**
 - Produces CLI: `preset-palette.py list` → one `scheme/flavour<TAB>modes` line per flavour. `preset-palette.py matugen <scheme>/<flavour> <light|dark>` → matugen JSON on stdout. `preset-palette.py scss <scheme>/<flavour> <light|dark>` → `$name: #hex;` lines on stdout. `preset-palette.py modes <scheme>/<flavour>` → space-separated available modes. All exit 2 on a bad preset id, 3 if the corpus is missing.
 
-- [ ] **Step 1: Write the helper**
+- [x] **Step 1: Write the helper**
 
 Create `scripts/lib/preset-palette.py`:
 
@@ -536,7 +548,7 @@ if __name__ == "__main__":
     main()
 ```
 
-- [ ] **Step 2: Verify the corpus listing**
+- [x] **Step 2: Verify the corpus listing**
 
 ```bash
 chmod +x scripts/lib/preset-palette.py
@@ -546,7 +558,7 @@ scripts/lib/preset-palette.py list | grep -E 'gruvbox|dracula|catppuccin'
 
 Expected: `24`. The grep shows `gruvbox/hard	dark light`, `dracula/medium	dark`, `catppuccin/latte	light`.
 
-- [ ] **Step 3: Verify every preset parses and validates**
+- [x] **Step 3: Verify every preset parses and validates**
 
 ```bash
 fail=0
@@ -561,7 +573,7 @@ done < <(scripts/lib/preset-palette.py list)
 
 Expected: `ALL 29 FILES OK`. This proves all 34 roles and all 33 kitty names exist everywhere.
 
-- [ ] **Step 4: Verify the parser is trap-proof independently of Task 0**
+- [x] **Step 4: Verify the parser is trap-proof independently of Task 0**
 
 Task 0 normalised the corpus, so these traps no longer exist in the data. Prove the
 parser handles them anyway, since a hand-edit or a future re-copy could reintroduce
@@ -589,7 +601,7 @@ rm -rf /tmp/trap
 Expected: `PARSER TRAP-PROOF`. The second assertion is the important one — it is the
 `split("\n")[:-1]` bug that would silently eat the final key.
 
-- [ ] **Step 5: Verify the silent mode fallback**
+- [x] **Step 5: Verify the silent mode fallback**
 
 ```bash
 scripts/lib/preset-palette.py matugen dracula/medium light | head -c 60; echo
@@ -598,7 +610,7 @@ scripts/lib/preset-palette.py modes catppuccin/latte
 
 Expected: the first emits valid JSON (falling back to dark, not erroring). The second prints `light`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add scripts/lib/preset-palette.py
@@ -623,7 +635,7 @@ trailing newline and hex case is inconsistent across and within them."
 - Consumes: `apply_kitty_from_scss`, `apply_gsettings`, `reload_all`, `cfg` from Task 1; `preset-palette.py` from Task 2.
 - Produces: `setscheme <scheme>/<flavour>` applies a preset. `setscheme --list` lists them. Writes `~/.local/state/quickshell/color_source`.
 
-- [ ] **Step 1: Write the script**
+- [x] **Step 1: Write the script**
 
 Create `scripts/setscheme`:
 
@@ -708,7 +720,7 @@ reload_all
 echo "setscheme: done ($TARGET $MODE)"
 ```
 
-- [ ] **Step 2: Make it executable and symlink it**
+- [x] **Step 2: Make it executable and symlink it**
 
 ```bash
 chmod +x scripts/setscheme
@@ -718,7 +730,7 @@ ls -la ~/.local/bin/setscheme
 
 Expected: symlink pointing into the repo, matching the other three scripts.
 
-- [ ] **Step 3: Apply a preset and verify against source values**
+- [x] **Step 3: Apply a preset and verify against source values**
 
 ```bash
 setscheme gruvbox/medium
@@ -734,7 +746,7 @@ grep -o "$outv" ~/.config/hypr/colors.lua && echo "hyprland OK"
 
 Expected: the source primary printed, then `colors.json OK`, `gtk3 OK`, `btop OK`, `hyprland OK`. **This matching hex is the proof — not the script's exit code.**
 
-- [ ] **Step 4: Verify kitty has no unsubstituted placeholders**
+- [x] **Step 4: Verify kitty has no unsubstituted placeholders**
 
 ```bash
 grep -n '\$' ~/.config/kitty/theme.conf || echo "NO PLACEHOLDERS LEFT"
@@ -744,7 +756,7 @@ grep -q "$t0" ~/.config/kitty/theme.conf && echo "kitty term0 OK"
 
 Expected: `NO PLACEHOLDERS LEFT` then `kitty term0 OK`. Any surviving `$name` means a missing role.
 
-- [ ] **Step 5: Verify state and the dark-only fallback**
+- [x] **Step 5: Verify state and the dark-only fallback**
 
 ```bash
 cat ~/.local/state/quickshell/color_source; echo
@@ -755,7 +767,7 @@ setscheme dracula/medium
 
 Expected: `gruvbox/medium` then `dark`. The last command prints `setscheme: dracula/medium has no light mode, using dark` and succeeds.
 
-- [ ] **Step 6: Verify a bad preset changes nothing**
+- [x] **Step 6: Verify a bad preset changes nothing**
 
 ```bash
 md5sum ~/.local/state/quickshell/colors.json > /tmp/before.md5
@@ -765,7 +777,7 @@ md5sum -c /tmp/before.md5 && echo "THEME UNTOUCHED"
 
 Expected: `rejected as expected` then `THEME UNTOUCHED`.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add scripts/setscheme
@@ -786,7 +798,7 @@ before writing, so a rejected preset leaves the existing theme intact."
 **Interfaces:**
 - Consumes: `~/.local/state/quickshell/color_source` written by Task 3.
 
-- [ ] **Step 1: Add the state path**
+- [x] **Step 1: Add the state path**
 
 In `scripts/switchwall`, after the `MODE_FILE` assignment (line 16), add:
 
@@ -796,7 +808,7 @@ In `scripts/switchwall`, after the `MODE_FILE` assignment (line 16), add:
 SOURCE_FILE="$HOME/.local/state/quickshell/color_source"
 ```
 
-- [ ] **Step 2: Branch before colour generation**
+- [x] **Step 2: Branch before colour generation**
 
 In `scripts/switchwall`, immediately before the `# --- 3. matugen:` comment, insert:
 
@@ -809,7 +821,7 @@ if [[ "$COLOR_SOURCE" != dynamic ]] && ! $COLORS_PREVIEW; then
 fi
 ```
 
-- [ ] **Step 3: Verify colours survive a wallpaper change**
+- [x] **Step 3: Verify colours survive a wallpaper change**
 
 ```bash
 setscheme gruvbox/medium
@@ -823,7 +835,7 @@ cat ~/.local/state/quickshell/current_wallpaper; echo
 
 Expected: `switchwall: wallpaper set; colours held by preset gruvbox/medium`, then `COLOURS HELD`, then the new wallpaper path — proving the wallpaper *did* change while colours did not.
 
-- [ ] **Step 4: Verify returning to dynamic regenerates**
+- [x] **Step 4: Verify returning to dynamic regenerates**
 
 ```bash
 setscheme dynamic
@@ -833,7 +845,7 @@ cat ~/.local/state/quickshell/color_source; echo
 
 Expected: `COLOURS REGENERATED` then `dynamic`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/switchwall
@@ -855,7 +867,7 @@ deliberate opt-out of wallpaper theming rather than a temporary look."
 **Interfaces:**
 - Produces: `Schemes.list` — array of `{ id, scheme, flavour, modes }`. `Schemes.loadPreset(id, mode)` → fills `Schemes.colours` (a `roleName -> "#hex"` map) and emits `presetLoaded(id)`. `Theme.source` (string, `"dynamic"` or a preset id), `Theme.applyPreset(id)`, `Theme.setDynamic()`.
 
-- [ ] **Step 1: Create the service**
+- [x] **Step 1: Create the service**
 
 Create `quickshell/shell/services/Schemes.qml`:
 
@@ -941,7 +953,7 @@ Singleton {
 }
 ```
 
-- [ ] **Step 2: Add the helper paths**
+- [x] **Step 2: Add the helper paths**
 
 In `quickshell/shell/services/Directories.qml`, after the `switchwallScript` line, add:
 
@@ -951,7 +963,7 @@ In `quickshell/shell/services/Directories.qml`, after the `switchwallScript` lin
     readonly property string colorSourceFile: home + "/.local/state/quickshell/color_source"
 ```
 
-- [ ] **Step 3: Add source state to `Theme.qml`**
+- [x] **Step 3: Add source state to `Theme.qml`**
 
 In `quickshell/shell/services/Theme.qml`, after the `busy` property, add:
 
@@ -998,7 +1010,7 @@ At the end of the `Singleton` body, add:
     }
 ```
 
-- [ ] **Step 4: Lint**
+- [x] **Step 4: Lint**
 
 ```bash
 cd ~/hyprland-config
@@ -1012,7 +1024,7 @@ cd ~/hyprland-config
 
 Expected: exit 0. Ignore any `QProcess::ExitStatus ... was not found` on `onExited` — that is the one known false positive.
 
-- [ ] **Step 5: Verify the service loads and lists**
+- [x] **Step 5: Verify the service loads and lists**
 
 ```bash
 pkill -x qs; (qs -n -c shell > /tmp/qs.log 2>&1 &) ; sleep 4
@@ -1022,7 +1034,7 @@ grep -i "error" /tmp/qs.log | head
 
 Expected: at least `1`, and no errors. A clean `Configuration Loaded` is the real evidence the signal wiring is valid — lint cannot prove it.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add quickshell/shell/services/Schemes.qml quickshell/shell/services/Theme.qml \
@@ -1045,7 +1057,7 @@ Config so an external setscheme run stays in sync."
 - Consumes: `Schemes.colours` from Task 5.
 - Produces: `ColorsLoader.previewPalette(map)` — applies a `roleName -> "#hex"` map as a preview. `clearPreview()` reverts it, unchanged.
 
-- [ ] **Step 1: Add the function**
+- [x] **Step 1: Add the function**
 
 In `quickshell/shell/services/ColorsLoader.qml`, after `clearPreview()`, add:
 
@@ -1080,7 +1092,7 @@ In `quickshell/shell/services/ColorsLoader.qml`, after `clearPreview()`, add:
 
 The key mapping mirrors `matugen/templates/colors-json/colors.json` exactly — the same 14 roles the real palette uses.
 
-- [ ] **Step 2: Lint**
+- [x] **Step 2: Lint**
 
 ```bash
 cd ~/hyprland-config
@@ -1093,7 +1105,7 @@ cd ~/hyprland-config
 
 Expected: exit 0.
 
-- [ ] **Step 3: Verify preview and revert live**
+- [x] **Step 3: Verify preview and revert live**
 
 ```bash
 pkill -x qs; (qs -n -c shell > /tmp/qs.log 2>&1 &) ; sleep 4
@@ -1109,7 +1121,7 @@ qs -c shell ipc call settings sub wallpapers
 
 Hover a wallpaper tile, confirm the shell repaints, then Escape and confirm it returns. Expected: repaint on hover, exact revert on Escape.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add quickshell/shell/services/ColorsLoader.qml
@@ -1132,7 +1144,7 @@ existing revert."
 **Interfaces:**
 - Consumes: `Schemes.list`, `Schemes.loadPreset`, `Schemes.presetLoaded`, `Theme.source`, `Theme.applyPreset`, `Theme.setDynamic`, `ColorsLoader.previewPalette`.
 
-- [ ] **Step 1: Create the sub-page**
+- [x] **Step 1: Create the sub-page**
 
 Create `quickshell/shell/modules/settings/SchemesSubPage.qml`:
 
@@ -1266,7 +1278,7 @@ ScrollPage {
 }
 ```
 
-- [ ] **Step 2: Register the sub-page**
+- [x] **Step 2: Register the sub-page**
 
 In `quickshell/shell/modules/settings/Content.qml`, change the `subPageModel` to:
 
@@ -1287,7 +1299,7 @@ Then add a `Component` beside the existing `wallpapersSubPage` one:
     }
 ```
 
-- [ ] **Step 3: Add the source row**
+- [x] **Step 3: Add the source row**
 
 In `quickshell/shell/modules/settings/WallpaperStylePage.qml`, immediately **before** the existing `SettingRow` whose label is `"Scheme"`, insert:
 
@@ -1336,7 +1348,7 @@ Finally add a row directly after the `"Scheme"` row:
         }
 ```
 
-- [ ] **Step 4: Lint**
+- [x] **Step 4: Lint**
 
 ```bash
 cd ~/hyprland-config
@@ -1351,7 +1363,7 @@ cd ~/hyprland-config
 
 Expected: exit 0.
 
-- [ ] **Step 5: Verify it loads and opens**
+- [x] **Step 5: Verify it loads and opens**
 
 ```bash
 pkill -x qs; (qs -n -c shell > /tmp/qs.log 2>&1 &) ; sleep 4
@@ -1363,7 +1375,7 @@ qs -c shell ipc call settings sub schemes
 
 Expected: at least one `Configuration Loaded`, no errors, and the sub-page opens showing 24 rows.
 
-- [ ] **Step 6: Verify preview, commit and revert live**
+- [x] **Step 6: Verify preview, commit and revert live**
 
 Take a screenshot to confirm the list renders:
 
@@ -1380,7 +1392,7 @@ cat ~/.local/state/quickshell/color_source; echo
 
 Expected: the clicked preset's id.
 
-- [ ] **Step 7: Verify the polish-loop guard**
+- [x] **Step 7: Verify the polish-loop guard**
 
 ```bash
 grep -i "polish" /tmp/qs.log || echo "NO POLISH LOOP"
@@ -1388,7 +1400,7 @@ grep -i "polish" /tmp/qs.log || echo "NO POLISH LOOP"
 
 Expected: `NO POLISH LOOP`. A `QQuickItem::polish() loop` warning names the offending file:line and must be fixed — it destabilises other panels' layouts, not just this one.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add quickshell/shell/modules/settings/SchemesSubPage.qml \
@@ -1409,11 +1421,11 @@ under a preset, where it genuinely drives nothing."
 - Modify: `INDEX.md`
 - Modify: `CLAUDE.md`
 
-- [ ] **Step 1: Add the INDEX.md entry**
+- [x] **Step 1: Add the INDEX.md entry**
 
 Add to the feature index and mark it ✅, following the existing row style. Record: 24 presets vendored at `matugen/schemes/` under GPL-3.0, `setscheme` as the entrypoint, and that `color_source` gates whether `switchwall` generates colours at all.
 
-- [ ] **Step 2: Update CLAUDE.md**
+- [x] **Step 2: Update CLAUDE.md**
 
 Two additions. In the Commands section, next to `switchwall`:
 
@@ -1426,7 +1438,7 @@ scripts/setscheme gruvbox/medium     # or: setscheme --list, setscheme dynamic
 
 In the theming-pipeline section, note that `switchwall` exits before colour generation when `~/.local/state/quickshell/color_source` names a preset, and that `matugen json` renders the same templates from literal values — so there is exactly one template set, not one per source.
 
-- [ ] **Step 3: Verify the doc claims are true**
+- [x] **Step 3: Verify the doc claims are true**
 
 ```bash
 setscheme --list | wc -l
@@ -1435,7 +1447,7 @@ setscheme dynamic && echo "dynamic OK"
 
 Expected: `24`, then `dynamic OK`. Do not document a flag that does not work.
 
-- [ ] **Step 4: Do NOT commit these two files**
+- [x] **Step 4: Do NOT commit these two files**
 
 `INDEX.md` and `CLAUDE.md` are both in `.gitignore` — they are local-only docs, not repo content. `git add` on either fails or silently does nothing.
 
@@ -1451,7 +1463,7 @@ Expected: neither file appears. There is nothing to commit in this task; the edi
 
 Run after all tasks. This is the spec's verification section end to end.
 
-- [ ] **Full sweep**
+- [x] **Full sweep**
 
 ```bash
 cd ~/hyprland-config
