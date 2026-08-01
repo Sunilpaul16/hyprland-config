@@ -18,11 +18,12 @@ hl.bind(v.kbToggleFullscreen, hl.dsp.window.fullscreen({ mode = "fullscreen", ac
 hl.bind(v.kbTogglePin, hl.dsp.window.pin(), { description = "Window: Pin" })
 
 hl.bind(v.kbBrowser, hl.dsp.exec_cmd(v.browser), { description = "App: browser" })
-hl.bind(v.kbClipboardHistory, hl.dsp.exec_cmd("qs -c shell ipc call launcher openClip"), { description = "Launcher: clipboard history" })
+-- Falls back to fuzzel while the shell is down or restarting; the ipc call exits 255 when no instance answers
+hl.bind(v.kbClipboardHistory, hl.dsp.exec_cmd([[bash -c 'qs -c shell ipc call launcher openClip || cliphist list | fuzzel --dmenu | cliphist decode | wl-copy']]), { description = "Launcher: clipboard history" })
 hl.bind(v.kbLock, hl.dsp.exec_cmd("hyprlock"), { description = "System: lock screen" })
 hl.bind(v.kbRestartShell, hl.dsp.exec_cmd([[bash -c 'pkill -x qs; qs -n -c shell']]), { description = "System: restart quickshell" })
 hl.bind(v.kbReloadHyprland, hl.dsp.exec_cmd([[bash -c 'hyprctl reload && notify-send -a hyprland "Hyprland" "Config reloaded"']]), { description = "System: reload Hyprland config" })
-hl.bind(v.kbLauncher, hl.dsp.exec_cmd("qs -c shell ipc call launcher openApps"), { description = "Launcher: apps" })
+hl.bind(v.kbLauncher, hl.dsp.exec_cmd([[bash -c 'qs -c shell ipc call launcher openApps || fuzzel']]), { description = "Launcher: apps" })
 hl.bind(v.kbWallpaperPicker, hl.dsp.exec_cmd("qs -c shell ipc call launcher openWallpaper"), { description = "Launcher: wallpaper" })
 hl.bind(v.kbRandomWallpaper, hl.dsp.global("quickshell:randomWallpaper"), { description = "Launcher: random wallpaper" })
 hl.bind(v.kbCodeEditor, hl.dsp.exec_cmd(v.codeEditor), { description = "App: code editor" })
