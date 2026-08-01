@@ -115,6 +115,15 @@ def main():
             print(f"{pid}\t{' '.join(modes)}")
         return
 
+    # Everything a picker needs in one pass — id, modes and swatch colours —
+    # so a 24-row page costs one process rather than one per row
+    if cmd == "listall":
+        want = sys.argv[2] if len(sys.argv) > 2 else "dark"
+        for pid, modes in list_flavours():
+            c = read_preset(pid, want if want in modes else modes[0])
+            print(f"{pid}\t{' '.join(modes)}\t{c['surface']}\t{c['primary']}\t{c['outline']}")
+        return
+
     if cmd == "modes":
         for pid, modes in list_flavours():
             if pid == sys.argv[2]:

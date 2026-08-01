@@ -25,11 +25,13 @@ Singleton {
         readProc.running = true;
     }
 
+    // One pass for the whole list: id, modes and the three swatch colours.
+    // Per-row reads would mean 24 processes for one page
     Process {
         id: listProc
 
         running: true
-        command: [Directories.presetHelper, "list"]
+        command: [Directories.presetHelper, "listall", Theme.mode === "light" ? "light" : "dark"]
 
         onExited: exitCode => {
             if (exitCode !== 0)
@@ -43,14 +45,15 @@ Singleton {
                     if (!line)
                         continue;
                     const parts = line.split("\t");
-                    const id = parts[0];
-                    const modes = parts[1];
-                    const idParts = id.split("/");
+                    const idParts = parts[0].split("/");
                     rows.push({
-                        id: id,
+                        id: parts[0],
                         scheme: idParts[0],
                         flavour: idParts[1],
-                        modes: modes ? modes.split(" ") : []
+                        modes: parts[1] ? parts[1].split(" ") : [],
+                        surface: "#" + parts[2],
+                        primary: "#" + parts[3],
+                        outline: "#" + parts[4]
                     });
                 }
                 root.list = rows;
