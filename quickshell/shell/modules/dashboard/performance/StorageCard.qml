@@ -13,7 +13,7 @@ Rectangle {
     readonly property var disk: Storage.selectedDisk
     readonly property bool hasDisk: disk !== null
 
-    radius: 26
+    radius: Motion.rounding.hero
     color: Colors.layer
 
     implicitWidth: layout.implicitWidth + 40
@@ -218,7 +218,7 @@ Rectangle {
 
         implicitWidth: entryRow.implicitWidth + 20
         implicitHeight: entryRow.implicitHeight + 10
-        radius: 6
+        radius: Motion.rounding.tiny
         color: entryHover.containsMouse ? Colors.layer : "transparent"
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }

@@ -148,11 +148,11 @@ Scope {
                     // on the hugged edge are square so the joint reads as one surface
                     Rectangle {
                         anchors.fill: parent
-                        radius: 20
-                        topRightRadius: drawer.onRight ? 0 : 20
-                        bottomRightRadius: drawer.onRight ? 0 : 20
-                        topLeftRadius: drawer.onRight ? 20 : 0
-                        bottomLeftRadius: drawer.onRight ? 20 : 0
+                        radius: Motion.rounding.drawer
+                        topRightRadius: drawer.onRight ? 0 : Motion.rounding.drawer
+                        bottomRightRadius: drawer.onRight ? 0 : Motion.rounding.drawer
+                        topLeftRadius: drawer.onRight ? Motion.rounding.drawer : 0
+                        bottomLeftRadius: drawer.onRight ? Motion.rounding.drawer : 0
                         color: Colors.panel
                     }
 

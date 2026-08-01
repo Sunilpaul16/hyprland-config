@@ -48,7 +48,7 @@ Rectangle {
         return fmt.value.toFixed(1) + fmt.unit.replace("/s", "");
     }
 
-    radius: 26
+    radius: Motion.rounding.hero
     color: Colors.layer
 
     implicitWidth: 290

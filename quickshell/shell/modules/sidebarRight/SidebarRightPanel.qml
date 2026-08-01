@@ -89,7 +89,7 @@ Scope {
                         anchors { top: parent.top; right: parent.right; margins: root.edgeMargin }
                         width: 360
                         height: parent.height - root.edgeMargin * 2
-                        radius: 20
+                        radius: Motion.rounding.drawer
                         // Left corners square so the fillets below can flare this edge
                         // out into the bar above and the screen bottom
                         topLeftRadius: 0

@@ -125,7 +125,7 @@ Scope {
                         // corners are square so the joined edge reads as one surface
                         Rectangle {
                             anchors.fill: parent
-                            radius: 20
+                            radius: Motion.rounding.drawer
                             topRightRadius: 0
                             bottomRightRadius: 0
                             color: Colors.panel

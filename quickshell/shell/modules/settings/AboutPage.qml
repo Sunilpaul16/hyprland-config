@@ -17,7 +17,7 @@ ScrollPage {
     Rectangle {
         Layout.fillWidth: true
         implicitHeight: hero.implicitHeight + 30 * 2
-        radius: 22
+        radius: Motion.rounding.page
         color: Colors.layer
 
         ColumnLayout {

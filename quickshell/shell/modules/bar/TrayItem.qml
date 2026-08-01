@@ -27,7 +27,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         anchors.margins: -5
-        radius: 6
+        radius: Motion.rounding.tiny
         color: Colors.outline
         opacity: hoverArea.containsMouse ? 0.5 : 0
         z: -1

@@ -9,7 +9,7 @@ Rectangle {
 
     readonly property color accent: Colors.tertiary
 
-    radius: 26
+    radius: Motion.rounding.hero
     color: Colors.layer
 
     implicitWidth: layout.implicitWidth + 44

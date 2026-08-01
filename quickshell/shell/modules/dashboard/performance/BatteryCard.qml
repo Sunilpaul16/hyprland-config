@@ -12,7 +12,7 @@ Rectangle {
     readonly property var device: UPower.displayDevice
     readonly property bool charging: [UPowerDeviceState.Charging, UPowerDeviceState.FullyCharged, UPowerDeviceState.PendingCharge].includes(device?.state)
 
-    radius: 26
+    radius: Motion.rounding.hero
     color: Colors.layer
 
     implicitWidth: layout.implicitWidth + 44

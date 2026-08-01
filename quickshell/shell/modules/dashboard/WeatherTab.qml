@@ -66,7 +66,7 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: heroRow.implicitHeight + 48
-            radius: 28
+            radius: Motion.rounding.hero
             color: Colors.layer
             border.width: 1
             border.color: Colors.outline

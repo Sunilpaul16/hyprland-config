@@ -52,13 +52,17 @@ QtObject {
         readonly property int expressiveDefaultSpatialDuration: root.scaled(500)
     }
 
-    // Corner radius ladder, 8-18 in 2px steps — names say where each step is used; pick an existing one rather than introducing a new value
+    // Corner radius ladder, 6-26 — names say where each step is used; pick an existing one rather than introducing a new value
     readonly property QtObject rounding: QtObject {
+        readonly property int tiny: 6    // tray and menu rows, the smallest inner fills
         readonly property int small: 8   // chips, small buttons, inner elements
         readonly property int item: 10   // launcher and overview list/grid items
         readonly property int normal: 12 // toggles, pills, inner menu rows
         readonly property int card: 14   // notification cards, dropdown surfaces
         readonly property int nested: 16 // cards nested inside a dashboard tab
         readonly property int large: 18  // top-level cards and panels
+        readonly property int drawer: 20 // slide-in drawers and the dialogs that match them
+        readonly property int page: 22   // settings page cards
+        readonly property int hero: 26   // dashboard hero and performance cards
     }
 }

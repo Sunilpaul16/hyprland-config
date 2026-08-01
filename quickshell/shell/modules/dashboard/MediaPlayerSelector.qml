@@ -116,7 +116,7 @@ Item {
 
         implicitWidth: entryRow.implicitWidth + 20
         implicitHeight: entryRow.implicitHeight + 10
-        radius: 6
+        radius: Motion.rounding.tiny
         color: entryHover.containsMouse ? Colors.layer : "transparent"
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }

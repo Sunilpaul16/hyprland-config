@@ -30,7 +30,7 @@ Item {
     Rectangle {
         visible: !root.isSep
         anchors.fill: parent
-        radius: 6
+        radius: Motion.rounding.tiny
         color: hoverArea.containsMouse && root.entry.enabled ? Colors.layer : "transparent"
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }

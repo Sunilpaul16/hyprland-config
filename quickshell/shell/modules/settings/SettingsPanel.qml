@@ -99,7 +99,7 @@ Scope {
                         anchors.centerIn: parent
                         width: root.panelWidth
                         height: root.panelHeight
-                        radius: 22
+                        radius: Motion.rounding.page
                         color: Colors.panel
                         border.width: 1
                         border.color: Colors.outlineVariant

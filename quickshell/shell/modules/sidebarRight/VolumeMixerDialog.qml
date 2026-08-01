@@ -7,7 +7,7 @@ import "../../components"
 Rectangle {
     id: root
 
-    radius: 20
+    radius: Motion.rounding.drawer
     color: Colors.panel
 
     ColumnLayout {

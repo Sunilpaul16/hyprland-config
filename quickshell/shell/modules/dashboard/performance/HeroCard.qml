@@ -14,7 +14,7 @@ Rectangle {
     required property real usage
     required property real temperature
 
-    radius: 26
+    radius: Motion.rounding.hero
     color: Colors.layer
 
     implicitWidth: 320

@@ -195,6 +195,7 @@ Item {
         id: panelBg
 
         anchors.fill: parent
+        // Off-ladder on purpose: nearest steps are drawer (20) and hero (26), and either is a visible change to the launcher's silhouette
         radius: 24
         // Bottom corners square so the fillets can flare this panel into the
         // screen edge it sits flush against
