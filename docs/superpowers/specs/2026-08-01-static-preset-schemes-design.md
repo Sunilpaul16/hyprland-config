@@ -99,14 +99,18 @@ Mode availability is irregular and must not be assumed:
 `catppuccin` is internally asymmetric: three dark flavours plus one light flavour,
 with no flavour offering both.
 
-**Two parser traps:**
+**Two parser traps, both fixed at vendor time:**
 
 1. **18 of 29 files have no trailing newline.** Any parse doing
    `content.split("\n")[:-1]` silently drops the final key (`onSuccessContainer`)
-   from those files. Read line-wise.
+   from those files.
 2. **Hex case is inconsistent** across and within files — 9 files are largely
-   uppercase, 2 mixed, and `onSuccessContainer` is uppercase in all 29. Lowercase on
-   read.
+   uppercase, 2 mixed, and `onSuccessContainer` is uppercase in all 29.
+
+Because the corpus is vendored, both are normalised once during the copy — every
+file gains a trailing newline and every value is lowercased. The parser still reads
+line-wise and lowercases anyway; that costs nothing and keeps it correct if a file
+is ever hand-edited or re-copied from upstream.
 
 ### Kitty needs no generator
 
@@ -133,14 +137,12 @@ below, rather than inheriting it into a second entrypoint.
 
 ## Scope
 
-**In scope.** All 24 scheme/flavour combinations, themed across every surface
-`switchwall` themes today. A settings-panel picker with live preview. Wallpaper
-independence.
+**In scope.** All 24 scheme/flavour combinations, **vendored into this repo** at
+`matugen/schemes/`, themed across every surface `switchwall` themes today. A
+settings-panel picker with live preview. Wallpaper independence.
 
 **Out of scope.**
 
-- **Vendoring the preset files.** They are read from the installed `caelestia`
-  package. This is a deliberate choice; see Risks.
 - **A launcher action prefix.** This repo has no action-prefix system, and building
   one is its own feature.
 - **User-authored presets.** No mechanism for dropping in custom palettes.
@@ -183,8 +185,8 @@ branch.
 
 Symlinked into `~/.local/bin/` alongside the other three scripts.
 
-1. **Locate the corpus** — glob `/usr/lib/python3.*/site-packages/caelestia/data/schemes`.
-   Never hardcode a Python version. Exit non-zero with a clear message if absent.
+1. **Locate the corpus** — `matugen/schemes/` inside this repo, resolved relative to
+   the script's own real path so the symlink into `~/.local/bin` resolves correctly.
 2. **Resolve the mode** — read `color_mode`; if the preset has no file for it, use
    the mode it does have and print which.
 3. **Parse** — line-wise, lowercase values, into a `roleName -> hex` map.
@@ -264,12 +266,23 @@ either an error path or greying out 17 of 24 rows.
 
 ## Risks
 
-**Dependency on the `caelestia` package.** Reading from site-packages was chosen
-over vendoring, so uninstalling `caelestia` breaks every preset, and a Python major
-upgrade moves the path. Globbing `python3.*` covers the upgrade case; nothing covers
-uninstallation, which surfaces as an empty picker and a non-zero `setscheme` exit
-rather than a broken theme. Vendoring stays available later — the corpus is ~60 KiB
-and GPL-3.0, which would require carrying the licence text and a provenance note.
+**GPL-3.0 obligations.** The corpus is vendored, so its licence now applies to this
+repo. Caelestia ships the GPLv3 text and no other licence, with no per-file header
+and no named copyright holder in the installed artifacts. `matugen/schemes/LICENSE`
+carries the licence text and `matugen/schemes/PROVENANCE.md` records the source,
+version and the normalisation applied. This repo currently declares no licence of
+its own; if one is ever added it must be GPLv3-compatible, which is a real
+constraint rather than a formality.
+
+**Upstream palette licences are unaudited.** Several of these palettes (Catppuccin,
+Gruvbox, Nord, Dracula, Rosé Pine, Tokyo Night, Everforest, Solarized) derive from
+theme projects with their own licences, mostly MIT but varying. Caelestia ships no
+notices for them and this design does not audit them. Noted so the gap is a known
+one rather than an assumed absence.
+
+**The corpus is now a fork.** Vendored files no longer track caelestia upstream. New
+schemes added there will not appear here without a manual re-copy. This is the
+accepted cost of not depending on an external package.
 
 **`sed`-based kitty rewriting is positional.** The existing filter relies on a
 trailing ` #` anchor to stop `$term1` matching inside `$term15`. Reused as-is, not

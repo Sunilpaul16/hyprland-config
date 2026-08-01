@@ -13,8 +13,9 @@
 - **No test suite, no CI, no build.** Verification is: lint the QML, run the command, **diff generated output against source values**, exercise live. A zero exit code is never sufficient evidence.
 - **Qt 6 qmllint only.** `/usr/bin/qmllint` is Qt 5's and near-useless here. Use the full command in Task 6.
 - **Editing this repo edits the live config.** There is no deploy step. `hypr/colors.lua`, `gtk-3.0/gtk.css`, `gtk-4.0/gtk.css`, `kitty/theme.conf`, `hypr/hyprlock/colors.conf` are gitignored generated output — never commit them.
-- **Preset corpus is read from the installed `caelestia` package**, never vendored. Locate it by globbing `/usr/lib/python3.*/site-packages/caelestia/data/schemes` — never hardcode `python3.14`.
-- **Parse traps, both mandatory:** read preset files **line-wise** (18 of 29 lack a trailing newline; `split("\n")[:-1]` silently eats the last key), and **lowercase every hex value** (case is inconsistent across and within files).
+- **Preset corpus is vendored** at `matugen/schemes/`, committed to the repo. Nothing at runtime may read from `/usr/lib/python3.*/site-packages/`. Resolve the path from the script's own real path (`readlink -f "$0"`), because the entrypoint is reached through a symlink in `~/.local/bin`.
+- **Vendored files are GPL-3.0.** `matugen/schemes/LICENSE` and `matugen/schemes/PROVENANCE.md` must be committed alongside them.
+- **Parse traps** are normalised away at vendor time (Task 0), but the parser still reads **line-wise** and **lowercases every hex value** — cheap, and keeps it correct if a file is hand-edited or re-copied later.
 - **Templates need exactly 34 roles; kitty's template needs exactly 33 names.** Validate both before writing anything. A missing kitty name is emitted literally as `color255 #$primary #`, which kitty refuses to parse.
 - **QML comment style:** terse structural signposts only (`// IPC handler`), never explanations. Don't caption a block whose identifier already says what it is.
 - **Corner rounding uses `Motion.rounding.*` steps**, never raw literals. A circle is `radius: width / 2`.
@@ -29,7 +30,8 @@ The spec proposed `theming.source` and `theming.preset` config keys **and** a `c
 
 | File | Responsibility |
 | --- | --- |
-| `scripts/lib/preset-palette.py` (new) | Pure data. Locate corpus, list schemes, parse a preset, validate, emit matugen JSON or SCSS. No side effects. |
+| `matugen/schemes/**` (new) | The vendored corpus: 29 `.txt` palettes, plus `LICENSE` and `PROVENANCE.md`. Data only. |
+| `scripts/lib/preset-palette.py` (new) | Pure data. List schemes, parse a preset, validate, emit matugen JSON or SCSS. No side effects. |
 | `scripts/lib/apply-colors.sh` (new) | Shared apply steps: `cfg`/`cfgbool`, kitty filter, gsettings, reloads. |
 | `scripts/setscheme` (new) | Orchestration + CLI. Sources the library, calls the helper. |
 | `scripts/switchwall` (modify) | Sources the library; honours `color_source`; ordering fix. |
@@ -39,6 +41,137 @@ The spec proposed `theming.source` and `theming.preset` config keys **and** a `c
 | `quickshell/shell/modules/settings/SchemesSubPage.qml` (new) | The picker. |
 | `quickshell/shell/modules/settings/WallpaperStylePage.qml` (modify) | Colour-source row + Presets pill. |
 | `quickshell/shell/modules/settings/Content.qml` (modify) | Registers the sub-page. |
+
+---
+
+### Task 0: Vendor the preset corpus
+
+Copies the 29 palettes into the repo and normalises both parser traps at the source.
+Runs once; after this, nothing reads the caelestia package ever again.
+
+**Files:**
+- Create: `matugen/schemes/<scheme>/<flavour>/<mode>.txt` (29 files)
+- Create: `matugen/schemes/LICENSE`
+- Create: `matugen/schemes/PROVENANCE.md`
+
+**Interfaces:**
+- Produces: `matugen/schemes/` as the sole corpus location, every file lowercase-hex and newline-terminated.
+
+- [ ] **Step 1: Copy and normalise**
+
+```bash
+cd ~/hyprland-config
+SRC=$(ls -d /usr/lib/python3.*/site-packages/caelestia/data/schemes | tail -1)
+echo "copying from $SRC"
+mkdir -p matugen/schemes
+
+find "$SRC" -name '*.txt' | while read -r f; do
+  rel="${f#"$SRC"/}"
+  mkdir -p "matugen/schemes/$(dirname "$rel")"
+  # Lowercase every value and guarantee a trailing newline
+  awk '{ print $1, tolower($2) }' "$f" > "matugen/schemes/$rel"
+done
+
+find matugen/schemes -name '*.txt' | wc -l
+```
+
+Expected: `29`.
+
+- [ ] **Step 2: Verify the normalisation and that nothing was lost**
+
+```bash
+# Every file must now end in a newline
+short=0
+for f in $(find matugen/schemes -name '*.txt'); do
+  [ -n "$(tail -c 1 "$f")" ] && { echo "NO TRAILING NEWLINE: $f"; short=1; }
+done
+[ $short -eq 0 ] && echo "ALL NEWLINE-TERMINATED"
+
+# No uppercase hex anywhere
+grep -rlE ' [0-9a-f]*[A-F]' matugen/schemes && echo "UPPERCASE FOUND" || echo "ALL LOWERCASE"
+
+# Key counts must match the originals exactly
+SRC=$(ls -d /usr/lib/python3.*/site-packages/caelestia/data/schemes | tail -1)
+for f in $(find matugen/schemes -name '*.txt'); do
+  rel="${f#matugen/schemes/}"
+  a=$(grep -c . "$f"); b=$(grep -c . "$SRC/$rel")
+  [ "$a" = "$b" ] || echo "KEY COUNT MISMATCH: $rel ($a vs $b)"
+done
+echo "key counts checked"
+```
+
+Expected: `ALL NEWLINE-TERMINATED`, `ALL LOWERCASE`, and no mismatch lines. The key-count check is the one that matters — it proves the `awk` rewrite dropped nothing.
+
+- [ ] **Step 3: Add the licence**
+
+```bash
+SRC=$(ls -d /usr/lib/python3.*/site-packages/caelestia-*.dist-info/licenses/LICENSE | tail -1)
+cp "$SRC" matugen/schemes/LICENSE
+head -3 matugen/schemes/LICENSE
+```
+
+Expected: the GPLv3 header.
+
+- [ ] **Step 4: Record provenance**
+
+Create `matugen/schemes/PROVENANCE.md`:
+
+```markdown
+# Vendored colour schemes
+
+Copied from the `caelestia` Python package, version 1.1.2
+(`caelestia/data/schemes/`), upstream <https://github.com/caelestia-dots/cli>.
+
+Licensed **GPL-3.0**; see `LICENSE`. The upstream package ships no per-file
+header and names no copyright holder, so none is reproduced here.
+
+## Modifications
+
+Two normalisations applied at copy time, no colour values changed:
+
+- every hex value lowercased (upstream case is inconsistent across and within
+  files)
+- a trailing newline added where missing (18 of 29 files lacked one, which
+  makes a `split("\n")[:-1]` parse silently drop the final key)
+
+Verified after copying: key counts per file identical to upstream.
+
+## Note on the palettes themselves
+
+Several of these (Catppuccin, Gruvbox, Nord, Dracula, Rosé Pine, Tokyo Night,
+Everforest, Solarized) originate from separate theme projects with their own
+licences. Upstream ships no notices for them and they have not been audited
+here.
+
+## Re-syncing
+
+These files are a fork and do not track upstream. New schemes added to
+caelestia will not appear here without repeating the copy in
+`docs/superpowers/plans/2026-08-01-static-preset-schemes.md`, Task 0.
+```
+
+- [ ] **Step 5: Confirm nothing is gitignored**
+
+```bash
+git status --short matugen/schemes | head -5
+git check-ignore -v matugen/schemes/gruvbox/medium/dark.txt || echo "NOT IGNORED"
+```
+
+Expected: untracked files listed, and `NOT IGNORED`. If anything is ignored the corpus will not commit and every later task fails.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add matugen/schemes
+git commit -m "matugen: vendor the caelestia colour scheme corpus
+
+29 static palettes copied from caelestia 1.1.2 under GPL-3.0, with the
+licence text and a provenance note recording the two normalisations
+applied: lowercased hex and added trailing newlines.
+
+Vendored rather than read from site-packages so the themes cannot vanish
+with a package removal and do not depend on a Python version in a path."
+```
 
 ---
 
@@ -249,13 +382,12 @@ Create `scripts/lib/preset-palette.py`:
 
 ```python
 #!/usr/bin/env python3
-"""Turns a caelestia preset .txt into what this repo's pipeline consumes.
+"""Turns a vendored preset .txt into what this repo's pipeline consumes.
 
-Read-only against the installed caelestia package; emits matugen JSON or the
-SCSS-shaped stream the kitty filter eats. No side effects, no writes.
+Reads matugen/schemes/; emits matugen JSON or the SCSS-shaped stream the kitty
+filter eats. No side effects, no writes.
 """
 
-import glob
 import json
 import os
 import sys
@@ -296,11 +428,13 @@ def camel_to_snake(name):
 
 
 def corpus_dir():
-    # Globbed, never hardcoded — the path carries a Python version
-    matches = sorted(glob.glob("/usr/lib/python3.*/site-packages/caelestia/data/schemes"))
-    if not matches:
-        sys.exit("preset-palette: caelestia package not found; presets unavailable")
-    return matches[-1]
+    # Vendored in-repo. Resolved from this file's real path, since the
+    # entrypoint is reached through a symlink in ~/.local/bin
+    here = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.normpath(os.path.join(here, "..", "..", "matugen", "schemes"))
+    if not os.path.isdir(path):
+        sys.exit(f"preset-palette: scheme corpus missing at {path}")
+    return path
 
 
 def list_flavours():
@@ -427,16 +561,33 @@ done < <(scripts/lib/preset-palette.py list)
 
 Expected: `ALL 29 FILES OK`. This proves all 34 roles and all 33 kitty names exist everywhere.
 
-- [ ] **Step 4: Verify the parse traps are handled**
+- [ ] **Step 4: Verify the parser is trap-proof independently of Task 0**
+
+Task 0 normalised the corpus, so these traps no longer exist in the data. Prove the
+parser handles them anyway, since a hand-edit or a future re-copy could reintroduce
+either:
 
 ```bash
-# gruvbox/medium/dark.txt has no trailing newline — the last key must survive
-scripts/lib/preset-palette.py scss gruvbox/medium dark | tail -3
-# dracula is largely uppercase — every emitted value must be lowercase
-scripts/lib/preset-palette.py scss dracula/medium dark | grep -c '[A-F]'
+mkdir -p /tmp/trap/x/y
+# Uppercase hex AND no trailing newline, both at once
+printf 'primary ABCDEF\nonSuccessContainer 123ABC' > /tmp/trap/x/y/dark.txt
+python3 - <<'EOF'
+import sys
+sys.path.insert(0, "scripts/lib")
+import importlib.util
+spec = importlib.util.spec_from_file_location("pp", "scripts/lib/preset-palette.py")
+pp = importlib.util.module_from_spec(spec); spec.loader.exec_module(pp)
+pp.corpus_dir = lambda: "/tmp/trap"
+c = pp.read_preset("x/y", "dark")
+assert c["primary"] == "abcdef", c
+assert c["onSuccessContainer"] == "123abc", "last key dropped"
+print("PARSER TRAP-PROOF")
+EOF
+rm -rf /tmp/trap
 ```
 
-Expected: the `tail` shows three `$name: #hex;` lines with real values. The `grep -c` prints `0`.
+Expected: `PARSER TRAP-PROOF`. The second assertion is the important one — it is the
+`split("\n")[:-1]` bug that would silently eat the final key.
 
 - [ ] **Step 5: Verify the silent mode fallback**
 
@@ -571,14 +722,13 @@ Expected: symlink pointing into the repo, matching the other three scripts.
 
 ```bash
 setscheme gruvbox/medium
-DIR=$(ls -d /usr/lib/python3.*/site-packages/caelestia/data/schemes | tail -1)
-SRC="$DIR/gruvbox/medium/dark.txt"
-prim=$(grep -oP '^primary \K.*' "$SRC" | tr 'A-F' 'a-f')
+SRC=~/hyprland-config/matugen/schemes/gruvbox/medium/dark.txt
+prim=$(grep -oP '^primary \K.*' "$SRC")
 echo "source primary: $prim"
 grep -o "$prim" ~/.local/state/quickshell/colors.json && echo "colors.json OK"
 grep -oi "$prim" ~/.config/gtk-3.0/gtk.css >/dev/null && echo "gtk3 OK"
 grep -oi "$prim" ~/.config/btop/themes/matugen.theme >/dev/null && echo "btop OK"
-outv=$(grep -oP '^outlineVariant \K.*' "$SRC" | tr 'A-F' 'a-f')
+outv=$(grep -oP '^outlineVariant \K.*' "$SRC")
 grep -o "$outv" ~/.config/hypr/colors.lua && echo "hyprland OK"
 ```
 
@@ -588,7 +738,7 @@ Expected: the source primary printed, then `colors.json OK`, `gtk3 OK`, `btop OK
 
 ```bash
 grep -n '\$' ~/.config/kitty/theme.conf || echo "NO PLACEHOLDERS LEFT"
-t0=$(grep -oP '^term0 \K.*' "$SRC" | tr 'A-F' 'a-f')
+t0=$(grep -oP '^term0 \K.*' "$SRC")
 grep -q "$t0" ~/.config/kitty/theme.conf && echo "kitty term0 OK"
 ```
 
@@ -715,7 +865,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Static preset palettes, read from the installed caelestia package via
+// Static preset palettes from matugen/schemes/, via
 // scripts/lib/preset-palette.py. Listing is one shot; an individual preset
 // is read on demand for swatches and preview
 Singleton {
@@ -1024,11 +1174,10 @@ ScrollPage {
         text: "Presets"
     }
 
-    // Empty state — the corpus lives in the caelestia package, which may not
-    // be installed
+    // Empty state — only reachable if the vendored corpus is missing
     Text {
         visible: !Schemes.available
-        text: "No presets found. They are read from the caelestia package."
+        text: "No presets found in matugen/schemes."
         color: Colors.textMuted
         font.pixelSize: 13
         wrapMode: Text.WordWrap
@@ -1262,7 +1411,7 @@ under a preset, where it genuinely drives nothing."
 
 - [ ] **Step 1: Add the INDEX.md entry**
 
-Add to the feature index and mark it ✅, following the existing row style. Record: 24 presets read from the installed caelestia package (not vendored), `setscheme` as the entrypoint, and that `color_source` gates whether `switchwall` generates colours at all.
+Add to the feature index and mark it ✅, following the existing row style. Record: 24 presets vendored at `matugen/schemes/` under GPL-3.0, `setscheme` as the entrypoint, and that `color_source` gates whether `switchwall` generates colours at all.
 
 - [ ] **Step 2: Update CLAUDE.md**
 
