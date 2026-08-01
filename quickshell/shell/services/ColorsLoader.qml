@@ -42,6 +42,33 @@ Singleton {
         root.reapplyTheme();
     }
 
+    // A preset's colours are already on disk, so unlike preview() there is
+    // nothing to generate — no Process, no wait. Maps the template role names
+    // onto the shell's own, then reuses the same revert path
+    function previewPalette(palette: var): void {
+        if (!palette || !palette.primary)
+            return;
+        root.previewPath = "";
+        root.pendingPath = "";
+        root.previewing = true;
+        root.applyColors(JSON.stringify({
+            background: palette.background,
+            surface: palette.surface_container,
+            primary: palette.primary,
+            secondary: palette.secondary,
+            tertiary: palette.tertiary,
+            secondaryContainer: palette.secondary_container,
+            text: palette.on_surface,
+            textMuted: palette.on_surface_variant,
+            outline: palette.outline,
+            outlineVariant: palette.outline_variant,
+            error: palette.error,
+            textOnError: palette.on_error,
+            errorContainer: palette.error_container,
+            textOnErrorContainer: palette.on_error_container
+        }));
+    }
+
     function reapplyTheme() {
         colorsFile.reload();
         applyTimer.restart();
