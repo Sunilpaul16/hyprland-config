@@ -1,8 +1,7 @@
 import QtQuick
 import "../../services"
 
-// Panels page — bar, dashboard, launcher, sidebar and overview settings
-// Still mock: launcher fuzzy matching, quick-toggle editing, sidebar close-on-settings — each needs shell behaviour that doesn't exist yet
+// Panels page — bar, dashboard, launcher, sidebar and overview settings; every row is live
 ScrollPage {
     id: root
 
