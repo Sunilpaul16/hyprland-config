@@ -15,6 +15,9 @@ RowLayout {
     // Readout multiplier — lets a 0..1 property display as a percentage
     // without the slider having to work in different units
     property real displayScale: 1
+    // Replaces the computed readout when set — for a value whose units aren't a
+    // plain suffix, like an interval read out as hours and minutes
+    property string displayText: ""
     // Fixed so the slider doesn't shift sideways as the digits change. Wide
     // enough for the longest value any row uses ("15000 ms") — ValueLabel
     // elides, so too narrow silently truncates rather than overflowing
@@ -27,7 +30,9 @@ RowLayout {
     ValueLabel {
         Layout.preferredWidth: root.labelWidth
         horizontalAlignment: Text.AlignRight
-        text: (root.value * root.displayScale).toFixed(root.decimals) + root.suffix
+        text: root.displayText.length > 0
+            ? root.displayText
+            : (root.value * root.displayScale).toFixed(root.decimals) + root.suffix
     }
 
     SettingSlider {

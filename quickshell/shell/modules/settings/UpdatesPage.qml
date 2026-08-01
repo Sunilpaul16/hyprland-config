@@ -8,6 +8,18 @@ ScrollPage {
 
     title: "Updates"
 
+    // Minutes into "6 h", "45 min", "2 h 30 min" — the interval reaches a day,
+    // where a bare minute count stops being readable
+    function formatInterval(mins: int): string {
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        if (h === 0)
+            return `${m} min`;
+        if (m === 0)
+            return `${h} h`;
+        return `${h} h ${m} min`;
+    }
+
     SectionLabel {
         text: "Checking"
     }
@@ -34,7 +46,9 @@ ScrollPage {
                 from: 15
                 to: 1440
                 stepSize: 15
-                suffix: " min"
+                // Wider than the default: "23 h 45 min" is the longest readout
+                labelWidth: 104
+                displayText: root.formatInterval(Config.updates.intervalMinutes)
                 onMoved: v => Config.updates.intervalMinutes = Math.round(v)
             }
         }
