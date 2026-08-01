@@ -9,12 +9,6 @@ Rectangle {
     id: root
 
     // Rotates a colour's hue, passing achromatic colours through untouched
-    function hueShift(c: color, degrees: real): color {
-        if (c.hslSaturation <= 0.01)
-            return c;
-        return Qt.hsla((c.hslHue * 360 + degrees + 360) % 360 / 360, c.hslSaturation, c.hslLightness, c.a);
-    }
-
     radius: Motion.rounding.large
     color: Colors.layer
     border.width: 1
@@ -47,14 +41,14 @@ Rectangle {
         Ring {
             value: SystemUsage.memoryPercentage
             icon: "memory_alt"
-            ringColor: root.hueShift(Colors.primary, 40)
+            ringColor: Colors.hueShift(Colors.primary, 40)
         }
 
         Ring {
             visible: Storage.primaryDisk !== null
             value: Storage.primaryDisk?.percentage ?? 0
             icon: "hard_disk"
-            ringColor: root.hueShift(Colors.primary, -30)
+            ringColor: Colors.hueShift(Colors.primary, -30)
         }
     }
 
@@ -69,7 +63,7 @@ Rectangle {
         Layout.maximumHeight: Config.dashboard.resourceRing.size
         Layout.preferredWidth: height
         thickness: Config.dashboard.resourceRing.thickness
-        trackColor: Qt.tint(Colors.surface, Qt.alpha(Colors.outline, 0.45))
+        trackColor: Colors.tint(Colors.surface, Colors.outline, 0.45)
 
         MaterialIcon {
             anchors.centerIn: parent

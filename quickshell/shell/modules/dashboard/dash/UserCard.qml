@@ -22,17 +22,11 @@ Rectangle {
     }
 
     // Material Design container tones, derived from the single matugen primary
-    readonly property color logoBg: Qt.tint(Colors.surface, Qt.alpha(Colors.primary, 0.30))
-    readonly property color uptimeBg: Qt.tint(Colors.surface, Qt.alpha(root.hueShift(Colors.primary, 40), 0.30))
-    readonly property color wmBg: Qt.tint(Colors.surface, Qt.alpha(root.hueShift(Colors.primary, -30), 0.24))
+    readonly property color logoBg: Colors.tint(Colors.surface, Colors.primary, 0.30)
+    readonly property color uptimeBg: Colors.tint(Colors.surface, Colors.hueShift(Colors.primary, 40), 0.30)
+    readonly property color wmBg: Colors.tint(Colors.surface, Colors.hueShift(Colors.primary, -30), 0.24)
 
     // Rotates a colour's hue, passing achromatic colours through untouched
-    function hueShift(c: color, degrees: real): color {
-        if (c.hslSaturation <= 0.01)
-            return c;
-        return Qt.hsla((c.hslHue * 360 + degrees + 360) % 360 / 360, c.hslSaturation, c.hslLightness, c.a);
-    }
-
     radius: Motion.rounding.large
     color: Colors.layer
     border.width: 1

@@ -4,6 +4,18 @@ import QtQuick
 // Hand-written, NOT matugen-generated — ColorsLoader mutates these at runtime from colors.json, so a theme change cross-fades instead of restarting the shell
 // Values below are last-known-good defaults, used until the first reapplyTheme() completes
 QtObject {
+    // Pulls a surface toward an accent — the shell's one way to derive a tonal fill, so amount stays explicit at the call site
+    function tint(base: color, accent: color, amount: real): color {
+        return Qt.tint(base, Qt.alpha(accent, amount));
+    }
+
+    // Rotates hue while holding saturation/lightness, for accents derived from primary; a greyscale input has no hue to turn
+    function hueShift(c: color, degrees: real): color {
+        if (c.hslSaturation <= 0.01)
+            return c;
+        return Qt.hsla((c.hslHue * 360 + degrees + 360) % 360 / 360, c.hslSaturation, c.hslLightness, c.a);
+    }
+
     // Outermost panel background — one role for every panel root and Corner fillet, or adjacent panels show the step as a hard line
     readonly property color panel: Config.appearance.transparency ? Qt.alpha(background, Config.appearance.panelOpacity) : background
 

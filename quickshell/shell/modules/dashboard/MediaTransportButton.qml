@@ -14,13 +14,13 @@ Rectangle {
     property int iconSize: 18
     signal clicked()
 
-    readonly property color tonalBg: Qt.tint(Colors.surface, Qt.alpha(Colors.primary, 0.28))
+    readonly property color tonalBg: Colors.tint(Colors.surface, Colors.primary, 0.28)
     readonly property bool accented: btn.filled || btn.checked
 
     implicitWidth: btn.size
     implicitHeight: btn.size
     radius: height / 2
-    color: btn.accented ? Colors.primary : (area.containsMouse ? Qt.tint(btn.tonalBg, Qt.alpha(Colors.primary, 0.18)) : btn.tonalBg)
+    color: btn.accented ? Colors.primary : (area.containsMouse ? Colors.tint(btn.tonalBg, Colors.primary, 0.18) : btn.tonalBg)
     opacity: btn.enabled ? 1 : 0.35
 
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
