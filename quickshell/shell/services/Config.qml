@@ -187,7 +187,18 @@ Singleton {
                     property int width: 1190           // px, used only when widthMode is "fixed"
                     property string heightMode: "auto" // "auto" | "fixed"
                     property int height: 700           // px, used only when heightMode is "fixed"
-                    property int defaultTab: 0         // tab index a fresh open lands on
+                    // Tab a fresh open lands on. An id, not an index, so hiding
+                    // a tab can't silently repoint it at a different one
+                    property string defaultTab: "dashboard" // "dashboard" | "media" | "performance" | "weather"
+                }
+
+                // Which tabs the dashboard offers — a hidden one leaves the bar
+                // entirely rather than showing disabled
+                property JsonObject tabs: JsonObject {
+                    property bool showDashboard: true
+                    property bool showMedia: true
+                    property bool showPerformance: true
+                    property bool showWeather: true
                 }
 
                 property JsonObject user: JsonObject {

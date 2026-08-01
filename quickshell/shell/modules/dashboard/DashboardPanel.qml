@@ -35,14 +35,30 @@ Scope {
                     }
                 }
 
-                // Tab state
-                readonly property var tabModel: [
-                    { text: "Dashboard", iconName: "dashboard", component: dashboardTabComponent },
-                    { text: "Media", iconName: "queue_music", component: mediaTabComponent },
-                    { text: "Performance", iconName: "speed", component: performanceTabComponent },
-                    { text: "Weather", iconName: "cloud", component: weatherTabComponent }
+                // Tab state — allTabs is the full set, tabModel what the bar and
+                // view actually get, so a hidden tab leaves no gap behind
+                readonly property var allTabs: [
+                    { id: "dashboard", text: "Dashboard", iconName: "dashboard", component: dashboardTabComponent, enabled: Config.dashboard.tabs.showDashboard },
+                    { id: "media", text: "Media", iconName: "queue_music", component: mediaTabComponent, enabled: Config.dashboard.tabs.showMedia },
+                    { id: "performance", text: "Performance", iconName: "speed", component: performanceTabComponent, enabled: Config.dashboard.tabs.showPerformance },
+                    { id: "weather", text: "Weather", iconName: "cloud", component: weatherTabComponent, enabled: Config.dashboard.tabs.showWeather }
                 ]
-                property int currentTab: Config.dashboard.panel.defaultTab
+                readonly property var tabModel: {
+                    const shown = root.allTabs.filter(t => t.enabled);
+                    // The settings page won't hide the last tab, but a hand-edited
+                    // config can — falling back beats a panel with no tab bar
+                    return shown.length > 0 ? shown : root.allTabs;
+                }
+
+                // Held as an id, not an index: hiding a tab reindexes the model,
+                // and an index would then either point past the end or quietly
+                // land on a different pane. Falls back to the first tab when the
+                // held one is hidden
+                property string currentTabId: Config.dashboard.panel.defaultTab
+                readonly property int currentTab: {
+                    const i = root.tabModel.findIndex(t => t.id === root.currentTabId);
+                    return i >= 0 ? i : 0;
+                }
                 readonly property bool widthFixed: Config.dashboard.panel.widthMode === "fixed"
                 readonly property bool heightFixed: Config.dashboard.panel.heightMode === "fixed"
                 // Resting (open) position — flush with the screen top, matching
@@ -150,7 +166,7 @@ Scope {
                             DashboardTabBar {
                                 model: root.tabModel
                                 currentIndex: root.currentTab
-                                onTabSelected: i => root.currentTab = i
+                                onTabSelected: i => root.currentTabId = root.tabModel[i].id
                             }
 
                             DashboardTabView {
@@ -160,7 +176,7 @@ Scope {
                                 currentIndex: root.currentTab
                                 heightFixed: root.heightFixed
                                 panelShown: root.active || root.visible
-                                onTabSelected: i => root.currentTab = i
+                                onTabSelected: i => root.currentTabId = root.tabModel[i].id
                             }
                         }
                     }

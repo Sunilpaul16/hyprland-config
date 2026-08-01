@@ -5,7 +5,36 @@ import "../../services"
 // Still mock: launcher fuzzy matching, quick-toggle editing, sidebar
 // close-on-settings — each needs shell behaviour that doesn't exist yet
 ScrollPage {
+    id: root
+
     title: "Panels"
+
+    readonly property int visibleTabCount: (Config.dashboard.tabs.showDashboard ? 1 : 0)
+        + (Config.dashboard.tabs.showMedia ? 1 : 0)
+        + (Config.dashboard.tabs.showPerformance ? 1 : 0)
+        + (Config.dashboard.tabs.showWeather ? 1 : 0)
+
+    // Refuses to hide the last tab — an empty dashboard has no way back to this
+    // page — and keeps `defaultTab` pointing at one that still exists.
+    // Declining to write leaves ToggleSwitch's `checked` binding intact, which
+    // snaps the switch back on its own
+    function setTabVisible(key: string, id: string, on: bool): void {
+        if (!on && root.visibleTabCount <= 1)
+            return;
+        Config.dashboard.tabs[key] = on;
+        if (!on && Config.dashboard.panel.defaultTab === id)
+            Config.dashboard.panel.defaultTab = root.firstVisibleTabId();
+    }
+
+    function firstVisibleTabId(): string {
+        if (Config.dashboard.tabs.showDashboard)
+            return "dashboard";
+        if (Config.dashboard.tabs.showMedia)
+            return "media";
+        if (Config.dashboard.tabs.showPerformance)
+            return "performance";
+        return "weather";
+    }
 
     SectionLabel {
         text: "Motion"
@@ -132,7 +161,13 @@ ScrollPage {
             subtext: "Tab a fresh open lands on"
 
             SelectPill {
-                options: [{ value: 0, label: "Dashboard" }, { value: 1, label: "Media" }, { value: 2, label: "Performance" }, { value: 3, label: "Weather" }]
+                // Only offers tabs that are actually shown
+                options: [
+                    { value: "dashboard", label: "Dashboard", shown: Config.dashboard.tabs.showDashboard },
+                    { value: "media", label: "Media", shown: Config.dashboard.tabs.showMedia },
+                    { value: "performance", label: "Performance", shown: Config.dashboard.tabs.showPerformance },
+                    { value: "weather", label: "Weather", shown: Config.dashboard.tabs.showWeather }
+                ].filter(o => o.shown)
                 current: Config.dashboard.panel.defaultTab
                 onSelected: v => Config.dashboard.panel.defaultTab = v
             }
@@ -163,6 +198,58 @@ ScrollPage {
                 decimals: 2
                 suffix: "×"
                 onMoved: v => Config.dashboard.media.gifSpeed = v
+            }
+        }
+    }
+
+    SectionLabel {
+        text: "Dashboard tabs"
+    }
+
+    SettingGroup {
+        SettingRow {
+            first: true
+            live: true
+            label: "Dashboard"
+            subtext: "Clock, user, weather, media and resource cards"
+
+            ToggleSwitch {
+                checked: Config.dashboard.tabs.showDashboard
+                onToggled: v => root.setTabVisible("showDashboard", "dashboard", v)
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Media"
+            subtext: "Now playing, cover art and seek bar"
+
+            ToggleSwitch {
+                checked: Config.dashboard.tabs.showMedia
+                onToggled: v => root.setTabVisible("showMedia", "media", v)
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Performance"
+            subtext: "CPU, memory, network and battery"
+
+            ToggleSwitch {
+                checked: Config.dashboard.tabs.showPerformance
+                onToggled: v => root.setTabVisible("showPerformance", "performance", v)
+            }
+        }
+
+        SettingRow {
+            last: true
+            live: true
+            label: "Weather"
+            subtext: "Forecast and conditions. The last remaining tab can't be hidden"
+
+            ToggleSwitch {
+                checked: Config.dashboard.tabs.showWeather
+                onToggled: v => root.setTabVisible("showWeather", "weather", v)
             }
         }
     }
