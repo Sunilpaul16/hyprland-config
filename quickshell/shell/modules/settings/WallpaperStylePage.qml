@@ -144,6 +144,40 @@ ScrollPage {
 
         SettingRow {
             live: true
+            label: "Colour source"
+            subtext: "Presets ignore the wallpaper"
+
+            SelectMenu {
+                options: [
+                    { value: "dynamic", label: "Wallpaper" },
+                    { value: "preset", label: "Preset" }
+                ]
+                current: Theme.usingPreset ? "preset" : "dynamic"
+                onSelected: v => {
+                    if (v === "dynamic")
+                        Theme.setDynamic();
+                    else
+                        SettingsState.subPage = "schemes";
+                }
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Presets"
+            subtext: Theme.usingPreset ? Theme.source : "Catppuccin, Gruvbox, Dracula and more"
+
+            SelectPill {
+                value: "Browse"
+                icon: "palette"
+                onClicked: SettingsState.subPage = "schemes"
+            }
+        }
+
+        SettingRow {
+            live: true
+            enabled: !Theme.usingPreset
+            opacity: enabled ? 1 : 0.5
             label: "Scheme"
             subtext: "Automatic picks one to suit the wallpaper"
 

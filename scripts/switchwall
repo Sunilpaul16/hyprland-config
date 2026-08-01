@@ -5,15 +5,19 @@ set -euo pipefail
 
 # Paths and constants
 HYPR_GENERAL="$HOME/.config/hypr/general.lua"
-mapfile -t MONITORS < <(grep -oP 'hl\.monitor\(\{\s*output\s*=\s*"\K[^"]+' "$HYPR_GENERAL")
-[[ ${#MONITORS[@]} -gt 0 ]] || { echo "switchwall: no monitors found in $HYPR_GENERAL" >&2; exit 1; }
 VENV_PYTHON="$HOME/.local/state/quickshell/.venv/bin/python3"
 COLORGEN_DIR="$HOME/.config/matugen/colorgen"
 CACHE_DIR="$HOME/.cache/matugen"
 KITTY_THEME_OUT="$HOME/.config/kitty/theme.conf"
 
+# shellcheck source=lib/apply-colors.sh
+source "$(dirname "$(readlink -f "$0")")/lib/apply-colors.sh"
+
 STATE_FILE="$HOME/.local/state/quickshell/current_wallpaper"
 MODE_FILE="$HOME/.local/state/quickshell/color_mode"
+# setscheme owns this; a preset means colours are deliberately not
+# wallpaper-derived, so a wallpaper change must leave them alone
+SOURCE_FILE="$HOME/.local/state/quickshell/color_source"
 # The shell's settings panel writes these; read rather than duplicate them
 # into another state file, so there is one source of truth per value
 CONFIG_FILE="$HOME/.config/quickshell/config.json"
@@ -22,26 +26,6 @@ PREVIEW_CONFIG="$HOME/.config/matugen/preview.toml"
 PREVIEW_COLORS="$HOME/.cache/matugen/preview-colors.json"
 
 VALID_SCHEMES="scheme-tonal-spot scheme-vibrant scheme-expressive scheme-content scheme-fidelity scheme-fruit-salad scheme-monochrome scheme-neutral scheme-rainbow"
-
-# cfg <jq-path> <default> — missing file, missing key or null all fall back
-cfg() {
-    local value=""
-    if [[ -s "$CONFIG_FILE" ]]; then
-        value="$(jq -r "$1 // empty" "$CONFIG_FILE" 2>/dev/null || true)"
-    fi
-    [[ -n "$value" ]] && printf '%s' "$value" || printf '%s' "$2"
-}
-
-# cfgbool <jq-path> <default> — booleans cannot go through cfg: jq's `//`
-# treats a literal `false` as absent, so `false` would read back as the
-# default. Only null/missing falls back here.
-cfgbool() {
-    local value=""
-    if [[ -s "$CONFIG_FILE" ]]; then
-        value="$(jq -r "$1 | if . == null then empty else . end" "$CONFIG_FILE" 2>/dev/null || true)"
-    fi
-    [[ -n "$value" ]] && printf '%s' "$value" || printf '%s' "$2"
-}
 
 MPV_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 video-align-x=0.5 video-align-y=0.5 load-scripts=no"
 
@@ -113,7 +97,6 @@ else
 fi
 
 # Dependency preflight
-command -v mpvpaper >/dev/null || { echo "switchwall: missing required binary: mpvpaper" >&2; exit 1; }
 if ! $PREVIEW; then
     for bin in matugen ffmpeg gsettings jq; do
         command -v "$bin" >/dev/null || { echo "switchwall: missing required binary: $bin" >&2; exit 1; }
@@ -127,6 +110,12 @@ mkdir -p "$CACHE_DIR"
 # --preview is an explicit display request and always spawns; a normal run
 # respects wallpaper.display, so turning it off survives a re-theme
 if ! $NOSWITCH && ! $COLORS_PREVIEW && { $PREVIEW || [[ "$(cfgbool '.wallpaper.display' true)" != "false" ]]; }; then
+    # Monitor names and mpvpaper are needed only here — deriving them at the
+    # top made a colour-only run fail on an unreadable general.lua
+    command -v mpvpaper >/dev/null || { echo "switchwall: missing required binary: mpvpaper" >&2; exit 1; }
+    mapfile -t MONITORS < <(grep -oP 'hl\.monitor\(\{\s*output\s*=\s*"\K[^"]+' "$HYPR_GENERAL")
+    [[ ${#MONITORS[@]} -gt 0 ]] || { echo "switchwall: no monitors found in $HYPR_GENERAL" >&2; exit 1; }
+
     pkill -f -9 mpvpaper >/dev/null 2>&1 || true
     for mon in "${MONITORS[@]}"; do
         mpvpaper -o "$MPV_OPTS" "$mon" "$wallpaper" &
@@ -162,6 +151,13 @@ if is_video "$wallpaper"; then
     else
         lumsource="$frame"
     fi
+fi
+
+COLOR_SOURCE=dynamic
+[[ -s "$SOURCE_FILE" ]] && COLOR_SOURCE="$(cat "$SOURCE_FILE")"
+if [[ "$COLOR_SOURCE" != dynamic ]] && ! $COLORS_PREVIEW; then
+    echo "switchwall: wallpaper set; colours held by preset $COLOR_SOURCE"
+    exit 0
 fi
 
 # --- 3. matugen: hyprlock / hyprland colors.lua / GTK3+4 css ----------------
@@ -201,14 +197,7 @@ fi
 matugen image "$colorsource" --source-color-index 0 --mode "$MODE" --type "$SCHEME"
 
 
-if [[ "$MODE" == light ]]; then
-    gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
-else
-    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-fi
-
-
-nautilus -q || true
+apply_gsettings "$MODE"
 
 # --- 4. materialyoucolor: kitty's 16-color terminal palette -----------------
 # Terminal-only tuning; defaults match generate_colors_material.py's own, so
@@ -233,26 +222,9 @@ scss="$CACHE_DIR/material_colors.scss"
     --blend_bg_fg \
     > "$scss"
 
-cp "$COLORGEN_DIR/terminal/kitty-theme.conf" "$KITTY_THEME_OUT"
-while IFS=: read -r name value; do
-    [[ -z "$name" ]] && continue
-    hexval="$(echo "$value" | tr -d ' ;')"
-    hexval="${hexval#\#}"
-    sed -i "s/${name} #/${hexval}/g" "$KITTY_THEME_OUT"
-done < "$scss"
-
-# Terminal window transparency. dynamic_background_opacity is what lets kitty
-# pick this up on SIGUSR1 instead of needing a restart
-TERM_OPACITY="$(cfg '.theming.terminalOpacity' '1.0')"
-{
-    echo ""
-    echo "# Written by switchwall from theming.terminalOpacity"
-    echo "dynamic_background_opacity yes"
-    echo "background_opacity $TERM_OPACITY"
-} >> "$KITTY_THEME_OUT"
+apply_kitty_from_scss "$scss"
 
 # --- 5. Reload ---------------------------------------------------------------
-hyprctl reload >/dev/null
-pkill -SIGUSR1 -x kitty >/dev/null 2>&1 || true
+reload_all
 
 echo "switchwall: done ($wallpaper)"

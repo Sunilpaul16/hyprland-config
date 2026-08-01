@@ -11,11 +11,13 @@ QtObject {
     readonly property string previewColorsFile: home + "/.cache/matugen/preview-colors.json"
     readonly property string stateFile: home + "/.local/state/quickshell/state.json"
     readonly property string colorModeFile: home + "/.local/state/quickshell/color_mode"
+    readonly property string colorSourceFile: home + "/.local/state/quickshell/color_source"
     readonly property string notificationsFile: home + "/.local/state/quickshell/notifications.json"
 
     readonly property string localBin: home + "/.local/bin"
     readonly property string recordScript: localBin + "/record"
     readonly property string switchwallScript: localBin + "/switchwall"
+    readonly property string setschemeScript: localBin + "/setscheme"
 
     readonly property string wallpaperDir: home + "/wallpaper"
     readonly property string wallpaperThumbCache: home + "/.cache/wallpaper-thumbs"
@@ -25,6 +27,7 @@ QtObject {
     readonly property string videosDir: home + "/Videos"
     readonly property string faceIcon: home + "/.face"
     readonly property string repoRoot: home + "/hyprland-config"
+    readonly property string presetHelper: repoRoot + "/scripts/lib/preset-palette.py"
     readonly property string bongocatGif: repoRoot + "/assets/bongocat.gif"
     readonly property string dinoImage: repoRoot + "/assets/dino.png"
 
