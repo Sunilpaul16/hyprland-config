@@ -227,12 +227,73 @@ Singleton {
         }
     }
 
+    // Keys present on disk but absent from the written schema, i.e. ones this adapter doesn't declare
+    function unknownKeys(prior, written) {
+        const extras = {};
+        for (const key in prior) {
+            if (!(key in written)) {
+                extras[key] = prior[key];
+            } else if (root.isPlainObject(prior[key]) && root.isPlainObject(written[key])) {
+                const nested = root.unknownKeys(prior[key], written[key]);
+                if (Object.keys(nested).length > 0)
+                    extras[key] = nested;
+            }
+        }
+        return extras;
+    }
+
+    function isPlainObject(v): bool {
+        return v !== null && typeof v === "object" && !Array.isArray(v);
+    }
+
+    // Folds preserved keys back into the freshly written document
+    function mergeInto(base, extras) {
+        for (const key in extras) {
+            if (root.isPlainObject(extras[key]) && root.isPlainObject(base[key]))
+                root.mergeInto(base[key], extras[key]);
+            else
+                base[key] = extras[key];
+        }
+        return base;
+    }
+
+    // JsonAdapter serialises only its declared properties, so a straight writeAdapter() silently
+    // drops anything else in the file — re-merge those keys instead of destroying them
+    function writePreservingUnknown(): void {
+        let prior = null;
+        try {
+            prior = JSON.parse(configFile.text());
+        } catch (e) {
+            prior = null;
+        }
+
+        configFile.writeAdapter();
+
+        if (prior === null)
+            return;
+
+        configFile.waitForJob();
+
+        let written = null;
+        try {
+            written = JSON.parse(configFile.text());
+        } catch (e) {
+            return;
+        }
+
+        const extras = root.unknownKeys(prior, written);
+        if (Object.keys(extras).length === 0)
+            return;
+
+        configFile.setText(JSON.stringify(root.mergeInto(written, extras), null, 2) + "\n");
+    }
+
     // Debounced write
     Timer {
         id: writeTimer
         interval: 50
         repeat: false
-        onTriggered: configFile.writeAdapter()
+        onTriggered: root.writePreservingUnknown()
     }
 
     // Debounced reload
