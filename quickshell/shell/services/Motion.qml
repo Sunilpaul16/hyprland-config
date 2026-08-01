@@ -48,18 +48,8 @@ QtObject {
     // M3 Expressive bezier curves — for use with easing.type: Easing.BezierSpline
     // + easing.bezierCurve: Motion.animationCurves.<name>
     readonly property QtObject animationCurves: QtObject {
-        readonly property list<real> expressiveFastSpatial: [0.42, 1.67, 0.21, 0.90, 1, 1]
         readonly property list<real> expressiveDefaultSpatial: [0.38, 1.21, 0.22, 1.00, 1, 1]
-        readonly property list<real> expressiveSlowSpatial: [0.39, 1.29, 0.35, 0.98, 1, 1]
-        readonly property list<real> expressiveEffects: [0.34, 0.80, 0.34, 1.00, 1, 1]
-        readonly property list<real> standard: [0.2, 0, 0, 1, 1, 1]
-        readonly property list<real> standardAccel: [0.3, 0, 1, 1, 1, 1]
-        readonly property list<real> standardDecel: [0, 0, 0, 1, 1, 1]
-
-        readonly property int expressiveFastSpatialDuration: root.scaled(350)
         readonly property int expressiveDefaultSpatialDuration: root.scaled(500)
-        readonly property int expressiveSlowSpatialDuration: root.scaled(650)
-        readonly property int expressiveEffectsDuration: root.scaled(200)
     }
 
     // Corner radius ladder, 8-18 in 2px steps — names say where each step is used; pick an existing one rather than introducing a new value

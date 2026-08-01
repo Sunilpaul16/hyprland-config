@@ -22,6 +22,10 @@ CLAUDE.md
 # personal planning/status scratch doc — pasted into browser Claude, not repo content
 INDEX.md
 
+# tooling scratch — superpowers plugin working dirs, regenerated per feature, not repo content
+docs/superpowers/
+.superpowers/
+
 # research notes documenting other people's repos — not my code, don't commit
 references/
 

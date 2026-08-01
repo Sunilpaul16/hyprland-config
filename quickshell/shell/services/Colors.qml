@@ -65,4 +65,7 @@ QtObject {
 
     property color textOnErrorContainer: "#ffdad6"
     Behavior on textOnErrorContainer { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+
+    // Recording red — deliberately fixed, not a theme role: a recording indicator has to stay red whatever the palette does
+    readonly property color recording: "#e64553"
 }

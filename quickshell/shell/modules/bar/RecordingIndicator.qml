@@ -23,8 +23,8 @@ Item {
             Layout.alignment: Qt.AlignVCenter
             implicitWidth: 10
             implicitHeight: 10
-            radius: 5
-            color: "#e64553"
+            radius: width / 2
+            color: Colors.recording
 
             SequentialAnimation on opacity {
                 running: Recorder.active

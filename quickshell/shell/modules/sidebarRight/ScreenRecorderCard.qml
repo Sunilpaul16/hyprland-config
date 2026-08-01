@@ -24,7 +24,7 @@ Rectangle {
 
             MaterialIcon {
                 text: Recorder.active ? "stop_circle" : "screen_record"
-                color: Recorder.active ? "#e64553" : Colors.text
+                color: Recorder.active ? Colors.recording : Colors.text
                 font.pixelSize: 20
             }
 
@@ -45,7 +45,7 @@ Rectangle {
                     Rectangle {
                         visible: Recorder.active
                         radius: height / 2
-                        color: "#e64553"
+                        color: Colors.recording
                         implicitWidth: recText.implicitWidth + 10
                         implicitHeight: recText.implicitHeight + 4
 
@@ -84,7 +84,7 @@ Rectangle {
                     implicitWidth: mainText.implicitWidth + 20
                     implicitHeight: 28
                     radius: height / 2
-                    color: Recorder.active ? "#e64553" : Colors.primary
+                    color: Recorder.active ? Colors.recording : Colors.primary
 
                     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
