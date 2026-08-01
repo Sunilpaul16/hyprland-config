@@ -145,9 +145,9 @@ Singleton {
         path: "/proc/net/dev"
     }
 
-    // Per-second sampling tick
+    // Sampling tick — speeds divide by real elapsed time, so any interval stays correct; this only sets sparkline resolution
     Timer {
-        interval: 1000
+        interval: Config.polling.networkUsage
         running: root.refCount > 0
         repeat: true
         triggeredOnStart: true

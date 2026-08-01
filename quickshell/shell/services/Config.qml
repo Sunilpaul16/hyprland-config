@@ -100,6 +100,8 @@ Singleton {
                 property int gpu: 2000
                 property int storage: 10000
                 property int uptime: 60000
+                property int networkStatus: 5000 // ethernet link + VPN state
+                property int networkUsage: 1000  // /proc/net/dev throughput sampling
             }
 
             property JsonObject weather: JsonObject {

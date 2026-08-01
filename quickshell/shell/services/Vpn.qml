@@ -114,7 +114,7 @@ Singleton {
     }
 
     Timer {
-        interval: 5000
+        interval: Config.polling.networkStatus
         running: root.refCount > 0
         repeat: true
         onTriggered: root.refresh()

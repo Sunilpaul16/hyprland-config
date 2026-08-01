@@ -117,7 +117,6 @@ ScrollPage {
         }
 
         SettingRow {
-            last: true
             live: true
             label: "Uptime"
             subtext: "Re-reads /proc/uptime"
@@ -129,6 +128,37 @@ ScrollPage {
                 stepSize: 10000
                 suffix: " ms"
                 onMoved: v => Config.polling.uptime = Math.round(v)
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Network status"
+            subtext: "Ethernet link and VPN state"
+
+            NumberControl {
+                value: Config.polling.networkStatus
+                from: 1000
+                to: 30000
+                stepSize: 1000
+                suffix: " ms"
+                onMoved: v => Config.polling.networkStatus = Math.round(v)
+            }
+        }
+
+        SettingRow {
+            last: true
+            live: true
+            label: "Network throughput"
+            subtext: "Sampling rate for the speed graphs"
+
+            NumberControl {
+                value: Config.polling.networkUsage
+                from: 500
+                to: 10000
+                stepSize: 250
+                suffix: " ms"
+                onMoved: v => Config.polling.networkUsage = Math.round(v)
             }
         }
     }
