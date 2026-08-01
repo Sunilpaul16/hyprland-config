@@ -4,9 +4,7 @@ import Quickshell
 import Quickshell.Io
 
 
-// Runtime config singleton (JSON-backed). Grouped rather than flat — nested
-// JsonObjects nest in the file the same way, so `Config.dashboard.media.gifSpeed`
-// reads and writes `dashboard.media.gifSpeed` in config.json
+// Runtime config singleton (JSON-backed), grouped rather than flat — `Config.dashboard.media.gifSpeed` reads and writes `dashboard.media.gifSpeed`
 Singleton {
     id: root
 
@@ -55,9 +53,7 @@ Singleton {
                 property bool use12Hour: false // true = 12-hour clock (AM/PM); false = 24-hour
             }
 
-            // Animation timing. Only these two are user-facing — the bezier
-            // curves and rounding tokens in Motion.qml are design-system
-            // constants, not preferences
+            // Animation timing — only these two are user-facing; Motion.qml's curves and rounding tokens are design constants, not preferences
             property JsonObject motion: JsonObject {
                 property real speed: 1.0     // higher = faster; divides every duration. Clamped to 0.25–4 in Motion.qml
                 property bool reduced: false // true = collapse all durations to 0
@@ -111,32 +107,24 @@ Singleton {
                 property int refreshMinutes: 60
             }
 
-            // Read by scripts/switchwall via jq, not by the shell — the shell
-            // only writes them. Defaults match generate_colors_material.py's
-            // own, so an absent group behaves as before these were exposed
-            // Translucency applies only to the outermost surface of each panel,
-            // so nothing compounds and no per-depth model is needed
+            // Translucency applies only to each panel's outermost surface, so nothing compounds and no per-depth model is needed
             property JsonObject appearance: JsonObject {
                 property bool transparency: false
                 property real panelOpacity: 0.85 // panel backgrounds; used only when transparency is on
                 property real layerOpacity: 0.55 // cards and pills on top of a panel
-                // Families are validated against the installed set by Fonts.qml,
-                // which falls back to these defaults rather than letting Qt
-                // silently substitute with no indication why
+                // Fonts.qml validates families against the installed set and falls back to these, rather than letting Qt silently substitute
                 property string fontInterface: "Noto Sans" // all shell text, via StyledText
                 property string fontGlyph: "JetBrainsMono Nerd Font" // Nerd Font icon glyphs only
             }
 
-            // Settings panel size. Both axes are derived from the content —
-            // width from the nav pane plus the capped page column, height from
-            // the nav list itself — rather than from an aspect ratio, which
-            // leaves gutters beside the column and an empty tail below the list
+            // Settings panel size — both axes derived from content (nav pane + capped page column, nav list height), not an aspect ratio
             property JsonObject settings: JsonObject {
                 property int maxContentWidth: 800 // page content column
                 property int navWidth: 340        // left nav pane
                 property real heightMult: 0.8     // ceiling only, as a fraction of screen height
             }
 
+            // Read by scripts/switchwall via jq, never by the shell — defaults match generate_colors_material.py's own
             property JsonObject theming: JsonObject {
                 property string scheme: "auto" // "auto" (picked from the image) | any scheme-* the generator supports
                 property real terminalHarmony: 0.8
@@ -171,14 +159,12 @@ Singleton {
             }
 
             property JsonObject wallpaper: JsonObject {
-                // ms after the wallpaper selection settles before the preview is
-                // applied — stops a fast scroll through the carousel spawning a
-                // switchwall per step
+                // ms after the selection settles before preview applies — stops a fast carousel scroll spawning a switchwall per step
                 property int previewDelay: 300
                 property bool display: true    // false kills mpvpaper and shows misc:background_color
             }
 
-            // Dashboard card sizing (defaults ported from caelestia's Tokens.sizes.dashboard)
+            // Dashboard card sizing
             property JsonObject dashboard: JsonObject {
                 // Panel size — "auto" measures/fills as today; "fixed" uses the
                 // paired pixel value, clamped to 95% of screen size as a ceiling
@@ -227,8 +213,7 @@ Singleton {
                     property int coverArtSize: 200    // Media tab: cover art side length (px)
                     property int progressThickness: 6 // playback progress arc stroke width (px)
                     property int progressSweep: 180   // progress arc span in degrees (180 = half-circle)
-                    // Animated gif (caelestia's bongocat). Empty path = the
-                    // repo's bundled assets/bongocat.gif
+                    // Animated gif; empty path = the bundled assets/bongocat.gif
                     property bool gifEnabled: true
                     property string gifPath: ""
                     property real gifSpeed: 1.0 // playback rate multiplier (1.0 = native)

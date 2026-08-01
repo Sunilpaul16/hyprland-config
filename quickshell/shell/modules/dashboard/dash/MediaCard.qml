@@ -29,7 +29,7 @@ Rectangle {
         anchors.margins: 16
         spacing: 10
 
-        // Cover art, wrapped in a playback-progress arc (caelestia's dash Media widget)
+        // Cover art, wrapped in a playback-progress arc
         Item {
             id: coverWrapper
 

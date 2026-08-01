@@ -11,9 +11,7 @@ ColumnLayout {
 
     required property real cappedWidth
 
-    // Span the page column explicitly — Layout.fillWidth alone leaves this
-    // nested layout at its implicit width, so the children below centre
-    // against the preview rather than against the column
+    // Span the page column explicitly — Layout.fillWidth alone leaves this nested layout at its implicit width, centring the children on the preview instead
     Layout.preferredWidth: cappedWidth
 
     spacing: 14
@@ -86,8 +84,7 @@ ColumnLayout {
             onClicked: SettingsState.openSubPage("wallpapers")
         }
 
-        // caelestia's equivalent opens a "page under construction" stub, so
-        // there is nothing to port behind this one yet
+        // Inert — nothing built behind this one yet
         PillButton {
             icon: "palette"
             text: "Colours"

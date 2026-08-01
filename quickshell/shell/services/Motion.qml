@@ -10,9 +10,7 @@ QtObject {
     readonly property real speed: Math.min(4, Math.max(0.25, Config.motion.speed))
     readonly property bool reduced: Config.motion.reduced
 
-    // Base ms -> effective ms. `reduced` collapses to 0 here rather than each
-    // animation gating itself: a 0ms animation still runs and still fires its
-    // completion handlers, so nothing downstream needs a reduced-motion branch
+    // Base ms -> effective ms; `reduced` collapses to 0 here so nothing downstream needs its own branch (a 0ms animation still fires its handlers)
     function scaled(ms: int): int {
         return root.reduced ? 0 : Math.round(ms / root.speed);
     }
@@ -64,10 +62,7 @@ QtObject {
         readonly property int expressiveEffectsDuration: root.scaled(200)
     }
 
-    // Corner-radius tokens — matched to this repo's actual in-use values
-    // (18 is overwhelmingly the most common card radius already)
-    // Corner radius ladder, 8-18 in 2px steps. Names say where each step is used —
-    // pick an existing one rather than introducing a new value
+    // Corner radius ladder, 8-18 in 2px steps — names say where each step is used; pick an existing one rather than introducing a new value
     readonly property QtObject rounding: QtObject {
         readonly property int small: 8   // chips, small buttons, inner elements
         readonly property int item: 10   // launcher and overview list/grid items

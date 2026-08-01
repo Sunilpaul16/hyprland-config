@@ -3,13 +3,8 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Dropdown-style control — current value plus a chevron.
-//
-// Two modes. With `options` empty it is a plain button showing `value`.
-// With `options` set it becomes an enum picker over [{value, label}] and a
-// click advances to the next one, emitting selected(). Cycling rather than
-// opening a menu: these enums have two or three members, and a popup would
-// have to escape the panel's own surface to render
+// Dropdown-style control — current value plus a chevron
+// Two modes: `options` empty is a plain button showing `value`; `options` set makes it an enum picker where a click advances and emits selected()
 Rectangle {
     id: root
 

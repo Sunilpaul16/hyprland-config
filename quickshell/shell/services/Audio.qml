@@ -40,15 +40,10 @@ Singleton {
         return node.properties["application.name"] ?? node.description ?? node.name;
     }
 
-    // Everything that isn't an application stream. Structural, so it needs no
-    // tracking — which matters, because `properties` below is only populated
-    // for tracked nodes, and deriving the track list from a properties filter
-    // would never resolve
+    // Everything that isn't an application stream — structural, so untracked; a properties-based filter would never resolve, since `properties` is only populated for tracked nodes
     readonly property var deviceNodes: Pipewire.nodes.values.filter(n => !n.isStream)
 
-    // Real devices. media.class, not !isSink — PipeWire's own support nodes
-    // (Dummy-Driver, Freewheel-Driver, Midi-Bridge) are neither streams nor
-    // sinks, so they'd otherwise be offered as pickable microphones
+    // Real devices, keyed on media.class not !isSink — PipeWire's support nodes (Dummy-Driver, Freewheel-Driver, Midi-Bridge) would otherwise read as pickable microphones
     readonly property var sinks: root.deviceNodes.filter(n => n.properties?.["media.class"] === "Audio/Sink")
     readonly property var sources: root.deviceNodes.filter(n => n.properties?.["media.class"] === "Audio/Source")
 
@@ -68,9 +63,7 @@ Singleton {
             Pipewire.preferredDefaultAudioSource = node;
     }
 
-    // Sink volume — clamped [0, maxVolume]. PipeWire can report NaN on
-    // resume-from-suspend; Math.min/max propagate it straight through the
-    // clamp, so guard before it reaches the sink.
+    // Sink volume, clamped [0, maxVolume] — guard NaN first, since PipeWire reports it on resume-from-suspend and Math.min/max pass it straight through
     function setVolume(newVolume: real): void {
         if (isNaN(newVolume))
             return;
@@ -119,9 +112,7 @@ Singleton {
             source.audio.muted = false;
     }
 
-    // Keep sink/source bound for property updates. The device lists are
-    // tracked too — an untracked node reports no description or volume, so
-    // a device picker would show blank rows
+    // Keep sink/source bound for property updates; the device lists are tracked too, since an untracked node reports no description or volume
     PwObjectTracker {
         objects: [root.sink, root.source, ...root.deviceNodes].filter(n => n)
     }

@@ -48,10 +48,7 @@ capture() {
     fi
 }
 
-# Fire a clickable notification in the background: notify-send -A implies --wait,
-# blocking until the notification is closed/clicked, so this must not block the script.
-# Plain notify-send exits immediately after sending, so without -A + backgrounding here
-# there'd be nothing alive to catch a click and open the file.
+# Clickable notification, backgrounded — notify-send -A implies --wait and blocks until closed, but without -A nothing stays alive to catch the click
 notify_and_open() {
     local title="$1" file="$2"
     (

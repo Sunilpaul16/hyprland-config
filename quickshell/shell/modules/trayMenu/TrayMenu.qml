@@ -21,9 +21,7 @@ Scope {
                 readonly property bool isOwnerScreen: ScreenOwner.owns(TrayMenuState, root.screen)
                 readonly property bool active: TrayMenuState.open && root.isOwnerScreen
 
-                // Slide-down open/close, same mechanism as DashboardPanel.qml:
-                // 0 = open, 1 = closed, driving the panel's top margin and its
-                // opacity together
+                // Slide-down open/close, same mechanism as DashboardPanel.qml — 0 = open, 1 = closed, driving top margin and opacity together
                 property real offsetScale: root.active ? 0 : 1
                 readonly property int cornerSize: 14
 
@@ -83,12 +81,7 @@ Scope {
                     Rectangle {
                         id: panel
 
-                        // Column.implicitWidth is derived from its children's
-                        // *width*, which those children get straight back from
-                        // the Column — routing the panel's width through it
-                        // deadlocks at the floor below. Measure the delegates
-                        // directly instead (same escape as Content.qml's
-                        // naturalWidth)
+                        // Column.implicitWidth derives from its children's width, which they get back from the Column — measure the delegates directly or it deadlocks at the floor
                         readonly property real contentWidth: {
                             let w = 0;
                             for (let i = 0; i < entryRepeater.count; i++) {

@@ -24,9 +24,7 @@ Singleton {
         ScreenOwner.toggle(root);
     }
 
-    // Drawer dismisses itself if left alone. Hovering it cancels the pending
-    // close and leaving restarts it, so it can't vanish mid-reach — same grace
-    // idiom as DashboardState's hover close
+    // Drawer dismisses itself if left alone — hovering cancels the pending close so it can't vanish mid-reach, same grace idiom as DashboardState
     function cancelAutoClose(): void {
         autoCloseTimer.stop();
     }

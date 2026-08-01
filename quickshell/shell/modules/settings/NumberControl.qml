@@ -18,9 +18,7 @@ RowLayout {
     // Replaces the computed readout when set — for a value whose units aren't a
     // plain suffix, like an interval read out as hours and minutes
     property string displayText: ""
-    // Fixed so the slider doesn't shift sideways as the digits change. Wide
-    // enough for the longest value any row uses ("15000 ms") — ValueLabel
-    // elides, so too narrow silently truncates rather than overflowing
+    // Fixed so the slider doesn't shift as digits change, and wide enough for "15000 ms" — ValueLabel elides, so too narrow truncates silently
     property int labelWidth: 78
 
     signal moved(real v)

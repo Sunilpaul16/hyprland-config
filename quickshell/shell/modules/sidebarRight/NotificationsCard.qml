@@ -6,14 +6,13 @@ import "../../services"
 import "../notifications"
 import "../../components"
 
-// Notifications card (sidebar) — fills the panel's leftover height so the
-// empty-state watermark has room, matching caelestia's NotifDock
+// Notifications card (sidebar) — fills the panel's leftover height so the empty-state watermark has room
 Rectangle {
     id: root
 
     readonly property bool isEmpty: Notifs.list.length === 0
 
-    // Footer pill (end-4's NotificationStatusButton) — full-height rounded ends
+    // Footer pill — full-height rounded ends
     component StatusButton: Rectangle {
         id: sb
 
@@ -159,7 +158,7 @@ Rectangle {
             }
         }
 
-        // Footer: DND toggle · count · clear all (end-4's statusRow)
+        // Footer: DND toggle · count · clear all
         RowLayout {
             Layout.fillWidth: true
             spacing: 6

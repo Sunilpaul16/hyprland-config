@@ -2,9 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../../services"
 
-// Network page. This machine is wired-only, so Wi-Fi is not modelled here at
-// all beyond a row saying so — Wifi.qml still reports hardware presence, and
-// the section appears on its own if an adapter ever turns up
+// Network page — this machine is wired-only, so Wi-Fi is just a row saying so; Wifi.qml still reports hardware presence and the section appears if an adapter turns up
 ScrollPage {
     id: root
 

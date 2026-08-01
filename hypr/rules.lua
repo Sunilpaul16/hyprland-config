@@ -38,9 +38,7 @@ hl.window_rule({
     float = true,
 })
 
--- Blur behind the shell's own layer surfaces. Only matters when
--- appearance.transparency is on in the shell's config.json — an opaque
--- surface has nothing to show through, so this is harmless either way.
+-- Blur behind the shell's own layer surfaces — only matters while appearance.transparency is on, harmless otherwise
 hl.layer_rule({
     name  = "blur-quickshell",
     match = { namespace = "^quickshell-.*$" },

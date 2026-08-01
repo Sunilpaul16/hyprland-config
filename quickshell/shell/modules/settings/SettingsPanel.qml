@@ -26,11 +26,7 @@ Scope {
                     NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
                 }
 
-                // Panel geometry — both axes hug the content. Width is the nav
-                // pane plus the capped page column, so the column meets the
-                // panel edge instead of floating between two gutters; height
-                // is the nav list's own, so no empty tail hangs below it. An
-                // aspect ratio on either axis just reintroduces that dead space
+                // Panel geometry — both axes hug the content (nav pane + capped page column, nav list height); an aspect ratio on either axis reintroduces dead space
                 readonly property real screenW: root.screen?.width ?? 1280
                 readonly property real screenH: root.screen?.height ?? 800
 
@@ -40,9 +36,7 @@ Scope {
                 readonly property real targetWidth: Config.settings.navWidth + Config.settings.maxContentWidth + chromeWidth
                 readonly property real targetHeight: Math.min(content.naturalHeight, screenH * Config.settings.heightMult)
 
-                // One factor for both axes, never clamped independently — on a
-                // portrait/rotated output an independently clamped axis leaves
-                // a sliver rather than a smaller panel
+                // One factor for both axes — clamping them independently leaves a sliver rather than a smaller panel on a rotated output
                 readonly property real fitScale: Math.min(1, (screenW * 0.9) / targetWidth, (screenH * 0.9) / targetHeight)
                 readonly property real panelWidth: Math.max(700, Math.round(targetWidth * fitScale))
                 readonly property real panelHeight: Math.max(460, Math.round(targetHeight * fitScale))
@@ -83,9 +77,7 @@ Scope {
                     }
                 }
 
-                // Focus scope — a FocusScope, not a plain Item: the nav pane's
-                // search field sets focus on open, and a plain Item holding
-                // `focus: active` would win it back and swallow every keystroke
+                // A FocusScope, not a plain Item — the nav search field takes focus on open, and a plain Item holding `focus: active` would win it back and swallow keystrokes
                 FocusScope {
                     anchors.fill: parent
                     focus: root.active
@@ -101,9 +93,7 @@ Scope {
                     Rectangle {
                         id: panel
 
-                        // The surface SelectMenu reparents its dropdown onto:
-                        // inside this card's clip, above the page's scrolling
-                        // content
+                        // The surface SelectMenu reparents its dropdown onto — inside this card's clip, above the page's scrolling content
                         property bool isSettingsCard: true
 
                         anchors.centerIn: parent

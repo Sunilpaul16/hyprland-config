@@ -1,9 +1,6 @@
 import QtQuick
 
-// Material Symbols Rounded glyph — set `text` to the icon's name (e.g.
-// "wifi", "settings"); the font's ligature table swaps the name for the
-// glyph. Needs ttf-material-symbols-variable installed system-wide (not
-// bundled in this repo).
+// Material Symbols Rounded glyph — set `text` to the icon name and the font's ligature table swaps it for the glyph; needs ttf-material-symbols-variable installed
 Text {
     id: root
 

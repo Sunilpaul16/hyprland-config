@@ -94,11 +94,7 @@ Item {
     Rectangle {
         id: activeIndicator
 
-        // itemAt(), not children[] — RowLayout's internal bookkeeping
-        // reorders buttonsRow.children, so position-based indexing isn't
-        // reliable (see DashboardTabView's currentPane for the same issue with
-        // paneRow's Loaders). tabRepeater.count is read only to force
-        // re-evaluation once the Repeater finishes populating.
+        // itemAt(), not children[] — RowLayout reorders buttonsRow.children; tabRepeater.count is read only to force re-evaluation once the Repeater populates
         readonly property Item targetItem: {
             tabRepeater.count;
             return tabRepeater.itemAt(root.currentIndex);

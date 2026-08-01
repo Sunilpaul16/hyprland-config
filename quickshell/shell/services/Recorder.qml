@@ -3,9 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Screen recording process state — shared by the bar's RecordingIndicator and
-// the sidebar's ScreenRecorderCard, backed by the same ~/.local/bin/record
-// script the record keybinds use (wf-recorder underneath)
+// Screen recording state, shared by the bar's RecordingIndicator and the sidebar's ScreenRecorderCard, backed by ~/.local/bin/record (wf-recorder underneath)
 Singleton {
     id: root
 

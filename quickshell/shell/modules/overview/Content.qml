@@ -14,9 +14,7 @@ Item {
     readonly property var allWorkspaces: Hyprland.workspaces.values
     readonly property int maxSlots: 20
 
-    // Build display slots: real workspaces plus exactly one trailing empty
-    // slot (highest-occupied-id + 1), clamped to maxSlots to guard against
-    // the Hyprland sentinel-id spike during hyprlock transitions
+    // Real workspaces plus one trailing empty slot, clamped to maxSlots against the Hyprland sentinel-id spike during hyprlock transitions
     readonly property var displaySlots: {
         const usedIds = root.allWorkspaces.map(ws => ws.id).filter(id => id > 0 && id <= root.maxSlots);
         const highestOccupied = Math.max(0, ...usedIds);
@@ -31,9 +29,7 @@ Item {
     readonly property int cardHeight: 200
     readonly property int cardSpacing: 16
 
-    // Mirrors WorkspaceCard's own width calc so the row's natural width
-    // matches what actually renders, including rotated monitors' swapped
-    // aspect ratio
+    // Mirrors WorkspaceCard's own width calc so the row's natural width matches what renders, rotated monitors' swapped aspect included
     function slotCardWidth(slot) {
         const mon = (slot.isPlaceholder ? null : slot.monitor) ?? Hyprland.monitorFor(root.screen);
         const transform = mon?.lastIpcObject?.transform ?? 0;

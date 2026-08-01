@@ -15,8 +15,7 @@ Rectangle {
 
     readonly property bool current: SettingsState.currentPageIdx === root.pageIndex
 
-    // Run ends round off, inner joints stay square, the selected row pops fully
-    // round and a press pulls it back in (ported from caelestia's NavLocations)
+    // Run ends round off, inner joints stay square, the selected row pops fully round and a press pulls it back in
     readonly property int endRadius: 18
     readonly property int innerRadius: 6
     readonly property int currentRadius: 22

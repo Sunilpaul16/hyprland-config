@@ -4,9 +4,7 @@ import Quickshell.Bluetooth
 import "../../services"
 import "../../components"
 
-// One Bluetooth device, as a settings row. The sidebar's
-// BluetoothDeviceItem does the same job in its own layout; this shares the
-// service and the bluez calls, not the presentation
+// One Bluetooth device as a settings row — shares the service and bluez calls with the sidebar's BluetoothDeviceItem, not the presentation
 SettingRow {
     id: root
 

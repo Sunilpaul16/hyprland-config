@@ -2,9 +2,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Right-edge panel stacking coordinator — panels register open/width per
-// screen, then read back how far they're pushed left by panels stacked
-// closer to the edge. Fixed innermost-to-outermost order:
+// Right-edge stacking coordinator — panels register open/width per screen, then read back how far panels nearer the edge push them left
 Singleton {
     id: root
 

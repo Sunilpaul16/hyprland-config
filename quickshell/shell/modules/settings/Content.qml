@@ -14,9 +14,7 @@ Item {
     // What the panel needs to be tall enough to show the whole nav list
     readonly property int naturalHeight: navList.naturalHeight + root.pad * 2
 
-    // Page registry — index-aligned with SettingsState.currentPageIdx. `category`
-    // drives the nav pane's corner-radius grouping; `component` is optional and
-    // entries without one fall back to placeholderPage below
+    // Page registry, index-aligned with SettingsState.currentPageIdx — `category` drives the nav grouping, and entries without a `component` fall back to placeholderPage
     readonly property var pageModel: [
         // Appearance
         { label: "Wallpaper & style", icon: "palette", description: "Wallpaper, fonts, colours", category: "appearance", component: wallpaperStylePage },
@@ -104,10 +102,7 @@ Item {
         Connections {
             target: SettingsState
             function onCurrentPageIdxChanged() {
-                // Clamp on the singleton, not just here — the nav highlight reads
-                // currentPageIdx directly, so an out-of-range `ipc call settings
-                // page N` would otherwise show a page with nothing selected.
-                // Re-enters this handler once with the corrected value
+                // Clamp on the singleton, not just here — the nav highlight reads currentPageIdx directly, so an out-of-range `ipc call settings page N` would select nothing
                 const clamped = Math.max(0, Math.min(SettingsState.currentPageIdx, root.pageModel.length - 1));
                 if (clamped !== SettingsState.currentPageIdx) {
                     SettingsState.currentPageIdx = clamped;

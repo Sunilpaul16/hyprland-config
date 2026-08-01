@@ -42,9 +42,7 @@ QtObject {
     // Ticks off the shared clock rather than a timer per notification
     readonly property string timeStr: StringUtils.notifTime(time, Time.minutes)
 
-    // Heuristic: **bold**, `code`, and [text](url) are distinctive enough
-    // not to false-positive on plain text (unlike single */_ for italics,
-    // which collide with things like "5 * 3")
+    // Heuristic: **bold**, `code` and [text](url) don't false-positive on plain text, unlike single */_ for italics (which collide with "5 * 3")
     readonly property bool bodyHasMarkdown: /\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\)/.test(body)
 
     // Only the five tags the freedesktop spec defines, so a body merely

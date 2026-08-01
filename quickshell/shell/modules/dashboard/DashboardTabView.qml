@@ -17,23 +17,15 @@ Flickable {
     signal tabSelected(index: int)
 
     readonly property real paneWidth: width
-    // itemAt(), not children[] — unlike the tab bar's plain Rectangle
-    // delegates, these Loaders' async `active` toggling reorders
-    // paneRow.children, so position-based indexing is unreliable here.
-    // repeater.count is read only to force re-evaluation once the
-    // Repeater finishes populating (itemAt() alone isn't tracked)
+    // itemAt(), not children[] — these Loaders' async `active` toggling reorders paneRow.children; repeater.count forces re-evaluation, since itemAt() alone isn't tracked
     readonly property Item currentPane: {
         repeater.count;
         return repeater.itemAt(root.currentIndex);
     }
     property real currentPaneHeight: currentPane?.height ?? 0
-    // Read off the pane's own content, never off paneWidth — the
-    // panel's auto width feeds this, so anything derived from
-    // root.width here would deadlock at 0
+    // Read off the pane's own content, never paneWidth — the panel's auto width feeds this, so anything derived from root.width deadlocks at 0
     readonly property real livePaneWidth: currentPane?.item?.implicitWidth ?? 0
-    // Latched to the last real width: the pane is destroyed while the
-    // dashboard is closed, and letting that drop the panel to its floor
-    // snaps it narrower mid close-animation
+    // Latched to the last real width — the pane is destroyed while closed, and dropping to the floor snaps the panel narrower mid close-animation
     property real currentPaneWidth: 0
     onLivePaneWidthChanged: if (livePaneWidth > 0)
         currentPaneWidth = livePaneWidth
@@ -75,9 +67,7 @@ Flickable {
 
             model: root.model
 
-            // Also keeps whichever adjacent tab is mid-scroll
-            // during a drag instantiated, not just the current
-            // tab
+            // Keeps whichever adjacent tab is mid-scroll during a drag instantiated too, not just the current one
             delegate: Loader {
                 id: paneLoader
 
@@ -86,26 +76,16 @@ Flickable {
 
                 x: index * root.paneWidth
                 width: root.paneWidth
-                // The panel sizes to the *current* pane, so a wider pane
-                // (Media) would otherwise paint over its neighbour's slot
-                // whenever a narrower tab is showing
+                // The panel sizes to the *current* pane, so a wider one (Media) would paint over its neighbour's slot while a narrower tab shows
                 clip: true
-                // Own natural content height, not the tallest tab's —
-                // root.currentPaneHeight then follows whichever pane
-                // is current, animated on switch
+                // Own natural content height, not the tallest tab's, so currentPaneHeight follows the current pane and animates on switch
                 // Fixed-height mode flips this: pane fills the view's height instead
                 height: root.heightFixed ? root.height : (item ? item.implicitHeight : 0)
 
                 sourceComponent: modelData.component
 
-                // Gate on the panel actually being shown, not just
-                // index === currentIndex: the default tab's loader
-                // would otherwise stay active from window construction
-                // (on every monitor, dashboard closed or not), keeping
-                // its cards' services polling 24/7 and defeating the
-                // ref-counted "only poll while referenced" design.
-                // panelShown loads eagerly on open and retains
-                // content through the close fade-out.
+                // Gate on the panel being shown, not just index === currentIndex — otherwise the default tab's loader stays active from construction on every monitor, polling 24/7
+                // panelShown loads eagerly on open and retains content through the close fade-out
                 Component.onCompleted: active = Qt.binding(() => {
                     if (!root.panelShown)
                         return false;

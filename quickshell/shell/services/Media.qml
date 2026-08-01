@@ -8,13 +8,8 @@ import Quickshell.Services.Mpris
 Singleton {
     id: root
 
-    // Active player selection — a manual pick overrides auto-detection,
-    // guarded against a stale reference (picked player quit) by checking
-    // it's still in the live players list.
-    // Bus names get an ".instanceNNNN"-style suffix when an app registers
-    // multiple MPRIS players at once (browsers are the common case,
-    // e.g. one per tab) — dedupe by the bus name with that suffix
-    // stripped, preferring whichever instance is actively playing
+    // Active player selection — a manual pick overrides auto-detection, guarded against a stale reference by checking it's still in the live list
+    // Dedupe on the bus name with its ".instanceNNNN" suffix stripped (browsers register one per tab), preferring whichever instance is playing
     readonly property var players: {
         const raw = Mpris.players.values;
         const seen = new Map();
@@ -99,9 +94,7 @@ Singleton {
     }
 
     // --- Cover art -----------------------------------------------------
-    // file:// art is used directly; http(s) art is downloaded into a
-    // cache dir first. Fetched here (once, shared) rather than per-popup
-    // so it isn't re-downloaded once per monitor.
+    // file:// art is used directly, http(s) art downloads into a cache dir — fetched once here rather than per-popup, so it isn't re-fetched per monitor
     readonly property string artUrl: activePlayer?.trackArtUrl ?? ""
     readonly property bool artIsRemote: artUrl.startsWith("http://") || artUrl.startsWith("https://")
     readonly property string artCacheDir: Directories.mediaArtCache
@@ -128,9 +121,7 @@ Singleton {
         id: artDownloader
         property string pendingUrl: ""
         property string pendingDest: ""
-        // Own properties (not root.artUrl directly) so the command string
-        // is pinned at the moment the run launches. Escaped since
-        // pendingUrl is content a web page controls (MPRIS trackArtUrl).
+        // Own properties, not root.artUrl, so the command string is pinned at launch — escaped because pendingUrl is web-page-controlled (MPRIS trackArtUrl)
         command: ["bash", "-c", `mkdir -p "$(dirname '${StringUtils.shellSingleQuoteEscape(pendingDest)}')" && { [ -f '${StringUtils.shellSingleQuoteEscape(pendingDest)}' ] || curl -4 -sSL '${StringUtils.shellSingleQuoteEscape(pendingUrl)}' -o '${StringUtils.shellSingleQuoteEscape(pendingDest)}'; }`]
         onExited: exitCode => {
             root.artDownloaded = (exitCode === 0);

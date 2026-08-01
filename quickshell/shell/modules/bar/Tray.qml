@@ -7,9 +7,7 @@ import "../../components"
 Item {
     id: root
 
-    // Status applets (network/bluetooth managers) that register a tray icon
-    // even with no user-facing background app running; hide them so the
-    // pill only reflects real apps like Discord or Steam
+    // Status applets that register a tray icon with no user-facing app running — hidden so the pill only reflects real apps like Discord or Steam
     readonly property var hiddenIds: ["nm-applet", "blueman"]
 
     function isHidden(item: SystemTrayItem): bool {

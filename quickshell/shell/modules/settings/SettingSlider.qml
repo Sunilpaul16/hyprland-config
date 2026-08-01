@@ -1,9 +1,7 @@
 import QtQuick
 import "../../services"
 
-// M3 slider. Externally driven like ToggleSwitch — dragging emits moved()
-// and never writes `value`, so an owner can bind it to config. Owners that
-// just want local state say `onMoved: nv => value = nv`
+// M3 slider, externally driven like ToggleSwitch — dragging emits moved() and never writes `value`, so owners wanting local state say `onMoved: nv => value = nv`
 Item {
     id: root
 

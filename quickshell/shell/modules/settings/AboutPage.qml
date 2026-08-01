@@ -4,9 +4,7 @@ import Quickshell
 import "../../services"
 import "../../components"
 
-// About page. Every value here is real: SysInfo reads /etc and /proc directly,
-// AboutInfo shells out for the three facts a file can't answer, and the display
-// list comes from Quickshell.screens merged with Hyprland's monitor JSON
+// About page — every value is real: SysInfo reads /etc and /proc, AboutInfo shells out for the rest, displays come from Quickshell.screens + Hyprland's monitor JSON
 ScrollPage {
     id: root
 

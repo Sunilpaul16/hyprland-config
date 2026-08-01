@@ -5,9 +5,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Weather tab: header, hero card, detail cards, 7-day forecast strip.
-// Auto-geolocated only — manual location config is out of scope for now
-// (see INDEX.md backlog).
+// Weather tab: header, hero card, detail cards, 7-day forecast strip — auto-geolocated only, no manual location config yet
 Item {
     id: root
 

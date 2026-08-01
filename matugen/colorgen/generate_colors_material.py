@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-# Standalone materialyoucolor color-generation script for kitty's 16-color
-# ANSI palette. The original self-activated a venv via an env var on its own
-# shebang; this copy is instead invoked directly with the venv's python by
-# ~/.local/bin/switchwall, so no env var is needed.
+# Standalone materialyoucolor generator for kitty's 16-color ANSI palette, invoked directly with the venv's python by ~/.local/bin/switchwall
 import argparse
 import math
 import json
@@ -114,9 +111,7 @@ if args.path is not None:
     colors = QuantizeCelebi(list(image.getdata()), 128)
     argb = Score.score(colors)[0]
 
-    # Score.score() swaps in Google Blue (chroma 62) when CUTOFF_CHROMA=5 rejects
-    # every color, so a grayscale image reaches --smart looking saturated. An
-    # alpha=0 sentinel detects that swap; real results are always opaque.
+    # Score.score() swaps in Google Blue when CUTOFF_CHROMA=5 rejects every colour, so an alpha=0 sentinel detects the swap — real results are always opaque
     grayscale = args.smart and Score.score(
         colors, ScoreOptions(fallback_color_argb=SCORE_FALLBACK_SENTINEL)
     )[0] == SCORE_FALLBACK_SENTINEL

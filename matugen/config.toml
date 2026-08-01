@@ -1,18 +1,6 @@
-# matugen config for this repo's theming pipeline.
-#
-# Only templates with zero quickshell dependency are wired up here, plus
-# colors.json (loaded at runtime by services/ColorsLoader.qml rather than
-# matugen overwriting Colors.qml directly — see that file and Colors.qml's
-# own header comment). Skipped for now: kde-material-you-colors,
-# wallpaper.txt.
-#
-# kitty is NOT templated here — its colors come from a separate pipeline
-# (materialyoucolor + sed, run from switchwall) since matugen's own Material
-# You role set can't produce a 16-color ANSI terminal palette. See colorgen/.
-#
-# GTK templates need `gsettings color-scheme prefer-dark` set (done by
-# switchwall) — otherwise GTK4 apps render the light @media block instead
-# of the dark one matugen just generated.
+# matugen config for this repo's theming pipeline
+# kitty is NOT templated here — matugen's Material You roles can't produce a 16-colour ANSI palette, so colorgen/ handles it from switchwall
+# GTK templates need `gsettings color-scheme prefer-dark` (set by switchwall), or GTK4 apps render the light @media block instead
 
 [config]
 version_check = false
@@ -33,25 +21,12 @@ output_path = '~/.config/gtk-3.0/gtk.css'
 input_path = '~/.config/matugen/templates/gtk-4.0/gtk.css'
 output_path = '~/.config/gtk-4.0/gtk.css'
 
-# btop/ is a plain copy in this repo, not symlinked (see CLAUDE.md) — this
-# writes straight to the live ~/.config/btop/ location like every other
-# template here, but the repo's own btop/themes/ won't reflect it without
-# a manual sync.
+# btop/ is a plain copy, not symlinked — this writes to the live ~/.config/btop/, so the repo's btop/themes/ needs a manual sync to match
 [templates.btop]
 input_path = '~/.config/matugen/templates/btop/matugen.theme'
 output_path = '~/.config/btop/themes/matugen.theme'
 
-# Read at runtime by services/ColorsLoader.qml, which mutates Colors.qml's
-# properties in place — NOT a direct template-to-Colors.qml overwrite
-# anymore, since that lived inside the hot-reloaded shell tree and
-# restarted the whole shell on every wallpaper change.
+# Read at runtime by services/ColorsLoader.qml, which mutates Colors.qml in place — templating Colors.qml directly restarted the shell on every wallpaper change
 [templates.quickshell_colors_json]
 input_path = '~/.config/matugen/templates/colors-json/colors.json'
 output_path = '~/.local/state/quickshell/colors.json'
-
-# --- Add if a second, alternate shell config is ever adopted, wanting the
-# --- full M3 role dump rather than this repo's trimmed 10-key subset --------
-# [templates.m3colors]
-# input_path = '~/.config/matugen/templates/colors.json'
-# output_path = '~/.local/state/quickshell/user/generated/colors.json'
-# -----------------------------------------------------------------------------

@@ -20,9 +20,7 @@ Item {
     // Keeps the selected card above its neighbours mid-reflow
     z: root.isCurrent ? 1 : 0
 
-    // The row can't clip, so items fade as they slide out of it. The fade
-    // finishes well inside the panel's own padding, so nothing ever spills
-    // onto the desktop
+    // The row can't clip, so items fade as they slide out — the fade finishes inside the panel's padding, so nothing spills onto the desktop
     readonly property real overflow: Math.max(root.view.contentX - root.x, (root.x + root.width) - (root.view.contentX + root.view.width))
     opacity: root.overflow <= 0 ? 1 : Math.max(0, 1 - root.overflow / 12)
 
@@ -78,10 +76,7 @@ Item {
                 sourceSize.height: 214
             }
 
-            // Rounds off the image's square corners. The well's own radius can't
-            // do it: a Rectangle's clip is rectangular and its border follows the
-            // rounded silhouette, so neither covers the area outside the arc.
-            // ClippingRectangle and layer/OpacityMask both no-op in these overlays
+            // Rounds off the image's square corners — the well's radius can't, since a Rectangle's clip is rectangular, and ClippingRectangle/OpacityMask both no-op in these overlays
             Corner {
                 anchors { left: parent.left; top: parent.top }
                 size: well.radius

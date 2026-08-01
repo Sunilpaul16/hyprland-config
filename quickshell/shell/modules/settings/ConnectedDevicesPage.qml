@@ -1,9 +1,7 @@
 import QtQuick
 import "../../services"
 
-// Connected devices page. Live against services/BluetoothStatus.qml — every
-// list is whatever bluez currently reports, so empty sections are the normal
-// state on a machine with nothing paired, not a failure
+// Connected devices page, live against BluetoothStatus.qml — empty sections mean bluez reports nothing paired, not a failure
 ScrollPage {
     id: root
 

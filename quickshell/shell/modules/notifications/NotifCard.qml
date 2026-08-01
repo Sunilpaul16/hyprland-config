@@ -207,8 +207,7 @@ Rectangle {
                 }
             }
 
-            // Button row (expanded only): close, the app's own actions, copy.
-            // With no actions the two icon buttons split the width (end-4)
+            // Button row (expanded only): close, the app's own actions, copy — with no actions the two icons split the width
             Item {
                 width: parent.width
                 height: card.modelData.expanded ? 32 : 0

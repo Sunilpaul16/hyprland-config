@@ -1,26 +1,13 @@
 pragma Singleton
 import QtQuick
 
-// Hand-written, NOT matugen-generated — matugen instead writes
-// ~/.local/state/quickshell/colors.json, and ColorsLoader.qml mutates the
-// properties below at runtime (see [templates.quickshell_colors_json] in
-// matugen/config.toml). This keeps Colors.qml out of the hot-reloaded
-// shell tree, so a wallpaper change cross-fades via the Behaviors below
-// instead of restarting the whole shell. Values here are last-known-good
-// defaults, used until the first ColorsLoader.reapplyTheme() completes.
+// Hand-written, NOT matugen-generated — ColorsLoader mutates these at runtime from colors.json, so a theme change cross-fades instead of restarting the shell
+// Values below are last-known-good defaults, used until the first reapplyTheme() completes
 QtObject {
-    // Outermost panel background. Every panel root and the Corner fillets that
-    // hug them use this one role — a second panel alpha makes two adjacent
-    // panels disagree, and the bar/dashboard joint shows the step as a hard line
+    // Outermost panel background — one role for every panel root and Corner fillet, or adjacent panels show the step as a hard line
     readonly property color panel: Config.appearance.transparency ? Qt.alpha(background, Config.appearance.panelOpacity) : background
 
-    // Cards and pills that sit on a panel. A card can't avoid compositing more
-    // opaque than the panel under it — two translucent layers always do — so
-    // rather than fight that, lift the card's colour and let it read as raised
-    // instead of heavier. Ported from caelestia's Colours.alterColour: scale
-    // the tint by luminance so the lift is even across dark and light bases,
-    // and size it by how transparent the panel is, since an opaque panel needs
-    // none. Its wallpaper-luminance term is dropped — nothing tracks that here
+    // Cards and pills on a panel — stacking two translucent layers always reads heavier, so lift the tint (scaled by luminance, sized by panel transparency) to read as raised instead
     readonly property color layer: {
         if (!Config.appearance.transparency)
             return surface;
@@ -66,9 +53,7 @@ QtObject {
     property color outlineVariant: "#3f484c"
     Behavior on outlineVariant { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
 
-    // Error / destructive roles (M3 error, onError, errorContainer,
-    // onErrorContainer). Same on<Capital> rename as text/textMuted above:
-    // the two foreground colors become textOnError/textOnErrorContainer.
+    // Error / destructive roles — same on<Capital> rename as text/textMuted above, so the foregrounds become textOnError/textOnErrorContainer
     property color error: "#ffb4ab"
     Behavior on error { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
 

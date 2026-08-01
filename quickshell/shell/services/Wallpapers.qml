@@ -70,10 +70,7 @@ Singleton {
             root.apply(entry.path);
     }
 
-    // Bound to a Hyprland keybind via hl.dsp.global("quickshell:randomWallpaper")
-    // — see hypr/keybinds.lua. (hyprctl's own dispatch CLI on this native-Lua
-    // config build only accepts hl.dsp.* dispatcher expressions, not the
-    // classic "global <name>" string form.)
+    // Bound via hl.dsp.global("quickshell:randomWallpaper") in hypr/keybinds.lua — this native-Lua build accepts only hl.dsp.* expressions, not the classic "global <name>" form
     GlobalShortcut {
         name: "randomWallpaper"
         description: "Set a random wallpaper from the current folder"

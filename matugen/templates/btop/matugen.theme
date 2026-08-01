@@ -1,12 +1,7 @@
-# matugen-generated btop theme — do not edit by hand, changes will be
-# overwritten on the next `switchwall` run. See ~/.config/matugen/config.toml,
-# [templates.btop]. Output lives at ~/.config/btop/themes/matugen.theme.
-#
+# matugen-generated btop theme — do not edit by hand, the next `switchwall` run overwrites it
 # Format reference: /usr/share/btop/themes/*.theme
 
-# Empty for transparent — lets the terminal's own background/blur show
-# through instead of btop painting one. Paired with theme_background =
-# false in btop.conf; that setting is what actually enables this.
+# Empty for transparent, so the terminal's own background shows through — enabled by theme_background = false in btop.conf
 theme[main_bg]=""
 
 theme[main_fg]="{{colors.on_surface.default.hex}}"

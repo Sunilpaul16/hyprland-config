@@ -12,9 +12,7 @@ Singleton {
     property string osName: "Unknown OS"
     property real uptimeSeconds: 0
 
-    // Static identity, read once from /proc and /etc. Kept here rather than on
-    // SystemUsage because that one is refcount-gated behind a 1s poll and none
-    // of this changes while the machine is up
+    // Static identity, read once from /proc and /etc — kept off SystemUsage, which is refcount-gated behind a 1s poll
     property string kernel: ""
     property string hostname: ""
     property string cpuModel: ""

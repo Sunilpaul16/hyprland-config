@@ -2,10 +2,7 @@ import QtQuick
 import QtQuick.Shapes
 import "../../../services"
 
-// Circular progress arc (0..1). Ported from caelestia's CircularProgress:
-// a value arc, a gap, then the remaining track, plus a dot marking the
-// track's end. caelestia draws the value arc with its C++ WavyLine; this is
-// the plain-arc equivalent in QtQuick.Shapes, which needs no plugin.
+// Circular progress arc (0..1): value arc, gap, remaining track, plus a dot marking the track's end
 Item {
     id: root
 

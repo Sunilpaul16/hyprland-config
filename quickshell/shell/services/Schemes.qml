@@ -3,9 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Static preset palettes from matugen/schemes/, via
-// scripts/lib/preset-palette.py. Listing is one shot; an individual preset
-// is read on demand for swatches and preview
+// Static preset palettes from matugen/schemes/ via scripts/lib/preset-palette.py — listing is one shot, an individual preset is read on demand
 Singleton {
     id: root
 

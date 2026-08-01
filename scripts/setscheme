@@ -71,9 +71,7 @@ matugen json "$palette"
 apply_kitty_from_scss "$scss"
 apply_gsettings "$MODE"
 
-# An "auto" preference belongs to the wallpaper path. Overwriting it with the
-# concrete mode this preset happens to have would strand the user on that mode
-# the moment they went back to dynamic
+# An "auto" preference belongs to the wallpaper path — overwriting it with this preset's concrete mode would strand it there on the way back to dynamic
 [[ "$STORED_MODE" == auto ]] || printf '%s' "$MODE" > "$MODE_FILE"
 printf '%s' "$TARGET" > "$SOURCE_FILE"
 

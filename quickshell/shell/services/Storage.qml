@@ -4,10 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Physical-disk usage: merges df's per-mount used/total with lsblk's
-// partition -> parent-disk (PKNAME) mapping, so multiple mounts on one
-// physical disk (this box's /, /boot, /home all on one nvme0n1) show as a
-// single card instead of three.
+// Physical-disk usage: df's per-mount used/total merged with lsblk's partition -> parent-disk (PKNAME) map, so one disk's mounts show as a single card
 Singleton {
     id: root
 

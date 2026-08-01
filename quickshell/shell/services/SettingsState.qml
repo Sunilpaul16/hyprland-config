@@ -12,8 +12,7 @@ Singleton {
     property string ownerScreen: ""
     // Index into SettingsPanel's pageModel
     property int currentPageIdx: 0
-    // Key into Content.qml's subPageModel; "" means the page itself is shown.
-    // One level deep is enough — caelestia's Nexus stack never goes further
+    // Key into Content.qml's subPageModel; "" means the page itself is shown. One level deep only
     property string subPage: ""
 
     // Leaving a page abandons any sub-page it opened

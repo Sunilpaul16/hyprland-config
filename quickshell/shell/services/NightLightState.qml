@@ -9,9 +9,7 @@ Singleton {
 
     readonly property int temperature: Config.nightLight.temperature
 
-    // Restored across a shell-only restart (not a fresh Hyprland login —
-    // see Persistent.isNewHyprlandInstance), so the toggle doesn't desync
-    // from the hyprsunset process, which keeps running across restarts
+    // Restored across a shell-only restart, not a fresh login (see Persistent.isNewHyprlandInstance), so the toggle can't desync from the surviving hyprsunset
     property bool enabled: !Persistent.isNewHyprlandInstance && Persistent.nightLightEnabled
     onEnabledChanged: Persistent.nightLightEnabled = root.enabled
 

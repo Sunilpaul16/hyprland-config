@@ -80,9 +80,7 @@ Singleton {
         }
     }
 
-    // Parses `hyprctl binds`' plain-text form: blank-line-separated records, each a
-    // type line then tab-indented `field: value` pairs. Split on the FIRST colon only —
-    // every description carries one ("App: terminal") and that's what rows splits on
+    // Parses `hyprctl binds`' plain-text form (blank-line-separated records, a type line then tab-indented `field: value`) — split on the FIRST colon only, since descriptions carry one
     function parseBinds(text: string): var {
         const out = [];
         for (const block of text.split("\n\n")) {
@@ -106,11 +104,8 @@ Singleton {
         return out;
     }
 
-    // Fetch binds from hyprctl.
-    // Deliberately NOT `-j`: Hyprland 0.56.0's JSON serializer emits values shifted
-    // against their keys and leaves strings unquoted, so the output doesn't parse at
-    // all. The plain-text form carries the same fields correctly.
-    // See review/upstream-hyprland-screencopy-crash.md for the reporting convention
+    // Fetch binds from hyprctl
+    // Deliberately NOT `-j`: Hyprland 0.56.0's JSON serializer shifts values against their keys and leaves strings unquoted, so it doesn't parse at all
     Process {
         id: getBinds
         command: ["hyprctl", "binds"]

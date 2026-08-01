@@ -4,11 +4,8 @@ import Quickshell
 import "../../services"
 import "../../components"
 
-// Dropdown for option lists too long to cycle through (SelectPill's mode).
-// The list reparents onto the settings card rather than living in its own
-// PopupWindow (caelestia's components/controls/Menu.qml does the same): that
-// clears the page's clipping without a second Wayland surface, keeps the menu
-// inside the panel, and avoids PopupAnchor, whose window property segfaults
+// Dropdown for option lists too long to cycle through (SelectPill's mode)
+// Reparents onto the settings card rather than a PopupWindow — clears the page's clipping and avoids PopupAnchor, whose window property segfaults
 Item {
     id: root
 
@@ -52,9 +49,7 @@ Item {
     Rectangle {
         id: pill
 
-        // Sized from the layout's own natural width, never from pill.width --
-        // measuring an eliding label against the container it sizes is the
-        // loop CLAUDE.md warns about, and here it just collapsed the pill
+        // Sized from the layout's natural width, never pill.width — measuring an eliding label against the container it sizes is the polish() loop trap
         implicitWidth: pillLayout.implicitWidth + 16 * 2
         implicitHeight: 34
         radius: height / 2

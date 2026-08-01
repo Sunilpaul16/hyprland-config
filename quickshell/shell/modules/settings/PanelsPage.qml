@@ -1,9 +1,8 @@
 import QtQuick
 import "../../services"
 
-// Panels page — bar, dashboard, launcher, sidebar and overview settings.
-// Still mock: launcher fuzzy matching, quick-toggle editing, sidebar
-// close-on-settings — each needs shell behaviour that doesn't exist yet
+// Panels page — bar, dashboard, launcher, sidebar and overview settings
+// Still mock: launcher fuzzy matching, quick-toggle editing, sidebar close-on-settings — each needs shell behaviour that doesn't exist yet
 ScrollPage {
     id: root
 
@@ -14,10 +13,7 @@ ScrollPage {
         + (Config.dashboard.tabs.showPerformance ? 1 : 0)
         + (Config.dashboard.tabs.showWeather ? 1 : 0)
 
-    // Refuses to hide the last tab — an empty dashboard has no way back to this
-    // page — and keeps `defaultTab` pointing at one that still exists.
-    // Declining to write leaves ToggleSwitch's `checked` binding intact, which
-    // snaps the switch back on its own
+    // Refuses to hide the last tab and keeps `defaultTab` on one that exists — declining to write leaves ToggleSwitch's binding intact, so the switch snaps back itself
     function setTabVisible(key: string, id: string, on: bool): void {
         if (!on && root.visibleTabCount <= 1)
             return;

@@ -3,11 +3,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Reads matugen's colors.json and mutates Colors's properties in place, so
-// a wallpaper change cross-fades the theme (via the Behaviors in
-// Colors.qml) instead of restarting the shell. Singletons are lazy, so
-// reapplyTheme() must be called once from shell.qml's Component.onCompleted
-// or this never loads.
+// Reads matugen's colors.json and mutates Colors's properties in place, so a wallpaper change cross-fades instead of restarting the shell
+// Singletons are lazy — shell.qml's Component.onCompleted must call reapplyTheme() once or this never loads
 Singleton {
     id: root
 
@@ -18,9 +15,7 @@ Singleton {
     // second or two, and a hover sweep would otherwise queue one per tile
     property string pendingPath: ""
 
-    // Generates a palette for `path` without applying it to anything, then
-    // swaps it into Colors. The wallpaper, the real colors.json and every
-    // other themed app are untouched, so clearPreview() is a full revert
+    // Generates a palette for `path` and swaps it into Colors only — wallpaper, colors.json and every other themed app are untouched, so clearPreview() fully reverts
     function preview(path: string): void {
         if (!path || path === root.previewPath)
             return;
@@ -42,9 +37,7 @@ Singleton {
         root.reapplyTheme();
     }
 
-    // A preset's colours are already on disk, so unlike preview() there is
-    // nothing to generate — no Process, no wait. Maps the template role names
-    // onto the shell's own, then reuses the same revert path
+    // A preset's colours are already on disk, so unlike preview() there's nothing to generate — maps template role names onto the shell's own and reuses the revert path
     function previewPalette(palette: var): void {
         if (!palette || !palette.primary)
             return;
@@ -98,10 +91,7 @@ Singleton {
         root.applyColors(text);
     }
 
-    // onLoadedChanged only fires on the loaded<->not-loaded transition, not
-    // on every reload() while already loaded — so re-reads after the first
-    // one go through this debounced timer instead, applying reload()'d
-    // text() directly rather than depending on that signal firing again
+    // onLoadedChanged fires only on the loaded/not-loaded transition, so later re-reads go through this debounced timer and apply reload()'d text() directly
     Timer {
         id: applyTimer
         interval: 50

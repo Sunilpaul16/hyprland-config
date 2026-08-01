@@ -1,9 +1,7 @@
 import QtQuick
 import "../../services"
 
-// Audio page. Devices, levels, per-app and the volume-step/unmute behaviour
-// are live against services/Audio.qml; the OSD section and the over-100%
-// boost are still mock — the shell has no path for either yet
+// Audio page — devices, levels, per-app and volume-step/unmute are live against Audio.qml; the OSD section and over-100% boost are still mock
 ScrollPage {
     id: root
 

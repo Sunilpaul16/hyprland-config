@@ -4,13 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Network throughput polling: /proc/net/dev delta-based speed + session
-// totals + a capped sample history for sparkline graphs. Same FileView+Timer
-// shape as SystemUsage.qml.
-//
-// NOTE: this file didn't exist in this repo before this session — an
-// earlier task assumed it was already here. Built fresh, with a plain
-// capped JS array standing in for a C++ CircularBuffer.
+// Network throughput: /proc/net/dev delta speed + session totals + a capped JS-array sample history for sparklines; same FileView+Timer shape as SystemUsage.qml
 Singleton {
     id: root
 

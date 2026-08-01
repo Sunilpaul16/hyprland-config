@@ -4,9 +4,7 @@ import Quickshell.Services.Pipewire
 import "../../services"
 import "../../components"
 
-// One application's volume, as a settings row. The sidebar's
-// VolumeMixerEntry does the same job in its own layout; this shares the
-// service, not the presentation
+// One application's volume as a settings row — shares the service with the sidebar's VolumeMixerEntry, not the presentation
 SettingRow {
     id: root
 

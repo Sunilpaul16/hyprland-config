@@ -3,9 +3,7 @@ import QtQuick.Layouts
 import "../../../components"
 import "../../../services"
 
-// CPU/GPU hero card: usage ring + icon top-left, name beside it, temperature
-// readout and bar bottom-left, usage blob bottom-right. Ported from
-// caelestia's performance/HeroCard.qml.
+// CPU/GPU hero card: usage ring + icon top-left, name beside it, temperature bottom-left, usage blob bottom-right
 Rectangle {
     id: root
 

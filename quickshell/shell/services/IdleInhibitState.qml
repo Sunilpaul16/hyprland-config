@@ -8,12 +8,8 @@ import Quickshell.Wayland
 Singleton {
     id: root
 
-    // Restored across a shell-only restart under the same fence as
-    // NightLightState. activeSince is never restored verbatim — the prior
-    // inhibitor object died with the old process — it's recomputed fresh
-    // whenever enabled turns on, including on this initial restore.
-    // A fresh Hyprland session starts from the configured default; a shell-only
-    // restart within the same session restores whatever was actually set
+    // Restored across a shell-only restart under the same fence as NightLightState; a fresh Hyprland session starts from the configured default
+    // activeSince is recomputed whenever enabled turns on, never restored verbatim — the prior inhibitor died with the old process
     property bool enabled: Persistent.isNewHyprlandInstance ? Config.session.keepAwakeDefault : Persistent.idleInhibitEnabled
     property real activeSince: root.enabled ? Date.now() : 0 // Date.now() ms, 0 when inactive
     onEnabledChanged: Persistent.idleInhibitEnabled = root.enabled

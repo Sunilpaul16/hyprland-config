@@ -4,9 +4,7 @@ import Qt5Compat.GraphicalEffects
 import "../../services"
 import "../../components"
 
-// Wallpaper picker, reached from Wallpaper & style's Wallpapers pill.
-// Modelled on caelestia's WallpaperSelect — Browse/Random above a large
-// current-wallpaper preview and a grid of the local collection
+// Wallpaper picker (Wallpaper & style's Wallpapers pill): Browse/Random over a large preview and a collection grid
 ScrollPage {
     id: root
 
@@ -69,8 +67,7 @@ ScrollPage {
         text: "Current wallpaper"
     }
 
-    // Large preview of what's applied now — caelestia shows a bundled
-    // "featured" image here; the one actually in use is more informative
+    // Large preview of what's applied now
     Item {
         id: hero
 

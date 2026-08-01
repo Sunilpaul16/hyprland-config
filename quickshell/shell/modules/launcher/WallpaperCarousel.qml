@@ -2,9 +2,7 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Wallpaper mode: horizontal thumbnail carousel plus the caption tracking it.
-// Selection movement is exposed rather than driven here — the launcher pairs
-// every move with its debounced --preview
+// Wallpaper mode: horizontal thumbnail carousel plus its caption — selection movement is exposed, not driven here, so the launcher can pair each move with its debounced --preview
 Item {
     id: root
 
@@ -41,14 +39,10 @@ Item {
 
         orientation: ListView.Horizontal
         spacing: 16
-        // Deliberately unclipped: a Shape renders nothing under any
-        // clipping ancestor, and the delegates round their corners
-        // with one. They fade out at the row's edges instead
+        // Deliberately unclipped — a Shape renders nothing under a clipping ancestor, and the delegates round corners with one; they fade at the row's edges instead
         clip: false
 
-        // Begin == end pins the selection dead centre. Giving the
-        // range a width instead lets it drift anywhere inside it,
-        // which is what left the selection off-centre before
+        // Begin == end pins the selection dead centre — a range with width lets it drift anywhere inside
         highlightRangeMode: ListView.StrictlyEnforceRange
         preferredHighlightBegin: (width - currentItemWidth) / 2
         preferredHighlightEnd: preferredHighlightBegin
@@ -62,9 +56,7 @@ Item {
             onActivated: root.activated(modelData)
         }
 
-        // Wheel cycles the selection. Deltas are accumulated to a
-        // full notch so a trackpad's fine-grained stream steps at
-        // the same rate a mouse wheel does
+        // Wheel cycles the selection, accumulating deltas to a full notch so a trackpad steps at the same rate as a mouse wheel
         WheelHandler {
             property real accumulated: 0
 
@@ -84,9 +76,7 @@ Item {
         }
     }
 
-    // Caption tracks the selected thumbnail instead of the panel
-    // centre, so the name reads as belonging to it. caelestia labels
-    // each item instead — not viable at our 150px item width
+    // Caption tracks the selected thumbnail, not the panel centre, so the name reads as belonging to it
     StyledText {
         id: caption
         anchors.top: row.bottom

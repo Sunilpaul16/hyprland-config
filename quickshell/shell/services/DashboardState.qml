@@ -20,10 +20,7 @@ Singleton {
         root.open = true;
     }
 
-    // Hover-driven open/close: the bar pill's and the panel's HoverHandlers
-    // share this grace timer — entering either cancels a pending close,
-    // leaving either (re)starts it, so moving the cursor from the pill down
-    // into the panel doesn't close the dashboard mid-transit
+    // Hover-driven open/close — the bar pill's and the panel's HoverHandlers share this grace timer, so moving between them can't close the dashboard mid-transit
     function cancelHoverClose(): void {
         hoverCloseTimer.stop();
     }

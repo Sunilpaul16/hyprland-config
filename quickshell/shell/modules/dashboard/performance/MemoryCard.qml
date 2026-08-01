@@ -3,8 +3,7 @@ import QtQuick.Layouts
 import "../../../components"
 import "../../../services"
 
-// Memory: 270° usage arc with percentage inside, used/total underneath.
-// Ported from caelestia's performance/MemoryCard.qml.
+// Memory: 270° usage arc with percentage inside, used/total underneath
 Rectangle {
     id: root
 

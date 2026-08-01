@@ -40,9 +40,7 @@ Column {
         onMoved: newValue => Audio.setSourceVolume(newValue)
     }
 
-    // Vertical fill track — click/drag to set an absolute value, scroll to
-    // step. Built on QtQuick.Templates' Slider (via QtQuick.Controls) for
-    // real press/move/release handling.
+    // Vertical fill track — click/drag sets an absolute value, scroll steps; built on QtQuick.Templates' Slider for real press/move/release handling
     component VolumeSlider: Item {
         id: slider
 

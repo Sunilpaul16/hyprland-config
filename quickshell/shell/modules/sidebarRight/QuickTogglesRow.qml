@@ -171,10 +171,7 @@ ColumnLayout {
         }
     }
 
-    // Visible toggles — wraps to fit the card's width, with the leftover
-    // width dealt into the gaps so the row has no ragged right edge.
-    // Only exact while every toggle is the same width; a "large" one varies,
-    // so that case keeps the plain minimum spacing.
+    // Visible toggles — wraps to the card's width with leftover space dealt into the gaps, exact only while every toggle is the same width ("large" keeps minimum spacing)
     Flow {
         id: togglesFlow
 

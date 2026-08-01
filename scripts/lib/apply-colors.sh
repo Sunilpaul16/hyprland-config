@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-# Shared colour-apply steps. Sourced by switchwall and setscheme so both
-# reach every themed app by one implementation. Expects the caller to have
-# set CONFIG_FILE, COLORGEN_DIR and KITTY_THEME_OUT.
+# Shared colour-apply steps, sourced by switchwall and setscheme so both reach every themed app the same way
+# Expects the caller to have set CONFIG_FILE, COLORGEN_DIR and KITTY_THEME_OUT
 
 # cfg <jq-path> <default> — missing file, missing key or null all fall back
 cfg() {
@@ -13,9 +12,7 @@ cfg() {
     [[ -n "$value" ]] && printf '%s' "$value" || printf '%s' "$2"
 }
 
-# cfgbool <jq-path> <default> — booleans cannot go through cfg: jq's `//`
-# treats a literal `false` as absent, so `false` would read back as the
-# default. Only null/missing falls back here.
+# cfgbool <jq-path> <default> — booleans can't use cfg, since jq's `//` treats a literal `false` as absent; only null/missing falls back here
 cfgbool() {
     local value=""
     if [[ -s "$CONFIG_FILE" ]]; then
@@ -24,9 +21,7 @@ cfgbool() {
     [[ -n "$value" ]] && printf '%s' "$value" || printf '%s' "$2"
 }
 
-# apply_kitty_from_scss <scss-path> — rewrites the kitty theme from a stream
-# of `$name: #RRGGBB;` lines. Generator-agnostic: matugen's materialyoucolor
-# pass and a static preset both feed it the same shape.
+# apply_kitty_from_scss <scss-path> — rewrites the kitty theme from a stream of `$name: #RRGGBB;` lines, fed the same shape by matugen and by a static preset
 apply_kitty_from_scss() {
     local scss="$1"
     cp "$COLORGEN_DIR/terminal/kitty-theme.conf" "$KITTY_THEME_OUT"

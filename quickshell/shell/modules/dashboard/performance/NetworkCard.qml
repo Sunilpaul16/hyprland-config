@@ -4,10 +4,7 @@ import QtQuick.Layouts
 import "../../../components"
 import "../../../services"
 
-// Network throughput: auto-scaling sparkline (down/up) over labelled
-// Download/Upload/Total rows. Ported from caelestia's performance/
-// NetworkCard.qml, whose sparkline is a C++ SparklineItem — this keeps the
-// repo's own native QML Shape/PathPolyline one.
+// Network throughput: auto-scaling Shape/PathPolyline sparkline over Download/Upload/Total rows
 Rectangle {
     id: root
 

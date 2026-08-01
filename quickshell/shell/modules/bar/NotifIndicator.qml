@@ -2,7 +2,7 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Unread-notification bell, hidden while there's nothing to report (end-4's NotificationUnreadCount)
+// Unread-notification bell, hidden while there's nothing to report
 Item {
     id: root
 

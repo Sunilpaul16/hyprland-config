@@ -76,7 +76,7 @@ Item {
                 onClicked: root.stepMonth(-1)
             }
 
-            // Clicking the month label also jumps to today (caelestia's affordance)
+            // Clicking the month label also jumps to today
             Rectangle {
                 Layout.fillWidth: true
                 implicitHeight: monthLabel.implicitHeight + 8

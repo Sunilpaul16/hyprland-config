@@ -3,11 +3,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Polkit
 
-// Wraps the native polkit agent — see modules/polkit/PolkitDialog.qml for
-// the UI. Registers automatically on creation at the default D-Bus path
-// (/org/quickshell/Polkit). NOTE: hyprpolkitagent.service is currently the
-// session's active registered agent — this won't actually receive
-// requests until that service is stopped (deliberately not done here).
+// Wraps the native polkit agent (UI in modules/polkit/PolkitDialog.qml), registering on creation at /org/quickshell/Polkit
+// Receives nothing while hyprpolkitagent.service is the session's active agent — deliberately not stopped here
 Singleton {
     id: root
 

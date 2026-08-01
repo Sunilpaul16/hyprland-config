@@ -3,18 +3,13 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Runtime UI state that should survive a shell-only restart (SUPER+CTRL+R)
-// but NOT a fresh Hyprland login — separate from Config.qml, which holds
-// user preferences, not transient toggle state.
+// Runtime UI state surviving a shell-only restart (SUPER+CTRL+R) but NOT a fresh Hyprland login — separate from Config.qml, which holds preferences
 Singleton {
     id: root
 
     readonly property string currentInstanceSignature: Quickshell.env("HYPRLAND_INSTANCE_SIGNATURE") ?? ""
 
-    // Set once when the state file finishes loading (or fails to load,
-    // meaning there's no prior state at all). Conservative default of true
-    // (treat as a fresh instance / don't restore) covers the brief window
-    // before the FileView resolves.
+    // Set once the state file loads or fails to; defaults true (treat as fresh, don't restore) to cover the window before the FileView resolves
     property bool isNewHyprlandInstance: true
 
     property alias nightLightEnabled: adapter.nightLightEnabled
@@ -35,11 +30,7 @@ Singleton {
 
         onFileChanged: reloadTimer.restart()
         onAdapterUpdated: writeTimer.restart()
-        // loaded flips true before JsonAdapter finishes parsing the loaded
-        // text into its properties, so a same-tick read here would still
-        // see lastHyprlandInstanceSignature's declared default rather than
-        // the stored value — snapshotTimer's short delay is a real fix for
-        // that ordering gap, not a race worked around by luck.
+        // loaded flips true before JsonAdapter finishes parsing, so a same-tick read sees the declared default — snapshotTimer's delay closes that ordering gap
         onLoadedChanged: snapshotTimer.restart()
         onLoadFailed: error => {
             if (error === FileViewError.FileNotFound) {

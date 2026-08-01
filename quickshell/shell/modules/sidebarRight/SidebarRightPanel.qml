@@ -28,9 +28,7 @@ Scope {
                     NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
                 }
 
-                // Right-edge stack registration — innermost panel, always flush to
-                // the edge itself, but other panels need to know its open+width to
-                // offset past it
+                // Right-edge stack registration — always flush to the edge itself, but other panels need its open+width to offset past it
                 readonly property int edgeMargin: 0
                 readonly property int cornerSize: 14
                 readonly property real registeredWidth: backdrop.width + edgeMargin
@@ -85,9 +83,7 @@ Scope {
                             SidebarRightState.open = false;
                     }
 
-                    // Sidebar backdrop (slide-in panel background) — full monitor
-                    // height so NotificationsCard below can absorb the leftover
-                    // space, the way caelestia's notif dock fills its column
+                    // Sidebar backdrop — full monitor height so NotificationsCard absorbs the leftover space
                     Rectangle {
                         id: backdrop
                         anchors { top: parent.top; right: parent.right; margins: root.edgeMargin }
@@ -98,9 +94,7 @@ Scope {
                         // out into the bar above and the screen bottom
                         topLeftRadius: 0
                         bottomLeftRadius: 0
-                        // Right corners too: they butt the screen edge, and the bar
-                        // above draws a concave fillet the top one has to meet flush
-                        // or a crescent of wallpaper shows through the joint
+                        // Right corners too — they butt the screen edge, and the bar's concave fillet above must meet flush or a crescent of wallpaper shows through
                         topRightRadius: 0
                         bottomRightRadius: 0
                         color: Colors.panel
@@ -128,10 +122,7 @@ Scope {
                         transform: Translate { x: (1 - root.showProgress) * 24 }
                     }
 
-                    // Slide-in wrapper. The animation lives here rather than on
-                    // the ColumnLayout so qmllint stops reading the Translate's
-                    // x as layout-managed item geometry — layouts don't manage
-                    // transforms, but the check can't tell the two apart
+                    // Slide-in wrapper — the animation lives here, not on the ColumnLayout, so qmllint stops reading the Translate's x as layout-managed geometry
                     Item {
                         anchors.fill: backdrop
                         visible: SidebarDialogState.openDialog === ""
@@ -139,9 +130,7 @@ Scope {
                         opacity: root.showProgress
                         transform: Translate { x: (1 - root.showProgress) * 24 }
 
-                        // Card stack. No outer Flickable — the notifications card
-                        // fills the slack and scrolls its own list internally, so
-                        // the cards below stay pinned to the bottom
+                        // Card stack, no outer Flickable — the notifications card fills the slack and scrolls internally, so the cards below stay pinned to the bottom
                         ColumnLayout {
                             anchors.fill: parent
                             anchors.margins: 12

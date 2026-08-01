@@ -3,11 +3,7 @@ import QtQuick.Layouts
 import "../../../components"
 import "../../../services"
 
-// Storage: 270° usage arc (icon + percentage inside) beside the disk's
-// used/total, with a disk selector underneath. Multiple mounts on one disk
-// are merged by Storage.qml, not shown as separate partitions. Ported from
-// caelestia's performance/StorageCard.qml, whose selector is a plugin
-// SplitButton — this keeps the repo's own pill+dropdown instead.
+// Storage: 270° usage arc beside used/total, disk selector underneath; Storage.qml merges a disk's mounts
 Rectangle {
     id: root
 

@@ -3,9 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Multi-player selector — only shown with >1 active MPRIS player.
-// Owns its own dropdown state; the tab supplies the click-outside catcher,
-// which has to cover the whole tab rather than just this corner
+// Multi-player selector, shown only with >1 active MPRIS player — owns its dropdown state, while the tab supplies a click-outside catcher covering the whole tab
 Item {
     id: root
 

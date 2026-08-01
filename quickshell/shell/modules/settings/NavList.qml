@@ -18,9 +18,7 @@ Item {
     // it can't be read off a delegate without instantiating one
     readonly property int rowHeight: 66
 
-    // Height the unfiltered list wants, derived from the model rather than
-    // from listColumn — the panel sizes itself off this, and reading a live
-    // child that the panel's own width feeds is the polish() loop trap
+    // Height the unfiltered list wants, derived from the model not listColumn — the panel sizes off this, and reading a child the panel's width feeds is the polish() loop trap
     readonly property int naturalHeight: {
         const n = root.pageModel.length;
         if (n === 0)
@@ -136,9 +134,7 @@ Item {
                     required property int index
 
                     Layout.fillWidth: true
-                    // Categories read as runs of connected pills — a gap opens
-                    // where the category changes, and the radii below round off
-                    // only the ends of each run
+                    // Categories read as runs of connected pills — a gap opens where the category changes, and the radii below round only each run's ends
                     Layout.topMargin: index !== 0 && runStart ? root.runGap : 0
 
                     page: modelData.page

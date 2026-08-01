@@ -9,9 +9,7 @@ ScrollPage {
 
     title: "Wallpaper & style"
 
-    // Applies the wallpaper-display toggle without waiting for the next
-    // switchwall run. --preview sets the wallpaper and exits before any colour
-    // generation, which keeps the mpvpaper invocation in switchwall alone
+    // Applies the wallpaper-display toggle without waiting for the next switchwall run — --preview sets it and exits before any colour generation
     Process {
         id: wallpaperDisplayProc
     }
@@ -263,9 +261,7 @@ ScrollPage {
     }
 
     SettingGroup {
-        // Curated shortlist — nothing distinguishes a UI-suitable family from
-        // the ~700 installed, and SelectMenu's popup neither scrolls nor caps
-        // its height
+        // Curated shortlist — nothing distinguishes a UI-suitable family from the ~700 installed, and SelectMenu's popup neither scrolls nor caps its height
         SettingRow {
             first: true
             live: true
@@ -278,9 +274,7 @@ ScrollPage {
             }
         }
 
-        // Icon glyphs only — the distro logo, the bar's bell, the sidebar and
-        // dashboard headers. Enumerated rather than curated: "ends in Nerd
-        // Font" is unambiguous and grows as fonts are installed
+        // Icon glyphs only — enumerated rather than curated, since "ends in Nerd Font" is unambiguous and grows as fonts are installed
         SettingRow {
             last: true
             live: true

@@ -3,9 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 
-// Shared Hyprland focus grab spanning every currently-open overlay, replacing
-// each panel's own full-screen click-catcher + independent Exclusive grab
-// (comparison.md #47, ported from end-4's GlobalFocusGrab.qml)
+// Shared Hyprland focus grab spanning every open overlay, replacing each panel's own click-catcher + Exclusive grab
 Singleton {
     id: root
 

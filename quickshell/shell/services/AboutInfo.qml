@@ -4,9 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
 
-// Facts the About page needs that only a subprocess can answer. Loaded on
-// demand rather than at startup — nothing else reads these, and they'd cost
-// three process spawns on every shell reload
+// Facts the About page needs that only a subprocess can answer — loaded on demand, or they'd cost three spawns on every shell reload
 Singleton {
     id: root
 
@@ -16,9 +14,7 @@ Singleton {
 
     property bool loaded: false
 
-    // Connected outputs, merged from Quickshell's screen list and Hyprland's
-    // monitor JSON — the former has no refresh rate, the latter reports
-    // pre-rotation dimensions
+    // Connected outputs, merged from Quickshell's screen list (no refresh rate) and Hyprland's monitor JSON (pre-rotation dimensions)
     readonly property var displays: Quickshell.screens.map(screen => {
         const ipc = Hyprland.monitorFor(screen)?.lastIpcObject ?? null;
         return {

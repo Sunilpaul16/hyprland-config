@@ -4,10 +4,7 @@ import "../../../services"
 import "../performance"
 import "../../../components"
 
-// Compact CPU/memory/disk summary — three small rings. CPU/memory bind to
-// the same services/SystemUsage.qml singleton the Performance tab's
-// CpuCard/MemoryCard already poll; disk binds to Storage.primaryDisk (no
-// new polling started here for any of the three).
+// Compact CPU/memory/disk summary in three small rings — binds to the SystemUsage and Storage singletons the Performance tab already polls, starting no new polling
 Rectangle {
     id: root
 
@@ -61,9 +58,7 @@ Rectangle {
         }
     }
 
-    // Icon-in-ring style (caelestia's Resources widget) — the arc alone
-    // conveys the percentage, no numeric label. Rings grow with the card
-    // height up to the configured ceiling, matching caelestia's fillHeight.
+    // Icon-in-ring: the arc alone conveys the percentage, growing with card height up to the configured ceiling
     component Ring: UsageRing {
         id: ringItem
 

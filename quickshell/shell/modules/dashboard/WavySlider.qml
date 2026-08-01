@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Shapes
 import "../../services"
 
-// Seek slider — the played portion is a travelling sine wave, then a gap, the
-// handle, the remaining track and a trailing stop dot (Material 3 expressive).
+// Seek slider — played portion is a travelling sine wave, then a gap, handle, remaining track and stop dot
 // Externally driven: interacting emits seeked(), it never writes `value` itself
 Item {
     id: root

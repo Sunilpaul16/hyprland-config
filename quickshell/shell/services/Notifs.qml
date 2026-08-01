@@ -138,10 +138,7 @@ Singleton {
         onNotification: notif => {
             notif.tracked = true;
             const wrapper = notifComp.createObject(root, {
-                // Don't pop up a toast for something already visible live in
-                // the sidebar's Notifications card, while Do Not Disturb is
-                // on, or over a fullscreen window if that's been turned off
-                // — still lands in history either way.
+                // No toast when the sidebar card already shows it live, under Do Not Disturb, or over a fullscreen window if disabled — history gets it either way
                 popup: !SidebarRightState.open && !DndState.enabled && !(Config.notifications.fullscreen === "off" && root.anyFullscreen),
                 notification: notif
             });

@@ -37,9 +37,7 @@ Scope {
                 WlrLayershell.layer: WlrLayer.Top
                 WlrLayershell.namespace: "quickshell-bar"
 
-                // Stay inside any active focus grab, otherwise the compositor
-                // cuts pointer input to the bar while an overlay is open and
-                // its hover zones go dead
+                // Stay inside any active focus grab, or the compositor cuts pointer input to the bar while an overlay is open
                 Component.onCompleted: GlobalFocusGrab.addPersistent(bar)
                 Component.onDestruction: GlobalFocusGrab.removePersistent(bar)
 
@@ -183,14 +181,6 @@ Scope {
 
                             Clock {}
                         }
-
-                        // Sidebar toggle button
-                        // SectionPill {
-                        //     Layout.alignment: Qt.AlignVCenter
-                        //     horizontalPadding: 8
-
-                        //     SidebarRightButton {}
-                        // }
 
                     }
 

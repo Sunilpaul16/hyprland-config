@@ -3,12 +3,8 @@ import QtQuick
 import Quickshell
 
 
-// Resolves the configured font families against what is actually installed,
-// and owns the two pickers' option lists.
-//
-// Qt substitutes a missing family silently, so a typo'd or uninstalled name
-// renders in the default with nothing to explain it. Everything here goes
-// through resolve() instead, which falls back to a family known to be present
+// Resolves the configured font families against what is actually installed, and owns the two pickers' option lists
+// Qt substitutes a missing family silently, so everything goes through resolve(), which falls back to a family known to be present
 Singleton {
     id: root
 
@@ -20,9 +16,7 @@ Singleton {
     readonly property string interfaceFamily: root.resolve(Config.appearance.fontInterface, "Noto Sans")
     readonly property string glyphFamily: root.resolve(Config.appearance.fontGlyph, "JetBrainsMono Nerd Font")
 
-    // Interface picker options. Curated: nothing distinguishes a UI-suitable
-    // family from the ~700 installed, so this is a hand-picked shortlist,
-    // filtered down to whichever of them this machine actually has
+    // Interface picker options — a hand-picked shortlist (nothing distinguishes a UI-suitable family from the ~700 installed), filtered to what's present
     readonly property var interfaceOptions: [
         "Noto Sans",
         "Rubik",

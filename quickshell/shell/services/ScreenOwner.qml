@@ -3,9 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 
-// Pins an overlay to the monitor it was opened on instead of letting it follow
-// the focused monitor. Panels ask owns(); keybinds go through toggle(), which
-// re-targets to the current monitor rather than closing when pressed elsewhere
+// Pins an overlay to the monitor it opened on — panels ask owns(), keybinds use toggle(), which re-targets to the current monitor rather than closing
 Singleton {
     id: root
 

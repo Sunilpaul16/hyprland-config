@@ -107,8 +107,7 @@ fi
 mkdir -p "$CACHE_DIR"
 
 # --- 1. Wallpaper display: mpvpaper on both monitors ------------------------
-# --preview is an explicit display request and always spawns; a normal run
-# respects wallpaper.display, so turning it off survives a re-theme
+# --preview is an explicit display request and always spawns; a normal run respects wallpaper.display, so turning it off survives a re-theme
 if ! $NOSWITCH && ! $COLORS_PREVIEW && { $PREVIEW || [[ "$(cfgbool '.wallpaper.display' true)" != "false" ]]; }; then
     # Monitor names and mpvpaper are needed only here — deriving them at the
     # top made a colour-only run fail on an unreadable general.lua
@@ -162,11 +161,8 @@ fi
 
 # --- 3. matugen: hyprlock / hyprland colors.lua / GTK3+4 css ----------------
 
-# Resolved once here so both engines below agree: matugen has neither --smart
-# nor brightness-based mode selection of its own, so a low-chroma or bright
-# wallpaper would otherwise only affect kitty.
-# "auto" keeps the previous behaviour: --smart lets the generator pick a
-# scheme from the image. A named scheme drops --smart so the choice sticks.
+# Resolved once so both engines agree — matugen has no --smart or brightness-based mode selection, so a low-chroma wallpaper would otherwise only affect kitty
+# "auto" means --smart, letting the generator pick from the image; a named scheme drops --smart so the choice sticks
 SCHEME_PREF="${SET_SCHEME:-$(cfg '.theming.scheme' 'auto')}"
 if [[ "$SCHEME_PREF" != auto ]] && [[ " $VALID_SCHEMES " != *" $SCHEME_PREF "* ]]; then
     echo "switchwall: unknown scheme '$SCHEME_PREF', falling back to auto" >&2
@@ -200,8 +196,7 @@ matugen image "$colorsource" --source-color-index 0 --mode "$MODE" --type "$SCHE
 apply_gsettings "$MODE"
 
 # --- 4. materialyoucolor: kitty's 16-color terminal palette -----------------
-# Terminal-only tuning; defaults match generate_colors_material.py's own, so
-# an absent config behaves exactly as before this was configurable
+# Terminal-only tuning; defaults match generate_colors_material.py's own, so an absent config behaves as before
 TERM_HARMONY="$(cfg '.theming.terminalHarmony' '0.8')"
 TERM_THRESHOLD="$(cfg '.theming.terminalHarmonizeThreshold' '100')"
 TERM_FG_BOOST="$(cfg '.theming.terminalFgBoost' '0.35')"

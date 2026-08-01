@@ -6,7 +6,7 @@ import "../../services"
 import "../../components"
 
 // Media tab: full-page now-playing — cover art, title block, wavy seek bar,
-// transport controls, and the bongocat gif where caelestia puts its lyrics pane
+// transport controls, and the bongocat gif
 Item {
     id: root
 

@@ -6,11 +6,7 @@ import Quickshell.Widgets
 import "../../services"
 import "../../components"
 
-// Polkit authentication dialog — replaces the system's default (unthemed)
-// agent UI for auth prompts. Binds to services/PolkitState.qml's
-// PolkitAgent singleton. Same PanelWindow+WlrLayershell overlay idiom as
-// Cheatsheet.qml (centered panel, fade+scale, click-outside/absorb,
-// Escape-to-cancel).
+// Polkit authentication dialog, replacing the system's unthemed agent UI — binds to PolkitState's agent, same overlay idiom as Cheatsheet.qml
 Scope {
     Variants {
         model: Quickshell.screens

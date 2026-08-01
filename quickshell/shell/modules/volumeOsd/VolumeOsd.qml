@@ -103,9 +103,7 @@ Scope {
 
                     property bool hovered: false
 
-                    // 0 so the drawer sits flush against the screen edge and the
-                    // fillets below have a straight edge to bridge into, matching
-                    // SessionScreen
+                    // 0 so the drawer sits flush to the screen edge and the fillets below have a straight edge to bridge into, matching SessionScreen
                     readonly property int restingMargin: 0
                     readonly property int cornerSize: 14
                     readonly property int contentPadding: 10
@@ -114,9 +112,7 @@ Scope {
                     // Which edge the drawer hugs
                     readonly property bool onRight: Config.audio.osdEdge !== "left"
 
-                    // Pushed left by whichever right-edge panels are stacked outside
-                    // this one (Sidebar and/or Session, if open). Left-edge has no
-                    // stackmates, so it never offsets
+                    // Pushed left by whichever right-edge panels are stacked outside this one — the left edge has no stackmates, so it never offsets
                     property real stackOffset: RightEdgeStack.offsetFor(root.screen, "volume")
                     Behavior on stackOffset {
                         NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }

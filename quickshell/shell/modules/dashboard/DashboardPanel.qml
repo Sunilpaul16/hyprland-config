@@ -22,9 +22,7 @@ Scope {
                 readonly property bool isOwnerScreen: ScreenOwner.owns(DashboardState, root.screen)
                 readonly property bool active: DashboardState.open && root.isOwnerScreen
 
-                // Slide-down open/close (matches caelestia's Wrapper.qml offsetScale
-                // mechanism: 0 = open, 1 = closed, driving both the panel's anchor
-                // margin and its opacity together — not a size tween or scale transform)
+                // Slide-down open/close: 0 = open, 1 = closed, driving anchor margin and opacity together
                 property real offsetScale: root.active ? 0 : 1
 
                 Behavior on offsetScale {
@@ -50,10 +48,7 @@ Scope {
                     return shown.length > 0 ? shown : root.allTabs;
                 }
 
-                // Held as an id, not an index: hiding a tab reindexes the model,
-                // and an index would then either point past the end or quietly
-                // land on a different pane. Falls back to the first tab when the
-                // held one is hidden
+                // Held as an id, not an index — hiding a tab reindexes the model; falls back to the first tab when the held one is hidden
                 property string currentTabId: Config.dashboard.panel.defaultTab
                 readonly property int currentTab: {
                     const i = root.tabModel.findIndex(t => t.id === root.currentTabId);
@@ -61,8 +56,7 @@ Scope {
                 }
                 readonly property bool widthFixed: Config.dashboard.panel.widthMode === "fixed"
                 readonly property bool heightFixed: Config.dashboard.panel.heightMode === "fixed"
-                // Resting (open) position — flush with the screen top, matching
-                // caelestia's Wrapper.qml exactly (topMargin: 0 when open)
+                // Resting (open) position — flush with the screen top
                 readonly property real restingTopMargin: 0
                 readonly property int cornerSize: 14
 
@@ -77,9 +71,7 @@ Scope {
                 // Window setup
                 color: "transparent"
                 exclusiveZone: 0
-                // Stays instantiated/visible through the whole close slide,
-                // matching caelestia's `visible: offsetScale < 1` — only hides
-                // once fully off-screen, never toggled abruptly
+                // Stays visible through the whole close slide, hiding only once fully off-screen
                 visible: offsetScale < 1
 
                 WlrLayershell.layer: WlrLayer.Overlay
@@ -121,9 +113,7 @@ Scope {
                         width: root.widthFixed
                             ? Math.min(Config.dashboard.panel.width, (root.screen?.width ?? 1280) * 0.95)
                             : Math.min(Math.max(tabView.currentPaneWidth + 40, 700), (root.screen?.width ?? 1280) * 0.85, 1400)
-                        // Content-driven, not a fixed screen fraction — so a tab whose
-                        // cards need less room than the ceiling doesn't get stretched
-                        // into dead space (caelestia's Wrapper.qml sizes the same way)
+                        // Content-driven, not a screen fraction, so a narrow tab isn't stretched into dead space
                         // Fixed mode flips this: panel dictates height down to the active tab
                         height: root.heightFixed
                             ? Math.min(Config.dashboard.panel.height, (root.screen?.height ?? 800) * 0.95)
@@ -133,9 +123,7 @@ Scope {
                         topLeftRadius: 0
                         topRightRadius: 0
                         color: Colors.panel
-                        // No border — a Rectangle can't outline only three sides, and
-                        // the top edge must merge into the bar. Matches the sidebar
-                        // and session backdrops, which are borderless too
+                        // No border — a Rectangle can't outline only three sides, and the top edge must merge into the bar
                         clip: true
 
                         opacity: 1 - root.offsetScale
@@ -144,9 +132,7 @@ Scope {
                             NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
                         }
 
-                        // Hover-to-stay-open: cancels a pending hover-close
-                        // scheduled by leaving the bar pill while the cursor
-                        // is in transit down into the panel
+                        // Hover-to-stay-open: cancels the close the bar pill scheduled while the cursor is in transit into the panel
                         HoverHandler {
                             onHoveredChanged: {
                                 if (hovered)

@@ -15,12 +15,7 @@ Item {
         return 58 + Binds.rowsFor(category).length * 26;
     }
 
-    // Column packing (longest-processing-time bin-packing): sort categories
-    // tallest-first, always drop the next one into whichever column is
-    // currently shortest. More categories grow the column count rather than
-    // any one column's height, so this keeps scaling as keybinds are added
-    // over time instead of turning into one tall wall or leaving a column
-    // mostly empty.
+    // Column packing (longest-processing-time): sort categories tallest-first into whichever column is shortest, so more categories grow the count, not one column's height
     readonly property int columnCount: Math.max(2, Math.ceil(Binds.categories.length / 3))
     readonly property var columns: {
         const cats = [...Binds.categories].sort((a, b) => root.estimatedHeight(b) - root.estimatedHeight(a));
@@ -38,11 +33,7 @@ Item {
         return cols;
     }
 
-    // Natural size, read straight from the rendered columns below. Safe to
-    // do (unlike sizing from a horizontal ListView's contentWidth — see the
-    // gotcha in Overview/Content.qml) because Row/Column/Repeater fully
-    // instantiate every child regardless of viewport size; there's no
-    // virtualization deadlock to avoid here.
+    // Natural size read straight from the columns below — safe here, unlike a horizontal ListView's contentWidth, since Row/Column/Repeater instantiate every child
     implicitWidth: Math.min(columnsRow.implicitWidth, (root.screen?.width ?? 1280) * 0.85)
     implicitHeight: Math.min(columnsRow.implicitHeight, (root.screen?.height ?? 800) * 0.8)
     width: implicitWidth

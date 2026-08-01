@@ -4,13 +4,8 @@ import QtQuick
 import Quickshell
 import "../utils"
 
-// Current weather (Open-Meteo), geolocated via ipinfo.io. No location config
-// exists yet, so this always guesses from the box's public IP — manual
-// city entry, geocoding, and locale fallbacks are deferred until one does.
-//
-// No ref-counted activation like SystemUsage/NetworkUsage: this is one
-// geolocation call at startup plus an hourly refetch — cheap enough to
-// stay always-on rather than gate behind a card being visible.
+// Current weather (Open-Meteo), geolocated via ipinfo.io — no location config exists yet, so it always guesses from the public IP
+// Always-on rather than ref-counted like SystemUsage: one geolocation call at startup plus an hourly refetch
 Singleton {
     id: root
 
@@ -49,9 +44,7 @@ Singleton {
     property string _sunsetIso: ""
     property list<var> _forecast: []
 
-    // Shared WMO weather-code -> Material Symbols icon name mapping, used by
-    // both SmallWeatherCard (dash tab) and WeatherTab (full page) so the
-    // table isn't duplicated between them.
+    // Shared WMO weather-code -> Material Symbols icon mapping, so SmallWeatherCard and WeatherTab don't duplicate the table
     function iconFor(code: int): string {
         if (code === 0)
             return "sunny";
@@ -132,10 +125,7 @@ Singleton {
         const url = "https://api.open-meteo.com/v1/forecast" + "?latitude=" + root.latitude + "&longitude=" + root.longitude + "&current=temperature_2m,weather_code,relative_humidity_2m,apparent_temperature,wind_speed_10m" + "&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset" + "&timezone=auto&forecast_days=7" + (Config.weather.units === "fahrenheit" ? "&temperature_unit=fahrenheit" : "");
 
         Requests.get(url, data => {
-            // Current and daily are checked independently so a malformed
-            // response missing one block doesn't blank data the other
-            // block already provided (e.g. hero card stays live even if
-            // the forecast strip/sun times can't be populated this fetch).
+            // Current and daily checked independently, so a response missing one block doesn't blank what the other already provided
             let gotAny = false;
 
             if (data.current) {
@@ -152,9 +142,7 @@ Singleton {
                 root._todayLow = data.daily.temperature_2m_min[0];
                 root._sunriseIso = data.daily.sunrise[0] ?? "";
                 root._sunsetIso = data.daily.sunset[0] ?? "";
-                // "-" separators parse as UTC midnight in JS, which rolls
-                // back a day in any timezone behind UTC; "/" parses as
-                // local midnight instead.
+                // "-" separators parse as UTC midnight, rolling back a day in any timezone behind UTC; "/" parses as local midnight
                 root._forecast = (data.daily.time ?? []).map((date, i) => ({
                     date: date.replace(/-/g, "/"),
                     weatherCode: data.daily.weather_code[i],

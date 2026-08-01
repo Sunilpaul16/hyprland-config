@@ -3,9 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Pending package updates. `checkupdates` (pacman-contrib) for the official
-// repos and an AUR helper for the rest — both are read-only queries against a
-// temporary database, neither touches the installed system
+// Pending package updates via `checkupdates` (pacman-contrib) and an AUR helper — both read-only queries against a temporary database
 Singleton {
     id: root
 
@@ -17,10 +15,7 @@ Singleton {
     readonly property int aurCount: root.aurUpdates.length
     readonly property int total: root.repoCount + root.aurCount
 
-    // Set by shell.qml. Doubles as the reason this singleton exists at all:
-    // nothing else references Updates, and a lazy singleton's timers never
-    // start, so "check on login" would silently mean "check when the settings
-    // page is first opened" (same reason ColorsLoader is poked from shell.qml)
+    // Set by shell.qml — a lazy singleton's timers never start, so without this poke "check on login" would mean "check when the settings page opens"
     property bool backgroundChecking: false
 
     property bool checking: false
@@ -62,9 +57,7 @@ Singleton {
     property bool _repoDone: false
     property bool _aurDone: false
 
-    // Last count announced, so a re-check finding the same updates stays quiet.
-    // Restored from Persistent so a shell-only restart stays quiet too; a fresh
-    // Hyprland login starts at 0 and announces once
+    // Last count announced, so a re-check finding the same updates stays quiet — restored from Persistent, while a fresh login starts at 0 and announces once
     property int _lastNotifiedTotal: Persistent.isNewHyprlandInstance ? 0 : Persistent.lastNotifiedUpdateTotal
 
     function _settle(): void {

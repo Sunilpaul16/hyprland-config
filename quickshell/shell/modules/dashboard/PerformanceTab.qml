@@ -4,16 +4,8 @@ import QtQuick.Layouts
 import Quickshell.Services.UPower
 import "../../services"
 
-// Performance tab: CPU/GPU hero cards over Storage/Network/Memory, with the
-// battery tank alongside on hardware that has one. Layout ported from
-// caelestia's Performance.qml.
-//
-// Card visibility is driven by each Loader's own `active` flag, never by the
-// loaded item's `visible`: a parent whose `visible` binds to a descendant's
-// `visible` latches false forever, because `visible` reads *effective*
-// visibility, so the descendant just reports the parent's own state back.
-// That latched on every dashboard reopen, since the panes are created while
-// the window is still hidden (offsetScale is 1 at the instant they load).
+// Performance tab: CPU/GPU hero cards over Storage/Network/Memory, plus a battery tank where present
+// Card visibility uses each Loader's `active`, never `visible` — binding to a descendant's effective visibility latches false forever
 Item {
     id: root
 

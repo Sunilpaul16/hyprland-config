@@ -4,8 +4,7 @@ import Quickshell.Io
 import "../../../services"
 import "../../../components"
 
-// Distro logo + avatar + uptime badge + WM pill, laid out horizontally like
-// caelestia's dash/User.qml. Avatar path is config-driven (Config.dashboard.user.avatarPath).
+// Distro logo + avatar + uptime badge + WM pill, laid out horizontally
 Rectangle {
     id: root
 

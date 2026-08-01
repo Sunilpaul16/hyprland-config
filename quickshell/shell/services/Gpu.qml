@@ -4,9 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// GPU usage + temperature polling via nvidia-smi — Nvidia only (this box
-// has no AMD/Intel gpu_busy_percent sysfs path, so no fallback path is
-// built). Same ref-counted shape as SystemUsage.qml/NetworkUsage.qml.
+// GPU usage + temperature via nvidia-smi — Nvidia only (no AMD/Intel gpu_busy_percent fallback built); same ref-counted shape as SystemUsage.qml
 Singleton {
     id: root
 
