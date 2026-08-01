@@ -2,79 +2,83 @@
 ---- MY PROGRAMS ----
 ---------------------
 
-terminal    = "kitty"
-fileManager = "nautilus"
-menu        = "fuzzel"
-browser    = "google-chrome-stable"
-codeEditor      = "code"
+local M = {}
 
-home = os.getenv("HOME")
+M.terminal    = "kitty"
+M.fileManager = "nautilus"
+M.menu        = "fuzzel"
+M.browser    = "google-chrome-stable"
+M.codeEditor      = "code"
+
+M.home = os.getenv("HOME")
 
 ---------------------
 ---- KEYBINDINGS ----
 ---------------------
 
 -- Apps / launcher
-kbTerminal          = "SUPER + Grave"
-kbFileManager       = "SUPER + E"
-kbAppMenu           = "SUPER + R" -- fuzzel (fallback launcher)
-kbBrowser           = "SUPER + W"
-kbCodeEditor        = "SUPER + C"
-kbLauncher          = "SUPER + Space" -- quickshell app launcher
-kbClipboardHistory  = "SUPER + V"
-kbWallpaperPicker   = "SUPER + T"
-kbRandomWallpaper   = "SUPER + SHIFT + T"
-kbCheatsheet        = "SUPER + Slash"
-kbOverview          = "SUPER + Tab" -- quickshell workspace overview
-kbSettings          = "SUPER + I" -- quickshell settings panel
+M.kbTerminal          = "SUPER + Grave"
+M.kbFileManager       = "SUPER + E"
+M.kbAppMenu           = "SUPER + R" -- fuzzel (fallback launcher)
+M.kbBrowser           = "SUPER + W"
+M.kbCodeEditor        = "SUPER + C"
+M.kbLauncher          = "SUPER + Space" -- quickshell app launcher
+M.kbClipboardHistory  = "SUPER + V"
+M.kbWallpaperPicker   = "SUPER + T"
+M.kbRandomWallpaper   = "SUPER + SHIFT + T"
+M.kbCheatsheet        = "SUPER + Slash"
+M.kbOverview          = "SUPER + Tab" -- quickshell workspace overview
+M.kbSettings          = "SUPER + I" -- quickshell settings panel
 
 -- Window actions
-kbCloseWindow           = "SUPER + Q"
-kbToggleWindowFloating  = "SUPER + ALT + Space"
-kbTogglePseudotile      = "SUPER + ALT + P"
-kbToggleSplit           = "SUPER + J"
-kbToggleFullscreen      = "SUPER + F"
-kbTogglePin             = "SUPER + P"
-kbFocusLeft             = "SUPER + left"
-kbFocusRight            = "SUPER + right"
-kbFocusUp               = "SUPER + up"
-kbFocusDown             = "SUPER + down"
-kbMoveWindow            = "SUPER + mouse:272"
-kbResizeWindow          = "SUPER + mouse:273"
+M.kbCloseWindow           = "SUPER + Q"
+M.kbToggleWindowFloating  = "SUPER + ALT + Space"
+M.kbTogglePseudotile      = "SUPER + ALT + P"
+M.kbToggleSplit           = "SUPER + J"
+M.kbToggleFullscreen      = "SUPER + F"
+M.kbTogglePin             = "SUPER + P"
+M.kbFocusLeft             = "SUPER + left"
+M.kbFocusRight            = "SUPER + right"
+M.kbFocusUp               = "SUPER + up"
+M.kbFocusDown             = "SUPER + down"
+M.kbMoveWindow            = "SUPER + mouse:272"
+M.kbResizeWindow          = "SUPER + mouse:273"
 
 -- Workspaces
-kbGoToWs                = "SUPER"       -- + <N> in keybinds.lua's loop
-kbMoveWinToWs            = "SUPER + SHIFT" -- + <N> in keybinds.lua's loop
-kbSpecialWs              = "SUPER + S"
-kbMoveWinToScratchpad    = "SUPER + SHIFT + S"
-kbWorkspaceNext          = "SUPER + mouse_down"
-kbWorkspacePrev          = "SUPER + mouse_up"
+M.kbGoToWs                = "SUPER"       -- + <N> in keybinds.lua's loop
+M.kbMoveWinToWs            = "SUPER + SHIFT" -- + <N> in keybinds.lua's loop
+M.kbSpecialWs              = "SUPER + S"
+M.kbMoveWinToScratchpad    = "SUPER + SHIFT + S"
+M.kbWorkspaceNext          = "SUPER + mouse_down"
+M.kbWorkspacePrev          = "SUPER + mouse_up"
 
 -- System
-kbExit  = "SUPER + M"
-kbLock  = "SUPER + L"
-kbRestartShell = "SUPER + CTRL + R"
-kbReloadHyprland = "SUPER + CTRL + ALT + R"
+M.kbExit  = "SUPER + M"
+M.kbLock  = "SUPER + L"
+M.kbRestartShell = "SUPER + CTRL + R"
+M.kbReloadHyprland = "SUPER + CTRL + ALT + R"
 
 -- Screenshots / recording
-kbScreenshotFull        = "Print"
-kbScreenshotRegion      = "SUPER + Print"
-kbScreenshotRegionEdit  = "SUPER + SHIFT + Print"
-kbRecordRegion          = "SUPER + ALT + R"
-kbRecordFull            = "SUPER + ALT + SHIFT + R"
+M.kbScreenshotFull        = "Print"
+M.kbScreenshotRegion      = "SUPER + Print"
+M.kbScreenshotRegionEdit  = "SUPER + SHIFT + Print"
+M.kbRecordRegion          = "SUPER + ALT + R"
+M.kbRecordFull            = "SUPER + ALT + SHIFT + R"
 
 -- Media / hardware keys
-kbVolumeUp        = "XF86AudioRaiseVolume"
-kbVolumeDown      = "XF86AudioLowerVolume"
-kbMute            = "XF86AudioMute"
-kbMicMute         = "XF86AudioMicMute"
-kbBrightnessUp    = "XF86MonBrightnessUp"
-kbBrightnessDown  = "XF86MonBrightnessDown"
-kbMediaNext       = "XF86AudioNext"
-kbMediaPause      = "XF86AudioPause"
-kbMediaPlay       = "XF86AudioPlay"
-kbMediaPrev       = "XF86AudioPrev"
+M.kbVolumeUp        = "XF86AudioRaiseVolume"
+M.kbVolumeDown      = "XF86AudioLowerVolume"
+M.kbMute            = "XF86AudioMute"
+M.kbMicMute         = "XF86AudioMicMute"
+M.kbBrightnessUp    = "XF86MonBrightnessUp"
+M.kbBrightnessDown  = "XF86MonBrightnessDown"
+M.kbMediaNext       = "XF86AudioNext"
+M.kbMediaPause      = "XF86AudioPause"
+M.kbMediaPlay       = "XF86AudioPlay"
+M.kbMediaPrev       = "XF86AudioPrev"
 
 -- Screen
-kbZoomOut = "SUPER + Minus"
-kbZoomIn  = "SUPER + Equal"
+M.kbZoomOut = "SUPER + Minus"
+M.kbZoomIn  = "SUPER + Equal"
+
+return M

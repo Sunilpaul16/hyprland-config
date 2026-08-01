@@ -4,78 +4,80 @@
 
 
 
-hl.bind(kbTerminal, hl.dsp.exec_cmd(terminal), { description = "App: terminal" })
-hl.bind(kbCloseWindow, hl.dsp.window.close(), { description = "Window: close" })
-hl.bind(kbExit, hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"), { description = "System: exit hyprland" })
-hl.bind(kbFileManager, hl.dsp.exec_cmd(fileManager), { description = "App: file manager" })
-hl.bind(kbToggleWindowFloating, hl.dsp.window.float({ action = "toggle" }), { description = "Window: toggle floating" })
-hl.bind(kbAppMenu, hl.dsp.exec_cmd(menu), { description = "Launcher: application menu" })
-hl.bind(kbTogglePseudotile, hl.dsp.window.pseudo(), { description = "Window: toggle pseudotile" })
-hl.bind(kbToggleSplit, hl.dsp.layout("togglesplit"), { description = "Window: toggle split direction" })
-hl.bind(kbToggleFullscreen, hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }), { description = "Window: Fullscreen" })
-hl.bind(kbTogglePin, hl.dsp.window.pin(), { description = "Window: Pin" })
+local v = require("variables")
 
-hl.bind(kbBrowser, hl.dsp.exec_cmd(browser), { description = "App: browser" })
-hl.bind(kbClipboardHistory, hl.dsp.exec_cmd("qs -c shell ipc call launcher openClip"), { description = "Launcher: clipboard history" })
-hl.bind(kbLock, hl.dsp.exec_cmd("hyprlock"), { description = "System: lock screen" })
-hl.bind(kbRestartShell, hl.dsp.exec_cmd([[bash -c 'pkill -x qs; qs -n -c shell']]), { description = "System: restart quickshell" })
-hl.bind(kbReloadHyprland, hl.dsp.exec_cmd([[bash -c 'hyprctl reload && notify-send -a hyprland "Hyprland" "Config reloaded"']]), { description = "System: reload Hyprland config" })
-hl.bind(kbLauncher, hl.dsp.exec_cmd("qs -c shell ipc call launcher openApps"), { description = "Launcher: apps" })
-hl.bind(kbWallpaperPicker, hl.dsp.exec_cmd("qs -c shell ipc call launcher openWallpaper"), { description = "Launcher: wallpaper" })
-hl.bind(kbRandomWallpaper, hl.dsp.global("quickshell:randomWallpaper"), { description = "Launcher: random wallpaper" })
-hl.bind(kbCodeEditor, hl.dsp.exec_cmd(codeEditor), { description = "App: code editor" })
-hl.bind(kbCheatsheet, hl.dsp.exec_cmd("qs -c shell ipc call cheatsheet toggle"), { description = "Launcher: keybind cheatsheet" })
-hl.bind(kbOverview, hl.dsp.exec_cmd("qs -c shell ipc call overview toggle"), { description = "Launcher: workspace overview" })
+hl.bind(v.kbTerminal, hl.dsp.exec_cmd(v.terminal), { description = "App: terminal" })
+hl.bind(v.kbCloseWindow, hl.dsp.window.close(), { description = "Window: close" })
+hl.bind(v.kbExit, hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"), { description = "System: exit hyprland" })
+hl.bind(v.kbFileManager, hl.dsp.exec_cmd(v.fileManager), { description = "App: file manager" })
+hl.bind(v.kbToggleWindowFloating, hl.dsp.window.float({ action = "toggle" }), { description = "Window: toggle floating" })
+hl.bind(v.kbAppMenu, hl.dsp.exec_cmd(v.menu), { description = "Launcher: application menu" })
+hl.bind(v.kbTogglePseudotile, hl.dsp.window.pseudo(), { description = "Window: toggle pseudotile" })
+hl.bind(v.kbToggleSplit, hl.dsp.layout("togglesplit"), { description = "Window: toggle split direction" })
+hl.bind(v.kbToggleFullscreen, hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }), { description = "Window: Fullscreen" })
+hl.bind(v.kbTogglePin, hl.dsp.window.pin(), { description = "Window: Pin" })
+
+hl.bind(v.kbBrowser, hl.dsp.exec_cmd(v.browser), { description = "App: browser" })
+hl.bind(v.kbClipboardHistory, hl.dsp.exec_cmd("qs -c shell ipc call launcher openClip"), { description = "Launcher: clipboard history" })
+hl.bind(v.kbLock, hl.dsp.exec_cmd("hyprlock"), { description = "System: lock screen" })
+hl.bind(v.kbRestartShell, hl.dsp.exec_cmd([[bash -c 'pkill -x qs; qs -n -c shell']]), { description = "System: restart quickshell" })
+hl.bind(v.kbReloadHyprland, hl.dsp.exec_cmd([[bash -c 'hyprctl reload && notify-send -a hyprland "Hyprland" "Config reloaded"']]), { description = "System: reload Hyprland config" })
+hl.bind(v.kbLauncher, hl.dsp.exec_cmd("qs -c shell ipc call launcher openApps"), { description = "Launcher: apps" })
+hl.bind(v.kbWallpaperPicker, hl.dsp.exec_cmd("qs -c shell ipc call launcher openWallpaper"), { description = "Launcher: wallpaper" })
+hl.bind(v.kbRandomWallpaper, hl.dsp.global("quickshell:randomWallpaper"), { description = "Launcher: random wallpaper" })
+hl.bind(v.kbCodeEditor, hl.dsp.exec_cmd(v.codeEditor), { description = "App: code editor" })
+hl.bind(v.kbCheatsheet, hl.dsp.exec_cmd("qs -c shell ipc call cheatsheet toggle"), { description = "Launcher: keybind cheatsheet" })
+hl.bind(v.kbOverview, hl.dsp.exec_cmd("qs -c shell ipc call overview toggle"), { description = "Launcher: workspace overview" })
 hl.bind("SUPER + D", hl.dsp.exec_cmd("qs -c shell ipc call dashboard toggle"), { description = "Launcher: dashboard" }) -- kb constant intentionally not added to variables.lua, out of scope for this change
-hl.bind(kbSettings, hl.dsp.exec_cmd("qs -c shell ipc call settings toggle"), { description = "Launcher: settings" })
+hl.bind(v.kbSettings, hl.dsp.exec_cmd("qs -c shell ipc call settings toggle"), { description = "Launcher: settings" })
 
 
 -- Screenshots
-hl.bind(kbScreenshotFull, hl.dsp.exec_cmd(home .. "/.local/bin/screenshot full"), { description = "Screenshot: fullscreen" })
-hl.bind(kbScreenshotRegion, hl.dsp.exec_cmd(home .. "/.local/bin/screenshot region"), { description = "Screenshot: region" })
-hl.bind(kbScreenshotRegionEdit, hl.dsp.exec_cmd(home .. "/.local/bin/screenshot region --edit"), { description = "Screenshot: region + edit" })
+hl.bind(v.kbScreenshotFull, hl.dsp.exec_cmd(v.home .. "/.local/bin/screenshot full"), { description = "Screenshot: fullscreen" })
+hl.bind(v.kbScreenshotRegion, hl.dsp.exec_cmd(v.home .. "/.local/bin/screenshot region"), { description = "Screenshot: region" })
+hl.bind(v.kbScreenshotRegionEdit, hl.dsp.exec_cmd(v.home .. "/.local/bin/screenshot region --edit"), { description = "Screenshot: region + edit" })
 
 -- Screen recording (press again to stop, regardless of which mode started it)
-hl.bind(kbRecordRegion, hl.dsp.exec_cmd(home .. "/.local/bin/record region"), { description = "Record: region (toggle)" })
-hl.bind(kbRecordFull, hl.dsp.exec_cmd(home .. "/.local/bin/record full"), { description = "Record: fullscreen (toggle)" })
+hl.bind(v.kbRecordRegion, hl.dsp.exec_cmd(v.home .. "/.local/bin/record region"), { description = "Record: region (toggle)" })
+hl.bind(v.kbRecordFull, hl.dsp.exec_cmd(v.home .. "/.local/bin/record full"), { description = "Record: fullscreen (toggle)" })
 
 -- Move focus with arrow keys
-hl.bind(kbFocusLeft,  hl.dsp.focus({ direction = "left" }),  { description = "Window: focus left" })
-hl.bind(kbFocusRight, hl.dsp.focus({ direction = "right" }), { description = "Window: focus right" })
-hl.bind(kbFocusUp,    hl.dsp.focus({ direction = "up" }),    { description = "Window: focus up" })
-hl.bind(kbFocusDown,  hl.dsp.focus({ direction = "down" }),  { description = "Window: focus down" })
+hl.bind(v.kbFocusLeft,  hl.dsp.focus({ direction = "left" }),  { description = "Window: focus left" })
+hl.bind(v.kbFocusRight, hl.dsp.focus({ direction = "right" }), { description = "Window: focus right" })
+hl.bind(v.kbFocusUp,    hl.dsp.focus({ direction = "up" }),    { description = "Window: focus up" })
+hl.bind(v.kbFocusDown,  hl.dsp.focus({ direction = "down" }),  { description = "Window: focus down" })
 
--- Switch workspaces with kbGoToWs/kbMoveWinToWs + [0-9]
+-- Switch workspaces with v.kbGoToWs/v.kbMoveWinToWs + [0-9]
 for i = 1, 10 do
     local key = i % 10
-    hl.bind(kbGoToWs .. " + " .. key,        hl.dsp.focus({ workspace = i}), { description = "Workspace: switch <N>" })
-    hl.bind(kbMoveWinToWs .. " + " .. key,   hl.dsp.window.move({ workspace = i }), { description = "Workspace: move window to <N>" })
+    hl.bind(v.kbGoToWs .. " + " .. key,        hl.dsp.focus({ workspace = i}), { description = "Workspace: switch <N>" })
+    hl.bind(v.kbMoveWinToWs .. " + " .. key,   hl.dsp.window.move({ workspace = i }), { description = "Workspace: move window to <N>" })
 end
 
 -- Special workspace (scratchpad)
-hl.bind(kbSpecialWs,             hl.dsp.workspace.toggle_special("magic"), { description = "Workspace: toggle scratchpad" })
-hl.bind(kbMoveWinToScratchpad,   hl.dsp.window.move({ workspace = "special:magic" }), { description = "Workspace: move window to scratchpad" })
+hl.bind(v.kbSpecialWs,             hl.dsp.workspace.toggle_special("magic"), { description = "Workspace: toggle scratchpad" })
+hl.bind(v.kbMoveWinToScratchpad,   hl.dsp.window.move({ workspace = "special:magic" }), { description = "Workspace: move window to scratchpad" })
 
 -- Scroll through workspaces
-hl.bind(kbWorkspaceNext, hl.dsp.focus({ workspace = "e+1" }), { description = "Workspace: next" })
-hl.bind(kbWorkspacePrev, hl.dsp.focus({ workspace = "e-1" }), { description = "Workspace: previous" })
+hl.bind(v.kbWorkspaceNext, hl.dsp.focus({ workspace = "e+1" }), { description = "Workspace: next" })
+hl.bind(v.kbWorkspacePrev, hl.dsp.focus({ workspace = "e-1" }), { description = "Workspace: previous" })
 
 -- Move/resize windows with mouse
-hl.bind(kbMoveWindow,   hl.dsp.window.drag(),   { mouse = true, description = "Window: drag with mouse" })
-hl.bind(kbResizeWindow, hl.dsp.window.resize(), { mouse = true, description = "Window: resize with mouse" })
+hl.bind(v.kbMoveWindow,   hl.dsp.window.drag(),   { mouse = true, description = "Window: drag with mouse" })
+hl.bind(v.kbResizeWindow, hl.dsp.window.resize(), { mouse = true, description = "Window: resize with mouse" })
 
-hl.bind(kbVolumeUp,       hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true, description = "Media: volume up" })
-hl.bind(kbVolumeDown,     hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true, description = "Media: volume down" })
-hl.bind(kbMute,           hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true, description = "Media: mute" })
-hl.bind(kbMicMute,        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),   { locked = true, repeating = true, description = "Media: mic mute" })
-hl.bind(kbBrightnessUp,   hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true, description = "Media: brightness up" })
-hl.bind(kbBrightnessDown, hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true, description = "Media: brightness down" })
+hl.bind(v.kbVolumeUp,       hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true, description = "Media: volume up" })
+hl.bind(v.kbVolumeDown,     hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true, description = "Media: volume down" })
+hl.bind(v.kbMute,           hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true, description = "Media: mute" })
+hl.bind(v.kbMicMute,        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),   { locked = true, repeating = true, description = "Media: mic mute" })
+hl.bind(v.kbBrightnessUp,   hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true, description = "Media: brightness up" })
+hl.bind(v.kbBrightnessDown, hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true, description = "Media: brightness down" })
 
 -- Media playback
-hl.bind(kbMediaNext,  hl.dsp.exec_cmd("playerctl next"),       { locked = true, description = "Media: next track" })
-hl.bind(kbMediaPause, hl.dsp.exec_cmd("playerctl play-pause"), { locked = true, description = "Media: play/pause" })
-hl.bind(kbMediaPlay,  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true, description = "Media: play/pause" })
-hl.bind(kbMediaPrev,  hl.dsp.exec_cmd("playerctl previous"),   { locked = true, description = "Media: previous track" })
+hl.bind(v.kbMediaNext,  hl.dsp.exec_cmd("playerctl next"),       { locked = true, description = "Media: next track" })
+hl.bind(v.kbMediaPause, hl.dsp.exec_cmd("playerctl play-pause"), { locked = true, description = "Media: play/pause" })
+hl.bind(v.kbMediaPlay,  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true, description = "Media: play/pause" })
+hl.bind(v.kbMediaPrev,  hl.dsp.exec_cmd("playerctl previous"),   { locked = true, description = "Media: previous track" })
 
 --# Zoom
 local function zoomfunction(value)
@@ -88,6 +90,6 @@ local function zoomfunction(value)
         hl.config({ cursor = { zoom_factor = zoomvalue + value } })
     end
 end
-hl.bind(kbZoomOut, function() zoomfunction(-0.3) end, { repeating = true, description = "Screen: zoom out" })
-hl.bind(kbZoomIn, function() zoomfunction(0.3) end, { repeating = true, description = "Screen: zoom in" })
+hl.bind(v.kbZoomOut, function() zoomfunction(-0.3) end, { repeating = true, description = "Screen: zoom out" })
+hl.bind(v.kbZoomIn, function() zoomfunction(0.3) end, { repeating = true, description = "Screen: zoom in" })
 
