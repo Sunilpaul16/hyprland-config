@@ -14,6 +14,11 @@ Singleton {
     // seconds rather than instant
     property bool busy: false
 
+    // "dynamic" | "<scheme>/<flavour>" — setscheme owns the backing file, so
+    // read it rather than mirroring it into Config
+    property string source: "dynamic"
+    readonly property bool usingPreset: root.source !== "dynamic"
+
     readonly property string modeLabel: {
         if (root.mode === "light")
             return "Light";
@@ -40,9 +45,38 @@ Singleton {
         modeProc.running = true;
     }
 
+    function applyPreset(id: string): void {
+        if (root.busy)
+            return;
+        root.busy = true;
+        modeProc.command = [Directories.setschemeScript, id];
+        modeProc.running = true;
+    }
+
+    function setDynamic(): void {
+        if (root.busy || !root.usingPreset)
+            return;
+        root.busy = true;
+        modeProc.command = [Directories.setschemeScript, "dynamic"];
+        modeProc.running = true;
+    }
+
     Process {
         id: modeProc
         onExited: root.busy = false
+    }
+
+    // setscheme owns this file, same arrangement as color_mode above
+    FileView {
+        path: Directories.colorSourceFile
+        watchChanges: true
+
+        onLoaded: {
+            const value = text().trim();
+            if (value.length > 0)
+                root.source = value;
+        }
+        onFileChanged: reload()
     }
 
     // switchwall owns this file, so read it rather than tracking the mode
