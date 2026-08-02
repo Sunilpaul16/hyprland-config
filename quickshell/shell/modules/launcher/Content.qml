@@ -88,7 +88,7 @@ Item {
     implicitWidth: mode === "wallpaper" ? wallpaperPanelWidth : appPanelWidth
     implicitHeight: {
         if (mode === "wallpaper")
-            return chromeHeight + wallpaperRowHeight + 4 + caption.implicitHeight;
+            return chromeHeight + wallpaperRowHeight + 4 + carousel.captionHeight;
         const cap = mode === "clip" ? maxClipItems : maxListItems;
         const n = Math.max(1, Math.min(cap, currentModeResults.length));
         const itemHeight = mode === "clip" ? clipItemHeight : listItemHeight;

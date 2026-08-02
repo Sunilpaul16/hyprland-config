@@ -12,6 +12,8 @@ Item {
     required property int panelPad
 
     property alias currentIndex: row.currentIndex
+    // Read by the launcher to size the panel in wallpaper mode
+    readonly property alias captionHeight: caption.implicitHeight
 
     signal activated(entry: var)
     signal navigate(delta: int)
