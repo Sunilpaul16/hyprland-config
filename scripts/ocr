@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Screen-region OCR — select a region, run tesseract over it, copy the text.
+# No Quickshell dependency, so it works while the shell is down.
+
+set -euo pipefail
+
+LANG_ARG="${1:-eng}"
+
+for bin in grim slurp tesseract wl-copy; do
+    command -v "$bin" >/dev/null || { echo "ocr: missing required binary: $bin" >&2; exit 1; }
+done
+
+region="$(slurp || true)"
+[[ -n "$region" ]] || exit 0
+
+# tesseract writes to <outputbase>.txt; "-" sends it to stdout instead
+text="$(grim -g "$region" - | tesseract -l "$LANG_ARG" - - 2>/dev/null || true)"
+text="$(printf '%s' "$text" | sed -e 's/[[:space:]]*$//' -e '/^$/d')"
+
+if [[ -z "$text" ]]; then
+    notify-send -a ocr "OCR" "No text found in selection" 2>/dev/null || true
+    exit 0
+fi
+
+printf '%s\n' "$text" | wl-copy
+notify-send -a ocr "OCR — copied $(printf '%s' "$text" | wc -w) words" "$(printf '%s' "$text" | head -c 160)" 2>/dev/null || true

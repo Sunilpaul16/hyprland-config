@@ -58,6 +58,9 @@ M.kbLock  = "SUPER + L"
 M.kbRestartShell = "SUPER + CTRL + R"
 M.kbReloadHyprland = "SUPER + CTRL + ALT + R"
 
+M.kbEmojiPicker           = "SUPER + Period"
+M.kbOcrRegion             = "SUPER + SHIFT + O"
+
 -- Screenshots / recording
 M.kbScreenshotFull        = "Print"
 M.kbScreenshotRegion      = "SUPER + Print"

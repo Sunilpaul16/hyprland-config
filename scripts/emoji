@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Emoji picker — fuzzel over the vendored list, copies the glyph to the clipboard.
+# No Quickshell dependency, so it works while the shell is down.
+
+set -euo pipefail
+
+LIST="$(dirname "$(readlink -f "$0")")/lib/emoji.txt"
+
+for bin in fuzzel wl-copy; do
+    command -v "$bin" >/dev/null || { echo "emoji: missing required binary: $bin" >&2; exit 1; }
+done
+[[ -r "$LIST" ]] || { echo "emoji: list not found at $LIST" >&2; exit 1; }
+
+# Strip comments, let fuzzel filter on "<glyph> <Name>", then keep only the glyph
+choice="$(grep -v '^#' "$LIST" | fuzzel --dmenu --prompt 'emoji ' || true)"
+[[ -n "$choice" ]] || exit 0
+
+printf '%s' "${choice%% *}" | wl-copy
+notify-send -a emoji "Copied ${choice%% *}" "${choice#* }" 2>/dev/null || true
