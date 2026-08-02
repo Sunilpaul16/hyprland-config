@@ -7,6 +7,7 @@ filter eats. No side effects, no writes.
 
 import json
 import os
+import re
 import sys
 
 # Roles the six matugen templates reference. A missing one renders a literal
@@ -31,6 +32,85 @@ KITTY_NAMES = [f"term{i}" for i in range(16)] + [
     "onTertiary", "onTertiaryContainer", "onError", "onErrorContainer",
     "outlineVariant",
 ]
+
+
+def repo_dir():
+    here = os.path.dirname(os.path.realpath(__file__))
+    return os.path.normpath(os.path.join(here, "..", ".."))
+
+
+# The shell's role names live in three places that must agree. Miss the
+# ColorsLoader one and the role is simply absent while previewing a preset,
+# silently and with no error — this is what catches that.
+def shell_role_sets():
+    root = repo_dir()
+    paths = {
+        "colors.json template": os.path.join(
+            root, "matugen", "templates", "colors-json", "colors.json"
+        ),
+        "Colors.qml": os.path.join(
+            root, "quickshell", "shell", "services", "Colors.qml"
+        ),
+        "ColorsLoader.previewPalette": os.path.join(
+            root, "quickshell", "shell", "services", "ColorsLoader.qml"
+        ),
+    }
+    for name, path in paths.items():
+        if not os.path.isfile(path):
+            sys.exit(f"preset-palette: cannot check, missing {path}")
+
+    with open(paths["colors.json template"]) as f:
+        raw = f.read()
+    template = set(json.loads(raw))
+    # The template's keys are the shell's renamed roles; its values name the M3
+    # roles a preset must supply, e.g. "text": "{{colors.on_surface...}}"
+    referenced = {
+        snake_to_camel(m) for m in re.findall(r"\{\{colors\.(\w+)\.", raw)
+    }
+
+    # Mutable roles only — panel/layer/recording are readonly and derived
+    with open(paths["Colors.qml"]) as f:
+        qml = set(re.findall(r"^\s*property color (\w+):", f.read(), re.M))
+
+    # The object literal previewPalette() hands to applyColors()
+    with open(paths["ColorsLoader.previewPalette"]) as f:
+        body = f.read()
+    start = body.find("function previewPalette")
+    end = body.find("function ", start + 1)
+    loader = set(re.findall(r"^\s*(\w+): palette\.", body[start:end], re.M))
+
+    return {
+        "colors.json template": template,
+        "Colors.qml": qml,
+        "ColorsLoader.previewPalette": loader,
+    }, referenced
+
+
+def check_roles():
+    sets, referenced = shell_role_sets()
+    every = set().union(*sets.values())
+    problems = []
+    for role in sorted(every):
+        missing = [n for n, s in sets.items() if role not in s]
+        if missing:
+            problems.append(f"  {role}: missing from {', '.join(missing)}")
+
+    # An M3 role the template renders but TEMPLATE_ROLES omits goes unvalidated,
+    # so a preset lacking it emits a literal {{...}} into a live config
+    for role in sorted(referenced - set(TEMPLATE_ROLES)):
+        problems.append(f"  {role}: rendered by colors.json but not in TEMPLATE_ROLES")
+
+    if problems:
+        print("preset-palette: role lists disagree", file=sys.stderr)
+        print("\n".join(problems), file=sys.stderr)
+        return 1
+    print(f"role lists agree ({len(every)} shell roles)")
+    return 0
+
+
+def snake_to_camel(name):
+    head, *rest = name.split("_")
+    return head + "".join(p.capitalize() for p in rest)
 
 
 def camel_to_snake(name):
@@ -107,8 +187,11 @@ def require(colours, names, what):
 
 def main():
     if len(sys.argv) < 2:
-        sys.exit("usage: preset-palette.py list|modes|matugen|scss ...")
+        sys.exit("usage: preset-palette.py list|modes|matugen|scss|check ...")
     cmd = sys.argv[1]
+
+    if cmd == "check":
+        sys.exit(check_roles())
 
     if cmd == "list":
         for pid, modes in list_flavours():
