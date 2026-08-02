@@ -30,7 +30,7 @@ Rectangle {
         width: root.checked ? 24 : 20
         height: width
         radius: width / 2
-        color: root.checked ? Colors.background : Colors.outline
+        color: root.checked ? Colors.textOnPrimary : Colors.outline
 
         Behavior on x { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
         Behavior on width { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }

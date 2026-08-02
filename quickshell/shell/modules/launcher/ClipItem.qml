@@ -116,7 +116,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 width: parent.width - iconSlot.width - parent.spacing
                 text: root.isAction ? root.modelData.label : root.modelData.text
-                color: root.isAction ? Colors.error : (root.isCurrent ? Colors.background : Colors.text)
+                color: root.isAction ? Colors.error : (root.isCurrent ? Colors.textOnPrimary : Colors.text)
                 font.pixelSize: 13
                 font.bold: root.isAction
                 wrapMode: Text.WordWrap

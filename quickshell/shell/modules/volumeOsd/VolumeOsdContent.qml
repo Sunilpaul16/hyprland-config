@@ -124,7 +124,7 @@ Column {
                 MaterialIcon {
                     anchors.centerIn: parent
                     text: control.pressed ? String(Math.round(slider.value * 100)) : slider.icon
-                    color: Colors.background
+                    color: Colors.textOnPrimary
                     font.pixelSize: control.pressed ? 11 : 14
                 }
             }

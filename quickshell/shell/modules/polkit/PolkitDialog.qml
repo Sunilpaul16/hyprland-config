@@ -205,7 +205,7 @@ Scope {
                         id: label
                         anchors.centerIn: parent
                         text: btn.text
-                        color: btn.primary ? Colors.background : Colors.text
+                        color: btn.primary ? Colors.textOnPrimary : Colors.text
                         font.pixelSize: 12
                     }
 

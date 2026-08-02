@@ -59,7 +59,7 @@ Rectangle {
             MaterialIcon {
                 anchors.centerIn: parent
                 text: root.page.icon
-                color: root.current ? Colors.background : Colors.text
+                color: root.current ? Colors.textOnPrimary : Colors.text
                 font.pixelSize: 20
                 fill: root.current ? 1 : 0
 

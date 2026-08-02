@@ -45,7 +45,7 @@ Item {
             id: countText
             anchors.centerIn: parent
             text: Notifs.unread > 9 ? "9+" : Notifs.unread
-            color: Colors.background
+            color: Colors.textOnPrimary
             font.pixelSize: 8
             font.bold: true
         }

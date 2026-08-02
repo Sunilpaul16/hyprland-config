@@ -159,7 +159,7 @@ Item {
                     text: "+" + slot.modelData.extra
                     font.pixelSize: 10
                     font.bold: slot.isActive
-                    color: slot.isActive ? Colors.background : Colors.textMuted
+                    color: slot.isActive ? Colors.textOnPrimary : Colors.textMuted
                 }
             }
 
@@ -169,7 +169,7 @@ Item {
                 text: modelData.ws.id
                 font.pixelSize: 12
                 font.bold: slot.isActive
-                color: slot.isActive ? Colors.background : (modelData.occupied ? Colors.text : Colors.textMuted)
+                color: slot.isActive ? Colors.textOnPrimary : (modelData.occupied ? Colors.text : Colors.textMuted)
 
                 Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
             }

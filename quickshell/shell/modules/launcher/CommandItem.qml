@@ -46,7 +46,7 @@ Item {
                 StyledText {
                     width: parent.width
                     text: root.modelData.title
-                    color: root.isCurrent ? Colors.background : Colors.text
+                    color: root.isCurrent ? Colors.textOnPrimary : Colors.text
                     font.pixelSize: 14
                     elide: Text.ElideRight
                 }
@@ -54,7 +54,7 @@ Item {
                 StyledText {
                     width: parent.width
                     text: root.modelData.description
-                    color: root.isCurrent ? Colors.background : Colors.textMuted
+                    color: root.isCurrent ? Colors.textOnPrimary : Colors.textMuted
                     font.pixelSize: 12
                     elide: Text.ElideRight
                 }

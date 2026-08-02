@@ -29,7 +29,7 @@ Rectangle {
         anchors.centerIn: parent
         text: btn.glyph
         font.pixelSize: btn.iconSize
-        color: btn.accented ? Colors.background : Colors.primary
+        color: btn.accented ? Colors.textOnPrimary : Colors.primary
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }

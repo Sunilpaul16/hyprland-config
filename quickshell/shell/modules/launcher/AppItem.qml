@@ -47,7 +47,7 @@ Item {
                 StyledText {
                     width: parent.width
                     text: root.modelData.name
-                    color: root.isCurrent ? Colors.background : Colors.text
+                    color: root.isCurrent ? Colors.textOnPrimary : Colors.text
                     font.pixelSize: 14
                     elide: Text.ElideRight
                 }
@@ -55,7 +55,7 @@ Item {
                 StyledText {
                     width: parent.width
                     text: root.modelData.comment || root.modelData.genericName || ""
-                    color: root.isCurrent ? Colors.background : Colors.textMuted
+                    color: root.isCurrent ? Colors.textOnPrimary : Colors.textMuted
                     font.pixelSize: 12
                     elide: Text.ElideRight
                     visible: text.length > 0

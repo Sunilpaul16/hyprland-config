@@ -50,6 +50,7 @@ Singleton {
             primary: palette.primary,
             secondary: palette.secondary,
             tertiary: palette.tertiary,
+            textOnPrimary: palette.on_primary,
             secondaryContainer: palette.secondary_container,
             text: palette.on_surface,
             textMuted: palette.on_surface_variant,

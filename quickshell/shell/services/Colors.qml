@@ -71,6 +71,10 @@ QtObject {
     property color tertiary: "#c8c0e8"
     Behavior on tertiary { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
 
+    // Text/icons sitting on a `primary` fill — same on<Capital> rename as text/textMuted below. Without it `background` stands in, which only reads while the palette is dark
+    property color textOnPrimary: "#003546"
+    Behavior on textOnPrimary { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+
     // Tonal fill sitting a step above `surface` — progress-track backgrounds
     property color secondaryContainer: "#37474f"
     Behavior on secondaryContainer { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }

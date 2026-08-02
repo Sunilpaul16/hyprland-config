@@ -194,7 +194,7 @@ Item {
                     anchors.centerIn: parent
                     text: dayCell.model.day
                     font.pixelSize: 12
-                    color: dayCell.isToday ? Colors.background : (dayCell.isWeekend ? Colors.primary : Colors.text)
+                    color: dayCell.isToday ? Colors.textOnPrimary : (dayCell.isWeekend ? Colors.primary : Colors.text)
                     opacity: dayCell.model.month === grid.month ? 1 : 0.35
                 }
             }
