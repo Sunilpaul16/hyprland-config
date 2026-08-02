@@ -109,13 +109,25 @@ ScrollPage {
         }
 
         SettingRow {
-            last: true
             live: true
             label: "Show active window title"
 
             ToggleSwitch {
                 checked: Config.bar.showWindowTitle
                 onToggled: v => Config.bar.showWindowTitle = v
+            }
+        }
+
+        SettingRow {
+            last: true
+            live: true
+            label: "Tray items"
+            subtext: "Choose which applets appear in the tray pill"
+
+            PillButton {
+                live: true
+                text: "Edit"
+                onClicked: SettingsState.openSubPage("tray")
             }
         }
     }

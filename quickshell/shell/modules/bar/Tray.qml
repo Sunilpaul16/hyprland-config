@@ -8,7 +8,7 @@ Item {
     id: root
 
     // Status applets that register a tray icon with no user-facing app running — hidden so the pill only reflects real apps like Discord or Steam
-    readonly property var hiddenIds: ["nm-applet", "blueman"]
+    readonly property var hiddenIds: Config.bar.trayHidden.split(",").map(s => s.trim().toLowerCase()).filter(s => s.length > 0)
 
     function isHidden(item: SystemTrayItem): bool {
         return root.hiddenIds.includes(item.id.toLowerCase());

@@ -63,6 +63,9 @@ Singleton {
                 property int height: 40 // top bar height (px)
                 property bool showTray: true        // system tray pill
                 property bool showWindowTitle: true // active-window pill
+                // Tray item ids kept out of the pill — status applets with no user-facing app. Comma-separated, matched case-insensitively against SystemTrayItem.id
+                // A string, not a list: JsonAdapter only serialises QQmlListProperty<JsonObject>, so a `list<string>` is silently dropped on write (jsonadapter.cpp:75/118)
+                property string trayHidden: "nm-applet,blueman"
             }
 
             property JsonObject sidebar: JsonObject {

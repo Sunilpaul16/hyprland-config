@@ -38,7 +38,8 @@ Item {
     // Sub-page registry — keyed by SettingsState.subPage
     readonly property var subPageModel: ({
         "wallpapers": wallpapersSubPage,
-        "schemes": schemesSubPage
+        "schemes": schemesSubPage,
+        "tray": traySubPage
     })
 
     NavList {
@@ -233,6 +234,12 @@ Item {
         id: schemesSubPage
 
         SchemesSubPage {}
+    }
+
+    Component {
+        id: traySubPage
+
+        TraySubPage {}
     }
 
     // Pages
