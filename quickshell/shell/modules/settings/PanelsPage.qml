@@ -268,6 +268,20 @@ ScrollPage {
 
         SettingRow {
             live: true
+            label: "Favour frequently used"
+            subtext: "How hard launch history lifts a result; 0 ranks by match only"
+
+            SettingSlider {
+                value: Config.launcher.frequencyWeight
+                from: 0
+                to: 1
+                stepSize: 0.05
+                onMoved: v => Config.launcher.frequencyWeight = Math.round(v * 20) / 20
+            }
+        }
+
+        SettingRow {
+            live: true
             label: "Maximum results"
             subtext: "App and command rows shown at once"
 

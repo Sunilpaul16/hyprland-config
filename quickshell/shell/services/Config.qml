@@ -149,6 +149,7 @@ Singleton {
                 property int maxResults: 8     // app/command rows shown at once
                 property int maxClipResults: 6 // clipboard rows shown at once
                 property bool fuzzy: true      // subsequence matching; off = plain substring
+                property real frequencyWeight: 0.3 // how hard launch history lifts a result; 0 disables ranking entirely
             }
 
             property JsonObject audio: JsonObject {
