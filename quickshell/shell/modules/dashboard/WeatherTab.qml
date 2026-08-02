@@ -38,7 +38,7 @@ Item {
                 StyledText {
                     text: new Date().toLocaleDateString(Qt.locale(), "dddd, MMMM d")
                     color: Colors.textMuted
-                    font.pixelSize: 13
+                    font.pixelSize: Motion.fontSize.label
                 }
             }
 
@@ -95,7 +95,7 @@ Item {
                         Layout.topMargin: 8
                         text: root.hasCurrent ? Weather.descriptionFor(Weather.weatherCode) : (Weather.hasError ? "Unavailable" : "Loading…")
                         color: Colors.textMuted
-                        font.pixelSize: 16
+                        font.pixelSize: Motion.fontSize.large
                     }
                 }
             }
@@ -130,7 +130,7 @@ Item {
             Layout.topMargin: 4
             visible: root.hasForecast
             text: "7-Day Forecast"
-            font.pixelSize: 14
+            font.pixelSize: Motion.fontSize.subhead
             font.bold: true
         }
 
@@ -164,7 +164,7 @@ Item {
             visible: !root.hasForecast
             text: Weather.hasError ? "Forecast unavailable" : "Loading forecast…"
             color: Colors.textMuted
-            font.pixelSize: 12
+            font.pixelSize: Motion.fontSize.body
         }
     }
 
@@ -179,7 +179,7 @@ Item {
 
         MaterialIcon {
             text: stat.iconName
-            font.pixelSize: 22
+            font.pixelSize: Motion.fontSize.xlarge
             color: Colors.primary
         }
 
@@ -189,12 +189,12 @@ Item {
             StyledText {
                 text: stat.label
                 color: Colors.textMuted
-                font.pixelSize: 11
+                font.pixelSize: Motion.fontSize.small
             }
 
             StyledText {
                 text: stat.value
-                font.pixelSize: 13
+                font.pixelSize: Motion.fontSize.label
                 font.bold: true
             }
         }
@@ -230,12 +230,12 @@ Item {
                 StyledText {
                     text: card.label
                     color: Colors.textMuted
-                    font.pixelSize: 11
+                    font.pixelSize: Motion.fontSize.small
                 }
 
                 StyledText {
                     text: card.value
-                    font.pixelSize: 14
+                    font.pixelSize: Motion.fontSize.subhead
                     font.bold: true
                 }
             }
@@ -268,7 +268,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 text: dayCard.dayIndex === 0 ? "Today" : new Date(dayCard.date).toLocaleDateString(Qt.locale(), "ddd")
                 color: Colors.primary
-                font.pixelSize: 13
+                font.pixelSize: Motion.fontSize.label
                 font.bold: true
             }
 
@@ -276,7 +276,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 text: new Date(dayCard.date).toLocaleDateString(Qt.locale(), "MMM d")
                 color: Colors.textMuted
-                font.pixelSize: 11
+                font.pixelSize: Motion.fontSize.small
             }
 
             MaterialIcon {
@@ -290,7 +290,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 text: Math.round(dayCard.minTemp) + "° / " + Math.round(dayCard.maxTemp) + "°"
                 color: Colors.textMuted
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
                 font.bold: true
             }
         }

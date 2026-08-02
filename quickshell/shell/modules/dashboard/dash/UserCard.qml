@@ -130,7 +130,7 @@ Rectangle {
         anchors.rightMargin: 16
         anchors.verticalCenter: uptimeBadge.verticalCenter
         text: SysInfo.uptimeLong
-        font.pixelSize: 12
+        font.pixelSize: Motion.fontSize.body
         elide: Text.ElideRight
     }
 
@@ -156,14 +156,14 @@ Rectangle {
             MaterialIcon {
                 anchors.verticalCenter: parent.verticalCenter
                 text: "select_window"
-                font.pixelSize: 13
+                font.pixelSize: Motion.fontSize.label
                 color: Colors.primary
             }
 
             StyledText {
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.wmName
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
                 // Measured off the configured card width, never wmPill.width —
                 // that feeds wmPill.implicitWidth back through this Row and polish-loops
                 width: Math.min(implicitWidth, Config.dashboard.user.width - wmPill.x - 56)

@@ -38,13 +38,13 @@ Rectangle {
 
         StyledText {
             text: root.displayText
-            font.pixelSize: 14
+            font.pixelSize: Motion.fontSize.subhead
         }
 
         MaterialIcon {
             text: root.icon
             color: Colors.outline
-            font.pixelSize: 18
+            font.pixelSize: Motion.fontSize.header
         }
     }
 

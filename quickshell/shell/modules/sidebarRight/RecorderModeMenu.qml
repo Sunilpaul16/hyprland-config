@@ -57,7 +57,7 @@ Loader {
                             anchors.centerIn: parent
                             text: entry.modelData.label
                             color: Recorder.mode === entry.modelData.value ? Colors.background : Colors.text
-                            font.pixelSize: 12
+                            font.pixelSize: Motion.fontSize.body
                         }
 
                         MouseArea {

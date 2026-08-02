@@ -25,7 +25,7 @@ Rectangle {
             MaterialIcon {
                 text: Recorder.active ? "stop_circle" : "screen_record"
                 color: Recorder.active ? Colors.recording : Colors.text
-                font.pixelSize: 20
+                font.pixelSize: Motion.fontSize.display
             }
 
             ColumnLayout {
@@ -37,7 +37,7 @@ Rectangle {
 
                     StyledText {
                         text: "Screen Recorder"
-                        font.pixelSize: 14
+                        font.pixelSize: Motion.fontSize.subhead
                         font.bold: true
                     }
 
@@ -61,7 +61,7 @@ Rectangle {
                             anchors.centerIn: parent
                             text: "REC"
                             color: Colors.background
-                            font.pixelSize: 9
+                            font.pixelSize: Motion.fontSize.micro
                             font.bold: true
                         }
                     }
@@ -70,7 +70,7 @@ Rectangle {
                 StyledText {
                     text: Recorder.active ? "Recording — " + Recorder.elapsedLabel : "Recording off"
                     color: Colors.textMuted
-                    font.pixelSize: 12
+                    font.pixelSize: Motion.fontSize.body
                 }
             }
 
@@ -93,7 +93,7 @@ Rectangle {
                         anchors.centerIn: parent
                         text: Recorder.active ? "Stop" : (Recorder.mode === "full" ? "Full" : "Region")
                         color: Colors.background
-                        font.pixelSize: 12
+                        font.pixelSize: Motion.fontSize.body
                         font.bold: true
                     }
 
@@ -119,7 +119,7 @@ Rectangle {
                         anchors.centerIn: parent
                         text: "expand_more"
                         color: Colors.text
-                        font.pixelSize: 15
+                        font.pixelSize: Motion.fontSize.title
                         rotation: modeMenu.shown ? 180 : 0
 
                         Behavior on rotation { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
@@ -176,25 +176,25 @@ Rectangle {
                     MaterialIcon {
                         text: "video_library"
                         color: Colors.text
-                        font.pixelSize: 16
+                        font.pixelSize: Motion.fontSize.large
                     }
 
                     StyledText {
                         Layout.fillWidth: true
                         text: "Recordings"
-                        font.pixelSize: 13
+                        font.pixelSize: Motion.fontSize.label
                     }
 
                     StyledText {
                         text: Recordings.entries.length + (Recordings.entries.length === 1 ? " recording" : " recordings")
                         color: Colors.textMuted
-                        font.pixelSize: 11
+                        font.pixelSize: Motion.fontSize.small
                     }
 
                     MaterialIcon {
                         text: "expand_more"
                         color: Colors.textMuted
-                        font.pixelSize: 16
+                        font.pixelSize: Motion.fontSize.large
                         rotation: recordingsSection.expanded ? 180 : 0
 
                         Behavior on rotation { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
@@ -220,7 +220,7 @@ Rectangle {
                     visible: Recordings.entries.length === 0
                     text: "No recordings found"
                     color: Colors.textMuted
-                    font.pixelSize: 12
+                    font.pixelSize: Motion.fontSize.body
                 }
 
                 ListView {

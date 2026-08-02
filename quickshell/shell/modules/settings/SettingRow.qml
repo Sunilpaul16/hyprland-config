@@ -46,7 +46,7 @@ Rectangle {
                 Layout.fillWidth: true
                 text: root.label
                 color: root.live ? Colors.text : Colors.error
-                font.pixelSize: 15
+                font.pixelSize: Motion.fontSize.title
                 elide: Text.ElideRight
             }
 
@@ -55,7 +55,7 @@ Rectangle {
                 visible: root.subtext.length > 0
                 text: root.subtext
                 color: root.live ? Colors.outline : Qt.alpha(Colors.error, 0.65)
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
                 elide: Text.ElideRight
             }
         }

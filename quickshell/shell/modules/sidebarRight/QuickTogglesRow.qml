@@ -139,7 +139,7 @@ ColumnLayout {
 
         StyledText {
             text: "Quick Toggles"
-            font.pixelSize: 15
+            font.pixelSize: Motion.fontSize.title
             font.bold: true
         }
 
@@ -158,7 +158,7 @@ ColumnLayout {
                 anchors.centerIn: parent
                 text: SidebarRightState.quickTogglesEditMode ? "check" : "edit"
                 color: SidebarRightState.quickTogglesEditMode ? Colors.background : Colors.text
-                font.pixelSize: 15
+                font.pixelSize: Motion.fontSize.title
             }
 
             MouseArea {

@@ -88,7 +88,7 @@ Rectangle {
                     id: summaryText
                     visible: card.modelData.summary.length > 0
                     text: card.modelData.summary
-                    font.pixelSize: 13
+                    font.pixelSize: Motion.fontSize.label
                     font.bold: true
                     elide: Text.ElideRight
                     width: parent.width - appNameText.implicitWidth - parent.spacing
@@ -99,7 +99,7 @@ Rectangle {
                     visible: card.modelData.appName.length > 0
                     text: card.modelData.appName
                     color: Colors.textMuted
-                    font.pixelSize: 11
+                    font.pixelSize: Motion.fontSize.small
                 }
             }
 
@@ -108,7 +108,7 @@ Rectangle {
                 visible: card.modelData.body.length > 0
                 text: card.modelData.body
                 color: Colors.textMuted
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
                 // No onLinkActivated here — the toast closes on click, so a
                 // link target inside it would be unhittable
                 textFormat: card.modelData.bodyHasMarkup ? Text.StyledText : card.modelData.bodyHasMarkdown ? Text.MarkdownText : Text.PlainText

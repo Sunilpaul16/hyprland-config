@@ -44,7 +44,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.maximumWidth: root.width - Config.dashboard.weather.iconSize - 60
                 text: root.hasData ? Weather.descriptionFor(Weather.weatherCode) : (Weather.hasError ? "Unavailable" : "Loading…")
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
                 elide: Text.ElideRight
             }
         }

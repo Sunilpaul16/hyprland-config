@@ -48,7 +48,7 @@ Item {
             width: Math.min(implicitWidth, root.maxTitleWidth)
             text: root.title
             color: root.isGloballyActive ? Colors.text : Colors.textMuted
-            font.pixelSize: 13
+            font.pixelSize: Motion.fontSize.label
             elide: Text.ElideRight
 
             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }

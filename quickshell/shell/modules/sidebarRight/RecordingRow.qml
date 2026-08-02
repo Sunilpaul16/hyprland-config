@@ -18,7 +18,7 @@ RowLayout {
         Layout.fillWidth: true
         text: root.confirmingDelete ? "Delete this recording?" : Recordings.displayName(root.modelData.name)
         color: root.confirmingDelete ? Colors.error : Colors.textMuted
-        font.pixelSize: 12
+        font.pixelSize: Motion.fontSize.body
         elide: Text.ElideRight
     }
 

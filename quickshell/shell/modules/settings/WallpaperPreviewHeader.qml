@@ -66,7 +66,7 @@ ColumnLayout {
                 Layout.alignment: Qt.AlignHCenter
                 text: "No wallpaper preview"
                 color: Colors.textMuted
-                font.pixelSize: 13
+                font.pixelSize: Motion.fontSize.label
             }
         }
     }

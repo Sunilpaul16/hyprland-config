@@ -21,7 +21,7 @@ Rectangle {
         anchors.centerIn: parent
         text: root.iconName
         color: root.iconColor
-        font.pixelSize: 15
+        font.pixelSize: Motion.fontSize.title
     }
 
     MouseArea {

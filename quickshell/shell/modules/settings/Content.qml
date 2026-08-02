@@ -208,7 +208,7 @@ Item {
             anchors.centerIn: parent
             text: "close"
             color: closeHover.containsMouse ? Colors.error : Colors.textMuted
-            font.pixelSize: 18
+            font.pixelSize: Motion.fontSize.header
 
             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
         }

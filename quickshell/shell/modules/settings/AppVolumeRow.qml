@@ -22,7 +22,7 @@ SettingRow {
         MaterialIcon {
             text: root.node.audio.muted ? "volume_off" : "volume_up"
             color: root.node.audio.muted ? Colors.error : Colors.textMuted
-            font.pixelSize: 18
+            font.pixelSize: Motion.fontSize.header
 
             MouseArea {
                 anchors.fill: parent

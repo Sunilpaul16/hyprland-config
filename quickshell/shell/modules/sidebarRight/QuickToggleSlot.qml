@@ -66,7 +66,7 @@ Item {
             anchors.centerIn: parent
             text: "close"
             color: Colors.background
-            font.pixelSize: 9
+            font.pixelSize: Motion.fontSize.micro
         }
 
         MouseArea {
@@ -91,7 +91,7 @@ Item {
             anchors.centerIn: parent
             text: "chevron_left"
             color: Colors.text
-            font.pixelSize: 9
+            font.pixelSize: Motion.fontSize.micro
         }
 
         MouseArea {
@@ -116,7 +116,7 @@ Item {
             anchors.centerIn: parent
             text: "chevron_right"
             color: Colors.text
-            font.pixelSize: 9
+            font.pixelSize: Motion.fontSize.micro
         }
 
         MouseArea {

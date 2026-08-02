@@ -78,7 +78,7 @@ Item {
                         visible: root.group?.image.length === 0 && root.group?.appIcon.length === 0
                         text: "i"
                         color: root.group?.urgency === NotificationUrgency.Critical ? Colors.textOnError : Colors.primary
-                        font.pixelSize: 13
+                        font.pixelSize: Motion.fontSize.label
                         font.bold: true
                     }
                 }
@@ -86,7 +86,7 @@ Item {
                 StyledText {
                     Layout.fillWidth: true
                     text: root.appName
-                    font.pixelSize: 13
+                    font.pixelSize: Motion.fontSize.label
                     font.bold: true
                     elide: Text.ElideRight
                 }
@@ -94,7 +94,7 @@ Item {
                 StyledText {
                     text: root.group ? StringUtils.notifTime(root.group.time, Time.minutes) : ""
                     color: Colors.textMuted
-                    font.pixelSize: 11
+                    font.pixelSize: Motion.fontSize.small
                 }
 
                 // Count badge — toggles the group open/closed
@@ -115,13 +115,13 @@ Item {
                             // Hidden count, not the total — the rest are already on screen
                             text: root.expanded ? root.notifs.length : `+${root.hiddenCount}`
                             color: root.group?.urgency === NotificationUrgency.Critical ? Colors.textOnError : Colors.textMuted
-                            font.pixelSize: 11
+                            font.pixelSize: Motion.fontSize.small
                         }
 
                         StyledText {
                             text: "⌄"
                             color: root.group?.urgency === NotificationUrgency.Critical ? Colors.textOnError : Colors.textMuted
-                            font.pixelSize: 13
+                            font.pixelSize: Motion.fontSize.label
                             rotation: root.expanded ? 180 : 0
 
                             Behavior on rotation { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }

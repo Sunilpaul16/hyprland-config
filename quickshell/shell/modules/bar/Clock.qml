@@ -17,7 +17,7 @@ Item {
         StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: Time.timeStr
-            font.pixelSize: 16
+            font.pixelSize: Motion.fontSize.large
             font.bold: true
         }
 
@@ -25,7 +25,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text: "·"
             color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
-            font.pixelSize: 14
+            font.pixelSize: Motion.fontSize.subhead
 
             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
         }
@@ -34,7 +34,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text: Time.dateStr
             color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
-            font.pixelSize: 13
+            font.pixelSize: Motion.fontSize.label
 
             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
         }

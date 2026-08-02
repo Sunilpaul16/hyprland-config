@@ -68,12 +68,12 @@ Rectangle {
             MaterialIcon {
                 text: "swap_vert"
                 color: Colors.primary
-                font.pixelSize: 18
+                font.pixelSize: Motion.fontSize.header
             }
 
             StyledText {
                 text: "Network"
-                font.pixelSize: 15
+                font.pixelSize: Motion.fontSize.title
                 font.bold: true
             }
         }
@@ -122,7 +122,7 @@ Rectangle {
                 visible: NetworkUsage.downloadHistory.length < 2
                 text: "Collecting data..."
                 color: Colors.outline
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
             }
         }
 
@@ -167,13 +167,13 @@ Rectangle {
         MaterialIcon {
             text: statRow.iconName
             color: statRow.iconColor
-            font.pixelSize: 16
+            font.pixelSize: Motion.fontSize.large
         }
 
         StyledText {
             text: statRow.label
             color: Colors.textMuted
-            font.pixelSize: 12
+            font.pixelSize: Motion.fontSize.body
         }
 
         Item { Layout.fillWidth: true }
@@ -181,7 +181,7 @@ Rectangle {
         StyledText {
             text: statRow.value
             color: statRow.valueColor
-            font.pixelSize: 12
+            font.pixelSize: Motion.fontSize.body
         }
     }
 }

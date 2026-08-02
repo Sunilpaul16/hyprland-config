@@ -33,7 +33,7 @@ Item {
             StyledText {
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.modelData.icon
-                font.pixelSize: 22
+                font.pixelSize: Motion.fontSize.xlarge
                 width: 36
                 horizontalAlignment: Text.AlignHCenter
             }
@@ -47,7 +47,7 @@ Item {
                     width: parent.width
                     text: root.modelData.title
                     color: root.isCurrent ? Colors.textOnPrimary : Colors.text
-                    font.pixelSize: 14
+                    font.pixelSize: Motion.fontSize.subhead
                     elide: Text.ElideRight
                 }
 
@@ -55,7 +55,7 @@ Item {
                     width: parent.width
                     text: root.modelData.description
                     color: root.isCurrent ? Colors.textOnPrimary : Colors.textMuted
-                    font.pixelSize: 12
+                    font.pixelSize: Motion.fontSize.body
                     elide: Text.ElideRight
                 }
             }

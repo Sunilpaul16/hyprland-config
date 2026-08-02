@@ -37,7 +37,7 @@ Item {
         StyledText {
             Layout.alignment: Qt.AlignVCenter
             text: Recorder.elapsedLabel
-            font.pixelSize: 12
+            font.pixelSize: Motion.fontSize.body
         }
     }
 

@@ -17,7 +17,7 @@ ColumnLayout {
     StyledText {
         text: "Hidden"
         color: Colors.textMuted
-        font.pixelSize: 11
+        font.pixelSize: Motion.fontSize.small
     }
 
     Flow {
@@ -56,7 +56,7 @@ ColumnLayout {
                         anchors.centerIn: parent
                         text: "add"
                         color: Colors.background
-                        font.pixelSize: 9
+                        font.pixelSize: Motion.fontSize.micro
                     }
 
                     MouseArea {

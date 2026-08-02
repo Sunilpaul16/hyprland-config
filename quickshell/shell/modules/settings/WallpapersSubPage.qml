@@ -105,7 +105,7 @@ ScrollPage {
             visible: heroImage.status !== Image.Ready
             text: "No wallpaper set"
             color: Colors.textMuted
-            font.pixelSize: 13
+            font.pixelSize: Motion.fontSize.label
         }
     }
 
@@ -192,7 +192,7 @@ ScrollPage {
                         verticalAlignment: Text.AlignVCenter
                         text: tile.modelData.label
                         color: tile.isCurrent ? Colors.primary : Colors.text
-                        font.pixelSize: 11
+                        font.pixelSize: Motion.fontSize.small
                         elide: Text.ElideRight
                     }
                 }
@@ -204,7 +204,7 @@ ScrollPage {
                     visible: tile.modelData.isVideo
                     text: "movie"
                     color: Colors.text
-                    font.pixelSize: 16
+                    font.pixelSize: Motion.fontSize.large
                 }
 
                 MouseArea {

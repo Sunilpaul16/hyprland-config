@@ -38,7 +38,7 @@ Rectangle {
             anchors.centerIn: parent
             text: root.iconName
             color: root.accent
-            font.pixelSize: 18
+            font.pixelSize: Motion.fontSize.header
         }
     }
 
@@ -62,7 +62,7 @@ Rectangle {
             Layout.fillWidth: true
             text: root.subLabel
             color: Colors.textMuted
-            font.pixelSize: 11
+            font.pixelSize: Motion.fontSize.small
             elide: Text.ElideRight
         }
     }
@@ -84,13 +84,13 @@ Rectangle {
             MaterialIcon {
                 text: root.temperature > 90 ? "thermometer_alert" : "thermometer"
                 color: root.temperature > 90 ? Colors.error : root.accent
-                font.pixelSize: 16
+                font.pixelSize: Motion.fontSize.large
                 fill: 1
             }
 
             StyledText {
                 text: isNaN(root.temperature) || root.temperature <= 0 ? "--°C" : Math.ceil(root.temperature) + "°C"
-                font.pixelSize: 13
+                font.pixelSize: Motion.fontSize.label
             }
         }
 
@@ -128,14 +128,14 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             text: "Usage"
             color: Colors.textMuted
-            font.pixelSize: 11
+            font.pixelSize: Motion.fontSize.small
         }
 
         StyledText {
             anchors.centerIn: parent
             text: isNaN(root.usage) ? "..." : Math.round(root.usage * 100) + "%"
             color: root.accent
-            font.pixelSize: 22
+            font.pixelSize: Motion.fontSize.xlarge
             font.bold: true
         }
     }

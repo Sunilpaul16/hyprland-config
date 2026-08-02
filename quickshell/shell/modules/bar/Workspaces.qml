@@ -157,7 +157,7 @@ Item {
                 StyledText {
                     visible: slot.modelData.extra > 0
                     text: "+" + slot.modelData.extra
-                    font.pixelSize: 10
+                    font.pixelSize: Motion.fontSize.tiny
                     font.bold: slot.isActive
                     color: slot.isActive ? Colors.textOnPrimary : Colors.textMuted
                 }
@@ -167,7 +167,7 @@ Item {
                 visible: !slot.hasIcons
                 anchors.centerIn: parent
                 text: modelData.ws.id
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
                 font.bold: slot.isActive
                 color: slot.isActive ? Colors.textOnPrimary : (modelData.occupied ? Colors.text : Colors.textMuted)
 

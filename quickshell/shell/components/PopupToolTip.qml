@@ -40,7 +40,7 @@ Loader {
                 id: label
                 anchors.centerIn: parent
                 text: root.text
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
             }
         }
     }

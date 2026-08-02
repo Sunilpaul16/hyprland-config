@@ -64,7 +64,7 @@ Item {
                 anchors.centerIn: parent
                 text: root.expanded ? "chevron_right" : "chevron_left"
                 color: overflowHover.containsMouse ? Colors.text : Colors.textMuted
-                font.pixelSize: 16
+                font.pixelSize: Motion.fontSize.large
             }
 
             MouseArea {

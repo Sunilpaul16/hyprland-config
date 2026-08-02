@@ -20,14 +20,14 @@ PageBase {
             Layout.alignment: Qt.AlignHCenter
             text: "Page under construction"
             color: Colors.outlineVariant
-            font.pixelSize: 20
+            font.pixelSize: Motion.fontSize.display
         }
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter
             text: "Nothing wired up here yet."
             color: Colors.outlineVariant
-            font.pixelSize: 14
+            font.pixelSize: Motion.fontSize.subhead
         }
     }
 }

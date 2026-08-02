@@ -49,13 +49,13 @@ Rectangle {
             MaterialIcon {
                 text: root.categoryIcon
                 color: Colors.primary
-                font.pixelSize: 16
+                font.pixelSize: Motion.fontSize.large
                 anchors.verticalCenter: parent.verticalCenter
             }
 
             StyledText {
                 text: root.categoryName
-                font.pixelSize: 14
+                font.pixelSize: Motion.fontSize.subhead
                 font.bold: true
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -85,7 +85,7 @@ Rectangle {
                     StyledText {
                         text: modelData.label
                         color: Colors.textMuted
-                        font.pixelSize: 12
+                        font.pixelSize: Motion.fontSize.body
                         Layout.preferredWidth: root.columnWidth - 130
                         wrapMode: Text.Wrap
                         Layout.alignment: Qt.AlignVCenter

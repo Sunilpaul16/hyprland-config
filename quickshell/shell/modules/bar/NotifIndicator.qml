@@ -27,7 +27,7 @@ Item {
         text: DndState.enabled ? "\uf1f6" : "\uf0f3" // bell-slash / bell
         font.family: Fonts.glyphFamily
         color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
-        font.pixelSize: 13
+        font.pixelSize: Motion.fontSize.label
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }

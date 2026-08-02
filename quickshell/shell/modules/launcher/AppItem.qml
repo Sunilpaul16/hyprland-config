@@ -48,7 +48,7 @@ Item {
                     width: parent.width
                     text: root.modelData.name
                     color: root.isCurrent ? Colors.textOnPrimary : Colors.text
-                    font.pixelSize: 14
+                    font.pixelSize: Motion.fontSize.subhead
                     elide: Text.ElideRight
                 }
 
@@ -56,7 +56,7 @@ Item {
                     width: parent.width
                     text: root.modelData.comment || root.modelData.genericName || ""
                     color: root.isCurrent ? Colors.textOnPrimary : Colors.textMuted
-                    font.pixelSize: 12
+                    font.pixelSize: Motion.fontSize.body
                     elide: Text.ElideRight
                     visible: text.length > 0
                 }

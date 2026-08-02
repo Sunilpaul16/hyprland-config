@@ -62,7 +62,7 @@ Item {
             anchors { top: parent.top; left: parent.left; margins: 8 }
             text: root.slot?.id ?? ""
             color: root.isFocused ? Colors.primary : Colors.textMuted
-            font.pixelSize: 13
+            font.pixelSize: Motion.fontSize.label
             font.bold: root.isFocused
             z: 2
         }

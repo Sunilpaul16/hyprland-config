@@ -40,7 +40,7 @@ Rectangle {
             anchors.centerIn: parent
             text: root.checked ? "check" : "close"
             color: root.checked ? Colors.primary : Colors.layer
-            font.pixelSize: 14
+            font.pixelSize: Motion.fontSize.subhead
         }
     }
 

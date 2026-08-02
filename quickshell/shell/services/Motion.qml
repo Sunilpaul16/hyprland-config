@@ -1,7 +1,7 @@
 pragma Singleton
 import QtQuick
 
-// Animation timing singleton
+// Animation timing, plus the corner-radius and font-size ladders every module sizes against
 QtObject {
     id: root
 
@@ -64,5 +64,21 @@ QtObject {
         readonly property int drawer: 20 // slide-in drawers and the dialogs that match them
         readonly property int page: 22   // settings page cards
         readonly property int hero: 26   // dashboard hero and performance cards
+    }
+
+    // Text size ladder, 9-22 — same rule as rounding: pick an existing step rather than a raw literal
+    // Display numerals (the dashboard clock, hero temperatures) stay off-ladder and Config-driven, since they scale with their card rather than with body text
+    readonly property QtObject fontSize: QtObject {
+        readonly property int micro: 9     // badge counts, the densest meta
+        readonly property int tiny: 10     // dense secondary meta
+        readonly property int small: 11    // captions and muted secondary labels
+        readonly property int body: 12     // default body text, the most common size
+        readonly property int label: 13    // list-item titles and emphasised body
+        readonly property int subhead: 14  // section labels
+        readonly property int title: 15    // card titles
+        readonly property int large: 16    // panel and page titles
+        readonly property int header: 18   // prominent headers
+        readonly property int display: 20  // dashboard figures
+        readonly property int xlarge: 22   // the largest non-numeral text
     }
 }

@@ -290,7 +290,7 @@ Item {
                 visible: content.currentModeResults.length === 0
                 text: content.mode === "wallpaper" ? "No wallpapers found" : (content.mode === "commands" ? "No commands found" : (content.mode === "clip" ? "No clipboard entries found" : "No apps found"))
                 color: Colors.textMuted
-                font.pixelSize: 15
+                font.pixelSize: Motion.fontSize.title
             }
         }
 
@@ -312,7 +312,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 text: content.mode === "wallpaper" ? "Search wallpapers…" : (content.mode === "commands" ? "Type a command…" : (content.mode === "clip" ? "Search clipboard… (Shift+Enter deletes)" : "Search apps…"))
                 color: Colors.textMuted
-                font.pixelSize: 15
+                font.pixelSize: Motion.fontSize.title
                 visible: input.text.length === 0
             }
 
@@ -321,7 +321,7 @@ Item {
                 anchors.leftMargin: 16
                 anchors.verticalCenter: parent.verticalCenter
                 text: "\u{1F50D}"
-                font.pixelSize: 14
+                font.pixelSize: Motion.fontSize.subhead
                 opacity: 0.6
             }
 
@@ -334,7 +334,7 @@ Item {
                 anchors.rightMargin: 18
                 verticalAlignment: TextInput.AlignVCenter
                 color: Colors.text
-                font.pixelSize: 15
+                font.pixelSize: Motion.fontSize.title
                 clip: true
                 focus: true
 

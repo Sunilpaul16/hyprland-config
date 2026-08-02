@@ -47,7 +47,7 @@ Item {
             Layout.alignment: Qt.AlignHCenter
             text: "Nothing playing"
             color: Colors.textMuted
-            font.pixelSize: 18
+            font.pixelSize: Motion.fontSize.header
         }
     }
 
@@ -72,7 +72,7 @@ Item {
             StyledText {
                 Layout.fillWidth: true
                 text: Media.title.length > 0 ? Media.title : "Unknown title"
-                font.pixelSize: 22
+                font.pixelSize: Motion.fontSize.xlarge
                 font.bold: true
                 elide: Text.ElideRight
             }
@@ -81,7 +81,7 @@ Item {
                 Layout.fillWidth: true
                 text: Media.artist.length > 0 ? Media.artist : "Unknown artist"
                 color: Colors.textMuted
-                font.pixelSize: 15
+                font.pixelSize: Motion.fontSize.title
                 elide: Text.ElideRight
             }
 
@@ -89,7 +89,7 @@ Item {
                 Layout.fillWidth: true
                 text: Media.album.length > 0 ? Media.album : "Unknown album"
                 color: Colors.secondary
-                font.pixelSize: 15
+                font.pixelSize: Motion.fontSize.title
                 elide: Text.ElideRight
             }
 
@@ -104,7 +104,7 @@ Item {
 
                     text: root.formatTime(Math.max(Media.position, Media.length)).replace(/[1-9]/g, "0")
                     font.family: Fonts.interfaceFamily
-                    font.pixelSize: 12
+                    font.pixelSize: Motion.fontSize.body
                 }
 
                 StyledText {

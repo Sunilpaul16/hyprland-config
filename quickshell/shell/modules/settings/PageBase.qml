@@ -33,7 +33,7 @@ Item {
             anchors.centerIn: parent
             text: "arrow_back"
             color: Colors.text
-            font.pixelSize: 20
+            font.pixelSize: Motion.fontSize.display
         }
 
         MouseArea {

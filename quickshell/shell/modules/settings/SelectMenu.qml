@@ -71,7 +71,7 @@ Item {
                 // stretching the row
                 Layout.maximumWidth: root.maxPillWidth - 16 * 2 - 24
                 text: root.displayText
-                font.pixelSize: 14
+                font.pixelSize: Motion.fontSize.subhead
                 elide: Text.ElideRight
             }
 
@@ -80,7 +80,7 @@ Item {
 
                 text: "expand_more"
                 color: Colors.outline
-                font.pixelSize: 18
+                font.pixelSize: Motion.fontSize.header
                 rotation: root.menuOpen ? 180 : 0
 
                 Behavior on rotation { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
@@ -199,7 +199,7 @@ Item {
 
                                     Layout.fillWidth: true
                                     text: modelData.label
-                                    font.pixelSize: 14
+                                    font.pixelSize: Motion.fontSize.subhead
                                     elide: Text.ElideRight
                                 }
 
@@ -207,7 +207,7 @@ Item {
                                     visible: modelData.value === root.current
                                     text: "check"
                                     color: Colors.primary
-                                    font.pixelSize: 16
+                                    font.pixelSize: Motion.fontSize.large
                                 }
                             }
 

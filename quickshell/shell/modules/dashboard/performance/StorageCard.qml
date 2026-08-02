@@ -74,7 +74,7 @@ Rectangle {
                         Layout.alignment: Qt.AlignHCenter
                         text: Math.round((root.disk?.percentage ?? 0) * 100) + "%"
                         color: root.accent
-                        font.pixelSize: 22
+                        font.pixelSize: Motion.fontSize.xlarge
                         font.bold: true
                     }
 
@@ -82,7 +82,7 @@ Rectangle {
                         Layout.alignment: Qt.AlignHCenter
                         text: "Used"
                         color: Colors.textMuted
-                        font.pixelSize: 11
+                        font.pixelSize: Motion.fontSize.small
                     }
                 }
             }
@@ -92,14 +92,14 @@ Rectangle {
 
                 StyledText {
                     text: "Storage"
-                    font.pixelSize: 15
+                    font.pixelSize: Motion.fontSize.title
                     font.bold: true
                 }
 
                 StyledText {
                     text: root.hasDisk ? root.formatKib(root.disk.usedKib) + " / " + root.formatKib(root.disk.totalKib) : "No disks detected"
                     color: root.accent
-                    font.pixelSize: 13
+                    font.pixelSize: Motion.fontSize.label
                 }
             }
         }
@@ -130,20 +130,20 @@ Rectangle {
                     MaterialIcon {
                         text: "storage"
                         color: Colors.text
-                        font.pixelSize: 15
+                        font.pixelSize: Motion.fontSize.title
                     }
 
                     StyledText {
                         Layout.maximumWidth: 90
                         text: !root.hasDisk ? "No disks" : (Storage.hasManualDisk ? Storage.selectedDisk.name : (root.disk?.name ?? "Auto"))
-                        font.pixelSize: 12
+                        font.pixelSize: Motion.fontSize.body
                         elide: Text.ElideRight
                     }
 
                     StyledText {
                         text: root.diskMenuOpen ? "\u{25B4}" : "\u{25BE}"
                         color: Colors.textMuted
-                        font.pixelSize: 10
+                        font.pixelSize: Motion.fontSize.tiny
                     }
                 }
 
@@ -235,14 +235,14 @@ Rectangle {
             StyledText {
                 text: entry.selected ? "\u{25CF}" : ""
                 color: Colors.primary
-                font.pixelSize: 9
+                font.pixelSize: Motion.fontSize.micro
                 Layout.preferredWidth: 9
             }
 
             StyledText {
                 Layout.fillWidth: true
                 text: entry.label
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
                 elide: Text.ElideRight
             }
         }

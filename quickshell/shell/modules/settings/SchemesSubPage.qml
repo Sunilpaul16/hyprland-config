@@ -40,7 +40,7 @@ ScrollPage {
         visible: !Schemes.available
         text: "No presets found in matugen/schemes."
         color: Colors.textMuted
-        font.pixelSize: 13
+        font.pixelSize: Motion.fontSize.label
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
     }
@@ -125,7 +125,7 @@ ScrollPage {
                         StyledText {
                             Layout.fillWidth: true
                             text: row.modelData.flavour
-                            font.pixelSize: 13
+                            font.pixelSize: Motion.fontSize.label
                             elide: Text.ElideRight
                         }
 
@@ -133,7 +133,7 @@ ScrollPage {
                             Layout.fillWidth: true
                             text: row.modelData.scheme
                             color: Colors.textMuted
-                            font.pixelSize: 11
+                            font.pixelSize: Motion.fontSize.small
                             elide: Text.ElideRight
                         }
                     }
@@ -142,7 +142,7 @@ ScrollPage {
                         visible: row.active
                         text: "✓"
                         color: Colors.primary
-                        font.pixelSize: 15
+                        font.pixelSize: Motion.fontSize.title
                     }
                 }
             }

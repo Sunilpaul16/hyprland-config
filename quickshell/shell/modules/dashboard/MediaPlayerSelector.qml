@@ -36,13 +36,13 @@ Item {
 
             StyledText {
                 text: Media.hasManualPlayer ? (Media.activePlayer?.identity || Media.activePlayer?.dbusName || "Unknown") : "Auto"
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
                 elide: Text.ElideRight
             }
 
             MaterialIcon {
                 text: root.menuOpen ? "expand_less" : "expand_more"
-                font.pixelSize: 16
+                font.pixelSize: Motion.fontSize.large
                 color: Colors.textMuted
             }
         }
@@ -133,14 +133,14 @@ Item {
             StyledText {
                 text: entry.selected ? "\u{25CF}" : ""
                 color: Colors.primary
-                font.pixelSize: 9
+                font.pixelSize: Motion.fontSize.micro
                 Layout.preferredWidth: 9
             }
 
             StyledText {
                 Layout.fillWidth: true
                 text: entry.label
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
                 elide: Text.ElideRight
             }
         }

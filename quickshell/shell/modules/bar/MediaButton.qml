@@ -23,7 +23,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text: Media.isPlaying ? "\u{23F8}" : "\u{25B6}" // pause / play
             color: (hoverArea.containsMouse || playPauseHover.containsMouse) ? Colors.text : Colors.textMuted
-            font.pixelSize: 12
+            font.pixelSize: Motion.fontSize.body
 
             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
@@ -44,7 +44,7 @@ Item {
             width: Math.min(implicitWidth, root.maxTitleWidth)
             text: Media.artist.length > 0 ? `${Media.title} · ${Media.artist}` : Media.title
             color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
-            font.pixelSize: 13
+            font.pixelSize: Motion.fontSize.label
             elide: Text.ElideRight
 
             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }

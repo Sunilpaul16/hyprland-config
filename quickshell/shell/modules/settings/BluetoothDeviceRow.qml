@@ -23,7 +23,7 @@ SettingRow {
             visible: root.device.pairing || root.device.state === BluetoothDeviceState.Connecting
             text: "sync"
             color: Colors.textMuted
-            font.pixelSize: 16
+            font.pixelSize: Motion.fontSize.large
 
             RotationAnimation on rotation {
                 running: parent.visible

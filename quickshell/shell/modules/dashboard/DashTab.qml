@@ -127,7 +127,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 text: Time.dateStr
                 color: Colors.textMuted
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
             }
         }
     }

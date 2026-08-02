@@ -64,7 +64,7 @@ Item {
                     anchors.bottom: tabLabel.top
                     text: tabButton.modelData.iconName
                     color: tabButton.current ? Colors.primary : Colors.textMuted
-                    font.pixelSize: 22
+                    font.pixelSize: Motion.fontSize.xlarge
                     fill: tabButton.current ? 1 : 0
 
                     Behavior on fill { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
@@ -76,7 +76,7 @@ Item {
                     anchors.bottom: parent.bottom
                     text: tabButton.modelData.text
                     color: tabButton.current ? Colors.primary : Colors.textMuted
-                    font.pixelSize: 13
+                    font.pixelSize: Motion.fontSize.label
                 }
 
                 MouseArea {

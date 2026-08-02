@@ -60,7 +60,7 @@ Rectangle {
                 anchors.centerIn: parent
                 text: root.page.icon
                 color: root.current ? Colors.textOnPrimary : Colors.text
-                font.pixelSize: 20
+                font.pixelSize: Motion.fontSize.display
                 fill: root.current ? 1 : 0
 
                 Behavior on fill { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
@@ -75,7 +75,7 @@ Rectangle {
             StyledText {
                 Layout.fillWidth: true
                 text: root.page.label
-                font.pixelSize: 15
+                font.pixelSize: Motion.fontSize.title
                 elide: Text.ElideRight
             }
 
@@ -83,7 +83,7 @@ Rectangle {
                 Layout.fillWidth: true
                 text: root.page.description
                 color: Colors.textMuted
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
                 elide: Text.ElideRight
             }
         }

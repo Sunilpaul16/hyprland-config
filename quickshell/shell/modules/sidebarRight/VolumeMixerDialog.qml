@@ -22,7 +22,7 @@ Rectangle {
             StyledText {
                 Layout.fillWidth: true
                 text: "Volume Mixer"
-                font.pixelSize: 15
+                font.pixelSize: Motion.fontSize.title
                 font.bold: true
             }
 
@@ -49,7 +49,7 @@ Rectangle {
                     spacing: 10
                     visible: Audio.outputAppNodes.length > 0
 
-                    StyledText { text: "Playing"; color: Colors.textMuted; font.pixelSize: 11 }
+                    StyledText { text: "Playing"; color: Colors.textMuted; font.pixelSize: Motion.fontSize.small }
 
                     Repeater {
                         model: Audio.outputAppNodes
@@ -66,7 +66,7 @@ Rectangle {
                     spacing: 10
                     visible: Audio.inputAppNodes.length > 0
 
-                    StyledText { text: "Recording"; color: Colors.textMuted; font.pixelSize: 11 }
+                    StyledText { text: "Recording"; color: Colors.textMuted; font.pixelSize: Motion.fontSize.small }
 
                     Repeater {
                         model: Audio.inputAppNodes
@@ -85,7 +85,7 @@ Rectangle {
                     visible: Audio.outputAppNodes.length === 0 && Audio.inputAppNodes.length === 0
                     text: "No apps are using audio right now"
                     color: Colors.textMuted
-                    font.pixelSize: 13
+                    font.pixelSize: Motion.fontSize.label
                 }
             }
         }

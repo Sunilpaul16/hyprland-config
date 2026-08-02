@@ -87,7 +87,7 @@ Rectangle {
                 visible: Media.hasPlayer
                 horizontalAlignment: Text.AlignHCenter
                 text: Media.title.length > 0 ? Media.title : "Unknown title"
-                font.pixelSize: 13
+                font.pixelSize: Motion.fontSize.label
                 font.bold: true
                 elide: Text.ElideRight
             }
@@ -98,7 +98,7 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 text: Media.album
                 color: Colors.outline
-                font.pixelSize: 11
+                font.pixelSize: Motion.fontSize.small
                 elide: Text.ElideRight
             }
 
@@ -108,7 +108,7 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 text: Media.artist
                 color: Colors.textMuted
-                font.pixelSize: 11
+                font.pixelSize: Motion.fontSize.small
                 elide: Text.ElideRight
             }
 
@@ -118,7 +118,7 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 text: "Nothing playing"
                 color: Colors.textMuted
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
             }
         }
 

@@ -62,7 +62,7 @@ Row {
             Item {
                 implicitWidth: plus.implicitWidth
                 implicitHeight: 20
-                StyledText { id: plus; anchors.centerIn: parent; text: "+"; color: Colors.textMuted; font.pixelSize: 11 }
+                StyledText { id: plus; anchors.centerIn: parent; text: "+"; color: Colors.textMuted; font.pixelSize: Motion.fontSize.small }
             }
         }
     }

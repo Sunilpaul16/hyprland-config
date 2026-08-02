@@ -113,7 +113,7 @@ Scope {
                                 StyledText {
                                     Layout.fillWidth: true
                                     text: root.flow?.message ?? ""
-                                    font.pixelSize: 14
+                                    font.pixelSize: Motion.fontSize.subhead
                                     wrapMode: Text.WordWrap
                                 }
                             }
@@ -124,7 +124,7 @@ Scope {
                                 visible: (root.flow?.supplementaryMessage ?? "").length > 0
                                 text: root.flow?.supplementaryMessage ?? ""
                                 color: root.flow?.supplementaryIsError ? Colors.error : Colors.textMuted
-                                font.pixelSize: 12
+                                font.pixelSize: Motion.fontSize.body
                                 wrapMode: Text.WordWrap
                             }
 
@@ -145,7 +145,7 @@ Scope {
                                     anchors.margins: 10
                                     verticalAlignment: TextInput.AlignVCenter
                                     color: Colors.text
-                                    font.pixelSize: 13
+                                    font.pixelSize: Motion.fontSize.label
                                     echoMode: root.flow?.responseVisible ? TextInput.Normal : TextInput.Password
                                     clip: true
 
@@ -206,7 +206,7 @@ Scope {
                         anchors.centerIn: parent
                         text: btn.text
                         color: btn.primary ? Colors.textOnPrimary : Colors.text
-                        font.pixelSize: 12
+                        font.pixelSize: Motion.fontSize.body
                     }
 
                     MouseArea {

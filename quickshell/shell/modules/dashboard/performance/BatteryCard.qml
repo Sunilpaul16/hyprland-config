@@ -27,7 +27,7 @@ Rectangle {
         StyledText {
             Layout.alignment: Qt.AlignHCenter
             text: "Battery"
-            font.pixelSize: 15
+            font.pixelSize: Motion.fontSize.title
             font.bold: true
         }
 
@@ -45,7 +45,7 @@ Rectangle {
                 anchors.centerIn: parent
                 text: Math.round((root.device?.percentage ?? 0) * 100) + "%"
                 color: Colors.primary
-                font.pixelSize: 22
+                font.pixelSize: Motion.fontSize.xlarge
                 font.bold: true
             }
         }
@@ -54,7 +54,7 @@ Rectangle {
             Layout.alignment: Qt.AlignHCenter
             text: root.charging ? "Charging" : "On battery"
             color: Colors.textMuted
-            font.pixelSize: 12
+            font.pixelSize: Motion.fontSize.body
         }
     }
 }

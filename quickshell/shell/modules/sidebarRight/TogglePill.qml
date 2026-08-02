@@ -32,7 +32,7 @@ Rectangle {
         MaterialIcon {
             text: root.iconName
             color: root.active ? Colors.background : Colors.text
-            font.pixelSize: 20
+            font.pixelSize: Motion.fontSize.display
 
             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
         }
@@ -41,7 +41,7 @@ Rectangle {
             visible: root.large
             text: root.label
             color: root.active ? Colors.background : Colors.text
-            font.pixelSize: 13
+            font.pixelSize: Motion.fontSize.label
         }
     }
 

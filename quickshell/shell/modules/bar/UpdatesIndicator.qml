@@ -26,7 +26,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         text: "update"
         color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
-        font.pixelSize: 15
+        font.pixelSize: Motion.fontSize.title
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }
@@ -39,7 +39,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         text: Updates.total > 99 ? "99+" : Updates.total
         color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
-        font.pixelSize: 12
+        font.pixelSize: Motion.fontSize.body
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }

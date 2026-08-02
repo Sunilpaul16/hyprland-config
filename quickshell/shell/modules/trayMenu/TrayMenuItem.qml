@@ -55,7 +55,7 @@ Item {
                     return root.entry.checkState === Qt.Checked ? "☑" : "☐";
                 }
                 color: Colors.textMuted
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
             }
 
             // App-provided icon, rendered as-is
@@ -73,7 +73,7 @@ Item {
             StyledText {
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.entry.text
-                font.pixelSize: 13
+                font.pixelSize: Motion.fontSize.label
                 elide: Text.ElideRight
                 width: Math.min(implicitWidth, 220)
             }
@@ -84,7 +84,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 text: "▸"
                 color: Colors.textMuted
-                font.pixelSize: 10
+                font.pixelSize: Motion.fontSize.tiny
             }
         }
 

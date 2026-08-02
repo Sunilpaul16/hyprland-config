@@ -61,7 +61,7 @@ Rectangle {
         StyledText {
             Layout.fillWidth: true
             text: Time.dateStr
-            font.pixelSize: 14
+            font.pixelSize: Motion.fontSize.subhead
         }
     }
 
@@ -81,7 +81,7 @@ Rectangle {
             anchors.centerIn: parent
             text: root.collapsed ? "keyboard_arrow_up" : "keyboard_arrow_down"
             color: Colors.text
-            font.pixelSize: 18
+            font.pixelSize: Motion.fontSize.header
         }
 
         MouseArea {

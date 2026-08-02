@@ -29,7 +29,7 @@ Rectangle {
             anchors.centerIn: parent
             width: parent.width - 16
             text: btn.glyph.length > 0 ? btn.glyph : btn.label
-            font.pixelSize: btn.glyph.length > 0 ? 13 : 12
+            font.pixelSize: btn.glyph.length > 0 ? Motion.fontSize.label : Motion.fontSize.body
             horizontalAlignment: Text.AlignHCenter
             elide: Text.ElideRight
             maximumLineCount: 1
@@ -135,7 +135,7 @@ Rectangle {
             height: visible ? implicitHeight : 0
             text: card.modelData.appName
             color: Colors.textMuted
-            font.pixelSize: 10
+            font.pixelSize: Motion.fontSize.tiny
             elide: Text.ElideRight
         }
 
@@ -158,7 +158,7 @@ Rectangle {
                     id: summaryText
                     visible: card.modelData.summary.length > 0
                     text: card.modelData.summary
-                    font.pixelSize: 13
+                    font.pixelSize: Motion.fontSize.label
                     font.bold: true
                     elide: Text.ElideRight
                     width: parent.width - sepText.implicitWidth - timeText.implicitWidth - parent.spacing * 2
@@ -169,14 +169,14 @@ Rectangle {
                     visible: card.modelData.summary.length > 0
                     text: "·"
                     color: Colors.textMuted
-                    font.pixelSize: 12
+                    font.pixelSize: Motion.fontSize.body
                 }
 
                 StyledText {
                     id: timeText
                     text: card.modelData.timeStr
                     color: Colors.textMuted
-                    font.pixelSize: 11
+                    font.pixelSize: Motion.fontSize.small
                 }
             }
 
@@ -187,7 +187,7 @@ Rectangle {
                 visible: card.modelData.body.length > 0
                 text: card.modelData.body
                 color: Colors.textMuted
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
                 // Markup wins over markdown — a body with both is far more
                 // likely HTML with a stray asterisk than the reverse
                 textFormat: card.modelData.bodyHasMarkup ? Text.StyledText : card.modelData.bodyHasMarkdown ? Text.MarkdownText : Text.PlainText
@@ -267,7 +267,7 @@ Rectangle {
                 anchors.centerIn: parent
                 text: "⌄" // chevron down
                 color: chevronArea.containsMouse ? Colors.text : Colors.textMuted
-                font.pixelSize: 13
+                font.pixelSize: Motion.fontSize.label
                 rotation: card.modelData.expanded ? 180 : 0
 
                 Behavior on rotation { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }

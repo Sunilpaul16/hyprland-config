@@ -68,7 +68,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text: "search"
             color: Colors.textMuted
-            font.pixelSize: 20
+            font.pixelSize: Motion.fontSize.display
         }
 
         StyledText {
@@ -78,7 +78,7 @@ Item {
             visible: searchInput.text.length === 0
             text: "Search settings"
             color: Colors.textMuted
-            font.pixelSize: 15
+            font.pixelSize: Motion.fontSize.title
         }
 
         TextInput {
@@ -89,7 +89,7 @@ Item {
             anchors.rightMargin: 16
             verticalAlignment: TextInput.AlignVCenter
             color: Colors.text
-            font.pixelSize: 15
+            font.pixelSize: Motion.fontSize.title
             clip: true
             // Focused on open so typing filters straight away; the panel's own
             // Escape handler is out of reach once this has focus, so repeat it
@@ -153,7 +153,7 @@ Item {
             visible: root.filteredPages.length === 0
             text: "No settings found"
             color: Colors.textMuted
-            font.pixelSize: 14
+            font.pixelSize: Motion.fontSize.subhead
         }
     }
 }

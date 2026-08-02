@@ -41,13 +41,13 @@ Rectangle {
             MaterialIcon {
                 text: "memory_alt"
                 color: root.accent
-                font.pixelSize: 18
+                font.pixelSize: Motion.fontSize.header
                 fill: 1
             }
 
             StyledText {
                 text: "Memory"
-                font.pixelSize: 15
+                font.pixelSize: Motion.fontSize.title
                 font.bold: true
             }
         }
@@ -80,7 +80,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignHCenter
                     text: "Used"
                     color: Colors.textMuted
-                    font.pixelSize: 11
+                    font.pixelSize: Motion.fontSize.small
                 }
             }
         }
@@ -88,7 +88,7 @@ Rectangle {
         StyledText {
             Layout.alignment: Qt.AlignHCenter
             text: root.formatKib(SystemUsage.memoryUsedKib) + " / " + root.formatKib(SystemUsage.memoryTotalKib)
-            font.pixelSize: 12
+            font.pixelSize: Motion.fontSize.body
         }
     }
 }

@@ -42,7 +42,7 @@ Rectangle {
         StyledText {
             text: root.text
             color: root.live ? Colors.text : Colors.error
-            font.pixelSize: 15
+            font.pixelSize: Motion.fontSize.title
         }
     }
 

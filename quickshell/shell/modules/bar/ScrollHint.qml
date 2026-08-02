@@ -17,17 +17,17 @@ Column {
 
     MaterialIcon {
         text: "keyboard_arrow_up"
-        font.pixelSize: 12
+        font.pixelSize: Motion.fontSize.body
         color: Colors.textMuted
     }
     MaterialIcon {
         text: root.icon
-        font.pixelSize: 12
+        font.pixelSize: Motion.fontSize.body
         color: Colors.textMuted
     }
     MaterialIcon {
         text: "keyboard_arrow_down"
-        font.pixelSize: 12
+        font.pixelSize: Motion.fontSize.body
         color: Colors.textMuted
     }
 }

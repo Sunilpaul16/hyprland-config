@@ -84,7 +84,7 @@ Item {
         anchors.bottomMargin: 8
         anchors.left: list.left
         text: "Workspaces"
-        font.pixelSize: 15
+        font.pixelSize: Motion.fontSize.title
         font.bold: true
     }
 

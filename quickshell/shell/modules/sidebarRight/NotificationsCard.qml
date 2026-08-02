@@ -33,7 +33,7 @@ Rectangle {
             text: sb.glyph.length > 0 ? sb.glyph : sb.label
             color: sb.toggled ? Colors.background : Colors.text
             font.family: sb.glyph.length > 0 ? Fonts.glyphFamily : Fonts.interfaceFamily
-            font.pixelSize: sb.glyph.length > 0 ? 14 : 12
+            font.pixelSize: sb.glyph.length > 0 ? Motion.fontSize.subhead : Motion.fontSize.body
         }
 
         MouseArea {
@@ -62,7 +62,7 @@ Rectangle {
         StyledText {
             Layout.fillWidth: true
             text: "Notifications"
-            font.pixelSize: 15
+            font.pixelSize: Motion.fontSize.title
             font.bold: true
         }
 
@@ -104,7 +104,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignHCenter
                     text: "No Notifications"
                     color: Colors.outline
-                    font.pixelSize: 16
+                    font.pixelSize: Motion.fontSize.large
                 }
             }
 

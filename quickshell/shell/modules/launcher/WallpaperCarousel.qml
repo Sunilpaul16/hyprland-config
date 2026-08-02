@@ -84,7 +84,7 @@ Item {
         anchors.top: row.bottom
         anchors.topMargin: 4
         text: (row.currentIndex >= 0 && root.results[row.currentIndex]) ? root.results[row.currentIndex].label : ""
-        font.pixelSize: 13
+        font.pixelSize: Motion.fontSize.label
         elide: Text.ElideMiddle
         // Measured against the panel constant, never the parent it
         // sits in — see the polish-loop note in CLAUDE.md

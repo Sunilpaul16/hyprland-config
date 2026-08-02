@@ -91,7 +91,7 @@ Item {
                     anchors.centerIn: parent
                     text: root.viewDate.toLocaleDateString(Qt.locale(), "MMMM yyyy")
                     color: Colors.primary
-                    font.pixelSize: 14
+                    font.pixelSize: Motion.fontSize.subhead
                     font.bold: true
                 }
 
@@ -125,7 +125,7 @@ Item {
                     anchors.centerIn: parent
                     text: "Today"
                     color: root.onCurrentMonth ? Colors.textMuted : Colors.background
-                    font.pixelSize: 11
+                    font.pixelSize: Motion.fontSize.small
                 }
 
                 MouseArea {
@@ -153,7 +153,7 @@ Item {
                 horizontalAlignment: Text.AlignHCenter
                 text: model.shortName
                 color: isWeekend ? Colors.primary : Colors.textMuted
-                font.pixelSize: 11
+                font.pixelSize: Motion.fontSize.small
             }
         }
 
@@ -193,7 +193,7 @@ Item {
                 StyledText {
                     anchors.centerIn: parent
                     text: dayCell.model.day
-                    font.pixelSize: 12
+                    font.pixelSize: Motion.fontSize.body
                     color: dayCell.isToday ? Colors.textOnPrimary : (dayCell.isWeekend ? Colors.primary : Colors.text)
                     opacity: dayCell.model.month === grid.month ? 1 : 0.35
                 }
@@ -217,7 +217,7 @@ Item {
         StyledText {
             anchors.centerIn: parent
             text: navBtn.glyph
-            font.pixelSize: 15
+            font.pixelSize: Motion.fontSize.title
         }
 
         MouseArea {

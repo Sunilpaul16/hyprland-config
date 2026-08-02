@@ -19,7 +19,7 @@ Rectangle {
         MaterialIcon {
             text: "coffee"
             color: Colors.text
-            font.pixelSize: 20
+            font.pixelSize: Motion.fontSize.display
         }
 
         ColumnLayout {
@@ -28,14 +28,14 @@ Rectangle {
 
             StyledText {
                 text: "Keep Awake"
-                font.pixelSize: 14
+                font.pixelSize: Motion.fontSize.subhead
                 font.bold: true
             }
 
             StyledText {
                 text: IdleInhibitState.enabled ? "Preventing sleep mode" : "Sleep as normal"
                 color: Colors.textMuted
-                font.pixelSize: 12
+                font.pixelSize: Motion.fontSize.body
             }
 
             Rectangle {
@@ -52,7 +52,7 @@ Rectangle {
                         ? "Active since " + Qt.formatDateTime(new Date(IdleInhibitState.activeSince), "hh:mm")
                         : "Active since —"
                     color: Colors.textMuted
-                    font.pixelSize: 10
+                    font.pixelSize: Motion.fontSize.tiny
                 }
             }
         }

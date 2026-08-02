@@ -25,7 +25,7 @@ Rectangle {
             StyledText {
                 Layout.fillWidth: true
                 text: "Bluetooth"
-                font.pixelSize: 15
+                font.pixelSize: Motion.fontSize.title
                 font.bold: true
             }
 
@@ -52,7 +52,7 @@ Rectangle {
                     spacing: 6
                     visible: BluetoothStatus.connectedDevices.length > 0
 
-                    StyledText { text: "Connected"; color: Colors.textMuted; font.pixelSize: 11 }
+                    StyledText { text: "Connected"; color: Colors.textMuted; font.pixelSize: Motion.fontSize.small }
 
                     Repeater {
                         model: BluetoothStatus.connectedDevices
@@ -69,7 +69,7 @@ Rectangle {
                     spacing: 6
                     visible: BluetoothStatus.pairedDevices.length > 0
 
-                    StyledText { text: "Paired"; color: Colors.textMuted; font.pixelSize: 11 }
+                    StyledText { text: "Paired"; color: Colors.textMuted; font.pixelSize: Motion.fontSize.small }
 
                     Repeater {
                         model: BluetoothStatus.pairedDevices
@@ -86,7 +86,7 @@ Rectangle {
                     spacing: 6
                     visible: BluetoothStatus.availableDevices.length > 0
 
-                    StyledText { text: "Available"; color: Colors.textMuted; font.pixelSize: 11 }
+                    StyledText { text: "Available"; color: Colors.textMuted; font.pixelSize: Motion.fontSize.small }
 
                     Repeater {
                         model: BluetoothStatus.availableDevices
@@ -105,7 +105,7 @@ Rectangle {
                     visible: BluetoothStatus.connectedDevices.length === 0 && BluetoothStatus.pairedDevices.length === 0 && BluetoothStatus.availableDevices.length === 0
                     text: BluetoothStatus.discovering ? "Scanning…" : "No devices found"
                     color: Colors.textMuted
-                    font.pixelSize: 13
+                    font.pixelSize: Motion.fontSize.label
                 }
             }
         }

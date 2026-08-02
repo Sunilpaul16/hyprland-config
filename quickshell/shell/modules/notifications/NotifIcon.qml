@@ -44,7 +44,7 @@ Rectangle {
         visible: !root.hasImage && !root.hasAppIcon && root.hasGlyph
         text: root.notif.materialIcon
         color: root.notif.critical ? Colors.textOnError : Colors.primary
-        font.pixelSize: 15
+        font.pixelSize: Motion.fontSize.title
     }
 
     // Flat monochrome fallback glyph, not a colorful emoji
@@ -54,7 +54,7 @@ Rectangle {
         visible: !root.hasImage && !root.hasAppIcon && !root.hasGlyph
         text: "i"
         color: root.notif.critical ? Colors.textOnError : Colors.primary
-        font.pixelSize: 13
+        font.pixelSize: Motion.fontSize.label
         font.bold: true
     }
 }

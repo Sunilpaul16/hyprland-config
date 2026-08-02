@@ -125,7 +125,7 @@ Column {
                     anchors.centerIn: parent
                     text: control.pressed ? String(Math.round(slider.value * 100)) : slider.icon
                     color: Colors.textOnPrimary
-                    font.pixelSize: control.pressed ? 11 : 14
+                    font.pixelSize: control.pressed ? Motion.fontSize.small : Motion.fontSize.subhead
                 }
             }
         }

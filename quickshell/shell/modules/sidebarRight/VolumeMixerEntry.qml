@@ -30,7 +30,7 @@ RowLayout {
         StyledText {
             Layout.fillWidth: true
             text: Audio.appNodeDisplayName(root.node)
-            font.pixelSize: 12
+            font.pixelSize: Motion.fontSize.body
             elide: Text.ElideRight
         }
 
@@ -41,7 +41,7 @@ RowLayout {
             MaterialIcon {
                 text: root.node.audio.muted ? "volume_off" : "volume_up"
                 color: Colors.textMuted
-                font.pixelSize: 16
+                font.pixelSize: Motion.fontSize.large
 
                 MouseArea {
                     anchors.fill: parent

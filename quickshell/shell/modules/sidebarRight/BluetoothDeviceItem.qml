@@ -15,7 +15,7 @@ RowLayout {
     MaterialIcon {
         text: root.device.connected ? "bluetooth_connected" : "bluetooth"
         color: root.device.connected ? Colors.primary : Colors.textMuted
-        font.pixelSize: 18
+        font.pixelSize: Motion.fontSize.header
     }
 
     ColumnLayout {
@@ -25,7 +25,7 @@ RowLayout {
         StyledText {
             Layout.fillWidth: true
             text: root.device.name.length > 0 ? root.device.name : root.device.deviceName
-            font.pixelSize: 13
+            font.pixelSize: Motion.fontSize.label
             elide: Text.ElideRight
         }
 
@@ -33,7 +33,7 @@ RowLayout {
             visible: root.device.batteryAvailable
             text: Math.round(root.device.battery * 100) + "%"
             color: Colors.textMuted
-            font.pixelSize: 11
+            font.pixelSize: Motion.fontSize.small
         }
     }
 
@@ -42,7 +42,7 @@ RowLayout {
         visible: root.device.pairing || root.device.state === BluetoothDeviceState.Connecting
         text: "sync"
         color: Colors.textMuted
-        font.pixelSize: 15
+        font.pixelSize: Motion.fontSize.title
 
         RotationAnimation on rotation {
             running: parent.visible

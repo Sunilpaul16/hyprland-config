@@ -39,14 +39,14 @@ ScrollPage {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: 8
                 text: SysInfo.osName
-                font.pixelSize: 22
+                font.pixelSize: Motion.fontSize.xlarge
             }
 
             StyledText {
                 Layout.alignment: Qt.AlignHCenter
                 text: SysInfo.uptimeLong
                 color: Colors.outline
-                font.pixelSize: 13
+                font.pixelSize: Motion.fontSize.label
             }
         }
     }

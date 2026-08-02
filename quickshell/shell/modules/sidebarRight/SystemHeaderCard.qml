@@ -22,14 +22,14 @@ Rectangle {
         StyledText {
             text: SysInfo.osGlyph
             font.family: Fonts.glyphFamily
-            font.pixelSize: 16
+            font.pixelSize: Motion.fontSize.large
         }
 
         StyledText {
             Layout.fillWidth: true
             text: `Uptime: ${SysInfo.uptimeShort}`
             color: Colors.text
-            font.pixelSize: 13
+            font.pixelSize: Motion.fontSize.label
             elide: Text.ElideRight
         }
 
