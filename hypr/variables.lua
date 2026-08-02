@@ -6,7 +6,6 @@ local M = {}
 
 M.terminal    = "kitty"
 M.fileManager = "nautilus"
-M.menu        = "fuzzel"
 M.browser    = "google-chrome-stable"
 M.codeEditor      = "code"
 
@@ -19,7 +18,6 @@ M.home = os.getenv("HOME")
 -- Apps / launcher
 M.kbTerminal          = "SUPER + Grave"
 M.kbFileManager       = "SUPER + E"
-M.kbAppMenu           = "SUPER + R" -- fuzzel (fallback launcher)
 M.kbBrowser           = "SUPER + W"
 M.kbCodeEditor        = "SUPER + C"
 M.kbLauncher          = "SUPER + Space" -- quickshell app launcher
@@ -58,7 +56,6 @@ M.kbLock  = "SUPER + L"
 M.kbRestartShell = "SUPER + CTRL + R"
 M.kbReloadHyprland = "SUPER + CTRL + ALT + R"
 
-M.kbEmojiPicker           = "SUPER + Period"
 M.kbOcrRegion             = "SUPER + SHIFT + O"
 
 -- Screenshots / recording
