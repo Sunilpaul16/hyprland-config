@@ -47,6 +47,12 @@ Singleton {
             root.toggle();
         }
 
+        // Only lock is callable. Poweroff/reboot/logout stay off the IPC surface deliberately —
+        // a socket that can power the machine off is a footgun, and a keybind can run systemctl directly
+        function lock(): void {
+            Session.lock();
+        }
+
         function open(): void {
             ScreenOwner.claim(root);
             root.open = true;

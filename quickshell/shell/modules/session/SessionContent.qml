@@ -16,7 +16,7 @@ Column {
     SessionActionButton {
         id: logoutBtn
         icon: "logout"
-        command: ["bash", "-c", "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"]
+        command: Session.logoutCommand
         warnIfBusy: true
         KeyNavigation.down: poweroffBtn
     }
@@ -24,7 +24,7 @@ Column {
     SessionActionButton {
         id: poweroffBtn
         icon: "power_settings_new"
-        command: ["systemctl", "poweroff"]
+        command: Session.poweroffCommand
         warnIfBusy: true
         KeyNavigation.up: logoutBtn
         KeyNavigation.down: lockBtn
@@ -48,7 +48,7 @@ Column {
     SessionActionButton {
         id: lockBtn
         icon: "lock"
-        command: ["hyprlock"]
+        command: Session.lockCommand
         KeyNavigation.up: poweroffBtn
         KeyNavigation.down: rebootBtn
     }
@@ -56,7 +56,7 @@ Column {
     SessionActionButton {
         id: rebootBtn
         icon: "cached"
-        command: ["systemctl", "reboot"]
+        command: Session.rebootCommand
         warnIfBusy: true
         KeyNavigation.up: lockBtn
     }
