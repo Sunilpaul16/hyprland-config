@@ -352,6 +352,23 @@ Item {
                         content.activateCurrent();
                 }
 
+                // Ctrl+J/K mirror the arrow keys; Ctrl+N/P are the readline spelling of the same move
+                Keys.onPressed: event => {
+                    if (!(event.modifiers & Qt.ControlModifier))
+                        return;
+                    const down = event.key === Qt.Key_J || event.key === Qt.Key_N;
+                    const up = event.key === Qt.Key_K || event.key === Qt.Key_P;
+                    if (!down && !up)
+                        return;
+                    if (content.mode === "wallpaper")
+                        content.navigateWallpaper(down ? 1 : -1);
+                    else if (down)
+                        verticalList.incrementCurrentIndex();
+                    else
+                        verticalList.decrementCurrentIndex();
+                    event.accepted = true;
+                }
+
                 Keys.onUpPressed: if (content.mode !== "wallpaper") verticalList.decrementCurrentIndex()
                 Keys.onDownPressed: if (content.mode !== "wallpaper") verticalList.incrementCurrentIndex()
                 Keys.onLeftPressed: if (content.mode === "wallpaper") content.navigateWallpaper(-1)

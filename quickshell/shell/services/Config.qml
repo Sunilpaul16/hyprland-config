@@ -150,6 +150,7 @@ Singleton {
                 property int maxClipResults: 6 // clipboard rows shown at once
                 property bool fuzzy: true      // subsequence matching; off = plain substring
                 property real frequencyWeight: 0.3 // how hard launch history lifts a result; 0 disables ranking entirely
+                property string searchPrefix: "@"  // "@e foo" scopes the match to a field; empty disables prefix parsing
             }
 
             property JsonObject audio: JsonObject {
