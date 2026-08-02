@@ -17,6 +17,7 @@ Singleton {
         root.enabled = !root.enabled;
         applyProc.command = ["bash", "-c", `pidof hyprsunset >/dev/null || { setsid -f hyprsunset >/dev/null 2>&1; sleep 0.5; }; hyprctl hyprsunset ${root.enabled ? `temperature ${root.temperature}` : "identity"}`];
         applyProc.running = true;
+        Notifs.toast(root.enabled ? "Night light on" : "Night light off", root.enabled ? `Screen warmed to ${root.temperature}K` : "Colour temperature restored", root.enabled ? "bedtime" : "bedtime_off");
     }
 
     // Apply process (starts hyprsunset on demand, then sets/clears the filter)

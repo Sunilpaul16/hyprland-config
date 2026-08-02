@@ -12,6 +12,7 @@ Singleton {
 
     function toggle(): void {
         root.enabled = !root.enabled;
+        Notifs.toast(root.enabled ? "Do not disturb on" : "Do not disturb off", root.enabled ? "Notification popups are hidden" : "Notification popups are back", root.enabled ? "do_not_disturb_on" : "do_not_disturb_off");
     }
 
     // IPC handler
@@ -22,12 +23,15 @@ Singleton {
             root.toggle();
         }
 
+        // Routed through toggle() so the IPC path toasts too, matching IdleInhibitState
         function enable(): void {
-            root.enabled = true;
+            if (!root.enabled)
+                root.toggle();
         }
 
         function disable(): void {
-            root.enabled = false;
+            if (root.enabled)
+                root.toggle();
         }
     }
 }

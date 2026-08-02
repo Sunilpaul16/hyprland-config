@@ -17,6 +17,7 @@ Singleton {
     function toggle(): void {
         root.enabled = !root.enabled;
         root.activeSince = root.enabled ? Date.now() : 0;
+        Notifs.toast(root.enabled ? "Keep awake on" : "Keep awake off", root.enabled ? "Screen blanking and idle are inhibited" : "Normal idle behaviour restored", root.enabled ? "coffee" : "bedtime");
     }
 
     // IPC handler

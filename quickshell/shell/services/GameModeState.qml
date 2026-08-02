@@ -30,12 +30,14 @@ Singleton {
     }
 
     onEnabledChanged: {
+        // The startup probe adopts the compositor's state; toasting there would fire on every shell restart
         if (root.probing)
             return;
         if (root.enabled)
             root.apply();
         else
             root.restore();
+        Notifs.toast(root.enabled ? "Game mode on" : "Game mode off", root.enabled ? "Animations, blur, shadows and gaps stripped" : "Hyprland settings restored", "sports_esports");
     }
 
     // "decoration:blur:enabled" -> `eval hl.config({ decoration = { blur = { enabled = 0 } } })`
