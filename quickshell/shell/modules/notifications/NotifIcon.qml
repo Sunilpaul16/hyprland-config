@@ -12,6 +12,7 @@ Rectangle {
 
     readonly property bool hasImage: notif.image.length > 0
     readonly property bool hasAppIcon: notif.appIcon.length > 0
+    readonly property bool hasGlyph: notif.materialIcon.length > 0
 
     width: 26
     height: 26
@@ -37,11 +38,20 @@ Rectangle {
         source: root.hasAppIcon ? Quickshell.iconPath(root.notif.appIcon, "dialog-information") : ""
     }
 
+    // Shell-raised toasts name a Material Symbol instead of shipping an icon
+    MaterialIcon {
+        anchors.centerIn: parent
+        visible: !root.hasImage && !root.hasAppIcon && root.hasGlyph
+        text: root.notif.materialIcon
+        color: root.notif.critical ? Colors.textOnError : Colors.primary
+        font.pixelSize: 15
+    }
+
     // Flat monochrome fallback glyph, not a colorful emoji
     StyledText {
         anchors.centerIn: parent
         anchors.verticalCenterOffset: -1
-        visible: !root.hasImage && !root.hasAppIcon
+        visible: !root.hasImage && !root.hasAppIcon && !root.hasGlyph
         text: "i"
         color: root.notif.critical ? Colors.textOnError : Colors.primary
         font.pixelSize: 13

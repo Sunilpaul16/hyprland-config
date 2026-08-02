@@ -34,7 +34,8 @@ Singleton {
     readonly property var groupsByAppName: {
         const groups = {};
         for (const n of root.list) {
-            if (n.closed)
+            // Transients are popup-only by definition — persist() already drops them, so the sidebar must not list them either
+            if (n.closed || n.isTransient)
                 continue;
             if (!groups[n.appName])
                 groups[n.appName] = { appName: n.appName, notifs: [] };
@@ -60,6 +61,25 @@ Singleton {
             root.expandedApps = [...root.expandedApps, appName];
         else
             root.expandedApps = root.expandedApps.filter(a => a !== appName);
+    }
+
+    // Shell-raised feedback ("Do not disturb on"). A synthetic transient Notif, so it reuses the
+    // toast rendering and dismiss timer but never reaches history or the unread count.
+    // Ignores DND deliberately — this answers an action the user just took, including enabling DND.
+    // Does respect the sidebar: an open sidebar covers the toast corner outright, and its quick
+    // toggles already show the new state, so a toast there would be invisible and redundant
+    function toast(summary: string, body: string, icon: string): void {
+        if (SidebarRightState.open)
+            return;
+        const wrapper = notifComp.createObject(root, {
+            popup: true,
+            isTransient: true,
+            appName: "Shell",
+            summary: summary,
+            body: body ?? "",
+            materialIcon: icon ?? ""
+        });
+        root.list = [wrapper, ...root.list];
     }
 
     function clearAll(): void {

@@ -34,6 +34,9 @@ QtObject {
     property real expireTimeout: -1
     property list<var> actions
 
+    // Material Symbols name, for shell-raised toasts that have no app icon to show
+    property string materialIcon
+
     // "Show it, don't keep it" — volume/brightness/progress popups set this
     property bool isTransient
 
