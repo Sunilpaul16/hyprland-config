@@ -12,6 +12,5 @@
   "outlineVariant": "{{colors.outline_variant.default.hex}}",
   "error": "{{colors.error.default.hex}}",
   "textOnError": "{{colors.on_error.default.hex}}",
-  "errorContainer": "{{colors.error_container.default.hex}}",
-  "textOnErrorContainer": "{{colors.on_error_container.default.hex}}"
+  "errorContainer": "{{colors.error_container.default.hex}}"
 }

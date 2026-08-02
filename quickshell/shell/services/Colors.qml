@@ -94,7 +94,7 @@ QtObject {
     property color outlineVariant: "#3f484c"
     Behavior on outlineVariant { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
 
-    // Error / destructive roles — same on<Capital> rename as text/textMuted above, so the foregrounds become textOnError/textOnErrorContainer
+    // Error / destructive roles — same on<Capital> rename as text/textMuted above, so the foreground becomes textOnError
     property color error: "#ffb4ab"
     Behavior on error { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
 
@@ -103,9 +103,6 @@ QtObject {
 
     property color errorContainer: "#93000a"
     Behavior on errorContainer { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
-
-    property color textOnErrorContainer: "#ffdad6"
-    Behavior on textOnErrorContainer { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
 
     // Recording red — deliberately fixed, not a theme role: a recording indicator has to stay red whatever the palette does
     readonly property color recording: "#e64553"

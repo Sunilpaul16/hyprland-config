@@ -58,8 +58,7 @@ Singleton {
             outlineVariant: palette.outline_variant,
             error: palette.error,
             textOnError: palette.on_error,
-            errorContainer: palette.error_container,
-            textOnErrorContainer: palette.on_error_container
+            errorContainer: palette.error_container
         }));
     }
 
