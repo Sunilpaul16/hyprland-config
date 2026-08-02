@@ -4,6 +4,8 @@ import QtQuick
 // Hand-written, NOT matugen-generated — ColorsLoader mutates these at runtime from colors.json, so a theme change cross-fades instead of restarting the shell
 // Values below are last-known-good defaults, used until the first reapplyTheme() completes
 QtObject {
+    id: root
+
     // Pulls a surface toward an accent — the shell's one way to derive a tonal fill, so amount stays explicit at the call site
     function tint(base: color, accent: color, amount: real): color {
         return Qt.tint(base, Qt.alpha(accent, amount));
@@ -16,17 +18,40 @@ QtObject {
         return Qt.hsla((c.hslHue * 360 + degrees + 360) % 360 / 360, c.hslSaturation, c.hslLightness, c.a);
     }
 
+    function luminance(c: color): real {
+        return Math.sqrt(0.299 * c.r ** 2 + 0.587 * c.g ** 2 + 0.114 * c.b ** 2);
+    }
+
+    // Moves `c` away from `base` until it clears `target` luminance separation in whichever direction this palette elevates, then applies `alpha`
+    function elevate(base: color, c: color, target: real, alpha: real): color {
+        const lc = root.luminance(c);
+        const delta = root.isLight ? root.luminance(base) - lc : lc - root.luminance(base);
+        // Palette already separates them well enough; blending further would only flatten its own intent
+        if (delta >= target)
+            return Qt.alpha(c, alpha);
+        const room = root.isLight ? lc : 1 - lc;
+        if (room <= 0.001)
+            return Qt.alpha(c, alpha);
+        // Blending a fraction t toward black/white shifts luminance by roughly t * room
+        const t = Math.min(1, (target - delta) / room);
+        const toward = root.isLight ? 0 : 1;
+        return Qt.rgba(c.r + (toward - c.r) * t, c.g + (toward - c.g) * t, c.b + (toward - c.b) * t, alpha);
+    }
+
+    // Light palettes elevate darker, dark palettes lighter. Derived from the palette because Theme.mode can be "auto", which never resolves to a concrete answer
+    readonly property bool isLight: root.luminance(background) > 0.5
+
+    // Floor on how far a raised surface must sit from the panel — 27 of the 29 presets already clear 0.043, so only the ones that don't get corrected
+    readonly property real elevationFloor: 0.04
+
     // Outermost panel background — one role for every panel root and Corner fillet, or adjacent panels show the step as a hard line
     readonly property color panel: Config.appearance.transparency ? Qt.alpha(background, Config.appearance.panelOpacity) : background
 
-    // Cards and pills on a panel — stacking two translucent layers always reads heavier, so lift the tint (scaled by luminance, sized by panel transparency) to read as raised instead
+    // Cards and pills on a panel — stacking two translucent layers always reads heavier, so the separation target grows with how see-through the panel is
     readonly property color layer: {
-        if (!Config.appearance.transparency)
-            return surface;
-        const lift = 0.3 * (1 - Config.appearance.panelOpacity);
-        const lum = Math.sqrt(0.299 * surface.r ** 2 + 0.587 * surface.g ** 2 + 0.114 * surface.b ** 2);
-        const scale = lum > 0 ? (lum + lift) / lum : 1;
-        return Qt.rgba(Math.min(1, surface.r * scale), Math.min(1, surface.g * scale), Math.min(1, surface.b * scale), Config.appearance.layerOpacity);
+        const transparent = Config.appearance.transparency;
+        const target = root.elevationFloor + (transparent ? 0.3 * (1 - Config.appearance.panelOpacity) : 0);
+        return root.elevate(background, surface, target, transparent ? Config.appearance.layerOpacity : 1);
     }
 
     property color background: "#0f1417"
