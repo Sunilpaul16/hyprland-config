@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 
 // Pending package updates via `checkupdates` (pacman-contrib) and an AUR helper — both read-only queries against a temporary database
+// runUpgrade() is the one exception: it hands a real upgrade to a terminal, and is only ever reached from a deliberate click
 Singleton {
     id: root
 
@@ -43,6 +44,14 @@ Singleton {
 
     // Ticks the relative label along without re-running the check
     property int _labelTick: 0
+
+    // Hands the upgrade to a terminal rather than running it headless: it needs a sudo
+    // password and conflict prompts, and a detached process has nowhere to ask. No
+    // re-check is chained on the end — execDetached returns immediately, so there is
+    // nothing to wait on; the next scheduled check picks the new state up
+    function runUpgrade(): void {
+        Quickshell.execDetached([Config.apps.terminal, "-e", root.aurHelper, "-Syu"]);
+    }
 
     function refresh(): void {
         if (root.checking)

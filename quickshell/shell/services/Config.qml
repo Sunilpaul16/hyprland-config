@@ -26,6 +26,7 @@ Singleton {
     property alias audio: adapter.audio
     property alias wallpaper: adapter.wallpaper
     property alias dashboard: adapter.dashboard
+    property alias apps: adapter.apps
 
     // Gates panels from reading config before the FileView has loaded
     property bool ready: false
@@ -87,6 +88,12 @@ Singleton {
                 property string fullscreen: "on"        // toasts over a fullscreen window: "on" (brief) | "off" (suppressed)
                 property int fullscreenExpireDuration: 2000 // ms a toast shows while a window is fullscreen
                 property string popupPosition: "top-right" // "top-right" | "top-left" | "bottom-right" | "bottom-left"
+            }
+
+            // External programs the shell launches on the user's behalf
+            property JsonObject apps: JsonObject {
+                // Used for desktop entries marked Terminal=true and for the upgrade runner. The exec flag is assumed to be `-e`, which covers kitty/foot/alacritty/ghostty
+                property string terminal: "kitty"
             }
 
             property JsonObject updates: JsonObject {

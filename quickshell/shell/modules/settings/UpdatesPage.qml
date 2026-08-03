@@ -1,8 +1,7 @@
 import QtQuick
 import "../../services"
 
-// Updates page. Live against services/Updates.qml. The notification rows at
-// the bottom are still mock — nothing in the shell surfaces update counts yet
+// Updates page. Live against services/Updates.qml throughout
 ScrollPage {
     id: root
 
@@ -164,6 +163,7 @@ ScrollPage {
         }
 
         SettingRow {
+            last: true
             live: true
             label: "Show count in the bar"
 
@@ -172,13 +172,38 @@ ScrollPage {
                 onToggled: v => Config.updates.showInBar = v
             }
         }
+    }
+
+    SectionLabel {
+        text: "Upgrading"
+    }
+
+    SettingGroup {
+        SettingRow {
+            first: true
+            live: true
+            label: "Install updates"
+            subtext: Updates.total === 0 ? "Nothing pending" : `Runs ${Config.updates.aurHelper} -Syu in a terminal`
+
+            PillButton {
+                live: true
+                icon: "download"
+                text: "Update now"
+                // Enabled regardless of the pending count — the helper re-syncs anyway, and a stale count shouldn't block a deliberate upgrade
+                onClicked: Updates.runUpgrade()
+            }
+        }
 
         SettingRow {
             last: true
+            live: true
             label: "Terminal used for upgrades"
+            subtext: "Also used for desktop entries that ask to run in a terminal"
 
             SelectPill {
-                value: "kitty"
+                options: [{ value: "kitty", label: "kitty" }, { value: "foot", label: "foot" }, { value: "alacritty", label: "alacritty" }, { value: "ghostty", label: "ghostty" }]
+                current: Config.apps.terminal
+                onSelected: v => Config.apps.terminal = v
             }
         }
     }

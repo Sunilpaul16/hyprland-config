@@ -101,11 +101,11 @@ Singleton {
         }).slice().sort((a, b) => root.rankScore(b.score ?? 1, b.obj.entry) - root.rankScore(a.score ?? 1, a.obj.entry)).map(r => r.obj.entry);
     }
 
-    // Launch (terminal apps via kitty -e)
+    // Launch (terminal apps via the configured terminal's -e)
     function launch(entry): void {
         root.recordLaunch(entry);
         if (entry.runInTerminal)
-            Quickshell.execDetached(["kitty", "-e", ...entry.command]);
+            Quickshell.execDetached([Config.apps.terminal, "-e", ...entry.command]);
         else
             Quickshell.execDetached(entry.command);
     }
