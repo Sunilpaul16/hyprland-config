@@ -27,6 +27,9 @@ ShellRoot {
         // Same lazy-singleton reason: nothing else references Updates, so
         // without this its check-on-login timer never starts
         Updates.backgroundChecking = true;
+        // And again: NightLightState is only reached from the sidebar's quick
+        // toggles, so its schedule would not start until the sidebar was opened
+        NightLightState.scheduling = true;
     }
 
     Bar {}

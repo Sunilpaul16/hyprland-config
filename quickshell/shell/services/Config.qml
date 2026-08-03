@@ -178,6 +178,10 @@ Singleton {
 
             property JsonObject nightLight: JsonObject {
                 property int temperature: 5200 // kelvin applied by hyprsunset
+                property bool schedule: true   // turn night light on and off automatically
+                // Local hours, 0-23. end < start is an overnight window (the default 19->07)
+                property int startHour: 19
+                property int endHour: 7
             }
 
             property JsonObject recorder: JsonObject {

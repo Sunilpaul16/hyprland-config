@@ -12,8 +12,13 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("blueman-applet")
     -- Minimal from-scratch shell, see ~/.config/quickshell/shell/. Run as a systemd
     -- user unit (systemd/quickshell.service) so a crash restarts it instead of
-    -- leaving the desktop with no bar, launcher or notifications
-    hl.exec_cmd("systemctl --user start quickshell.service")
+    -- leaving the desktop with no bar, launcher or notifications.
+    -- QT_QPA_PLATFORM must be handed over first: quickshell derives an instance
+    -- "display id" from it, and `qs ipc` only talks to instances whose id matches the
+    -- caller's. uwsm finalizes the HYPRCURSOR/XCURSOR vars but not this one, so without
+    -- the import the unit registers as "wayland,wayland-1" while every keybind calling
+    -- `qs -c shell ipc call` computes "unk,wayland" and finds no running instance.
+    hl.exec_cmd([[bash -c 'systemctl --user import-environment QT_QPA_PLATFORM; systemctl --user start quickshell.service']])
 
     hl.exec_cmd([[bash -c 'f="$HOME/.local/state/quickshell/current_wallpaper"; [ -s "$f" ] && exec "$HOME/.local/bin/switchwall" --preview "$(cat "$f")"']])
 end)

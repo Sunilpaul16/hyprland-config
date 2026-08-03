@@ -2,7 +2,20 @@ import "../../services"
 
 // Services page — notification, polling, weather and recorder settings
 ScrollPage {
+    id: root
+
     title: "Services"
+
+    // 19 into "19:00", or "7 pm" while the clock is set to 12-hour
+    function formatHour(hour: int): string {
+        if (!Time.use12Hour)
+            return `${hour < 10 ? "0" : ""}${hour}:00`;
+        if (hour === 0)
+            return "12 am";
+        if (hour === 12)
+            return "12 pm";
+        return hour < 12 ? `${hour} am` : `${hour - 12} pm`;
+    }
 
     SectionLabel {
         text: "Notifications"
@@ -264,6 +277,49 @@ ScrollPage {
                 stepSize: 100
                 suffix: " K"
                 onMoved: v => Config.nightLight.temperature = Math.round(v)
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Night light schedule"
+            subtext: Config.nightLight.schedule ? `On from ${root.formatHour(Config.nightLight.startHour)} to ${root.formatHour(Config.nightLight.endHour)}` : "Night light stays under manual control"
+
+            ToggleSwitch {
+                checked: Config.nightLight.schedule
+                onToggled: v => Config.nightLight.schedule = v
+            }
+        }
+
+        SettingRow {
+            live: true
+            enabled: Config.nightLight.schedule
+            opacity: enabled ? 1 : 0.5
+            label: "Turns on at"
+
+            NumberControl {
+                value: Config.nightLight.startHour
+                from: 0
+                to: 23
+                stepSize: 1
+                displayText: root.formatHour(Config.nightLight.startHour)
+                onMoved: v => Config.nightLight.startHour = Math.round(v)
+            }
+        }
+
+        SettingRow {
+            live: true
+            enabled: Config.nightLight.schedule
+            opacity: enabled ? 1 : 0.5
+            label: "Turns off at"
+
+            NumberControl {
+                value: Config.nightLight.endHour
+                from: 0
+                to: 23
+                stepSize: 1
+                displayText: root.formatHour(Config.nightLight.endHour)
+                onMoved: v => Config.nightLight.endHour = Math.round(v)
             }
         }
 
