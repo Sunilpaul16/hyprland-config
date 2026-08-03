@@ -1,0 +1,22 @@
+[Unit]
+Description=Quickshell desktop shell
+Documentation=https://quickshell.org
+# Stops with the session; started explicitly from hypr/execs.lua rather than
+# via WantedBy, so autostart stays declared in one place
+PartOf=graphical-session.target
+After=graphical-session.target
+ConditionEnvironment=WAYLAND_DISPLAY
+# A shell that dies on load will restart forever otherwise; give up after ten
+# tries in a minute so a broken config fails loudly instead of hot-looping
+StartLimitIntervalSec=60
+StartLimitBurst=10
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/qs -c shell
+Slice=session.slice
+# The point of the unit: the Overview/screencopy crash used to leave the
+# desktop with no bar, launcher or notifications until a manual restart
+Restart=always
+RestartSec=1
+TimeoutStopSec=5sec
