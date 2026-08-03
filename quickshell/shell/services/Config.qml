@@ -31,6 +31,32 @@ Singleton {
     // Gates panels from reading config before the FileView has loaded
     property bool ready: false
 
+    // False while the file exists but doesn't parse. JsonAdapter only warns on a malformed
+    // document and keeps its declared defaults, so the shell runs normally and the next write
+    // would replace the real file with those defaults — every customised value and every
+    // unknown key gone. Writing is refused until it parses again
+    property bool fileValid: true
+
+    onFileValidChanged: {
+        if (!root.fileValid) {
+            console.warn("[Config] config.json did not parse — running on defaults, and no config write will touch the file until it does");
+            invalidToastTimer.restart();
+        }
+    }
+
+    // JsonAdapter bails on both a parse error and a valid non-object document, so check for each
+    function validate(): void {
+        const text = configFile.text();
+        if (text.trim().length === 0) {
+            root.fileValid = true;
+            return;
+        }
+        try {
+            root.fileValid = root.isPlainObject(JSON.parse(text));
+        } catch (e) {
+            root.fileValid = false;
+        }
+    }
 
     // Config file
     FileView {
@@ -38,7 +64,11 @@ Singleton {
         path: Directories.configFile
         watchChanges: true
 
-        onLoaded: root.ready = true
+        // Re-runs on every reload too, so fixing the file clears the flag without a restart
+        onLoaded: {
+            root.validate();
+            root.ready = true;
+        }
         onFileChanged: reloadTimer.restart()
         onAdapterUpdated: writeTimer.restart()
         onLoadFailed: error => {
@@ -274,6 +304,10 @@ Singleton {
     // JsonAdapter serialises only its declared properties, so a straight writeAdapter() silently
     // drops anything else in the file — re-merge those keys instead of destroying them
     function writePreservingUnknown(): void {
+        // The adapter is holding defaults, not the file's values — writing them would be the data loss, not the recovery
+        if (!root.fileValid)
+            return;
+
         let prior = null;
         try {
             prior = JSON.parse(configFile.text());
@@ -300,6 +334,14 @@ Singleton {
             return;
 
         configFile.setText(JSON.stringify(root.mergeInto(written, extras), null, 2) + "\n");
+    }
+
+    // Delayed so the toast lands after the notification panel exists — Config loads before any panel does
+    Timer {
+        id: invalidToastTimer
+        interval: 3000
+        repeat: false
+        onTriggered: Notifs.toast("Config not loaded", "config.json could not be parsed. Running on defaults; the file is left untouched until it is valid.", "settings_alert")
     }
 
     // Debounced write
