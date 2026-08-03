@@ -2,14 +2,13 @@ import QtQuick
 import QtQuick.Shapes
 import "../../services"
 
-// Seek slider — played portion is a travelling sine wave, then a gap, handle, remaining track and stop dot
-// Externally driven: interacting emits seeked(), it never writes `value` itself
+// Seek slider
 Item {
     id: root
 
     property real value: 0         // 0..1
-    property bool animate: false   // travel the wave; pauses in place when false
-    property real waveFrequency: 5 // cycles across the slider's full width
+    property bool animate: false  // travel the wave
+    property real waveFrequency: 5  // full-width cycle
     property int waveDuration: 2000
     property real waveThickness: 5
     property real amplitude: 4
@@ -24,7 +23,7 @@ Item {
     readonly property real waveWidth: Math.max(0, root.handleX - root.gap)
     readonly property real wavelength: root.waveFrequency > 0 ? root.width / root.waveFrequency : root.width
 
-    // Writable so the Behavior below can smooth the once-a-second position ticks
+    // Smoothed handle position
     property real handleX: root.displayValue * (root.width - root.handleWidth)
     property real dragValue: 0
     property real phase: 0
@@ -40,7 +39,7 @@ Item {
         NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
     }
 
-    // Sine samples across the played portion
+    // Sine samples
     function wavePoints(): var {
         const w = root.waveWidth;
         const cy = wave.height / 2;

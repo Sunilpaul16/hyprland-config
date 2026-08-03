@@ -1,13 +1,13 @@
 import QtQuick
 import "../../services"
 
-// Idle & power page. Live against Config.idle, which modules/idle/IdleMonitors.qml consumes
+// Idle and power page
 ScrollPage {
     id: root
 
     title: "Idle & power"
 
-    // Config stores seconds; the sliders work in minutes, where 0 reads as "Never"
+    // Format timeout
     function formatTimeout(mins: int): string {
         if (mins === 0)
             return "Never";

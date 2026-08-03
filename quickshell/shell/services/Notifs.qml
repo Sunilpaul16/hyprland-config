@@ -14,7 +14,7 @@ Singleton {
     property list<Notif> list: []
     readonly property list<Notif> popups: list.filter(n => n.popup && !n.closed)
 
-    // Newest-notification timestamp per app, independent of list iteration order
+    // Newest per app
     property var latestTimeForApp: ({})
 
     onListChanged: {
@@ -30,11 +30,11 @@ Singleton {
         writeTimer.restart();
     }
 
-    // Per-app groups (comparison.md #26)
+    // Per-app groups
     readonly property var groupsByAppName: {
         const groups = {};
         for (const n of root.list) {
-            // Transients are popup-only by definition — persist() already drops them, so the sidebar must not list them either
+            // Skip transients
             if (n.closed || n.isTransient)
                 continue;
             if (!groups[n.appName])
@@ -52,7 +52,7 @@ Singleton {
 
     readonly property var appNameList: Object.keys(root.groupsByAppName).sort((a, b) => root.groupsByAppName[b].time - root.groupsByAppName[a].time)
 
-    // Expanded app groups — survives the group card being destroyed/recreated on re-layout
+    // Expanded app groups
     property list<string> expandedApps: []
 
     function toggleAppExpand(appName: string): void {
@@ -63,11 +63,7 @@ Singleton {
             root.expandedApps = root.expandedApps.filter(a => a !== appName);
     }
 
-    // Shell-raised feedback ("Do not disturb on"). A synthetic transient Notif, so it reuses the
-    // toast rendering and dismiss timer but never reaches history or the unread count.
-    // Ignores DND deliberately — this answers an action the user just took, including enabling DND.
-    // Does respect the sidebar: an open sidebar covers the toast corner outright, and its quick
-    // toggles already show the new state, so a toast there would be invisible and redundant
+    // Shell-raised toast
     function toast(summary: string, body: string, icon: string): void {
         if (SidebarRightState.open)
             return;
@@ -87,8 +83,7 @@ Singleton {
             n.close();
     }
 
-    // A fullscreen window on the focused monitor — the special workspace wins
-    // when one is open, since that's what's actually on screen
+    // Fullscreen check
     readonly property bool anyFullscreen: {
         const monitor = Hyprland.focusedMonitor;
         const specialName = monitor?.lastIpcObject.specialWorkspace?.name ?? "";
@@ -97,15 +92,14 @@ Singleton {
         return monitor?.activeWorkspace?.hasFullscreen ?? false;
     }
 
-    // Counts only what actually toasted — something suppressed by DND or an
-    // open sidebar was never unseen
+    // Unread count
     property int unread: 0
 
     function markAllRead(): void {
         root.unread = 0;
     }
 
-    // Opening the sidebar is reading them
+    // Sidebar marks read
     Connections {
         target: SidebarRightState
 
@@ -115,7 +109,7 @@ Singleton {
         }
     }
 
-    // idOffset keeps a fresh session's ids from colliding with history — applied in Notif.qml (comparison.md #27)
+    // Id offset
     property int idOffset: 0
 
     function notifToJSON(n) {
@@ -132,8 +126,7 @@ Singleton {
     }
 
     function persist(): void {
-        // Disabled means the file is actively emptied, not just left unwritten,
-        // so turning it off doesn't leave an old history to restore later
+        // Empty when disabled
         if (!Config.notifications.keepAcrossRestarts) {
             historyFile.setText("[]");
             return;
@@ -152,13 +145,13 @@ Singleton {
         bodyHyperlinksSupported: true
         bodyImagesSupported: true
         imageSupported: true
-        // Don't claim persistence to senders when history is turned off
+        // Persistence flag
         persistenceSupported: Config.notifications.keepAcrossRestarts
 
         onNotification: notif => {
             notif.tracked = true;
             const wrapper = notifComp.createObject(root, {
-                // No toast when the sidebar card already shows it live, under Do Not Disturb, or over a fullscreen window if disabled — history gets it either way
+                // Popup gating
                 popup: !SidebarRightState.open && !DndState.enabled && !(Config.notifications.fullscreen === "off" && root.anyFullscreen),
                 notification: notif
             });
@@ -167,7 +160,7 @@ Singleton {
             if (wrapper.popup && !wrapper.isTransient)
                 root.unread++;
 
-            // No popup means no dismiss timer, so a transient would never expire
+            // Transient needs timer
             if (wrapper.isTransient && !wrapper.popup)
                 wrapper.close();
         }
@@ -188,15 +181,14 @@ Singleton {
         Notif {}
     }
 
-    // Creates the image cache, then drops any file the restored history no
-    // longer references — nothing else prunes it, so it would grow forever
+    // Cache dir prune
     Process {
         id: cachePrune
         running: true
         command: ["bash", "-c", `mkdir -p '${Directories.notifImageCache}' && find '${Directories.notifImageCache}' -type f -printf '%f\\n' 2>/dev/null | while read -r f; do grep -qF "$f" '${Directories.notificationsFile}' 2>/dev/null || rm -f '${Directories.notifImageCache}'/"$f"; done`]
     }
 
-    // Debounced write — avoids hammering disk on a burst of rapid notifications
+    // Debounced write
     Timer {
         id: writeTimer
         interval: 200
@@ -204,7 +196,7 @@ Singleton {
         onTriggered: root.persist()
     }
 
-    // History file — reloaded notifs get actions: [], meaningless once the sender is dead (comparison.md #27)
+    // History file
     FileView {
         id: historyFile
         path: Directories.notificationsFile

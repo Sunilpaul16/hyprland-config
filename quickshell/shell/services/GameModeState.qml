@@ -4,14 +4,14 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
 
-// Game mode: strips Hyprland eye candy (animations, blur, shadows, gaps, rounding)
+// Game mode
 Singleton {
     id: root
 
-    // Not mirrored into Persistent — the options live in Hyprland itself, so probeProc reads back the truth
+    // Read from Hyprland
     property bool enabled: false
 
-    // Set while probeProc adopts the compositor's state, so that write doesn't re-apply
+    // Probe guard
     property bool probing: false
 
     readonly property var options: ({
@@ -30,7 +30,7 @@ Singleton {
     }
 
     onEnabledChanged: {
-        // The startup probe adopts the compositor's state; toasting there would fire on every shell restart
+        // Silent during probe
         if (root.probing)
             return;
         if (root.enabled)
@@ -40,20 +40,20 @@ Singleton {
         Notifs.toast(root.enabled ? "Game mode on" : "Game mode off", root.enabled ? "Animations, blur, shadows and gaps stripped" : "Hyprland settings restored", "sports_esports");
     }
 
-    // "decoration:blur:enabled" -> `eval hl.config({ decoration = { blur = { enabled = 0 } } })`
+    // Key to Lua eval
     function luaFor(key, value): string {
         const parts = key.split(":");
         return `eval hl.config({ ${parts.join(" = { ")} = ${value}${" }".repeat(parts.length - 1)} })`;
     }
 
-    // Hyprland's non-legacy Lua parser rejects `keyword` outright ("Use eval."), hence luaFor
+    // Apply overrides
     function apply(): void {
         const cmds = Object.keys(root.options).map(k => root.luaFor(k, root.options[k]));
         applyProc.command = ["hyprctl", "--batch", cmds.join("; ")];
         applyProc.running = true;
     }
 
-    // Re-reading the config files is the revert — no need to remember prior values
+    // Restore by reload
     function restore(): void {
         applyProc.command = ["hyprctl", "reload"];
         applyProc.running = true;
@@ -63,7 +63,7 @@ Singleton {
         id: applyProc
     }
 
-    // Adopt the compositor's current state, since game mode outlives a shell restart
+    // Adopt current state
     Process {
         id: probeProc
         running: true
@@ -83,7 +83,7 @@ Singleton {
         }
     }
 
-    // Any config reload restores the real config, so re-assert on top of it
+    // Re-assert after reload
     Connections {
         target: Hyprland
         function onRawEvent(event) {

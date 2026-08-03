@@ -3,20 +3,19 @@ import Quickshell
 import "../../services"
 import "../../components"
 
-// Single session action: round icon button, executes immediately on click
+// Session action button
 Rectangle {
     id: root
 
     required property string icon
     required property var command
-    // Only logout/poweroff/reboot opt in — locking doesn't end the session (comparison.md #31)
+    // Warn if busy
     property bool warnIfBusy: false
 
     implicitWidth: 64
     implicitHeight: 64
     radius: width / 2
-    // Sits on the drawer's Colors.background backdrop, so the resting fill is
-    // surface — the old background fill would disappear into it
+    // Resting fill
     color: hoverArea.containsMouse ? Colors.tint(Colors.layer, Colors.primary, 0.18) : Colors.layer
     border.width: root.activeFocus ? 2 : 0
     border.color: Colors.primary

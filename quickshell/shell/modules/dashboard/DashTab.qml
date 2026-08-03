@@ -6,7 +6,7 @@ import QtQuick.Layouts
 import "../../components"
 import "../../services"
 
-// Dashboard tab: 6-card grid (User / Weather / DateTime / Calendar / Resources / Media)
+// Dashboard tab grid
 Item {
     id: root
 
@@ -21,7 +21,7 @@ Item {
         rowSpacing: Motion.spacing.large
         columnSpacing: Motion.spacing.large
 
-        // Weather spans the DateTime + part of the Calendar column beneath it
+        // Weather span
         SmallWeatherCard {
             Layout.row: 0
             Layout.column: 0
@@ -30,14 +30,14 @@ Item {
             Layout.fillHeight: true
         }
 
-        // Content-sized, not stretched — narrower than Weather above it
+        // Content-sized
         DateTimeCard {
             Layout.row: 1
             Layout.column: 0
             Layout.fillHeight: true
         }
 
-        // User spans further right than Calendar, but starts further right too
+        // User span
         UserCard {
             Layout.row: 0
             Layout.column: 2
@@ -46,7 +46,7 @@ Item {
             Layout.fillHeight: true
         }
 
-        // Starts one column left of User — reads wider / left-shifted vs. User above it
+        // Calendar span
         CalendarCard {
             Layout.row: 1
             Layout.column: 1
@@ -63,7 +63,7 @@ Item {
             Layout.fillHeight: true
         }
 
-        // Media card spans both rows
+        // Media spans rows
         MediaCard {
             Layout.row: 0
             Layout.column: 5
@@ -73,15 +73,14 @@ Item {
         }
     }
 
-    // Big stacked HH / MM digital clock
+    // Digital clock card
     component DateTimeCard: Rectangle {
         radius: Motion.rounding.large
         color: Colors.layer
         border.width: 1
         border.color: Colors.outline
         clip: true
-        // Fixed width so this stays narrower than Weather above it
-        // instead of stretching to match the column
+        // Fixed width
         implicitWidth: Config.dashboard.clock.width
         implicitHeight: clockContent.implicitHeight + 32
 
@@ -132,7 +131,7 @@ Item {
         }
     }
 
-    // Full month grid: prev/next navigation, jump-to-today, current-day highlight
+    // Calendar card
     component CalendarCard: Rectangle {
         radius: Motion.rounding.large
         color: Colors.layer
@@ -146,7 +145,7 @@ Item {
             anchors.fill: parent
             anchors.margins: Motion.spacing.xlarge
             cellSize: 26
-            // True circle on the centred 26x26 marker
+            // True circle
             dayRadius: cellSize / 2
         }
     }

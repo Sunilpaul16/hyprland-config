@@ -4,7 +4,7 @@ import Quickshell
 import "../../services"
 import "../../components"
 
-// Screen Recorder + Recordings card (sidebar)
+// Screen recorder card
 Rectangle {
     id: root
 
@@ -17,7 +17,7 @@ Rectangle {
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 16 }
         spacing: Motion.spacing.xlarge
 
-        // --- Screen Recorder ---
+        // Screen recorder
         RowLayout {
             Layout.fillWidth: true
             spacing: Motion.spacing.large
@@ -41,7 +41,7 @@ Rectangle {
                         font.bold: true
                     }
 
-                    // Blinking REC pill (comparison.md #49) — fast fade out, slow fade back in, looping
+                    // Blinking REC pill
                     Rectangle {
                         visible: Recorder.active
                         radius: height / 2
@@ -74,7 +74,7 @@ Rectangle {
                 }
             }
 
-            // SplitButton: main segment starts/stops, chevron picks the mode (comparison.md #49)
+            // Split button
             RowLayout {
                 Layout.alignment: Qt.AlignVCenter
                 spacing: Motion.spacing.tiny
@@ -104,7 +104,7 @@ Rectangle {
                     }
                 }
 
-                // Mode picker — hidden mid-recording so it can't drift from what's actually running
+                // Mode picker
                 Rectangle {
                     id: chevronSegment
                     visible: !Recorder.active
@@ -153,7 +153,7 @@ Rectangle {
             opacity: 0.3
         }
 
-        // --- Recordings ---
+        // Recordings
         ColumnLayout {
             id: recordingsSection
             Layout.fillWidth: true
@@ -162,7 +162,7 @@ Rectangle {
             property bool expanded: false
             onExpandedChanged: if (expanded) Recordings.refresh()
 
-            // Header (click to expand/collapse)
+            // Header
             Item {
                 Layout.fillWidth: true
                 implicitHeight: headerRow.implicitHeight

@@ -11,7 +11,7 @@ Item {
     implicitWidth: visible ? row.implicitWidth : 0
     implicitHeight: row.implicitHeight
 
-    // Dot + timer label
+    // Dot and timer
     RowLayout {
         id: row
         anchors.verticalCenter: parent.verticalCenter
@@ -41,7 +41,7 @@ Item {
         }
     }
 
-    // Click to stop recording
+    // Click stops
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor

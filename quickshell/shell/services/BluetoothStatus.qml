@@ -13,15 +13,14 @@ Singleton {
     readonly property BluetoothDevice connectedDevice: Bluetooth.devices.values.find(d => d.connected) ?? null
     readonly property bool connected: connectedDevice !== null
 
-    // Grouped for BluetoothDialog.qml — device.connected/paired come straight from bluez
+    // Grouped device lists
     readonly property var connectedDevices: Bluetooth.devices.values.filter(d => d.connected)
     readonly property var pairedDevices: Bluetooth.devices.values.filter(d => d.paired && !d.connected)
     readonly property var availableDevices: Bluetooth.devices.values.filter(d => !d.paired && !d.connected)
 
     readonly property bool discovering: Bluetooth.defaultAdapter?.discovering ?? false
 
-    // Whether other machines can find this one — distinct from `discovering`,
-    // which is this adapter scanning outward
+    // Discoverable
     readonly property bool discoverable: Bluetooth.defaultAdapter?.discoverable ?? false
 
     readonly property string adapterName: Bluetooth.defaultAdapter?.name ?? ""
@@ -41,7 +40,7 @@ Singleton {
             Bluetooth.defaultAdapter.discoverable = value;
     }
 
-    // "Connected · 80%" / "Pairing…" / "Paired" / "Not paired"
+    // Device status label
     function deviceStatus(device): string {
         if (!device)
             return "";

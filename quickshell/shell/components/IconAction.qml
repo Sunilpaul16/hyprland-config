@@ -1,7 +1,7 @@
 import QtQuick
 import "../services"
 
-// Small icon action button
+// Icon button
 Rectangle {
     id: root
 

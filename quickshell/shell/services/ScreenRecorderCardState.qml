@@ -3,7 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Screen Recorder card visibility state (sidebar quick toggle)
+// Recorder card
 Singleton {
     id: root
 

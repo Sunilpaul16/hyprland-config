@@ -6,7 +6,7 @@ import Quickshell.Widgets
 import "../../services"
 import "../../components"
 
-// Polkit authentication dialog, replacing the system's unthemed agent UI — binds to PolkitState's agent, same overlay idiom as Cheatsheet.qml
+// Polkit dialog
 Scope {
     Variants {
         model: Quickshell.screens
@@ -41,7 +41,7 @@ Scope {
                 WlrLayershell.namespace: "quickshell-polkit"
                 WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-                // Grab the password field whenever a fresh flow starts needing one
+                // Focus password field
                 onFlowChanged: if (root.flow?.isResponseRequired) passwordInput.forceActiveFocus()
                 Connections {
                     target: root.flow
@@ -51,7 +51,7 @@ Scope {
                     }
                 }
 
-                // Click-through everywhere except the panel itself
+                // Click-through mask
                 mask: Region {
                     item: panel
                 }
@@ -99,7 +99,7 @@ Scope {
                             anchors.margins: Motion.spacing.section
                             spacing: Motion.spacing.large
 
-                            // Icon + main message
+                            // Icon and message
                             RowLayout {
                                 Layout.fillWidth: true
                                 spacing: Motion.spacing.large
@@ -118,7 +118,7 @@ Scope {
                                 }
                             }
 
-                            // Error / supplementary message
+                            // Error message
                             StyledText {
                                 Layout.fillWidth: true
                                 visible: (root.flow?.supplementaryMessage ?? "").length > 0
@@ -128,8 +128,7 @@ Scope {
                                 wrapMode: Text.WordWrap
                             }
 
-                            // Response field — echoMode follows responseVisible (false
-                            // for passwords, true for the rare visible-response case)
+                            // Response field
                             Rectangle {
                                 Layout.fillWidth: true
                                 visible: root.flow?.isResponseRequired ?? false
@@ -153,7 +152,7 @@ Scope {
                                     Keys.onEnterPressed: root.flow?.submit(passwordInput.text)
                                     Keys.onEscapePressed: root.flow?.cancelAuthenticationRequest()
 
-                                    // Clear on every fresh prompt (retry after a failed attempt included)
+                                    // Clear on prompt
                                     Connections {
                                         target: root.flow
                                         function onInputPromptChanged() { passwordInput.text = ""; }

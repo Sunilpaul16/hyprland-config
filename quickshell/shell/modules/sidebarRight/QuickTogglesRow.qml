@@ -10,7 +10,7 @@ ColumnLayout {
 
     spacing: Motion.spacing.large
 
-    // Feature/state only — visibility/order/size live in Persistent.quickToggleLayout (comparison.md #24)
+    // Toggle models
     readonly property list<QuickToggleModel> toggleModels: [
         QuickToggleModel {
             toggleId: "ethernet"
@@ -82,17 +82,17 @@ ColumnLayout {
         }
     ]
 
-    // Fallback order before the user has ever hidden/reordered/resized anything
+    // Default layout
     readonly property var defaultLayout: root.toggleModels.map(t => ({ type: t.toggleId, size: "small" }))
 
-    // Reconciled against the live model list — a removed toggle's stale entry is silently dropped
+    // Reconciled visible
     readonly property var orderedVisible: {
         const knownIds = root.toggleModels.map(t => t.toggleId);
         const source = Persistent.quickToggleLayout.length > 0 ? Persistent.quickToggleLayout : root.defaultLayout;
         return source.filter(entry => knownIds.indexOf(entry.type) !== -1);
     }
 
-    // Exist but aren't in the visible layout — surfaced as an "add back" palette while editing
+    // Hidden models
     readonly property var hiddenModels: {
         const visibleIds = root.orderedVisible.map(e => e.type);
         return root.toggleModels.filter(t => visibleIds.indexOf(t.toggleId) === -1);
@@ -102,7 +102,7 @@ ColumnLayout {
         return root.toggleModels.find(t => t.toggleId === toggleId);
     }
 
-    // Layout mutations — each writes Persistent.quickToggleLayout
+    // Layout mutations
     function addToggle(toggleId) {
         const list = Persistent.quickToggleLayout.slice();
         list.push({ type: toggleId, size: "small" });
@@ -171,7 +171,7 @@ ColumnLayout {
         }
     }
 
-    // Visible toggles — wraps to the card's width with leftover space dealt into the gaps, exact only while every toggle is the same width ("large" keeps minimum spacing)
+    // Visible toggles
     Flow {
         id: togglesFlow
 
@@ -180,7 +180,7 @@ ColumnLayout {
         readonly property int minSpacing: 8
         readonly property int cellWidth: 40 // small TogglePill
         readonly property bool allSmall: root.orderedVisible.every(e => e.size === "small")
-        // Most that fit at minimum spacing, capped by how many there actually are
+        // Per-row count
         readonly property int perRow: Math.min(root.orderedVisible.length, Math.max(1, Math.floor((width + minSpacing) / (cellWidth + minSpacing))))
 
         spacing: allSmall && perRow > 1 ? Math.max(minSpacing, (width - perRow * cellWidth) / (perRow - 1)) : minSpacing

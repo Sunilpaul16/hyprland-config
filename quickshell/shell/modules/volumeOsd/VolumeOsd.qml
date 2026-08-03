@@ -5,7 +5,7 @@ import Quickshell.Hyprland
 import "../../services"
 import "../../components"
 
-// Volume/mic OSD window — right-edge slide-in drawer, auto-show-on-change
+// Volume OSD
 Scope {
     Variants {
         model: Quickshell.screens
@@ -25,8 +25,7 @@ Scope {
                 readonly property bool active: root.triggered && root.isFocusedScreen
 
                 property bool startupGraceOver: false
-                // Startup grace period — suppresses the spurious trigger every
-                // Audio.qml property emits on shell launch
+                // Startup grace
                 Timer {
                     interval: 1000
                     running: true
@@ -41,7 +40,7 @@ Scope {
                 // Right-edge stack registration
                 onActiveChanged: RightEdgeStack.register(root.screen, "volume", root.active && drawer.onRight, drawer.registeredWidth)
 
-                // Show (and restart the auto-hide timer) on any sink/source change
+                // Show on change
                 function show(): void {
                     if (!root.startupGraceOver || !Config.audio.osdEnabled)
                         return;
@@ -49,8 +48,7 @@ Scope {
                     armHideTimer();
                 }
 
-                // Keeps the timer stopped while hovered instead of letting a
-                // scroll-triggered restart race past a still-active hover
+                // Arm hide timer
                 function armHideTimer(): void {
                     if (drawer.hovered)
                         hideTimer.stop();
@@ -90,29 +88,27 @@ Scope {
                 WlrLayershell.namespace: "quickshell-volume-osd"
                 WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-                // Click/scroll-through everywhere except the drawer itself — this is
-                // a passive toast, not a modal, so no click-outside-to-close
+                // Click-through mask
                 mask: Region {
                     item: drawer
                 }
 
-                // Drawer: right-edge slide via animated rightMargin + opacity fade,
-                // same mechanism as SessionScreen
+                // Drawer
                 Item {
                     id: drawer
 
                     property bool hovered: false
 
-                    // 0 so the drawer sits flush to the screen edge and the fillets below have a straight edge to bridge into, matching SessionScreen
+                    // Flush to edge
                     readonly property int restingMargin: 0
                     readonly property int cornerSize: 14
                     readonly property int contentPadding: 10
                     readonly property int closedMargin: -(drawer.implicitWidth + restingMargin)
 
-                    // Which edge the drawer hugs
+                    // Hugged edge
                     readonly property bool onRight: Config.audio.osdEdge !== "left"
 
-                    // Pushed left by whichever right-edge panels are stacked outside this one — the left edge has no stackmates, so it never offsets
+                    // Stack offset
                     property real stackOffset: RightEdgeStack.offsetFor(root.screen, "volume")
                     Behavior on stackOffset {
                         NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
@@ -128,8 +124,7 @@ Scope {
                     anchors.left: drawer.onRight ? undefined : parent.left
                     anchors.rightMargin: drawer.onRight ? (closedMargin + (restingMargin - closedMargin) * root.showProgress + stackOffset) : 0
                     anchors.leftMargin: drawer.onRight ? 0 : (closedMargin + (restingMargin - closedMargin) * root.showProgress)
-                    // Fallback sizing for the first open frame, before the Loader's
-                    // content has laid out (same race SessionScreen's drawer guards)
+                    // First-frame fallback
                     implicitWidth: ((loader.item ? loader.item.implicitWidth : 0) || 24) + contentPadding * 2
                     implicitHeight: ((loader.item ? loader.item.implicitHeight : 0) || 296) + contentPadding * 2
                     opacity: root.showProgress
@@ -144,8 +139,7 @@ Scope {
                         }
                     }
 
-                    // Drawer backdrop — same shell as SessionScreen's. The corners
-                    // on the hugged edge are square so the joint reads as one surface
+                    // Backdrop
                     Rectangle {
                         anchors.fill: parent
                         radius: Motion.rounding.drawer
@@ -156,8 +150,7 @@ Scope {
                         color: Colors.panel
                     }
 
-                    // Concave fillets bridging the drawer into the screen edge,
-                    // rounding the two reflex corners the butt joint would leave
+                    // Edge fillets
                     Corner {
                         anchors {
                             right: drawer.onRight ? parent.right : undefined
@@ -180,7 +173,7 @@ Scope {
                         corner: drawer.onRight ? "topRight" : "topLeft"
                     }
 
-                    // Content only instantiated while open/animating
+                    // Lazy content
                     Loader {
                         id: loader
                         anchors.centerIn: parent

@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// CPU + memory usage polling (FileView+Timer pattern, mirrors NetworkUsage.qml)
+// CPU and memory polling
 Singleton {
     id: root
 
@@ -34,7 +34,7 @@ Singleton {
     property real _memoryUsedKib: 0
     property real _memoryTotalKib: 0
 
-    // Previous /proc/stat tick totals, for the idle/total delta ratio
+    // Previous tick totals
     property real _prevTotal: 0
     property real _prevIdle: 0
     property bool _cpuInitialized: false
@@ -74,8 +74,7 @@ Singleton {
         root._prevIdle = idle;
     }
 
-    // Scans every sensors chip/feature: primary = "Package id N" (Intel) or
-    // "Tdie" (AMD), fallback = "Tctl" (AMD, when Tdie isn't exposed).
+    // Parse sensors JSON
     function parseSensorsJson(jsonText: string): void {
         if (!jsonText)
             return;
@@ -134,7 +133,7 @@ Singleton {
         root._memoryUsedKib = Math.max(0, totalKib - availKib);
     }
 
-    // CPU name — read once, not polled
+    // CPU name
     FileView {
         id: cpuInfoFile
 
@@ -157,8 +156,7 @@ Singleton {
         path: "/proc/meminfo"
     }
 
-    // CPU package temperature — same 1s cycle as CPU%/memory, not a separate
-    // timer, since this is the same "how's the system doing right now" tick
+    // CPU temperature
     Process {
         id: sensorsProc
         command: ["sensors", "-j"]

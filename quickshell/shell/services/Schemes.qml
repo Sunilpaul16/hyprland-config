@@ -3,14 +3,14 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Static preset palettes from matugen/schemes/ via scripts/lib/preset-palette.py — listing is one shot, an individual preset is read on demand
+// Static preset palettes
 Singleton {
     id: root
 
     // [{ id, scheme, flavour, modes }]
     property var list: []
     property bool available: true
-    // roleName -> "#rrggbb" for the most recently loaded preset
+    // Loaded preset roles
     property var colours: ({})
 
     property string pendingId: ""
@@ -23,8 +23,7 @@ Singleton {
         readProc.running = true;
     }
 
-    // One pass for the whole list: id, modes and the three swatch colours.
-    // Per-row reads would mean 24 processes for one page
+    // Single list pass
     Process {
         id: listProc
 

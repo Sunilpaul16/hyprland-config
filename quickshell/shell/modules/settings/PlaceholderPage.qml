@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Body used by every page that has no real content yet
+// Placeholder body
 PageBase {
     ColumnLayout {
         anchors.centerIn: parent

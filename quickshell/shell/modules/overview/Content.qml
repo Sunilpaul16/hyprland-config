@@ -4,7 +4,7 @@ import Quickshell.Hyprland
 import "../../services"
 import "../../components"
 
-// Workspace overview content (horizontal card row)
+// Overview content
 Item {
     id: root
 
@@ -14,7 +14,7 @@ Item {
     readonly property var allWorkspaces: Hyprland.workspaces.values
     readonly property int maxSlots: 20
 
-    // Real workspaces plus one trailing empty slot, clamped to maxSlots against the Hyprland sentinel-id spike during hyprlock transitions
+    // Display slots
     readonly property var displaySlots: {
         const usedIds = root.allWorkspaces.map(ws => ws.id).filter(id => id > 0 && id <= root.maxSlots);
         const highestOccupied = Math.max(0, ...usedIds);
@@ -29,7 +29,7 @@ Item {
     readonly property int cardHeight: 200
     readonly property int cardSpacing: 16
 
-    // Mirrors WorkspaceCard's own width calc so the row's natural width matches what renders, rotated monitors' swapped aspect included
+    // Card width
     function slotCardWidth(slot) {
         const mon = (slot.isPlaceholder ? null : slot.monitor) ?? Hyprland.monitorFor(root.screen);
         const transform = mon?.lastIpcObject?.transform ?? 0;
@@ -46,7 +46,7 @@ Item {
     width: implicitWidth
     height: implicitHeight
 
-    // Drag-to-move session, shared by every WorkspaceCard/thumbnail in this row
+    // Drag session
     property bool dragActive: false
     property string dragAddress: ""
     property int dragSourceWorkspace: -1
@@ -113,7 +113,7 @@ Item {
         }
     }
 
-    // Drag-to-move proxy — lives outside the ListView's clip so it isn't cut off crossing card boundaries
+    // Drag proxy
     Rectangle {
         id: dragProxy
         visible: root.dragActive

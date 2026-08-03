@@ -1,7 +1,7 @@
 import QtQuick
 import "../../services"
 
-// Connected devices page, live against BluetoothStatus.qml — empty sections mean bluez reports nothing paired, not a failure
+// Connected devices page
 ScrollPage {
     id: root
 
@@ -107,8 +107,7 @@ ScrollPage {
         text: "Available"
     }
 
-    // Only populated while scanning — bluez forgets unpaired devices shortly
-    // after discovery stops
+    // Discovered only
     SettingGroup {
         Repeater {
             model: BluetoothStatus.availableDevices

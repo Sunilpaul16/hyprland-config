@@ -4,7 +4,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import "../../services"
 
-// Live window thumbnail (positioned + sized from Hyprland IPC geometry)
+// Window thumbnail
 Item {
     id: root
 
@@ -33,7 +33,7 @@ Item {
 
     Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-    // Snapshot capture while the overview is open -- live:true crashes qs on window close (INDEX.md)
+    // Snapshot capture
     ScreencopyView {
         anchors.fill: parent
         captureSource: root.overviewActive ? (root.toplevel?.wayland ?? null) : null
@@ -51,7 +51,7 @@ Item {
         Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }
 
-    // App icon badge — scales with thumbnail size instead of a fixed 20px (comparison.md #38)
+    // App icon badge
     Rectangle {
         id: iconBadge
 
@@ -78,7 +78,7 @@ Item {
         }
     }
 
-    // Click to focus window, middle-click to close it, drag to move it to another workspace
+    // Click, middle-click, drag
     MouseArea {
         id: hoverArea
         anchors.fill: parent

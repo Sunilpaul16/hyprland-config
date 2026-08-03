@@ -3,8 +3,7 @@ import "../../services"
 import "quickToggles"
 import "../../components"
 
-// A single visible toggle: the pill, plus edit-mode hide/move/resize controls.
-// Layout mutations are raised as signals — the row owns Persistent.quickToggleLayout
+// Toggle slot
 Item {
     id: slot
 
@@ -35,7 +34,7 @@ Item {
         onAltClicked: if (slot.toggleModel.altAction) slot.toggleModel.altAction()
     }
 
-    // Edit-mode outline + tap-to-resize
+    // Edit-mode controls
     MouseArea {
         anchors.fill: parent
         enabled: slot.editMode

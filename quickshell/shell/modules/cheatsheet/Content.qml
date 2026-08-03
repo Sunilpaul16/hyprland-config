@@ -9,13 +9,12 @@ Item {
 
     readonly property int cardSpacing: 20
 
-    // Row-count based height estimate, just for balancing columns below —
-    // doesn't need to match rendered pixels exactly
+    // Height estimate
     function estimatedHeight(category) {
         return 58 + Binds.rowsFor(category).length * 26;
     }
 
-    // Column packing (longest-processing-time): sort categories tallest-first into whichever column is shortest, so more categories grow the count, not one column's height
+    // Column packing
     readonly property int columnCount: Math.max(2, Math.ceil(Binds.categories.length / 3))
     readonly property var columns: {
         const cats = [...Binds.categories].sort((a, b) => root.estimatedHeight(b) - root.estimatedHeight(a));
@@ -33,7 +32,7 @@ Item {
         return cols;
     }
 
-    // Natural size read straight from the columns below — safe here, unlike a horizontal ListView's contentWidth, since Row/Column/Repeater instantiate every child
+    // Natural size
     implicitWidth: Math.min(columnsRow.implicitWidth, (root.screen?.width ?? 1280) * 0.85)
     implicitHeight: Math.min(columnsRow.implicitHeight, (root.screen?.height ?? 800) * 0.8)
     width: implicitWidth

@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Network throughput: /proc/net/dev delta speed + session totals + a capped JS-array sample history for sparklines; same FileView+Timer shape as SystemUsage.qml
+// Network throughput
 Singleton {
     id: root
 
@@ -19,15 +19,15 @@ Singleton {
         root.refCount = Math.max(0, root.refCount - 1);
     }
 
-    // Current speeds in bytes per second
+    // Bytes per second
     readonly property real downloadSpeed: _downloadSpeed
     readonly property real uploadSpeed: _uploadSpeed
 
-    // Total bytes transferred since tracking started
+    // Session totals
     readonly property real downloadTotal: _downloadTotal
     readonly property real uploadTotal: _uploadTotal
 
-    // Sample history for sparkline graphs (oldest first, capped at historyLength)
+    // Sparkline history
     readonly property list<real> downloadHistory: _downloadHistory
     readonly property list<real> uploadHistory: _uploadHistory
 
@@ -40,7 +40,7 @@ Singleton {
 
     property real _prevTimestamp: 0
     property bool _initialized: false
-    // Per-interface {rx, tx} baseline, so a vanished NIC just stops contributing instead of reading as a wraparound
+    // Per-interface baseline
     property var _ifaceState: ({})
 
     function formatBytes(bytes: real): var {
@@ -100,7 +100,7 @@ Singleton {
             const tx = parseFloat(parts[9]) || 0;
             seen[iface] = true;
 
-            // A lower reading means this interface reset, not a real wraparound (~584yr at 1GB/s)
+            // Counter reset
             const prev = root._ifaceState[iface];
             if (prev) {
                 if (rx >= prev.rx)
@@ -111,7 +111,7 @@ Singleton {
             root._ifaceState[iface] = { rx: rx, tx: tx };
         }
 
-        // Drop vanished interfaces so a later NIC starts a fresh baseline
+        // Drop vanished NICs
         for (const name in root._ifaceState) {
             if (!seen[name])
                 delete root._ifaceState[name];
@@ -145,7 +145,7 @@ Singleton {
         path: "/proc/net/dev"
     }
 
-    // Sampling tick — speeds divide by real elapsed time, so any interval stays correct; this only sets sparkline resolution
+    // Sampling tick
     Timer {
         interval: Config.polling.networkUsage
         running: root.refCount > 0

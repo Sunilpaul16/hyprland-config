@@ -2,7 +2,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Centralizes $HOME-rooted paths scattered across services/ and modules/
+// Shared paths
 QtObject {
     readonly property string home: Quickshell.env("HOME")
 
@@ -32,7 +32,7 @@ QtObject {
     readonly property string bongocatGif: repoRoot + "/assets/bongocat.gif"
     readonly property string dinoImage: repoRoot + "/assets/dino.png"
 
-    // Expands a config-supplied path: absolute and ~-rooted pass through, anything else is repo-relative
+    // Resolve config path
     function resolve(path: string): string {
         if (!path)
             return "";

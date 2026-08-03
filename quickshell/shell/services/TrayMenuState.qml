@@ -2,21 +2,20 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Tray menu open/close + entries state
+// Tray menu state
 Singleton {
     id: root
 
     property bool open: false
-    // Monitor this panel is pinned to while open
+    // Pinned monitor
     property string ownerScreen: ""
     property var targetItem: null
-    // Left edge of the tray icon, in bar-window coordinates — the menu
-    // hangs off the bar, so it needs no vertical anchor
+    // Anchor X
     property real anchorX: 0
 
     readonly property var entries: opener.children ? opener.children.values : []
 
-    // Menu opener for the target tray item
+    // Menu opener
     QsMenuOpener {
         id: opener
         menu: root.open && root.targetItem ? (root.targetItem.menu ?? null) : null

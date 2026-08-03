@@ -3,8 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Pending package updates via `checkupdates` (pacman-contrib) and an AUR helper — both read-only queries against a temporary database
-// runUpgrade() is the one exception: it hands a real upgrade to a terminal, and is only ever reached from a deliberate click
+// Pending package updates
 Singleton {
     id: root
 
@@ -16,18 +15,17 @@ Singleton {
     readonly property int aurCount: root.aurUpdates.length
     readonly property int total: root.repoCount + root.aurCount
 
-    // Set by shell.qml — a lazy singleton's timers never start, so without this poke "check on login" would mean "check when the settings page opens"
+    // Poked by shell.qml
     property bool backgroundChecking: false
 
     property bool checking: false
-    // Epoch ms; 0 until the first check completes
+    // Epoch ms
     property real lastChecked: 0
 
     readonly property string aurHelper: Config.updates.aurHelper
 
     readonly property string lastCheckedLabel: {
-        // Date.now() is not a binding dependency, so the tick is what makes
-        // this re-evaluate as time passes
+        // Tick dependency
         root._labelTick;
         if (root.checking)
             return "Checking…";
@@ -42,13 +40,10 @@ Singleton {
         return `${hours} hour${hours === 1 ? "" : "s"} ago`;
     }
 
-    // Ticks the relative label along without re-running the check
+    // Label tick
     property int _labelTick: 0
 
-    // Hands the upgrade to a terminal rather than running it headless: it needs a sudo
-    // password and conflict prompts, and a detached process has nowhere to ask. No
-    // re-check is chained on the end — execDetached returns immediately, so there is
-    // nothing to wait on; the next scheduled check picks the new state up
+    // Upgrade in terminal
     function runUpgrade(): void {
         Quickshell.execDetached([Config.apps.terminal, "-e", root.aurHelper, "-Syu"]);
     }
@@ -66,7 +61,7 @@ Singleton {
     property bool _repoDone: false
     property bool _aurDone: false
 
-    // Last count announced, so a re-check finding the same updates stays quiet — restored from Persistent, while a fresh login starts at 0 and announces once
+    // Last announced count
     property int _lastNotifiedTotal: Persistent.isNewHyprlandInstance ? 0 : Persistent.lastNotifiedUpdateTotal
 
     function _settle(): void {
@@ -77,17 +72,16 @@ Singleton {
         root._notifyIfGrown();
     }
 
-    // Fires only when the pending count grows. Assigning unconditionally means
-    // an upgrade that drops the count re-arms it for the next batch
+    // Notify on growth
     function _notifyIfGrown(): void {
         if (Config.updates.notify && root.total > root._lastNotifiedTotal)
             Quickshell.execDetached(["notify-send", "-a", "quickshell", "-i", "system-software-update", `${root.total} update${root.total === 1 ? "" : "s"} available`, `${root.repoCount} from the repos, ${root.aurCount} from the AUR.`]);
-        // Assigning breaks the binding above, so this owns the value from here on
+        // Owns value now
         root._lastNotifiedTotal = root.total;
         Persistent.lastNotifiedUpdateTotal = root.total;
     }
 
-    // "hyprland 0.56.0-2 -> 0.56.1-1"
+    // Parse update lines
     function parseLines(text: string): var {
         return text.trim().split("\n").filter(l => l.trim().length > 0).map(line => {
             const parts = line.trim().split(/\s+/);
@@ -107,7 +101,7 @@ Singleton {
             onStreamFinished: root.repoUpdates = root.parseLines(text)
         }
 
-        // checkupdates exits 2 when there is simply nothing to update
+        // Exit 2 = none
         onExited: exitCode => {
             if (exitCode === 2)
                 root.repoUpdates = [];
@@ -132,8 +126,7 @@ Singleton {
         }
     }
 
-    // Deferred rather than immediate: the shell hot-reloads on every file
-    // save, and an immediate check would re-query the AUR on each one
+    // Deferred first check
     Timer {
         interval: 10000
         running: root.backgroundChecking && Config.ready && Config.updates.autoCheck
@@ -149,7 +142,7 @@ Singleton {
         onTriggered: root.refresh()
     }
 
-    // Keeps relative "x ago" labels fresh
+    // Label refresh
     Timer {
         interval: 60000
         running: true

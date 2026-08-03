@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Heading above a run of SettingRows
+// Section heading
 StyledText {
     Layout.fillWidth: true
     Layout.topMargin: Motion.spacing.normal

@@ -3,11 +3,11 @@ import Quickshell.Services.SystemTray
 import "../../services"
 import "../../components"
 
-// System tray: row of TrayItem icons, reactive to SystemTray.items
+// System tray
 Item {
     id: root
 
-    // Status applets that register a tray icon with no user-facing app running — hidden so the pill only reflects real apps like Discord or Steam
+    // Hidden applet ids
     readonly property var hiddenIds: Config.bar.trayHidden.split(",").map(s => s.trim().toLowerCase()).filter(s => s.length > 0)
 
     function isHidden(item: SystemTrayItem): bool {
@@ -25,8 +25,7 @@ Item {
 
     property bool expanded: false
 
-    // Start collapsed again next time there's something to hide, rather
-    // than resuming pre-expanded once overflow reappears
+    // Recollapse on change
     onHasOverflowChanged: if (!root.hasOverflow) root.expanded = false
 
     visible: root.hasItems
@@ -52,8 +51,7 @@ Item {
             }
         }
 
-        // Overflow expand/collapse toggle — only shown once something's
-        // actually hidden past maxVisible
+        // Overflow toggle
         Item {
             id: overflowBtn
             visible: root.hasOverflow

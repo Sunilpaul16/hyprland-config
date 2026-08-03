@@ -8,7 +8,7 @@ Singleton {
     id: root
     readonly property var desktopEntries: DesktopEntries.applications.values
 
-    // Resolve a window's wmClass to a desktop-entry icon name
+    // Resolve icon name
     function resolve(wmClass) {
         if (!wmClass)
             return "";

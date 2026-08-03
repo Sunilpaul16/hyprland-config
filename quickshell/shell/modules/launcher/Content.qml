@@ -8,7 +8,7 @@ import "../../components"
 Item {
     id: content
 
-    // --- Mode -----------------------------------------------------------
+    // Mode
     readonly property string mode: {
         const text = input.text;
         if (!text.startsWith(">"))
@@ -36,7 +36,7 @@ Item {
     readonly property var commandResults: Commands.query(commandQuery)
     readonly property var wallpaperResults: Wallpapers.query(wallpaperQuery)
 
-    // Clip special actions (e.g. /clear)
+    // Clip actions
     readonly property var clipActions: ({
         "/clear": {
             icon: "\u{1F5D1}\u{FE0F}",
@@ -72,8 +72,7 @@ Item {
     readonly property int searchHeight: 48
     readonly property int chromeHeight: panelPad * 2 + searchGap + searchHeight
 
-    // Wide enough for five slots with one of them enlarged
-    // (4 * 150 + 190 + 4 * 16 + 2 * panelPad)
+    // Wallpaper panel width
     readonly property int wallpaperPanelWidth: Config.launcher.wallpaperPanelWidth
     readonly property int wallpaperRowHeight: 130
     readonly property int appPanelWidth: Config.launcher.panelWidth
@@ -131,7 +130,7 @@ Item {
         Cliphist.deleteEntry(row.entry);
     }
 
-    // Tracks whether a not-yet-confirmed --preview needs reverting on close
+    // Preview needs revert
     property bool hasPreviewed: false
 
     // Wallpaper preview lifecycle
@@ -151,15 +150,15 @@ Item {
     }
 
     function revertPreview(): void {
-        applyDebounce.stop(); // a queued preview must not fire after this revert
+        applyDebounce.stop();  // cancel queued preview
         if (!content.hasPreviewed)
             return;
         content.hasPreviewed = false;
-        // Real switch, not --noswitch — that deliberately never touches the displayed wallpaper
+        // Real switch
         Quickshell.execDetached(["bash", "-c", `"${Directories.switchwallScript}" "$(cat "${Directories.currentWallpaperFile}")"`]);
     }
 
-    // Acting on the current selection
+    // Activate selection
     function activateCurrent(): void {
         if (content.mode === "apps")
             content.launchApp(content.appResults[verticalList.currentIndex]);
@@ -195,15 +194,13 @@ Item {
         id: panelBg
 
         anchors.fill: parent
-        // Off-ladder on purpose: nearest steps are drawer (20) and hero (26), and either is a visible change to the launcher's silhouette
+        // Off-ladder on purpose
         radius: 24
-        // Bottom corners square so the fillets can flare this panel into the
-        // screen edge it sits flush against
+        // Square bottom corners
         bottomLeftRadius: 0
         bottomRightRadius: 0
         color: Colors.layer
-        // No border — a Rectangle can't outline only three sides, and the
-        // bottom edge merges into the screen edge via the fillets below
+        // No border
 
         // Absorb clicks
         MouseArea {
@@ -254,7 +251,7 @@ Item {
 
                 delegate: content.mode === "commands" ? commandItemComponent : (content.mode === "clip" ? clipItemComponent : appItemComponent)
 
-                // Delegate factories per mode
+                // Delegate factories
                 Component {
                     id: appItemComponent
                     AppItem {
@@ -352,7 +349,7 @@ Item {
                         content.activateCurrent();
                 }
 
-                // Ctrl+J/K mirror the arrow keys; Ctrl+N/P are the readline spelling of the same move
+                // Readline key aliases
                 Keys.onPressed: event => {
                     if (!(event.modifiers & Qt.ControlModifier))
                         return;
@@ -377,7 +374,7 @@ Item {
         }
     }
 
-    // Sync from launcher state on open; revert an unconfirmed preview on close
+    // Open/close sync
     Connections {
         target: LauncherState
         function onOpenChanged() {
@@ -391,8 +388,7 @@ Item {
         }
     }
 
-    // Concave fillets flaring the panel into the screen edge it rests on.
-    // Siblings of the background so they sit outside the panel's own bounds
+    // Edge fillets
     Corner {
         anchors { right: parent.left; bottom: parent.bottom }
         size: 14

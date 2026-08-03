@@ -2,7 +2,7 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Clock widget: time + date, opens the right sidebar on click
+// Clock widget
 Item {
     id: root
 
@@ -40,7 +40,7 @@ Item {
         }
     }
 
-    // Click to toggle the right sidebar
+    // Click opens sidebar
     MouseArea {
         id: hoverArea
         anchors.fill: parent

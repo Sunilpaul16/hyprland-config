@@ -2,8 +2,7 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// M3 switch — the thumb carries a check/cross glyph and grows when on
-// Externally driven: a click only emits toggled(), so `checked` can stay bound to config; owners wanting local state say `onToggled: v => checked = v`
+// M3 switch
 Rectangle {
     id: root
 

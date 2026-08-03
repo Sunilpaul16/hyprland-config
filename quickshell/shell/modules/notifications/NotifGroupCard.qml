@@ -6,7 +6,7 @@ import Quickshell.Services.Notifications
 import "../../services"
 import "../../components"
 
-// Per-app notification group — a single NotifCard, or a collapsible header over the member cards (comparison.md #26)
+// App group
 Item {
     id: root
 
@@ -15,7 +15,7 @@ Item {
     readonly property var group: Notifs.groupsByAppName[root.appName]
     readonly property list<var> notifs: root.group?.notifs ?? []
     readonly property int previewNum: Config.notifications.groupPreviewNum
-    // Header only earns its place once it hides something
+    // Grouped once hiding
     readonly property bool grouped: root.notifs.length > root.previewNum
     readonly property int hiddenCount: root.notifs.length - root.previewNum
     readonly property bool expanded: Notifs.expandedApps.includes(root.appName)
@@ -31,7 +31,7 @@ Item {
         width: parent.width
         spacing: Motion.spacing.normal
 
-        // Group header — only shown once there's more than one notification to collapse
+        // Group header
         Rectangle {
             Layout.fillWidth: true
             visible: root.grouped
@@ -97,7 +97,7 @@ Item {
                     font.pixelSize: Motion.fontSize.small
                 }
 
-                // Count badge — toggles the group open/closed
+                // Count badge
                 Rectangle {
                     implicitWidth: countLabel.implicitWidth + 18
                     implicitHeight: countLabel.implicitHeight + 8
@@ -112,7 +112,7 @@ Item {
 
                         StyledText {
                             id: countLabel
-                            // Hidden count, not the total — the rest are already on screen
+                            // Hidden count
                             text: root.expanded ? root.notifs.length : `+${root.hiddenCount}`
                             color: root.group?.urgency === NotificationUrgency.Critical ? Colors.textOnError : Colors.textMuted
                             font.pixelSize: Motion.fontSize.small
@@ -137,7 +137,7 @@ Item {
             }
         }
 
-        // Member cards — all of them when ungrouped or expanded, else the newest few
+        // Member cards
         Repeater {
             model: ScriptModel {
                 values: (!root.grouped || root.expanded) ? root.notifs : root.notifs.slice(0, root.previewNum)

@@ -2,7 +2,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Right-edge stacking coordinator — panels register open/width per screen, then read back how far panels nearer the edge push them left
+// Right-edge stacking
 Singleton {
     id: root
 
@@ -18,8 +18,7 @@ Singleton {
         root.registry = Object.assign({}, root.registry, { [key]: forScreen });
     }
 
-    // Sum of widths of every open panel stacked outside `name` (i.e.
-    // earlier in `order`) on the given screen
+    // Offset for panel
     function offsetFor(screen, name): real {
         const key = screen?.name ?? "";
         const forScreen = root.registry[key] ?? {};

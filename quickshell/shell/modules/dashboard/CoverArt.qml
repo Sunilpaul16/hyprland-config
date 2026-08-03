@@ -3,7 +3,7 @@ import Qt5Compat.GraphicalEffects
 import "../../services"
 import "../../components"
 
-// Cover-art frame — circular mask
+// Cover art frame
 Item {
     id: root
 
@@ -12,10 +12,10 @@ Item {
     implicitWidth: root.size
     implicitHeight: root.size
 
-    // Remote art has an empty source while downloading, so status sits at Null rather than Loading
+    // Pending remote art
     readonly property bool artPending: Media.artIsRemote && !Media.artDownloaded && Media.artUrl.length > 0
 
-    // Drop-shadow glow, same effect module as UserCard's avatar
+    // Glow
     layer.enabled: true
     layer.effect: DropShadow {
         radius: Motion.rounding.item
@@ -39,7 +39,7 @@ Item {
             }
         }
 
-        // Backing disc behind the art
+        // Backing disc
         Rectangle {
             anchors.fill: parent
             radius: width / 2
@@ -57,7 +57,7 @@ Item {
         }
     }
 
-    // Fallback glyph — no track, or art failed to load
+    // Fallback glyph
     StyledText {
         anchors.centerIn: parent
         visible: (art.status === Image.Null || art.status === Image.Error) && !root.artPending
@@ -66,7 +66,7 @@ Item {
         font.pixelSize: root.size * 0.3
     }
 
-    // Loading indicator while remote art downloads
+    // Loading indicator
     StyledText {
         anchors.centerIn: parent
         visible: art.status === Image.Loading || root.artPending

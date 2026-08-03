@@ -3,8 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Nav pane row — icon chip + label/description, with corner radii encoding
-// where it sits in its category run
+// Nav row
 Rectangle {
     id: root
 
@@ -15,7 +14,7 @@ Rectangle {
 
     readonly property bool current: SettingsState.currentPageIdx === root.pageIndex
 
-    // Run ends round off, inner joints stay square, the selected row pops fully round and a press pulls it back in
+    // Run-end radii
     readonly property int endRadius: 18
     readonly property int innerRadius: 6
     readonly property int currentRadius: 22

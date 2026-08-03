@@ -15,13 +15,11 @@ source "$(dirname "$(readlink -f "$0")")/lib/apply-colors.sh"
 
 STATE_FILE="$HOME/.local/state/quickshell/current_wallpaper"
 MODE_FILE="$HOME/.local/state/quickshell/color_mode"
-# setscheme owns this; a preset means colours are deliberately not
-# wallpaper-derived, so a wallpaper change must leave them alone
+# Preset colours are fixed
 SOURCE_FILE="$HOME/.local/state/quickshell/color_source"
-# The shell's settings panel writes these; read rather than duplicate them
-# into another state file, so there is one source of truth per value
+# Settings panel owns these
 CONFIG_FILE="$HOME/.config/quickshell/config.json"
-# Palette-only matugen config; see matugen/preview.toml for why it is separate
+# Palette-only config
 PREVIEW_CONFIG="$HOME/.config/matugen/preview.toml"
 PREVIEW_COLORS="$HOME/.cache/matugen/preview-colors.json"
 
@@ -63,7 +61,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Persisted override; bare --mode re-themes the current wallpaper in place
+# Persisted mode override
 if [[ -n "$SET_MODE" ]]; then
     case "$SET_MODE" in
         auto|light|dark) ;;
@@ -106,19 +104,15 @@ fi
 
 mkdir -p "$CACHE_DIR"
 
-# --- 1. Wallpaper display: mpvpaper on both monitors ------------------------
-# --preview is an explicit display request and always spawns; a normal run respects wallpaper.display, so turning it off survives a re-theme
+# 1. Wallpaper display
 if ! $NOSWITCH && ! $COLORS_PREVIEW && { $PREVIEW || [[ "$(cfgbool '.wallpaper.display' true)" != "false" ]]; }; then
-    # Monitor names and mpvpaper are needed only here — deriving them at the
-    # top made a colour-only run fail on an unreadable general.lua
+    # Derived here only
     command -v mpvpaper >/dev/null || { echo "switchwall: missing required binary: mpvpaper" >&2; exit 1; }
     mapfile -t MONITORS < <(grep -oP 'hl\.monitor\(\{\s*output\s*=\s*"\K[^"]+' "$HYPR_GENERAL")
     [[ ${#MONITORS[@]} -gt 0 ]] || { echo "switchwall: no monitors found in $HYPR_GENERAL" >&2; exit 1; }
 
     pkill -f -9 mpvpaper >/dev/null 2>&1 || true
-    # Each mpvpaper runs as its own app-graphical.slice unit via uwsm: plain backgrounding leaves it in
-    # the caller's cgroup, so a launcher-driven switch died on the next shell restart and a
-    # terminal-driven one died with the terminal. -t service because the default scope type blocks
+    # Own cgroup via uwsm
     for mon in "${MONITORS[@]}"; do
         if command -v uwsm >/dev/null; then
             uwsm app -t service -a "mpvpaper-$mon" -- mpvpaper -o "$MPV_OPTS" "$mon" "$wallpaper"
@@ -139,7 +133,7 @@ if ! $COLORS_PREVIEW; then
     printf '%s' "$wallpaper" > "$STATE_FILE"
 fi
 
-# --- 2. Color source: extract a frame if it's a video -----------------------
+# 2. Colour source
 colorsource="$wallpaper"
 lumsource="$wallpaper"
 if is_video "$wallpaper"; then
@@ -148,8 +142,7 @@ if is_video "$wallpaper"; then
     [[ -s "$frame" ]] || { echo "switchwall: ffmpeg failed to extract a frame from $wallpaper" >&2; exit 1; }
     colorsource="$frame"
 
-    # Brightness only: frame 0 is often a near-white title card, which would
-    # flip the whole desktop to light mode. Accent still comes from frame 0.
+    # Brightness only
     lumframe="$CACHE_DIR/$(basename "$wallpaper").lum.jpg"
     ffmpeg -y -ss 00:00:01 -i "$wallpaper" -frames:v 1 "$lumframe" >/dev/null 2>&1 || true
     if [[ -s "$lumframe" ]]; then
@@ -166,10 +159,9 @@ if [[ "$COLOR_SOURCE" != dynamic ]] && ! $COLORS_PREVIEW; then
     exit 0
 fi
 
-# --- 3. matugen: hyprlock / hyprland colors.lua / GTK3+4 css ----------------
+# 3. matugen templates
 
-# Resolved once so both engines agree — matugen has no --smart or brightness-based mode selection, so a low-chroma wallpaper would otherwise only affect kitty
-# "auto" means --smart, letting the generator pick from the image; a named scheme drops --smart so the choice sticks
+# Resolved once
 SCHEME_PREF="${SET_SCHEME:-$(cfg '.theming.scheme' 'auto')}"
 if [[ "$SCHEME_PREF" != auto ]] && [[ " $VALID_SCHEMES " != *" $SCHEME_PREF "* ]]; then
     echo "switchwall: unknown scheme '$SCHEME_PREF', falling back to auto" >&2
@@ -202,8 +194,7 @@ matugen image "$colorsource" --source-color-index 0 --mode "$MODE" --type "$SCHE
 
 apply_gsettings "$MODE"
 
-# --- 4. materialyoucolor: kitty's 16-color terminal palette -----------------
-# Terminal-only tuning; defaults match generate_colors_material.py's own, so an absent config behaves as before
+# 4. Kitty palette
 TERM_HARMONY="$(cfg '.theming.terminalHarmony' '0.8')"
 TERM_THRESHOLD="$(cfg '.theming.terminalHarmonizeThreshold' '100')"
 TERM_FG_BOOST="$(cfg '.theming.terminalFgBoost' '0.35')"
@@ -226,7 +217,7 @@ scss="$CACHE_DIR/material_colors.scss"
 
 apply_kitty_from_scss "$scss"
 
-# --- 5. Reload ---------------------------------------------------------------
+# 5. Reload
 reload_all
 
 echo "switchwall: done ($wallpaper)"

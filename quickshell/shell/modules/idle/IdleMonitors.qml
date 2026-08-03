@@ -6,14 +6,11 @@ import Quickshell.Hyprland
 import Quickshell.Wayland
 import "../../services"
 
-// Idle timeout actions, replacing hypridle's listener blocks. Its general{} block still owns the
-// logind side (lock-on-LockSession, lock-before-sleep), which no idle monitor can do.
-// A Scope, not a Singleton: an IdleMonitor outside the reload tree is constructed but never armed
+// Idle timeout actions
 Scope {
     id: root
 
-    // Browsers already assert the Wayland inhibitor while playing, and respectInhibitors honours
-    // that for free — this covers the players that don't, so it stays a separate opt-in
+    // Media inhibit
     readonly property bool mediaBlocks: Config.idle.inhibitWhenAudio && Media.isPlaying
 
     // Lock
@@ -26,7 +23,7 @@ Scope {
         }
     }
 
-    // Displays off, back on when input returns
+    // Displays off
     IdleMonitor {
         enabled: Config.idle.dpmsTimeout > 0 && !root.mediaBlocks
         timeout: Config.idle.dpmsTimeout

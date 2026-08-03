@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Nav pane — search field above a scrolling, category-grouped page list
+// Nav pane
 Item {
     id: root
 
@@ -14,11 +14,10 @@ Item {
     readonly property int listTopMargin: 14
     readonly property int rowSpacing: 3
     readonly property int runGap: 12
-    // Mirrors NavItem's implicitHeight (38px icon chip + 14 padding a side);
-    // it can't be read off a delegate without instantiating one
+    // Row height
     readonly property int rowHeight: 66
 
-    // Height the unfiltered list wants, derived from the model not listColumn — the panel sizes off this, and reading a child the panel's width feeds is the polish() loop trap
+    // Natural height
     readonly property int naturalHeight: {
         const n = root.pageModel.length;
         if (n === 0)
@@ -30,8 +29,7 @@ Item {
         return h;
     }
 
-    // Pages matching the search text, each carrying its index in the unfiltered
-    // pageModel so a click still selects the right page while filtered
+    // Filtered pages
     readonly property var filteredPages: {
         const q = searchInput.text.trim().toLowerCase();
         const out = [];
@@ -43,7 +41,7 @@ Item {
         return out;
     }
 
-    // Clear the filter whenever the panel closes, so it doesn't reopen mid-search
+    // Clear on close
     onPanelActiveChanged: if (!root.panelActive) searchInput.text = ""
 
     // Search field
@@ -91,8 +89,7 @@ Item {
             color: Colors.text
             font.pixelSize: Motion.fontSize.title
             clip: true
-            // Focused on open so typing filters straight away; the panel's own
-            // Escape handler is out of reach once this has focus, so repeat it
+            // Focus on open
             focus: root.panelActive
 
             Keys.onEscapePressed: {
@@ -134,7 +131,7 @@ Item {
                     required property int index
 
                     Layout.fillWidth: true
-                    // Categories read as runs of connected pills — a gap opens where the category changes, and the radii below round only each run's ends
+                    // Category runs
                     Layout.topMargin: index !== 0 && runStart ? root.runGap : 0
 
                     page: modelData.page

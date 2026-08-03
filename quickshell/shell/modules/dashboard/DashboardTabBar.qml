@@ -3,8 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Dashboard tab bar: icon/label buttons, stretchy underline, divider.
-// Selection is raised rather than written — the panel owns currentTab
+// Tab bar
 Item {
     id: root
 
@@ -13,8 +12,7 @@ Item {
 
     signal tabSelected(index: int)
 
-    // Breathing room the hover fill expands into, above and
-    // below the icon/label stack
+    // Indicator spacing
     readonly property int indicatorSpacing: 5
 
     Layout.fillWidth: true
@@ -39,7 +37,7 @@ Item {
                 required property int index
                 required property var modelData
                 readonly property bool current: index === root.currentIndex
-                // The underline hugs the label, not the whole slot
+                // Underline hugs label
                 readonly property real indicatorWidth: Math.max(tabIcon.implicitWidth, tabLabel.implicitWidth)
 
                 Layout.fillWidth: true
@@ -90,11 +88,11 @@ Item {
         }
     }
 
-    // Stretchy active-tab underline (comparison.md #39)
+    // Active underline
     Rectangle {
         id: activeIndicator
 
-        // itemAt(), not children[] — RowLayout reorders buttonsRow.children; tabRepeater.count is read only to force re-evaluation once the Repeater populates
+        // itemAt, not children
         readonly property Item targetItem: {
             tabRepeater.count;
             return tabRepeater.itemAt(root.currentIndex);
@@ -103,7 +101,7 @@ Item {
         anchors.top: buttonsRow.bottom
         anchors.topMargin: root.indicatorSpacing
         height: 3
-        // Flat-bottomed: it sits directly on the divider below
+        // Flat bottom
         topLeftRadius: height
         topRightRadius: height
         bottomLeftRadius: 0
@@ -123,7 +121,7 @@ Item {
         width: Math.max(rightBound.idx1, rightBound.idx2) - x
     }
 
-    // Divider closing off the bar
+    // Divider
     Rectangle {
         id: separator
         anchors.top: activeIndicator.bottom
@@ -146,7 +144,7 @@ Item {
         }
     }
 
-    // idx1 (fast) and idx2 (slow) — min/max of both stretches the indicator instead of sliding it
+    // Fast/slow index pair
     component AnimatedTabIndexPair: QtObject {
         required property real index
 

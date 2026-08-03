@@ -4,7 +4,7 @@ import Quickshell.Services.Pipewire
 import "../../services"
 import "../../components"
 
-// One application's volume as a settings row — shares the service with the sidebar's VolumeMixerEntry, not the presentation
+// App volume row
 SettingRow {
     id: root
 
@@ -13,7 +13,7 @@ SettingRow {
     live: true
     label: Audio.appNodeDisplayName(root.node)
 
-    // An untracked node reports no volume at all, so the row would read 0%
+    // Track for volume
     PwObjectTracker { objects: [root.node] }
 
     RowLayout {

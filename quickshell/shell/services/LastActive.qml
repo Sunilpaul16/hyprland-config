@@ -31,7 +31,7 @@ Singleton {
         }
     }
 
-    // Look up last-active window for a monitor
+    // Last active per monitor
     function lastFor(monitor) {
         if (!monitor)
             return null;

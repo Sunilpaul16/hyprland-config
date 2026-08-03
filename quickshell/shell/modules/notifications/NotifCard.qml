@@ -11,7 +11,7 @@ Rectangle {
 
     required property Notif modelData
 
-    // Pill used by the expanded card's close / action / copy row
+    // Card button
     component CardButton: Rectangle {
         id: btn
 
@@ -54,7 +54,7 @@ Rectangle {
         NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
     }
 
-    // Slide-in entrance, hold a lock while mounted
+    // Slide-in entrance
     x: width
     Component.onCompleted: {
         x = 0;
@@ -62,8 +62,7 @@ Rectangle {
     }
     Component.onDestruction: modelData.unlock(card)
 
-    // Off while dragging, so the card tracks the cursor instead of lagging
-    // behind it, but still springs back when a swipe falls short
+    // Off while dragging
     Behavior on x {
         enabled: !swipeArea.drag.active
         NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
@@ -75,8 +74,7 @@ Rectangle {
         onHoveredChanged: card.modelData.hovered = hovered
     }
 
-    // Click to invoke action (collapsed only — chevron handles expand),
-    // or swipe sideways to dismiss
+    // Click or swipe
     MouseArea {
         id: swipeArea
         anchors.fill: parent
@@ -112,7 +110,7 @@ Rectangle {
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
         implicitHeight: Math.max(iconSlot.height, appNameText.height + headerCol.implicitHeight)
 
-        // Reserve room for the chevron; close/copy now live in the button row
+        // Chevron reserve
         readonly property int actionsReserve: 24
 
         // Icon
@@ -123,7 +121,7 @@ Rectangle {
             anchors.top: parent.top
         }
 
-        // App name (expanded only)
+        // App name
         StyledText {
             id: appNameText
             anchors.left: iconSlot.right
@@ -139,7 +137,7 @@ Rectangle {
             elide: Text.ElideRight
         }
 
-        // Header column (summary, body, actions)
+        // Header column
         Column {
             id: headerCol
             anchors.left: iconSlot.right
@@ -180,7 +178,7 @@ Rectangle {
                 }
             }
 
-            // Body: one-line preview collapsed, full wrapped expanded
+            // Body text
             StyledText {
                 id: bodyText
                 width: parent.width
@@ -188,8 +186,7 @@ Rectangle {
                 text: card.modelData.body
                 color: Colors.textMuted
                 font.pixelSize: Motion.fontSize.body
-                // Markup wins over markdown — a body with both is far more
-                // likely HTML with a stray asterisk than the reverse
+                // Markup wins
                 textFormat: card.modelData.bodyHasMarkup ? Text.StyledText : card.modelData.bodyHasMarkdown ? Text.MarkdownText : Text.PlainText
                 wrapMode: card.modelData.expanded ? Text.WordWrap : Text.NoWrap
                 elide: Text.ElideRight
@@ -198,7 +195,7 @@ Rectangle {
 
                 onLinkActivated: link => Qt.openUrlExternally(link)
 
-                // NoButton so link clicks still reach the Text underneath
+                // Link passthrough
                 MouseArea {
                     anchors.fill: parent
                     acceptedButtons: Qt.NoButton
@@ -207,7 +204,7 @@ Rectangle {
                 }
             }
 
-            // Button row (expanded only): close, the app's own actions, copy — with no actions the two icons split the width
+            // Button row
             Item {
                 width: parent.width
                 height: card.modelData.expanded ? 32 : 0
@@ -245,7 +242,7 @@ Rectangle {
                             copiedTimer.restart();
                         }
 
-                        // Brief tick as copy confirmation
+                        // Copy confirmation
                         Timer {
                             id: copiedTimer
                             interval: 1500

@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Shapes
 import "../../../services"
 
-// Circular usage-percentage ring (0..1). Shared by CpuCard/MemoryCard/
-// BatteryCard; content (usually a percentage label) goes in as a child.
+// Usage ring
 Item {
     id: root
 

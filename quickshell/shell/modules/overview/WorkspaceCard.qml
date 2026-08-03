@@ -3,16 +3,16 @@ import Quickshell.Hyprland
 import "../../services"
 import "../../components"
 
-// Single workspace card (real or placeholder)
+// Workspace card
 Item {
     id: root
 
     required property var screen
     required property bool active
-    required property var slot // HyprlandWorkspace, or {id, isPlaceholder: true}
+    required property var slot  // HyprlandWorkspace or placeholder
     required property Item overviewContent
 
-    // slot goes null for one binding pass when Hyprland destroys the workspace QObject
+    // Null for one pass
     readonly property bool isPlaceholder: !slot || !!slot.isPlaceholder
     readonly property var wsMonitor: isPlaceholder ? null : slot.monitor
     readonly property var fallbackMonitor: Hyprland.monitorFor(root.screen)
@@ -37,7 +37,7 @@ Item {
         border.color: dropArea.containsDrag || root.isFocused ? Colors.primary : Colors.outline
         clip: true
 
-        // Click to switch workspace
+        // Click switches
         MouseArea {
             anchors.fill: parent
             cursorShape: Qt.PointingHandCursor
@@ -67,7 +67,7 @@ Item {
             z: 2
         }
 
-        // Window thumbnails (snapshots, not live — see OverviewWindowThumb)
+        // Window thumbnails
         Repeater {
             model: root.isPlaceholder ? [] : root.slot.toplevels.values
 

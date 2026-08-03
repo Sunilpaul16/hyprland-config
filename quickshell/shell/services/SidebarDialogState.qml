@@ -3,7 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Which in-panel toggle dialog is overlaid on the sidebar, if any (comparison.md #25)
+// Overlaid toggle dialog
 Singleton {
     id: root
 

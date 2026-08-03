@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Standalone materialyoucolor generator for kitty's 16-color ANSI palette, invoked directly with the venv's python by ~/.local/bin/switchwall
+# Kitty ANSI palette generator
 import argparse
 import math
 import json
@@ -35,7 +35,7 @@ args = parser.parse_args()
 if args.path is None and args.color is None:
     parser.error('one of --path or --color is required')
 
-# Unreachable as a real scored color, which is always an opaque Hct.to_int()
+# Sentinel, never a real colour
 SCORE_FALLBACK_SENTINEL = 0x00000000
 
 rgba_to_hex = lambda rgba: "#{:02X}{:02X}{:02X}".format(rgba[0], rgba[1], rgba[2])
@@ -69,8 +69,7 @@ def boost_chroma_tone (argb: int, chroma: float = 1, tone: float = 1) -> int:
     hct = Hct.from_int(argb)
     return Hct.from_hct(hct.hue, hct.chroma * chroma, hct.tone * tone).to_int()
 
-# Rec.709 relative luminance (WCAG's definition), gamma-corrected -- a plain
-# mean over gamma-encoded values reads mid-tone images as far too bright
+# Rec.709 relative luminance
 def relative_luminance (image) -> float:
     def linear (c: float) -> float:
         c /= 255
@@ -99,8 +98,7 @@ if args.path is not None:
     if wsize_new < wsize or hsize_new < hsize:
         image = image.resize((wsize_new, hsize_new), Image.Resampling.BICUBIC)
 
-    # Piggybacks on the bitmap already downscaled for quantization. A separate
-    # source is used for video, whose first frame is often a title card.
+    # Reuses the quantization bitmap
     if args.luminance_path is not None and args.luminance_path != args.path:
         lum_image = Image.open(args.luminance_path).convert('RGB')
         lum_image.thumbnail((args.size, args.size), Image.Resampling.BICUBIC)
@@ -111,12 +109,12 @@ if args.path is not None:
     colors = QuantizeCelebi(list(image.getdata()), 128)
     argb = Score.score(colors)[0]
 
-    # Score.score() swaps in Google Blue when CUTOFF_CHROMA=5 rejects every colour, so an alpha=0 sentinel detects the swap — real results are always opaque
+    # Detect the Google Blue swap
     grayscale = args.smart and Score.score(
         colors, ScoreOptions(fallback_color_argb=SCORE_FALLBACK_SENTINEL)
     )[0] == SCORE_FALLBACK_SENTINEL
     if grayscale:
-        # Unfiltered re-score keeps the wallpaper's own faint tint, not that blue.
+        # Unfiltered re-score
         argb = Score.score(colors, ScoreOptions(filter=False))[0]
 
     if args.cache is not None:
@@ -130,14 +128,13 @@ elif args.color is not None:
     argb = hex_to_argb(args.color)
     hct = Hct.from_int(argb)
 
-# Falls back to dark when there is no image to measure (--color)
+# Dark when no image
 if args.mode == 'auto':
     args.mode = 'light' if (luminance is not None and luminance >= args.light_threshold) else 'dark'
 
 darkmode = (args.mode == 'dark')
 
-# Lets switchwall resolve --smart and --mode auto once, then hand the same
-# answers to matugen and gsettings
+# Resolve once for switchwall
 if args.print_scheme or args.print_mode:
     if args.print_scheme:
         print(args.scheme)
@@ -195,8 +192,7 @@ if args.termscheme is not None:
         json_termscheme = f.read()
     term_source_colors = json.loads(json_termscheme)['dark' if darkmode else 'light']
 
-    # Note: upstream used 'primary_paletteKeyColor'; installed materialyoucolor==3.0.2
-    # names this key 'primaryPaletteKeyColor' (pure camelCase, no underscore).
+    # Key is camelCase here
     primary_color_argb = hex_to_argb(material_colors['primaryPaletteKeyColor'])
     for color, val in term_source_colors.items():
         if(args.scheme == 'scheme-monochrome') :

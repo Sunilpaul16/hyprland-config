@@ -51,7 +51,7 @@ Scope {
 
                 WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-                // Click-through everywhere except the stack itself
+                // Click-through mask
                 mask: Region {
                     item: stack
                 }
@@ -81,7 +81,7 @@ Scope {
                         interactive: contentHeight > height
                         spacing: 0
                         cacheBuffer: root.height
-                        // Newest toast stays nearest the screen edge
+                        // Newest nearest edge
                         verticalLayoutDirection: root.atTop ? ListView.TopToBottom : ListView.BottomToTop
 
                         model: ScriptModel {
@@ -99,7 +99,7 @@ Scope {
                     }
                 }
 
-                // Per-notification wrapper (handles remove animation)
+                // Per-notification wrapper
                 component Wrapper: Item {
                     id: wrapper
 
@@ -127,7 +127,7 @@ Scope {
                         NumberAnimation {
                             target: card
                             property: "x"
-                            // Slides out past whichever edge the stack hugs
+                            // Slide out
                             to: root.atRight ? stack.width : -stack.width
                             duration: Motion.deliberateDuration
                             easing.type: Motion.deliberateEasing

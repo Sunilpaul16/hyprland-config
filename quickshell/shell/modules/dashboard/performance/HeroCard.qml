@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import "../../../components"
 import "../../../services"
 
-// CPU/GPU hero card: usage ring + icon top-left, name beside it, temperature bottom-left, usage blob bottom-right
+// Hero card
 Rectangle {
     id: root
 
@@ -20,7 +20,7 @@ Rectangle {
     implicitWidth: 320
     implicitHeight: Math.max(tempColumn.implicitHeight + usageRing.implicitHeight + 24, blob.implicitHeight + usageCaption.implicitHeight + 12) + 32
 
-    // Usage ring with the device icon inside
+    // Usage ring
     CircularProgress {
         id: usageRing
 
@@ -67,7 +67,7 @@ Rectangle {
         }
     }
 
-    // Temperature readout + bar
+    // Temperature readout
     ColumnLayout {
         id: tempColumn
 
@@ -94,7 +94,7 @@ Rectangle {
             }
         }
 
-        // Temperature bar, scaled 0..100°C
+        // Temperature bar
         Rectangle {
             Layout.fillWidth: true
             implicitHeight: 6

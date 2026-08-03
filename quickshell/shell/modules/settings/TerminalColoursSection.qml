@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../../services"
 
-// Terminal palette tuning — bends kitty's 16-colour ANSI set toward the accent.
-// Spacing matches ScrollPage's own column so wrapping these two changes nothing
+// Terminal palette tuning
 ColumnLayout {
     spacing: Motion.spacing.wide
 

@@ -2,7 +2,7 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Settings panel content — nav pane on the left, page area on the right
+// Settings content
 Item {
     id: root
 
@@ -11,10 +11,10 @@ Item {
     readonly property int pad: 18
     readonly property int navWidth: Math.min(Config.settings.navWidth, Math.round(width * 0.4))
 
-    // What the panel needs to be tall enough to show the whole nav list
+    // Natural height
     readonly property int naturalHeight: navList.naturalHeight + root.pad * 2
 
-    // Page registry, index-aligned with SettingsState.currentPageIdx — `category` drives the nav grouping, and entries without a `component` fall back to placeholderPage
+    // Page registry
     readonly property var pageModel: [
         // Appearance
         { label: "Wallpaper & style", icon: "palette", description: "Wallpaper, fonts, colours", category: "appearance", component: wallpaperStylePage },
@@ -36,7 +36,7 @@ Item {
         { label: "About", icon: "info", description: "System information, credits", category: "about", component: aboutPage }
     ]
 
-    // Sub-page registry — keyed by SettingsState.subPage
+    // Sub-page registry
     readonly property var subPageModel: ({
         "wallpapers": wallpapersSubPage,
         "schemes": schemesSubPage,
@@ -69,15 +69,13 @@ Item {
         anchors.topMargin: root.pad + 8
         anchors.bottomMargin: root.pad
 
-        // Index actually rendered. Lags SettingsState.currentPageIdx by
-        // switchAnim's fade-out half, so the swap lands while nothing is visible
+        // Rendered index
         property int shownIdx: 0
-        // Slide direction for the incoming page: down when moving further down
-        // the nav list, up when moving back up
+        // Slide direction
         property real slideFrom: 0
 
         readonly property var page: root.pageModel[shownIdx] ?? root.pageModel[0]
-        // Lags SettingsState.subPage the same way shownIdx lags currentPageIdx
+        // Shown sub-page
         property string shownSubPage: ""
         readonly property var subComponent: root.subPageModel[pageArea.shownSubPage] ?? null
 
@@ -90,8 +88,7 @@ Item {
             sourceComponent: pageArea.subComponent ?? pageArea.page.component ?? placeholderPage
         }
 
-        // Sub-page open/close reuses the page-switch animation, sliding in from
-        // the right going deeper and back the other way returning
+        // Sub-page animation
         Connections {
             target: SettingsState
             function onSubPageChanged() {
@@ -104,7 +101,7 @@ Item {
         Connections {
             target: SettingsState
             function onCurrentPageIdxChanged() {
-                // Clamp on the singleton, not just here — the nav highlight reads currentPageIdx directly, so an out-of-range `ipc call settings page N` would select nothing
+                // Clamp on singleton
                 const clamped = Math.max(0, Math.min(SettingsState.currentPageIdx, root.pageModel.length - 1));
                 if (clamped !== SettingsState.currentPageIdx) {
                     SettingsState.currentPageIdx = clamped;
@@ -298,7 +295,7 @@ Item {
         AboutPage {}
     }
 
-    // Fallback body for every page that has no `component` yet
+    // Placeholder page
     Component {
         id: placeholderPage
 

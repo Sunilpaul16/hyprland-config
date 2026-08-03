@@ -1,7 +1,7 @@
 import QtQuick
 import "../../services"
 
-// Panels page — bar, dashboard, launcher, sidebar and overview settings; every row is live
+// Panels page
 ScrollPage {
     id: root
 
@@ -12,7 +12,7 @@ ScrollPage {
         + (Config.dashboard.tabs.showPerformance ? 1 : 0)
         + (Config.dashboard.tabs.showWeather ? 1 : 0)
 
-    // Refuses to hide the last tab and keeps `defaultTab` on one that exists — declining to write leaves ToggleSwitch's binding intact, so the switch snaps back itself
+    // Tab visibility guard
     function setTabVisible(key: string, id: string, on: bool): void {
         if (!on && root.visibleTabCount <= 1)
             return;
@@ -168,7 +168,7 @@ ScrollPage {
             subtext: "Tab a fresh open lands on"
 
             SelectPill {
-                // Only offers tabs that are actually shown
+                // Shown tabs only
                 options: [
                     { value: "dashboard", label: "Dashboard", shown: Config.dashboard.tabs.showDashboard },
                     { value: "media", label: "Media", shown: Config.dashboard.tabs.showMedia },
@@ -380,7 +380,7 @@ ScrollPage {
             SelectPill {
                 value: "Edit"
                 icon: "chevron_right"
-                // Closes settings first so this can't fight closeOnSettings
+                // Close settings first
                 onClicked: {
                     SettingsState.open = false;
                     ScreenOwner.claim(SidebarRightState);
@@ -396,8 +396,7 @@ ScrollPage {
             subtext: "Shown when the sidebar has no notifications"
 
             ValueLabel {
-                // Read-only: editing a path needs a text field, which the
-                // panel has no control for yet
+                // Read-only
                 text: Config.sidebar.noNotifsImage || "assets/dino.png"
             }
         }
@@ -418,8 +417,7 @@ ScrollPage {
         text: "Overview & session"
     }
 
-    // No "live window thumbnails" toggle here on purpose: OverviewWindowThumb pins
-    // ScreencopyView.live false because live capture crashes qs (see INDEX.md)
+    // No live-thumbnail toggle
     SettingGroup {
         SettingRow {
             first: true

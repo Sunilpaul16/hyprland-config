@@ -22,7 +22,7 @@ QtObject {
 
     property date time: new Date()
 
-    // Notification content (synced from Notification)
+    // Notification content
     property Notification notification
     property int notificationId: 0
     property string summary
@@ -34,26 +34,24 @@ QtObject {
     property real expireTimeout: -1
     property list<var> actions
 
-    // Material Symbols name, for shell-raised toasts that have no app icon to show
+    // Material icon fallback
     property string materialIcon
 
-    // "Show it, don't keep it" — volume/brightness/progress popups set this
+    // Transient flag
     property bool isTransient
 
     readonly property bool critical: urgency === NotificationUrgency.Critical
 
-    // Ticks off the shared clock rather than a timer per notification
+    // Shared clock
     readonly property string timeStr: StringUtils.notifTime(time, Time.minutes)
 
-    // Heuristic: **bold**, `code` and [text](url) don't false-positive on plain text, unlike single */_ for italics (which collide with "5 * 3")
+    // Markdown heuristic
     readonly property bool bodyHasMarkdown: /\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\)/.test(body)
 
-    // Only the five tags the freedesktop spec defines, so a body merely
-    // mentioning <something> doesn't get parsed as markup
+    // Spec markup tags
     readonly property bool bodyHasMarkup: /<\/?(b|i|u|a|img)\b[^>]*>/i.test(body)
 
-    // image-data arrives as an in-process provider URL, so it dies with the
-    // shell — those have to be copied to disk to survive a restart
+    // Volatile image URL
     readonly property bool imageIsVolatile: image.startsWith("image://qsimage/")
 
     function cacheKey(): string {
@@ -74,7 +72,7 @@ QtObject {
             grabLoader.active = true;
     }
 
-    // Offscreen surface the grab needs — an Item only renders inside a window
+    // Offscreen grab surface
     readonly property LazyLoader grabLoader: LazyLoader {
         id: grabLoader
         active: false
@@ -110,16 +108,16 @@ QtObject {
 
     // Auto-dismiss timer
     readonly property Timer timer: Timer {
-        // expireTimeout: 0 = never expire, -1 = server default, >0 = explicit ms
+        // Timeout semantics
         running: notif.popup && !notif.closed && !notif.critical && !notif.hovered && notif.expireTimeout !== 0
-        // A sender's explicit timeout wins; otherwise fullscreen gets the brief one
+        // Timeout precedence
         interval: notif.expireTimeout > 0 ? notif.expireTimeout : Notifs.anyFullscreen ? Config.notifications.fullscreenExpireDuration : Config.notifications.toastDismissDuration
-        // A transient leaves entirely rather than falling back into history
+        // Transient closes
         onTriggered: if (notif.isTransient) notif.close(); else notif.popup = false;
     }
 
 
-    // Sync from Notification service
+    // Sync from service
     readonly property Connections conn: Connections {
         target: notif.notification
 
@@ -137,7 +135,7 @@ QtObject {
     }
 
 
-    // Map DBus actions to plain objects
+    // Map DBus actions
     function mapActions(): var {
         return notification.actions.map(a => ({
             identifier: a.identifier,
@@ -146,7 +144,7 @@ QtObject {
         }));
     }
 
-    // Ref-counted lock & close (prevents destroy mid-animation)
+    // Ref-counted lock
     function lock(item: Item): void {
         locks.add(item);
     }
@@ -167,11 +165,11 @@ QtObject {
         }
     }
 
-    // Initial snapshot from Notification
+    // Initial snapshot
     Component.onCompleted: {
         if (!notification)
             return;
-        // Offset avoids colliding with history — Quickshell's own ids restart at 1 every run
+        // Id offset
         notificationId = notification.id + Notifs.idOffset;
         summary = notification.summary;
         body = notification.body;

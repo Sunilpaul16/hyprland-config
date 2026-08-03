@@ -6,13 +6,13 @@ import "../../services"
 import "../notifications"
 import "../../components"
 
-// Notifications card (sidebar) — fills the panel's leftover height so the empty-state watermark has room
+// Notifications card
 Rectangle {
     id: root
 
     readonly property bool isEmpty: Notifs.list.length === 0
 
-    // Footer pill — full-height rounded ends
+    // Footer pill
     component StatusButton: Rectangle {
         id: sb
 
@@ -58,7 +58,7 @@ Rectangle {
         anchors { fill: parent; margins: 16 }
         spacing: Motion.spacing.large
 
-        // Header — clear-all moved to the footer row
+        // Header
         StyledText {
             Layout.fillWidth: true
             text: "Notifications"
@@ -66,15 +66,14 @@ Rectangle {
             font.bold: true
         }
 
-        // Body — the empty-state watermark and the history list share this area
+        // Body
         Item {
             id: body
 
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            // Empty state: watermark above the label. dino.png is black line art
-            // on transparent, so it needs colourising, not just dimming
+            // Empty state
             ColumnLayout {
                 anchors.centerIn: parent
                 width: parent.width * 0.8
@@ -127,7 +126,7 @@ Rectangle {
                     width: list.width
                 }
 
-                // Accumulated scroll target so rapid wheel ticks stack instead of each restarting the animation (comparison.md #37)
+                // Accumulated scroll target
                 property real scrollTargetY: 0
 
                 Behavior on contentY {
@@ -158,7 +157,7 @@ Rectangle {
             }
         }
 
-        // Footer: DND toggle · count · clear all
+        // Footer
         RowLayout {
             Layout.fillWidth: true
             spacing: Motion.spacing.small

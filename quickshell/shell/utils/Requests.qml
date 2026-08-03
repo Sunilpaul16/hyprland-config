@@ -2,8 +2,7 @@ pragma Singleton
 
 import QtQuick
 
-// Thin XMLHttpRequest GET helper — parses JSON responses before handing
-// them to the callback.
+// XHR GET helper
 QtObject {
     id: root
 

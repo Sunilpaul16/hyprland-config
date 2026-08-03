@@ -3,8 +3,7 @@ import QtQuick.Layouts
 import "../../../services"
 import "../../../components"
 
-// Icon + temp + one-line description — compact weather summary.
-// See WeatherTab.qml for the full page.
+// Compact weather card
 Rectangle {
     id: root
 

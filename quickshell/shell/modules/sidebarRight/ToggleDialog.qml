@@ -1,6 +1,6 @@
 import QtQuick
 
-// Lazily instantiates its dialog only while shown (comparison.md #25)
+// Lazy dialog
 Loader {
     id: root
 

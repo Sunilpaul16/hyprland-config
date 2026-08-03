@@ -1,12 +1,12 @@
 import "../../services"
 
-// Services page — notification, polling, weather and recorder settings
+// Services page
 ScrollPage {
     id: root
 
     title: "Services"
 
-    // 19 into "19:00", or "7 pm" while the clock is set to 12-hour
+    // Format hour
     function formatHour(hour: int): string {
         if (!Time.use12Hour)
             return `${hour < 10 ? "0" : ""}${hour}:00`;

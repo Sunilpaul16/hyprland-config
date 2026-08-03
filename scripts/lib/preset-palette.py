@@ -10,8 +10,7 @@ import os
 import re
 import sys
 
-# Roles the six matugen templates reference. A missing one renders a literal
-# {{colors.x.default.hex}} into a live config, so this is validated up front.
+# Template roles
 TEMPLATE_ROLES = [
     "background", "error", "errorContainer", "inverseOnSurface", "inversePrimary",
     "inverseSurface", "onBackground", "onError", "onErrorContainer", "onPrimary",
@@ -23,8 +22,7 @@ TEMPLATE_ROLES = [
     "surfaceVariant", "tertiary", "tertiaryContainer", "tertiaryFixedDim",
 ]
 
-# Names kitty-theme.conf substitutes. Unsupplied ones survive as literal
-# `$primary` text that kitty refuses to parse, so all 33 are required.
+# Kitty colour names
 KITTY_NAMES = [f"term{i}" for i in range(16)] + [
     "primary", "primaryContainer", "secondary", "secondaryContainer",
     "onSecondaryContainer", "tertiary", "tertiaryContainer", "error",
@@ -39,9 +37,7 @@ def repo_dir():
     return os.path.normpath(os.path.join(here, "..", ".."))
 
 
-# The shell's role names live in three places that must agree. Miss the
-# ColorsLoader one and the role is simply absent while previewing a preset,
-# silently and with no error — this is what catches that.
+# Shell role names
 def shell_role_sets():
     root = repo_dir()
     paths = {
@@ -62,17 +58,16 @@ def shell_role_sets():
     with open(paths["colors.json template"]) as f:
         raw = f.read()
     template = set(json.loads(raw))
-    # The template's keys are the shell's renamed roles; its values name the M3
-    # roles a preset must supply, e.g. "text": "{{colors.on_surface...}}"
+    # Renamed roles to M3
     referenced = {
         snake_to_camel(m) for m in re.findall(r"\{\{colors\.(\w+)\.", raw)
     }
 
-    # Mutable roles only — panel/layer/recording are readonly and derived
+    # Mutable roles only
     with open(paths["Colors.qml"]) as f:
         qml = set(re.findall(r"^\s*property color (\w+):", f.read(), re.M))
 
-    # The object literal previewPalette() hands to applyColors()
+    # applyColors() literal
     with open(paths["ColorsLoader.previewPalette"]) as f:
         body = f.read()
     start = body.find("function previewPalette")
@@ -95,8 +90,7 @@ def check_roles():
         if missing:
             problems.append(f"  {role}: missing from {', '.join(missing)}")
 
-    # An M3 role the template renders but TEMPLATE_ROLES omits goes unvalidated,
-    # so a preset lacking it emits a literal {{...}} into a live config
+    # Unvalidated template roles
     for role in sorted(referenced - set(TEMPLATE_ROLES)):
         problems.append(f"  {role}: rendered by colors.json but not in TEMPLATE_ROLES")
 
@@ -125,8 +119,7 @@ def camel_to_snake(name):
 
 
 def corpus_dir():
-    # Vendored in-repo. Resolved from this file's real path, since the
-    # entrypoint is reached through a symlink in ~/.local/bin
+    # Vendored in-repo
     here = os.path.dirname(os.path.realpath(__file__))
     path = os.path.normpath(os.path.join(here, "..", "..", "matugen", "schemes"))
     if not os.path.isdir(path):
@@ -156,7 +149,7 @@ def list_flavours():
 def resolve_mode(preset, want):
     for pid, modes in list_flavours():
         if pid == preset:
-            # Silent fallback: 17 of 24 flavours are dark-only
+            # Silent fallback
             return want if want in modes else modes[0]
     sys.exit(2)
 
@@ -166,15 +159,14 @@ def read_preset(preset, mode):
     if not os.path.isfile(path):
         sys.exit(2)
     colours = {}
-    # Line-wise: a split("\n")[:-1] read drops the last key from any file
-    # without a trailing newline, which upstream had in 18 of 29
+    # Line-wise read
     with open(path) as f:
         for line in f:
             line = line.strip()
             if not line:
                 continue
             key, _, value = line.partition(" ")
-            # Normalised at vendor time; lowered again so a hand-edit is safe
+            # Lowered for safety
             colours[key] = value.strip().lower()
     return colours
 
@@ -198,8 +190,7 @@ def main():
             print(f"{pid}\t{' '.join(modes)}")
         return
 
-    # Everything a picker needs in one pass — id, modes and swatch colours —
-    # so a 24-row page costs one process rather than one per row
+    # One pass per list
     if cmd == "listall":
         want = sys.argv[2] if len(sys.argv) > 2 else "dark"
         for pid, modes in list_flavours():
@@ -223,7 +214,7 @@ def main():
         out = {}
         for role in TEMPLATE_ROLES:
             value = "#" + colours[role]
-            # One palette drives all three variants; a preset has one mode
+            # One palette, one mode
             out[camel_to_snake(role)] = {
                 "default": {"color": value},
                 "light": {"color": value},

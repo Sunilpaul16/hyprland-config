@@ -3,7 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import "../../services"
 
-// Workspace overview overlay window
+// Overview overlay
 Scope {
     Variants {
         model: Quickshell.screens
@@ -43,7 +43,7 @@ Scope {
                 WlrLayershell.namespace: "quickshell-overview"
                 WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-                // Click-through everywhere except the panel itself
+                // Click-through mask
                 mask: Region {
                     item: panel
                 }

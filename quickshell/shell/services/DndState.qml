@@ -3,7 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Do Not Disturb state: suppresses notification popups, history unaffected
+// Do Not Disturb
 Singleton {
     id: root
 
@@ -23,7 +23,7 @@ Singleton {
             root.toggle();
         }
 
-        // Routed through toggle() so the IPC path toasts too, matching IdleInhibitState
+        // Enable via toggle
         function enable(): void {
             if (!root.enabled)
                 root.toggle();

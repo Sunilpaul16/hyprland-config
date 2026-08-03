@@ -4,7 +4,7 @@ import Quickshell.Wayland
 import "../../services"
 import "../../components"
 
-// Session/power overlay window — right-edge slide-in drawer
+// Session overlay
 Scope {
     Variants {
         model: Quickshell.screens
@@ -27,7 +27,7 @@ Scope {
                     NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
                 }
 
-                // Right-edge stack registration + shared focus-grab registration
+                // Stack and grab
                 onActiveChanged: {
                     RightEdgeStack.register(root.screen, "session", root.active, drawer.registeredWidth);
                     if (root.active) {
@@ -61,7 +61,7 @@ Scope {
                 WlrLayershell.namespace: "quickshell-session"
                 WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-                // Click-through everywhere except the drawer itself
+                // Click-through mask
                 mask: Region {
                     item: drawer
                 }
@@ -72,30 +72,25 @@ Scope {
                     focus: root.active
                     Keys.onEscapePressed: SessionState.open = false
 
-                    // Hand keyboard focus to the first action button so Up/Down/Enter
-                    // work immediately, without a click first
+                    // Focus first button
                     onFocusChanged: if (focus && loader.item) loader.item.focusFirst()
 
-                    // Drawer: right-edge slide via animated rightMargin + opacity fade,
-                    // resting/closed margins mirror SidebarRightPanel's 8px edge gap
+                    // Drawer
                     Item {
                         id: drawer
 
-                        // 0 so the drawer butts straight against the sidebar's left
-                        // edge (which is itself flush at edgeMargin 0), leaving no seam
+                        // Flush to sidebar
                         readonly property int restingMargin: 0
                         readonly property int cornerSize: 14
                         readonly property int closedMargin: -(drawer.implicitWidth + restingMargin)
 
-                        // Pushed left by whichever right-edge panels are stacked
-                        // outside Session (currently just Sidebar, if open)
+                        // Stack offset
                         property real stackOffset: RightEdgeStack.offsetFor(root.screen, "session")
                         Behavior on stackOffset {
                             NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
                         }
 
-                        // Total footprint (from the true screen edge) a panel further
-                        // out needs to clear to avoid overlapping Session
+                        // Registered width
                         property real registeredWidth: implicitWidth + restingMargin
                         onRegisteredWidthChanged: RightEdgeStack.register(root.screen, "session", root.active, registeredWidth)
                         Component.onCompleted: RightEdgeStack.register(root.screen, "session", root.active, registeredWidth)
@@ -105,13 +100,12 @@ Scope {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.right: parent.right
                         anchors.rightMargin: closedMargin + (restingMargin - closedMargin) * root.showProgress + stackOffset
-                        // Fallback sizing for the first open frame, before the Loader's
-                        // content has laid out
+                        // First-frame fallback
                         implicitWidth: ((loader.item ? loader.item.implicitWidth : 0) || 64) + contentPadding * 2
                         implicitHeight: ((loader.item ? loader.item.implicitHeight : 0) || 384) + contentPadding * 2
                         opacity: root.showProgress
 
-                        // Hovering holds the drawer open; leaving restarts the countdown
+                        // Hover holds open
                         HoverHandler {
                             onHoveredChanged: {
                                 if (hovered)
@@ -121,8 +115,7 @@ Scope {
                             }
                         }
 
-                        // Drawer backdrop — same shell as SidebarRightPanel's. Right
-                        // corners are square so the joined edge reads as one surface
+                        // Backdrop
                         Rectangle {
                             anchors.fill: parent
                             radius: Motion.rounding.drawer
@@ -131,8 +124,7 @@ Scope {
                             color: Colors.panel
                         }
 
-                        // Concave fillets bridging the drawer into the panel beside it,
-                        // rounding the two reflex corners the butt joint would leave
+                        // Edge fillets
                         Corner {
                             anchors { right: parent.right; bottom: parent.top }
                             size: drawer.cornerSize
@@ -147,15 +139,13 @@ Scope {
                             corner: "topRight"
                         }
 
-                        // Content only instantiated while open/animating — avoids the
-                        // gif slot (and its loop animation) running while closed
+                        // Lazy content
                         Loader {
                             id: loader
                             anchors.centerIn: parent
                             active: root.active || root.showProgress > 0.001
                             sourceComponent: SessionContent {}
-                            // Covers the case where this Loader creates its item after
-                            // the focus scope's onFocusChanged already fired this tick
+                            // Focus after load
                             onLoaded: if (root.active) item.focusFirst()
                         }
                     }

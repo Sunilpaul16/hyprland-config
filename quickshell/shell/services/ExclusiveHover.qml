@@ -2,16 +2,14 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Only one hover-driven panel open at a time — claiming the hover closes
-// whichever panel held it (shared-coordinator shape, mirrors GlobalFocusGrab)
+// Hover exclusivity
 Singleton {
     id: root
 
-    // The *State singleton currently owning the hover, or null
+    // Current owner
     property var current: null
 
-    // current is set before closing the previous owner, so the release() that
-    // fires from its own onOpenChanged doesn't clear the incoming claim
+    // Claim hover
     function claim(owner): void {
         if (root.current === owner)
             return;

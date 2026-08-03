@@ -2,8 +2,7 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Transport button — tonal circle by default, accent-filled for play/pause
-// (`filled`) and for an engaged shuffle/loop toggle (`checked`)
+// Transport button
 Rectangle {
     id: btn
 

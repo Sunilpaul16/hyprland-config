@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Shapes
 import "../../../services"
 
-// Scalloped blob behind a hero card's usage percentage — polar-sampled, gaining lobes and a tighter waist as usage climbs
+// Scalloped usage blob
 Item {
     id: root
 
@@ -15,11 +15,11 @@ Item {
 
     readonly property real clampedValue: Math.max(0, Math.min(1, isNaN(value) ? 0 : value))
 
-    // Lobe count / depth step at the 40% and 80% thresholds
+    // Lobe thresholds
     readonly property int lobes: root.clampedValue >= 0.8 ? 12 : (root.clampedValue >= 0.4 ? 8 : 4)
     readonly property real depth: root.clampedValue >= 0.8 ? 0.12 : (root.clampedValue >= 0.4 ? 0.14 : 0.18)
 
-    // Polar outline: r(t) dips by `depth` between lobes, sampled densely enough to read as a curve; the half-lobe phase offset puts the widest points on the diagonals
+    // Polar outline
     readonly property var outline: {
         const cx = width / 2;
         const cy = height / 2;

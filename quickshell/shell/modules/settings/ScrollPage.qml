@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../../services"
 
-// Page contract for a scrolling stack of setting groups — children land in a
-// centred column capped at PageBase's content width
+// Scrolling page contract
 PageBase {
     id: root
 

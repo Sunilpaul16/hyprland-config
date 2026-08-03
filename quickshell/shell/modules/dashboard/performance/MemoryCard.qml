@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import "../../../components"
 import "../../../services"
 
-// Memory: 270° usage arc with percentage inside, used/total underneath
+// Memory card
 Rectangle {
     id: root
 
@@ -18,7 +18,7 @@ Rectangle {
     Component.onCompleted: SystemUsage.ref()
     Component.onDestruction: SystemUsage.unref()
 
-    // Plain KiB -> MiB/GiB scaling helper (not a service — card-local formatting only)
+    // KiB scaling
     function formatKib(kib: real): string {
         if (!isFinite(kib) || kib < 0)
             return "0 KiB";

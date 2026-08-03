@@ -1,14 +1,13 @@
 import QtQuick
 import "../../services"
 
-// Session/power actions column — right-edge drawer content
+// Session actions column
 Column {
     id: root
 
     spacing: Motion.spacing.xlarge
 
-    // Focus the first action button — called once from SessionScreen.qml
-    // when the drawer opens, so Up/Down/Enter work without a click first
+    // Focus first button
     function focusFirst(): void {
         logoutBtn.forceActiveFocus();
     }
@@ -30,7 +29,7 @@ Column {
         KeyNavigation.down: lockBtn
     }
 
-    // Decorative slot — bongocat gif
+    // Bongocat slot
     Item {
         implicitWidth: 64
         implicitHeight: 64

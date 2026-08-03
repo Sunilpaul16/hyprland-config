@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Physical-disk usage: df's per-mount used/total merged with lsblk's partition -> parent-disk (PKNAME) map, so one disk's mounts show as a single card
+// Physical disk usage
 Singleton {
     id: root
 
@@ -18,12 +18,11 @@ Singleton {
         root.refCount = Math.max(0, root.refCount - 1);
     }
 
-    // Each entry: { name, usedKib, totalKib, percentage, hasRoot }
+    // Disk entry shape
     property var disks: []
     readonly property var primaryDisk: root.disks.length > 0 ? root.disks[0] : null
 
-    // Manual disk pick overrides primaryDisk, guarded against a stale
-    // reference the same way Media.qml's manualPlayer is
+    // Manual disk pick
     property var manualDisk: null
     readonly property bool hasManualDisk: root.manualDisk !== null && root.disks.includes(root.manualDisk)
     readonly property var selectedDisk: root.hasManualDisk ? root.manualDisk : root.primaryDisk
@@ -76,7 +75,7 @@ Singleton {
             if (parts.length < 5)
                 continue;
 
-            // mountpoint can contain spaces; source/fstype/used/size can't, so parse from both ends
+            // Parse from both ends
             const source = parts[0];
             const usedKib = parseFloat(parts[parts.length - 2]);
             const totalKib = parseFloat(parts[parts.length - 1]);
@@ -135,7 +134,7 @@ Singleton {
         }
     }
 
-    // Storage doesn't change fast — poll far less often than CPU/memory
+    // Slow poll
     Timer {
         interval: Config.polling.storage
         running: root.refCount > 0

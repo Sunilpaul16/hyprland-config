@@ -3,19 +3,17 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Reads matugen's colors.json and mutates Colors's properties in place, so a wallpaper change cross-fades instead of restarting the shell
-// Singletons are lazy — shell.qml's Component.onCompleted must call reapplyTheme() once or this never loads
+// Applies matugen palette
 Singleton {
     id: root
 
-    // True while a candidate palette is on screen instead of the real one
+    // Preview active
     property bool previewing: false
     property string previewPath: ""
-    // Latest request while a generation is already running; matugen takes a
-    // second or two, and a hover sweep would otherwise queue one per tile
+    // Queued preview path
     property string pendingPath: ""
 
-    // Generates a palette for `path` and swaps it into Colors only — wallpaper, colors.json and every other themed app are untouched, so clearPreview() fully reverts
+    // Preview from image
     function preview(path: string): void {
         if (!path || path === root.previewPath)
             return;
@@ -37,7 +35,7 @@ Singleton {
         root.reapplyTheme();
     }
 
-    // A preset's colours are already on disk, so unlike preview() there's nothing to generate — maps template role names onto the shell's own and reuses the revert path
+    // Preview from preset
     function previewPalette(palette: var): void {
         if (!palette || !palette.primary)
             return;
@@ -91,7 +89,7 @@ Singleton {
         root.applyColors(text);
     }
 
-    // onLoadedChanged fires only on the loaded/not-loaded transition, so later re-reads go through this debounced timer and apply reload()'d text() directly
+    // Debounced re-read
     Timer {
         id: applyTimer
         interval: 50
@@ -109,7 +107,7 @@ Singleton {
                 previewFile.reload();
                 previewApplyTimer.restart();
             }
-            // A newer hover landed while this was generating
+            // Newer request queued
             if (next && next !== root.previewPath) {
                 root.previewPath = "";
                 root.preview(next);
@@ -117,8 +115,7 @@ Singleton {
         }
     }
 
-    // Same reload() caveat as colorsFile below — onLoadedChanged does not
-    // fire again once loaded, so re-reads go through this timer
+    // Debounced re-read
     Timer {
         id: previewApplyTimer
         interval: 50

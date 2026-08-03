@@ -8,9 +8,9 @@ Singleton {
     id: root
 
     property bool open: false
-    // Monitor this panel is pinned to while open
+    // Pinned monitor
     property string ownerScreen: ""
-    // Quick-toggles edit mode; settings navigates here rather than holding a value
+    // Edit mode
     property bool quickTogglesEditMode: false
 
     onOpenChanged: {

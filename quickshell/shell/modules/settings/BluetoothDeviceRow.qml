@@ -4,7 +4,7 @@ import Quickshell.Bluetooth
 import "../../services"
 import "../../components"
 
-// One Bluetooth device as a settings row — shares the service and bluez calls with the sidebar's BluetoothDeviceItem, not the presentation
+// Bluetooth device row
 SettingRow {
     id: root
 
@@ -17,8 +17,7 @@ SettingRow {
     RowLayout {
         spacing: Motion.spacing.normal
 
-        // Spinner while bluez works — pair and connect are both slow enough
-        // to look like nothing happened
+        // Busy spinner
         MaterialIcon {
             visible: root.device.pairing || root.device.state === BluetoothDeviceState.Connecting
             text: "sync"

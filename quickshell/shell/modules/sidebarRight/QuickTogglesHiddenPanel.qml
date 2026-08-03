@@ -4,7 +4,7 @@ import "../../services"
 import "quickToggles"
 import "../../components"
 
-// Hidden/unused toggles — edit mode only, tap "+" to bring one back
+// Hidden toggles
 ColumnLayout {
     id: root
 

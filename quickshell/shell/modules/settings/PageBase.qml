@@ -2,16 +2,14 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Page contract — large title above a content area filling the rest. Real
-// pages subclass this and set `title`; children land in the body Item
+// Page contract
 Item {
     id: root
 
     property string title
-    // Sub-pages get a back arrow ahead of the title
+    // Sub-page back arrow
     property bool isSubPage: false
-    // Content stops widening past this and stays left-aligned under the title,
-    // so a wide panel grows the margins rather than stretching every row
+    // Capped content width
     readonly property int cappedWidth: Math.min(Config.settings.maxContentWidth, body.width)
 
     default property alias content: body.data

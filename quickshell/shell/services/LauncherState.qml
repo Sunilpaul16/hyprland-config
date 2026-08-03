@@ -10,13 +10,12 @@ Singleton {
 
     property bool open: false
     property string pendingText: ""
-    // Monitor this panel is pinned to while open
+    // Pinned monitor
     property string ownerScreen: ""
 
     onOpenChanged: if (root.open) ScreenOwner.claim(root)
 
-    // Open in each mode. Open on another monitor means move here, which is
-    // done as a close/reopen so Content re-syncs its text and keyboard focus
+    // Open in mode
     function openMode(text: string): void {
         const elsewhere = root.open && root.ownerScreen !== ScreenOwner.focusedName;
         if (root.open && !elsewhere) {

@@ -3,8 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// NordVPN state, via its CLI. There is no NetworkManager VPN profile to bind
-// to here — nordvpn manages its own tunnel — so this shells out and parses
+// NordVPN state
 Singleton {
     id: root
 
@@ -15,7 +14,7 @@ Singleton {
     property string server: ""
     property string country: ""
     property string ip: ""
-    // Set while a connect/disconnect is in flight; both take seconds
+    // In flight
     property bool busy: false
 
     readonly property string statusLabel: {
@@ -28,8 +27,7 @@ Singleton {
         return root.country ? `${root.server} · ${root.country}` : root.server;
     }
 
-    // Polled only while something is watching, same refcount shape as
-    // SystemUsage/NetworkUsage — nothing else in the shell reads this
+    // Refcounted polling
     property int refCount: 0
 
     function ref(): void {
@@ -78,8 +76,7 @@ Singleton {
 
         stdout: StdioCollector {
             onStreamFinished: {
-                // A missing/unauthenticated CLI prints something other than
-                // "Status:", so treat the field's absence as unavailable
+                // CLI unavailable
                 const status = root.field(text, "Status");
                 root.available = status.length > 0;
                 root.connected = status.toLowerCase() === "connected";

@@ -18,18 +18,12 @@ import "modules/sidebarRight"
 import "modules/trayMenu"
 import "modules/volumeOsd"
 
-// Shell entrypoint — each panel is its own Scope owning a per-monitor
-// Variants + Config.ready-gated PanelLoader (see services/PanelLoader.qml)
+// Shell entrypoint
 ShellRoot {
     Component.onCompleted: {
-        // Force ColorsLoader's lazy singleton to load and apply matugen's
-        // last-written theme (see ColorsLoader.qml)
+        // Wake lazy singletons
         ColorsLoader.reapplyTheme();
-        // Same lazy-singleton reason: nothing else references Updates, so
-        // without this its check-on-login timer never starts
         Updates.backgroundChecking = true;
-        // And again: NightLightState is only reached from the sidebar's quick
-        // toggles, so its schedule would not start until the sidebar was opened
         NightLightState.scheduling = true;
     }
 

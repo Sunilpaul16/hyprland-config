@@ -1,7 +1,7 @@
 import QtQuick
 import "../../services"
 
-// Audio page — devices, levels, per-app and volume-step/unmute are live against Audio.qml; the OSD section and over-100% boost are still mock
+// Audio page
 ScrollPage {
     id: root
 
@@ -200,8 +200,7 @@ ScrollPage {
         text: "Playing now"
     }
 
-    // Application streams — this list is whatever holds a stream right now,
-    // so it being empty is the normal case, not a failure
+    // Application streams
     SettingGroup {
         Repeater {
             model: Audio.outputAppNodes

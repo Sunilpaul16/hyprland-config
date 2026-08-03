@@ -4,13 +4,13 @@ import Quickshell
 import "../../services"
 import "../../components"
 
-// About page — every value is real: SysInfo reads /etc and /proc, AboutInfo shells out for the rest, displays come from Quickshell.screens + Hyprland's monitor JSON
+// About page
 ScrollPage {
     id: root
 
     title: "About"
 
-    // Subprocess-backed values load on first visit, not at shell startup
+    // Load on visit
     Component.onCompleted: AboutInfo.load()
 
     // Hero

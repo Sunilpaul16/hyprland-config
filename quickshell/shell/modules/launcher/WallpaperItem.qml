@@ -13,14 +13,13 @@ Item {
     readonly property bool isCurrent: ListView.isCurrentItem
     readonly property var view: ListView.view
 
-    // Slot grows with the selected card so neighbours are pushed apart instead
-    // of being overlapped by it
+    // Slot grows selected
     width: root.isCurrent ? root.view.currentItemWidth : root.view.itemWidth
     height: root.view.height
-    // Keeps the selected card above its neighbours mid-reflow
+    // Selected above neighbours
     z: root.isCurrent ? 1 : 0
 
-    // The row can't clip, so items fade as they slide out — the fade finishes inside the panel's padding, so nothing spills onto the desktop
+    // Edge fade
     readonly property real overflow: Math.max(root.view.contentX - root.x, (root.x + root.width) - (root.view.contentX + root.view.width))
     opacity: root.overflow <= 0 ? 1 : Math.max(0, 1 - root.overflow / 12)
 
@@ -28,7 +27,7 @@ Item {
 
     signal activated
 
-    // Refresh thumbnail when ready
+    // Thumbnail refresh
     Connections {
         target: Wallpapers
         function onThumbnailReady(path) {
@@ -47,7 +46,7 @@ Item {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: root.isCurrent ? 16 : 0
 
-        // Fills the slot, so the row's spacing is the only gap between cards
+        // Fills slot
         width: root.width
         height: root.isCurrent ? 107 : 84
         radius: Motion.rounding.item
@@ -76,7 +75,7 @@ Item {
                 sourceSize.height: 214
             }
 
-            // Rounds off the image's square corners — the well's radius can't, since a Rectangle's clip is rectangular, and ClippingRectangle/OpacityMask both no-op in these overlays
+            // Rounds image corners
             Corner {
                 anchors { left: parent.left; top: parent.top }
                 size: well.radius

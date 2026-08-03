@@ -30,14 +30,14 @@ Scope {
                     right: true
                 }
 
-                // Window setup — no reserved height needed, tray tooltips are their own PopupWindow now
+                // Window setup
                 implicitHeight: barContentHeight + cornerSize
                 exclusiveZone: barContentHeight
                 color: "transparent"
                 WlrLayershell.layer: WlrLayer.Top
                 WlrLayershell.namespace: "quickshell-bar"
 
-                // Stay inside any active focus grab, or the compositor cuts pointer input to the bar while an overlay is open
+                // Persistent focus grab
                 Component.onCompleted: GlobalFocusGrab.addPersistent(bar)
                 Component.onDestruction: GlobalFocusGrab.removePersistent(bar)
 
@@ -74,8 +74,7 @@ Scope {
                             MediaButton {}
                         }
 
-                        // Hover-to-open dashboard trigger — invisible zone,
-                        // spans the bar's full content height (40h)
+                        // Dashboard hover zone
                         Item {
                             id: dashboardHoverZone
                             Layout.alignment: Qt.AlignVCenter
@@ -95,7 +94,7 @@ Scope {
                             }
                         }
 
-                        // Workspaces pill — scroll to switch workspace
+                        // Workspaces pill
                         MouseArea {
                             id: workspaceScrollZone
                             Layout.alignment: Qt.AlignVCenter
@@ -123,7 +122,7 @@ Scope {
                         }
                     }
 
-                    // Workspace scroll hint — fades in over the gap to the right of centerRow
+                    // Scroll hint
                     ScrollHint {
                         reveal: workspaceScrollZone.containsMouse
                         icon: "swap_horiz"
@@ -188,7 +187,7 @@ Scope {
 
                     }
 
-                    // Volume scroll zone — the open gap left of the tray/clock cluster
+                    // Volume scroll zone
                     MouseArea {
                         id: volumeScrollZone
                         anchors {

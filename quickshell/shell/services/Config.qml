@@ -4,7 +4,7 @@ import Quickshell
 import Quickshell.Io
 
 
-// Runtime config singleton (JSON-backed), grouped rather than flat — `Config.dashboard.media.gifSpeed` reads and writes `dashboard.media.gifSpeed`
+// Runtime config singleton
 Singleton {
     id: root
 
@@ -29,13 +29,10 @@ Singleton {
     property alias apps: adapter.apps
     property alias idle: adapter.idle
 
-    // Gates panels from reading config before the FileView has loaded
+    // Load gate
     property bool ready: false
 
-    // False while the file exists but doesn't parse. JsonAdapter only warns on a malformed
-    // document and keeps its declared defaults, so the shell runs normally and the next write
-    // would replace the real file with those defaults — every customised value and every
-    // unknown key gone. Writing is refused until it parses again
+    // Parse failure guard
     property bool fileValid: true
 
     onFileValidChanged: {
@@ -45,7 +42,7 @@ Singleton {
         }
     }
 
-    // JsonAdapter bails on both a parse error and a valid non-object document, so check for each
+    // Validate document
     function validate(): void {
         const text = configFile.text();
         if (text.trim().length === 0) {
@@ -65,7 +62,7 @@ Singleton {
         path: Directories.configFile
         watchChanges: true
 
-        // Re-runs on every reload too, so fixing the file clears the flag without a restart
+        // Clear on reload
         onLoaded: {
             root.validate();
             root.ready = true;
@@ -82,77 +79,75 @@ Singleton {
             id: adapter
 
             property JsonObject time: JsonObject {
-                property bool use12Hour: false // true = 12-hour clock (AM/PM); false = 24-hour
+                property bool use12Hour: false  // 12-hour clock
             }
 
-            // Animation timing — only these two are user-facing; Motion.qml's curves and rounding tokens are design constants, not preferences
+            // Animation timing
             property JsonObject motion: JsonObject {
-                property real speed: 1.0     // higher = faster; divides every duration. Clamped to 0.25–4 in Motion.qml
-                property bool reduced: false // true = collapse all durations to 0
+                property real speed: 1.0  // higher = faster
+                property bool reduced: false  // no animations
             }
 
             property JsonObject bar: JsonObject {
-                property int height: 40 // top bar height (px)
+                property int height: 40  // bar height (px)
                 property bool showTray: true        // system tray pill
                 property bool showWindowTitle: true // active-window pill
-                // Tray item ids kept out of the pill — status applets with no user-facing app. Comma-separated, matched case-insensitively against SystemTrayItem.id
-                // A string, not a list: JsonAdapter only serialises QQmlListProperty<JsonObject>, so a `list<string>` is silently dropped on write (jsonadapter.cpp:75/118)
+                // Hidden tray ids
                 property string trayHidden: "nm-applet,blueman"
             }
 
             property JsonObject sidebar: JsonObject {
-                property string noNotifsImage: "" // notifications empty-state watermark; "" = the bundled assets/dino.png
-                property bool calendarCollapsed: false // sidebar calendar card starts collapsed
-                property bool closeOnSettings: true // close the sidebar when settings opens
+                property string noNotifsImage: ""  // empty-state watermark
+                property bool calendarCollapsed: false  // calendar starts collapsed
+                property bool closeOnSettings: true  // close on settings
                 property int width: 360             // drawer width
             }
 
             property JsonObject session: JsonObject {
-                property int autoCloseDuration: 5000 // ms the drawer stays open unhovered before closing itself
-                property bool keepAwakeDefault: false // hold the idle inhibitor from shell start
+                property int autoCloseDuration: 5000  // auto-close ms
+                property bool keepAwakeDefault: false  // inhibit from start
             }
 
-            // Idle timeouts in seconds, 0 meaning never. Defaults match the listener blocks
-            // hypridle.conf used to own; its general{} block still handles the logind side
+            // Idle timeouts (seconds)
             property JsonObject idle: JsonObject {
-                property int lockTimeout: 900     // lock the screen after this long idle
-                property int dpmsTimeout: 1800    // turn the displays off after this long idle
-                property int suspendTimeout: 3600 // suspend the machine after this long idle
-                property bool inhibitWhenAudio: true // a playing MPRIS player suppresses all of the above
+                property int lockTimeout: 900  // lock after idle
+                property int dpmsTimeout: 1800  // displays off
+                property int suspendTimeout: 3600  // suspend
+                property bool inhibitWhenAudio: true  // media suppresses idle
             }
 
             property JsonObject notifications: JsonObject {
-                property int toastDismissDuration: 5000 // ms a toast shows before auto-dismissing
+                property int toastDismissDuration: 5000  // toast timeout ms
                 property bool keepAcrossRestarts: true  // persist history to disk
-                property int groupPreviewNum: 3         // newest N shown in a collapsed app group
-                property real swipeThreshold: 0.3       // fraction of card width a swipe must cross to dismiss
-                property string fullscreen: "on"        // toasts over a fullscreen window: "on" (brief) | "off" (suppressed)
-                property int fullscreenExpireDuration: 2000 // ms a toast shows while a window is fullscreen
+                property int groupPreviewNum: 3  // collapsed group size
+                property real swipeThreshold: 0.3  // swipe dismiss fraction
+                property string fullscreen: "on"  // "on" | "off"
+                property int fullscreenExpireDuration: 2000  // fullscreen toast ms
                 property string popupPosition: "top-right" // "top-right" | "top-left" | "bottom-right" | "bottom-left"
             }
 
-            // External programs the shell launches on the user's behalf
+            // External programs
             property JsonObject apps: JsonObject {
-                // Used for desktop entries marked Terminal=true and for the upgrade runner. The exec flag is assumed to be `-e`, which covers kitty/foot/alacritty/ghostty
+                // Terminal emulator
                 property string terminal: "kitty"
             }
 
             property JsonObject updates: JsonObject {
-                property bool autoCheck: true       // query for updates on start and on the interval below
-                property int intervalMinutes: 360   // floored at 15 in Updates.qml
-                property string aurHelper: "yay"    // any helper supporting -Qua ("yay" | "paru" | ...)
-                property bool notify: true     // desktop notification when the pending count grows
-                property bool showInBar: false // pending-count pill in the bar
+                property bool autoCheck: true  // check on start
+                property int intervalMinutes: 360  // minutes, min 15
+                property string aurHelper: "yay"  // AUR helper (-Qua)
+                property bool notify: true  // notify on growth
+                property bool showInBar: false  // bar pill
             }
 
-            // Poll intervals in ms for the refcounted stat services
+            // Poll intervals (ms)
             property JsonObject polling: JsonObject {
                 property int cpu: 1000
                 property int gpu: 2000
                 property int storage: 10000
                 property int uptime: 60000
                 property int networkStatus: 5000 // ethernet link + VPN state
-                property int networkUsage: 1000  // /proc/net/dev throughput sampling
+                property int networkUsage: 1000  // network throughput
             }
 
             property JsonObject weather: JsonObject {
@@ -160,87 +155,84 @@ Singleton {
                 property int refreshMinutes: 60
             }
 
-            // Translucency applies only to each panel's outermost surface, so nothing compounds and no per-depth model is needed
+            // Appearance
             property JsonObject appearance: JsonObject {
                 property bool transparency: false
-                property real panelOpacity: 0.85 // panel backgrounds; used only when transparency is on
-                property real layerOpacity: 0.55 // cards and pills on top of a panel
-                // Fonts.qml validates families against the installed set and falls back to these, rather than letting Qt silently substitute
-                property string fontInterface: "Noto Sans" // all shell text, via StyledText
-                property string fontGlyph: "JetBrainsMono Nerd Font" // Nerd Font icon glyphs only
+                property real panelOpacity: 0.85  // panel opacity
+                property real layerOpacity: 0.55  // layer opacity
+                // Fonts
+                property string fontInterface: "Noto Sans"  // shell text
+                property string fontGlyph: "JetBrainsMono Nerd Font"  // icon glyphs
             }
 
-            // Settings panel size — both axes derived from content (nav pane + capped page column, nav list height), not an aspect ratio
+            // Settings panel size
             property JsonObject settings: JsonObject {
                 property int maxContentWidth: 800 // page content column
                 property int navWidth: 340        // left nav pane
-                property real heightMult: 0.8     // ceiling only, as a fraction of screen height
+                property real heightMult: 0.8  // max screen fraction
             }
 
-            // Read by scripts/switchwall via jq, never by the shell — defaults match generate_colors_material.py's own
+            // Read by switchwall
             property JsonObject theming: JsonObject {
-                property string scheme: "auto" // "auto" (picked from the image) | any scheme-* the generator supports
+                property string scheme: "auto"  // "auto" | "scheme-*"
                 property real terminalHarmony: 0.8
                 property int terminalHarmonizeThreshold: 100
                 property real terminalFgBoost: 0.35
                 property bool terminalForceDark: false
-                property real terminalOpacity: 1.0 // kitty window opacity; 1 = solid
+                property real terminalOpacity: 1.0  // kitty opacity
             }
 
             property JsonObject nightLight: JsonObject {
-                property int temperature: 5200 // kelvin applied by hyprsunset
-                property bool schedule: true   // turn night light on and off automatically
-                // Local hours, 0-23. end < start is an overnight window (the default 19->07)
+                property int temperature: 5200  // colour temperature
+                property bool schedule: true  // auto schedule
+                // Local hours, 0-23
                 property int startHour: 19
                 property int endHour: 7
             }
 
             property JsonObject recorder: JsonObject {
-                property string defaultMode: "full" // "full" | "region" — mode a fresh session starts in
-                property bool audio: false          // capture the default sink's monitor alongside video
+                property string defaultMode: "full"  // "full" | "region"
+                property bool audio: false  // record audio
             }
 
             property JsonObject launcher: JsonObject {
-                property int maxResults: 8     // app/command rows shown at once
-                property int maxClipResults: 6 // clipboard rows shown at once
-                property bool fuzzy: true      // subsequence matching; off = plain substring
-                property real frequencyWeight: 0.3 // how hard launch history lifts a result; 0 disables ranking entirely
-                property string searchPrefix: "@"  // "@e foo" scopes the match to a field; empty disables prefix parsing
-                property int panelWidth: 460          // app/command/clipboard panel width
-                property int wallpaperPanelWidth: 900 // wider, since the wallpaper carousel is horizontal
+                property int maxResults: 8  // app rows
+                property int maxClipResults: 6  // clipboard rows
+                property bool fuzzy: true  // fuzzy matching
+                property real frequencyWeight: 0.3  // history weight
+                property string searchPrefix: "@"  // field prefix
+                property int panelWidth: 460  // panel width
+                property int wallpaperPanelWidth: 900  // carousel width
             }
 
             property JsonObject audio: JsonObject {
-                property real volumeStep: 0.05    // fraction per increment/decrement
+                property real volumeStep: 0.05  // step fraction
                 property bool unmuteOnChange: true // raising volume clears mute
-                property bool allowBoost: false   // let the sink exceed unity gain
-                property bool osdEnabled: true    // show the volume OSD on change
-                property int osdTimeout: 1500     // ms before the OSD auto-hides
+                property bool allowBoost: false  // allow boost
+                property bool osdEnabled: true  // show OSD
+                property int osdTimeout: 1500  // OSD timeout ms
                 property string osdEdge: "right"  // "right" | "left"
             }
 
             property JsonObject wallpaper: JsonObject {
-                // ms after the selection settles before preview applies — stops a fast carousel scroll spawning a switchwall per step
+                // Preview debounce
                 property int previewDelay: 300
-                property bool display: true    // false kills mpvpaper and shows misc:background_color
+                property bool display: true  // enable mpvpaper
             }
 
             // Dashboard card sizing
             property JsonObject dashboard: JsonObject {
-                // Panel size — "auto" measures/fills as today; "fixed" uses the
-                // paired pixel value, clamped to 95% of screen size as a ceiling
+                // Panel size
                 property JsonObject panel: JsonObject {
                     property string widthMode: "auto"  // "auto" | "fixed"
-                    property int width: 1190           // px, used only when widthMode is "fixed"
+                    property int width: 1190  // px, fixed mode only
                     property string heightMode: "auto" // "auto" | "fixed"
-                    property int height: 700           // px, used only when heightMode is "fixed"
-                    // Tab a fresh open lands on. An id, not an index, so hiding
-                    // a tab can't silently repoint it at a different one
+                    property int height: 700  // px, fixed mode only
+                    // Default tab
                     property string defaultTab: "dashboard" // "dashboard" | "media" | "performance" | "weather"
                 }
 
-                // Which tabs the dashboard offers — a hidden one leaves the bar
-                // entirely rather than showing disabled
+                // Tab visibility
                 property JsonObject tabs: JsonObject {
                     property bool showDashboard: true
                     property bool showMedia: true
@@ -250,45 +242,44 @@ Singleton {
 
                 property JsonObject user: JsonObject {
                     property int width: 340
-                    // Absolute, ~-rooted or repo-relative image path; "" falls
-                    // back to ~/.face then the bundled bongocat
+                    // Avatar path
                     property string avatarPath: ""
                     property int avatarSize: 96
-                    property int logoSize: 30   // distro logo badge glyph size (px)
-                    property int uptimeSize: 30 // uptime badge diameter (px)
+                    property int logoSize: 30  // logo size (px)
+                    property int uptimeSize: 30  // uptime badge (px)
                 }
 
                 property JsonObject clock: JsonObject {
                     property int width: 110
-                    property int fontSize: 42 // hour/minute glyph size (px)
+                    property int fontSize: 42  // clock size (px)
                 }
 
                 property JsonObject weather: JsonObject {
                     property int width: 275
-                    property int iconSize: 64 // condition glyph size (px)
-                    property int tempSize: 38 // temperature text size (px)
+                    property int iconSize: 64  // icon size (px)
+                    property int tempSize: 38  // temp size (px)
                 }
 
                 property JsonObject media: JsonObject {
-                    property int cardWidth: 200       // Dashboard tab: condensed Media card
-                    property int coverArtSize: 200    // Media tab: cover art side length (px)
-                    property int progressThickness: 6 // playback progress arc stroke width (px)
-                    property int progressSweep: 180   // progress arc span in degrees (180 = half-circle)
-                    // Animated gif; empty path = the bundled assets/bongocat.gif
+                    property int cardWidth: 200  // condensed media card
+                    property int coverArtSize: 200  // cover art (px)
+                    property int progressThickness: 6  // arc stroke (px)
+                    property int progressSweep: 180  // arc span degrees
+                    // Animated gif
                     property bool gifEnabled: true
                     property string gifPath: ""
-                    property real gifSpeed: 1.0 // playback rate multiplier (1.0 = native)
+                    property real gifSpeed: 1.0  // playback rate
                 }
 
                 property JsonObject resourceRing: JsonObject {
-                    property int thickness: 6 // CPU/Memory/Disk ring stroke width (px)
-                    property int size: 64     // max ring diameter (px)
+                    property int thickness: 6  // ring stroke (px)
+                    property int size: 64  // ring diameter (px)
                 }
             }
         }
     }
 
-    // Keys present on disk but absent from the written schema, i.e. ones this adapter doesn't declare
+    // Undeclared keys
     function unknownKeys(prior, written) {
         const extras = {};
         for (const key in prior) {
@@ -307,7 +298,7 @@ Singleton {
         return v !== null && typeof v === "object" && !Array.isArray(v);
     }
 
-    // Folds preserved keys back into the freshly written document
+    // Merge preserved keys
     function mergeInto(base, extras) {
         for (const key in extras) {
             if (root.isPlainObject(extras[key]) && root.isPlainObject(base[key]))
@@ -318,10 +309,9 @@ Singleton {
         return base;
     }
 
-    // JsonAdapter serialises only its declared properties, so a straight writeAdapter() silently
-    // drops anything else in the file — re-merge those keys instead of destroying them
+    // Write preserving unknown
     function writePreservingUnknown(): void {
-        // The adapter is holding defaults, not the file's values — writing them would be the data loss, not the recovery
+        // Refuse writing defaults
         if (!root.fileValid)
             return;
 
@@ -353,7 +343,7 @@ Singleton {
         configFile.setText(JSON.stringify(root.mergeInto(written, extras), null, 2) + "\n");
     }
 
-    // Delayed so the toast lands after the notification panel exists — Config loads before any panel does
+    // Delayed toast
     Timer {
         id: invalidToastTimer
         interval: 3000

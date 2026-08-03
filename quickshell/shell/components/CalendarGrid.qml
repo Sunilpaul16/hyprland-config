@@ -3,16 +3,16 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "../services"
 
-// Month calendar grid — draws no card chrome; the caller owns its surface
+// Month grid
 Item {
     id: root
 
-    // Cells stretch to fill their column, so this is row height and marker size, not width
+    // Row height
     property int cellSize: 26
     property int cellSpacing: 4
     property int dayRadius: Motion.rounding.small
     property bool showTodayButton: true
-    // Space reserved at the head of the nav row for a caller's own button
+    // Header inset
     property int headerLeftInset: 0
 
     // Viewed month
@@ -24,7 +24,7 @@ Item {
         return viewMonth === now.getMonth() && viewYear === now.getFullYear();
     }
 
-    // Changes only at midnight; binding delegates to Time.date would re-evaluate all 42 every second
+    // Midnight-only rebind
     readonly property string todayKey: Time.format("yyyy-MM-dd")
 
     implicitWidth: content.implicitWidth
@@ -47,7 +47,7 @@ Item {
         }
     }
 
-    // Middle-click jumps back to today
+    // Middle-click today
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.MiddleButton
@@ -60,7 +60,7 @@ Item {
         anchors.fill: parent
         spacing: Motion.spacing.normal
 
-        // Month navigation + jump-to-today
+        // Month navigation
         RowLayout {
             Layout.fillWidth: true
             spacing: Motion.spacing.tiny
@@ -76,7 +76,7 @@ Item {
                 onClicked: root.stepMonth(-1)
             }
 
-            // Clicking the month label also jumps to today
+            // Label jumps today
             Rectangle {
                 Layout.fillWidth: true
                 implicitHeight: monthLabel.implicitHeight + 8
@@ -147,7 +147,7 @@ Item {
             delegate: Text {
                 required property var model
 
-                // Qt::DayOfWeek: Monday=1 .. Sunday=7
+                // Qt: Monday=1
                 readonly property bool isWeekend: model.day === 6 || model.day === 7
 
                 horizontalAlignment: Text.AlignHCenter
@@ -166,13 +166,13 @@ Item {
             locale: Qt.locale()
             spacing: root.cellSpacing
 
-            // The cell stretches to fill its column, so the marker is a centred child
+            // Centred marker
             delegate: Item {
                 id: dayCell
 
                 required property var model
 
-                // JS Date.getDay(): Sunday=0 .. Saturday=6
+                // JS: Sunday=0
                 readonly property bool isWeekend: {
                     const d = dayCell.model.date.getDay();
                     return d === 0 || d === 6;

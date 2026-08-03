@@ -10,7 +10,7 @@ Row {
 
     spacing: Motion.spacing.tiny
 
-    // Special key display labels
+    // Key labels
     readonly property var keyLabels: ({
         "Grave": "`",
         "Slash": "/",

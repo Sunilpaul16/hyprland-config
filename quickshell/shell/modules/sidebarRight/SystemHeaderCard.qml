@@ -4,8 +4,7 @@ import Quickshell
 import "../../services"
 import "../../components"
 
-// System header (sidebar) — distro logo + uptime on the left, action icons on
-// the right: restart the shell, open settings, open the session screen.
+// System header card
 Rectangle {
     id: root
 
@@ -33,7 +32,7 @@ Rectangle {
             elide: Text.ElideRight
         }
 
-        // Restart the shell — same command as SUPER + CTRL + R
+        // Restart shell
         IconAction {
             iconName: "refresh"
             iconColor: Colors.textMuted

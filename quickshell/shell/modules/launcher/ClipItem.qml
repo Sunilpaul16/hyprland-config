@@ -25,7 +25,7 @@ Item {
     readonly property string thumbPath: root.isAction ? "" : `${Cliphist.decodeDir}/${Cliphist.entryId(root.modelData.entry)}`
     property string thumbSource: ""
 
-    // Decode thumbnail on create, clean up on destroy
+    // Thumbnail lifecycle
     Component.onCompleted: {
         if (!root.isAction && root.modelData.isImage)
             decodeProc.running = true;
@@ -126,7 +126,7 @@ Item {
         }
     }
 
-    // Click to activate, shift-click to delete
+    // Click and shift-click
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton

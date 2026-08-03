@@ -5,7 +5,7 @@ import QtQuick.Shapes
 import "../../../services"
 import "../../../components"
 
-// Condensed media summary card — cover art (progress arc wraps it), title/album/artist, transport controls, gif
+// Condensed media card
 Rectangle {
     id: root
 
@@ -29,7 +29,7 @@ Rectangle {
         anchors.margins: Motion.spacing.xlarge
         spacing: Motion.spacing.medium
 
-        // Cover art, wrapped in a playback-progress arc
+        // Cover art arc
         Item {
             id: coverWrapper
 
@@ -149,7 +149,7 @@ Rectangle {
             }
         }
 
-        // Fills the leftover column space rather than leaving a dead gap
+        // Fills leftover space
         AnimatedImage {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -162,7 +162,7 @@ Rectangle {
             asynchronous: true
         }
 
-        // Takes the gif's space when it is disabled
+        // Gif placeholder
         Item {
             Layout.fillHeight: true
             visible: !Config.dashboard.media.gifEnabled

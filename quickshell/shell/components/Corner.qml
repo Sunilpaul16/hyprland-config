@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Shapes
 
-// Corner decorator — quarter-circle wedge for any of the four corners
+// Corner decorator
 Item {
     id: root
     property color color: "black"

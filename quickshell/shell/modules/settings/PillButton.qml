@@ -3,14 +3,14 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Tonal pill — leading icon + label, used for a page's sub-navigation
+// Tonal pill
 Rectangle {
     id: root
 
     property string icon
     property string text
     property bool highlighted: false
-    // Matches SettingRow.live — red text flags a pill that goes nowhere yet
+    // Mock flag
     property bool live: false
 
     signal clicked

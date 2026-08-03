@@ -2,7 +2,7 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Fading up/icon/down affordance for a scroll-to-adjust zone
+// Scroll affordance
 Column {
     id: root
     property bool reveal: false

@@ -4,11 +4,11 @@ import "../../../services"
 import "../performance"
 import "../../../components"
 
-// Compact CPU/memory/disk summary in three small rings — binds to the SystemUsage and Storage singletons the Performance tab already polls, starting no new polling
+// Resources card
 Rectangle {
     id: root
 
-    // Rotates a colour's hue, passing achromatic colours through untouched
+    // Hue rotate
     radius: Motion.rounding.large
     color: Colors.layer
     border.width: 1
@@ -52,7 +52,7 @@ Rectangle {
         }
     }
 
-    // Icon-in-ring: the arc alone conveys the percentage, growing with card height up to the configured ceiling
+    // Icon-in-ring
     component Ring: UsageRing {
         id: ringItem
 

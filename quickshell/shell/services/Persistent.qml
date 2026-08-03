@@ -3,13 +3,13 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Runtime UI state surviving a shell-only restart (SUPER+CTRL+R) but NOT a fresh Hyprland login — separate from Config.qml, which holds preferences
+// Runtime UI state
 Singleton {
     id: root
 
     readonly property string currentInstanceSignature: Quickshell.env("HYPRLAND_INSTANCE_SIGNATURE") ?? ""
 
-    // Set once the state file loads or fails to; defaults true (treat as fresh, don't restore) to cover the window before the FileView resolves
+    // Fresh login flag
     property bool isNewHyprlandInstance: true
 
     property alias nightLightEnabled: adapter.nightLightEnabled
@@ -17,9 +17,9 @@ Singleton {
     property alias screenRecorderCardEnabled: adapter.screenRecorderCardEnabled
     property alias keepAwakeCardEnabled: adapter.keepAwakeCardEnabled
     property alias dndEnabled: adapter.dndEnabled
-    // Ordered [{type, size}] — a missing entry is new since the layout was last saved (comparison.md #36)
+    // Quick toggle layout
     property alias quickToggleLayout: adapter.quickToggleLayout
-    // Pending-update count last announced, so a shell restart doesn't re-notify
+    // Last announced count
     property alias lastNotifiedUpdateTotal: adapter.lastNotifiedUpdateTotal
 
     // State file
@@ -30,7 +30,7 @@ Singleton {
 
         onFileChanged: reloadTimer.restart()
         onAdapterUpdated: writeTimer.restart()
-        // loaded flips true before JsonAdapter finishes parsing, so a same-tick read sees the declared default — snapshotTimer's delay closes that ordering gap
+        // Settle before read
         onLoadedChanged: snapshotTimer.restart()
         onLoadFailed: error => {
             if (error === FileViewError.FileNotFound) {
@@ -53,8 +53,7 @@ Singleton {
         }
     }
 
-    // One-time snapshot of isNewHyprlandInstance, taken once the loaded
-    // JsonAdapter has settled (see onLoadedChanged above)
+    // Snapshot after load
     Timer {
         id: snapshotTimer
         interval: 100

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Screen-region OCR — select a region, run tesseract over it, copy the text.
-# No Quickshell dependency, so it works while the shell is down.
+# Screen-region OCR
 
 set -euo pipefail
 
@@ -13,7 +12,7 @@ done
 region="$(slurp || true)"
 [[ -n "$region" ]] || exit 0
 
-# tesseract writes to <outputbase>.txt; "-" sends it to stdout instead
+# stdout, not a file
 text="$(grim -g "$region" - | tesseract -l "$LANG_ARG" - - 2>/dev/null || true)"
 text="$(printf '%s' "$text" | sed -e 's/[[:space:]]*$//' -e '/^$/d')"
 

@@ -3,8 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Distro identity + system uptime. Shared by the sidebar's system header and
-// the dashboard's User card so neither re-reads /proc/uptime on its own.
+// Distro identity, uptime
 Singleton {
     id: root
 
@@ -12,7 +11,7 @@ Singleton {
     property string osName: "Unknown OS"
     property real uptimeSeconds: 0
 
-    // Static identity, read once from /proc and /etc — kept off SystemUsage, which is refcount-gated behind a 1s poll
+    // Static identity
     property string kernel: ""
     property string hostname: ""
     property string cpuModel: ""
@@ -20,7 +19,7 @@ Singleton {
 
     readonly property string memoryTotalLabel: root.memoryTotalKib > 0 ? `${Math.round(root.memoryTotalKib / 1024 / 1024)} GiB` : ""
 
-    // Nerd Font distro glyphs, generic tux when the ID isn't mapped
+    // Distro glyphs
     readonly property string osGlyph: {
         const map = {
             arch: "\uf303",
@@ -40,7 +39,7 @@ Singleton {
     readonly property int hours: Math.floor((root.uptimeSeconds % 86400) / 3600)
     readonly property int minutes: Math.floor((root.uptimeSeconds % 3600) / 60)
 
-    // Compact, for the sidebar header — "46m" / "2h 47m" / "3d 6h"
+    // Short uptime
     readonly property string uptimeShort: {
         if (root.days > 0)
             return `${root.days}d ${root.hours}h`;
@@ -49,7 +48,7 @@ Singleton {
         return `${root.minutes}m`;
     }
 
-    // Verbose, for the dashboard User card — "up 2 hours, 47 minutes"
+    // Long uptime
     readonly property string uptimeLong: {
         let str = "";
         if (root.days > 0)
@@ -61,7 +60,7 @@ Singleton {
         return "up " + str;
     }
 
-    // Distro ID + pretty name — read once, not polled
+    // Distro identity
     FileView {
         path: "/etc/os-release"
         onLoaded: {
@@ -103,7 +102,7 @@ Singleton {
         }
     }
 
-    // reload() is async — text() must be read from onLoaded, not right after calling reload()
+    // Async reload
     FileView {
         id: uptimeFile
 
@@ -115,7 +114,7 @@ Singleton {
         }
     }
 
-    // Uptime doesn't need to be precise — refresh once a minute, not every second
+    // Uptime refresh
     Timer {
         interval: Config.polling.uptime
         running: true

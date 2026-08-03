@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// One row of a settings group — label (+ optional subtext) left, control right; `first`/`last` round a run's ends so a stack reads as one card with no container
+// Setting row
 Rectangle {
     id: root
 
@@ -11,7 +11,7 @@ Rectangle {
     property bool last: false
     property string label
     property string subtext
-    // Rows are mock until proven otherwise — a red label flags anything the panel displays but doesn't read or drive; set live: true once it's backed by something real
+    // Mock flag
     property bool live: false
 
     default property alias control: controlSlot.data

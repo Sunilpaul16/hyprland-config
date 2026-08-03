@@ -3,8 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Static preset picker, reached from Wallpaper & style's Presets pill.
-// Highlighting a row themes the shell with that preset without applying it
+// Preset picker
 ScrollPage {
     id: root
 
@@ -35,7 +34,7 @@ ScrollPage {
         text: "Presets"
     }
 
-    // Only reachable if the vendored corpus is missing
+    // Missing corpus
     StyledText {
         visible: !Schemes.available
         text: "No presets found in matugen/schemes."
@@ -88,8 +87,7 @@ ScrollPage {
                     anchors.rightMargin: Motion.spacing.large
                     spacing: Motion.spacing.large
 
-                    // Two-tone preview in the preset's own colours: its surface
-                    // as the disc, its primary filling the right half
+                    // Two-tone preview
                     Rectangle {
                         id: swatch
 

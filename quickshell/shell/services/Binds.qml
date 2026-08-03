@@ -10,7 +10,7 @@ Singleton {
 
     property var binds: []
 
-    // Group binds by description into display rows
+    // Group binds
     readonly property var rows: {
         const order = [];
         const groups = new Map();
@@ -70,8 +70,7 @@ Singleton {
         getBinds.running = true;
     }
 
-    // Re-fetch whenever Hyprland's config is reloaded, so the cheatsheet
-    // is never stale after `hyprctl reload`
+    // Refetch on reload
     Connections {
         target: Hyprland
         function onRawEvent(event) {
@@ -80,7 +79,7 @@ Singleton {
         }
     }
 
-    // Parses `hyprctl binds`' plain-text form (blank-line-separated records, a type line then tab-indented `field: value`) — split on the FIRST colon only, since descriptions carry one
+    // Parse binds text
     function parseBinds(text: string): var {
         const out = [];
         for (const block of text.split("\n\n")) {
@@ -104,8 +103,7 @@ Singleton {
         return out;
     }
 
-    // Fetch binds from hyprctl
-    // Deliberately NOT `-j`: Hyprland 0.56.0's JSON serializer shifts values against their keys and leaves strings unquoted, so it doesn't parse at all
+    // Fetch binds
     Process {
         id: getBinds
         command: ["hyprctl", "binds"]

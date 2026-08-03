@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Keep Awake card (sidebar)
+// Keep Awake card
 Rectangle {
     id: root
 
@@ -57,7 +57,7 @@ Rectangle {
             }
         }
 
-        // Keep Awake toggle switch
+        // Toggle switch
         Rectangle {
             Layout.alignment: Qt.AlignVCenter
             implicitWidth: 40

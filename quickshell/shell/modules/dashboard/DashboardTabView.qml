@@ -2,30 +2,28 @@ import QtQuick
 import QtQuick.Layouts
 import "../../services"
 
-// Horizontally-flickable tab content (one pane per tab, swipeable).
-// Drag-commit raises the new index rather than writing it — the panel owns currentTab
+// Flickable tab content
 Flickable {
     id: root
 
     required property var model
     property int currentIndex: 0
     required property bool heightFixed
-    // The panel's own shown state, not this item's visibility — see the
-    // Loader gating below
+    // Panel shown
     required property bool panelShown
 
     signal tabSelected(index: int)
 
     readonly property real paneWidth: width
-    // itemAt(), not children[] — these Loaders' async `active` toggling reorders paneRow.children; repeater.count forces re-evaluation, since itemAt() alone isn't tracked
+    // itemAt, not children
     readonly property Item currentPane: {
         repeater.count;
         return repeater.itemAt(root.currentIndex);
     }
     property real currentPaneHeight: currentPane?.height ?? 0
-    // Read off the pane's own content, never paneWidth — the panel's auto width feeds this, so anything derived from root.width deadlocks at 0
+    // Pane content width
     readonly property real livePaneWidth: currentPane?.item?.implicitWidth ?? 0
-    // Latched to the last real width — the pane is destroyed while closed, and dropping to the floor snaps the panel narrower mid close-animation
+    // Latched width
     property real currentPaneWidth: 0
     onLivePaneWidthChanged: if (livePaneWidth > 0)
         currentPaneWidth = livePaneWidth
@@ -67,7 +65,7 @@ Flickable {
 
             model: root.model
 
-            // Keeps whichever adjacent tab is mid-scroll during a drag instantiated too, not just the current one
+            // Keep adjacent alive
             delegate: Loader {
                 id: paneLoader
 
@@ -76,16 +74,14 @@ Flickable {
 
                 x: index * root.paneWidth
                 width: root.paneWidth
-                // The panel sizes to the *current* pane, so a wider one (Media) would paint over its neighbour's slot while a narrower tab shows
+                // Clip neighbours
                 clip: true
-                // Own natural content height, not the tallest tab's, so currentPaneHeight follows the current pane and animates on switch
-                // Fixed-height mode flips this: pane fills the view's height instead
+                // Natural pane height
                 height: root.heightFixed ? root.height : (item ? item.implicitHeight : 0)
 
                 sourceComponent: modelData.component
 
-                // Gate on the panel being shown, not just index === currentIndex — otherwise the default tab's loader stays active from construction on every monitor, polling 24/7
-                // panelShown loads eagerly on open and retains content through the close fade-out
+                // Gated on panel
                 Component.onCompleted: active = Qt.binding(() => {
                     if (!root.panelShown)
                         return false;

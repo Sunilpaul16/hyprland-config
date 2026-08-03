@@ -13,8 +13,7 @@ Singleton {
     readonly property bool muted: !!sink?.audio?.muted
     readonly property real volume: isNaN(sink?.audio?.volume) ? 0 : sink.audio.volume
 
-    // Ceiling for both setters and every slider that drives them. 1.5 rather than
-    // a larger boost because most sinks clip hard above it
+    // Volume ceiling
     readonly property real maxVolume: Config.audio.allowBoost ? 1.5 : 1
 
     // Source (mic input)
@@ -32,7 +31,7 @@ Singleton {
             sink.audio.muted = !sink.audio.muted;
     }
 
-    // isSink here means "plays into the sink" (a stream), not "is the sink itself"
+    // App output streams
     readonly property var outputAppNodes: Pipewire.nodes.values.filter(n => n.isStream && n.isSink)
     readonly property var inputAppNodes: Pipewire.nodes.values.filter(n => n.isStream && !n.isSink)
 
@@ -40,10 +39,10 @@ Singleton {
         return node.properties["application.name"] ?? node.description ?? node.name;
     }
 
-    // Everything that isn't an application stream — structural, so untracked; a properties-based filter would never resolve, since `properties` is only populated for tracked nodes
+    // Device nodes
     readonly property var deviceNodes: Pipewire.nodes.values.filter(n => !n.isStream)
 
-    // Real devices, keyed on media.class not !isSink — PipeWire's support nodes (Dummy-Driver, Freewheel-Driver, Midi-Bridge) would otherwise read as pickable microphones
+    // Real sinks
     readonly property var sinks: root.deviceNodes.filter(n => n.properties?.["media.class"] === "Audio/Sink")
     readonly property var sources: root.deviceNodes.filter(n => n.properties?.["media.class"] === "Audio/Source")
 
@@ -51,8 +50,7 @@ Singleton {
         return node?.nickname || node?.description || node?.name || "";
     }
 
-    // Writing `preferred*` is how the default is changed; `defaultAudioSink`
-    // itself is read-only and follows it once PipeWire agrees
+    // Set default sink
     function setSink(node): void {
         if (node)
             Pipewire.preferredDefaultAudioSink = node;
@@ -63,7 +61,7 @@ Singleton {
             Pipewire.preferredDefaultAudioSource = node;
     }
 
-    // Sink volume, clamped [0, maxVolume] — guard NaN first, since PipeWire reports it on resume-from-suspend and Math.min/max pass it straight through
+    // Clamped sink volume
     function setVolume(newVolume: real): void {
         if (isNaN(newVolume))
             return;
@@ -71,8 +69,7 @@ Singleton {
             sink.audio.volume = Math.max(0, Math.min(root.maxVolume, newVolume));
     }
 
-    // Unmutes before raising, matching kbVolumeUp's set-mute-then-raise;
-    // decrementVolume deliberately doesn't touch mute, matching kbVolumeDown
+    // Unmute on raise
     function incrementVolume(): void {
         if (Config.audio.unmuteOnChange && sink?.ready && sink?.audio)
             sink.audio.muted = false;
@@ -88,8 +85,7 @@ Singleton {
             sink.audio.muted = false;
     }
 
-    // Source (mic) volume — same clamp/step convention as sink, no existing
-    // keybind precedent to match for mic level specifically
+    // Mic volume
     function setSourceVolume(newVolume: real): void {
         if (isNaN(newVolume))
             return;
@@ -112,7 +108,7 @@ Singleton {
             source.audio.muted = false;
     }
 
-    // Keep sink/source bound for property updates; the device lists are tracked too, since an untracked node reports no description or volume
+    // Object tracking
     PwObjectTracker {
         objects: [root.sink, root.source, ...root.deviceNodes].filter(n => n)
     }

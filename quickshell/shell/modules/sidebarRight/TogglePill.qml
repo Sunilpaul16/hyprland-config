@@ -4,7 +4,7 @@ import "../../services"
 import "../../components"
 
 
-// Toggle pill button; `large` widens the pill and reveals a label (comparison.md #36)
+// Toggle pill
 Rectangle {
     id: root
 

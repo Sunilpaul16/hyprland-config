@@ -2,7 +2,7 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Read-only right-hand value for an informational row
+// Read-only value
 StyledText {
     color: Colors.outline
     font.pixelSize: Motion.fontSize.subhead

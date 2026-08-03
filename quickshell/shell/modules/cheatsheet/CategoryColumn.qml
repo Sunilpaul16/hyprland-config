@@ -13,7 +13,7 @@ Rectangle {
     property int columnWidth: 280
     property int padding: 16
 
-    // Category name -> Material Symbol glyph
+    // Category icons
     readonly property var categoryIcons: ({
         "Window": "web_asset",
         "Workspace": "grid_view",

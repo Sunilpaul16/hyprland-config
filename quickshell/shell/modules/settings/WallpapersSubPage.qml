@@ -4,15 +4,14 @@ import Qt5Compat.GraphicalEffects
 import "../../services"
 import "../../components"
 
-// Wallpaper picker (Wallpaper & style's Wallpapers pill): Browse/Random over a large preview and a collection grid
+// Wallpaper picker
 ScrollPage {
     id: root
 
     title: "Wallpapers"
     isSubPage: true
 
-    // Hovering a tile themes the shell with that wallpaper's palette without
-    // applying anything; leaving the grid puts the real one back
+    // Hover previews palette
     property string hoveredPath: ""
 
     onHoveredPathChanged: {
@@ -24,7 +23,7 @@ ScrollPage {
         }
     }
 
-    // Abandoning the page mid-hover must not strand the preview
+    // Clear on destroy
     Component.onDestruction: ColorsLoader.clearPreview()
 
     Timer {
@@ -67,15 +66,14 @@ ScrollPage {
         text: "Current wallpaper"
     }
 
-    // Large preview of what's applied now
+    // Large preview
     Item {
         id: hero
 
         Layout.fillWidth: true
         implicitHeight: Math.round(width * 0.3)
 
-        // OpacityMask over a plain Image — ClippingRectangle renders nothing
-        // inside these overlays
+        // OpacityMask rounding
         layer.enabled: true
         layer.effect: OpacityMask {
             maskSource: Rectangle {
@@ -155,14 +153,13 @@ ScrollPage {
                     sourceSize.width: root.tileWidth * 2
                 }
 
-                // Video thumbnails are generated on demand and may not exist
-                // on a first run — redraw when the scan reports one ready
+                // Redraw when ready
                 Connections {
                     target: Wallpapers
                     function onThumbnailReady(path: string) {
                         if (path !== tile.modelData.path)
                             return;
-                        // Force a reload; the source string is unchanged
+                        // Force reload
                         thumb.source = "";
                         thumb.source = tile.modelData.thumbPath;
                     }
@@ -176,7 +173,7 @@ ScrollPage {
                     border.color: tile.isCurrent ? Colors.primary : Colors.outline
                 }
 
-                // Name plate, so a grid of similar thumbnails stays navigable
+                // Name plate
                 Rectangle {
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -219,8 +216,7 @@ ScrollPage {
                             root.hoveredPath = "";
                     }
                     onClicked: {
-                        // Applying supersedes the preview; clearing after would
-                        // fight the real theme landing a moment later
+                        // Apply supersedes preview
                         root.hoveredPath = "";
                         ColorsLoader.clearPreview();
                         Wallpapers.apply(tile.modelData.path);

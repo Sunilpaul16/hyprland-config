@@ -3,8 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Polkit
 
-// Wraps the native polkit agent (UI in modules/polkit/PolkitDialog.qml), registering on creation at /org/quickshell/Polkit
-// Receives nothing while hyprpolkitagent.service is the session's active agent — deliberately not stopped here
+// Polkit agent
 Singleton {
     id: root
 
@@ -12,8 +11,7 @@ Singleton {
     readonly property bool isActive: agent.isActive
     readonly property var flow: agent.flow
 
-    // Monitor this dialog is pinned to while shown. The agent drives visibility,
-    // so it claims on isActive rather than through an open property
+    // Pinned monitor
     property string ownerScreen: ""
     readonly property bool open: root.isActive
 

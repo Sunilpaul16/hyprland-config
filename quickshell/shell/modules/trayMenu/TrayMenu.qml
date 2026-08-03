@@ -4,7 +4,7 @@ import Quickshell.Wayland
 import "../../services"
 import "../../components"
 
-// Tray context menu overlay window
+// Tray menu overlay
 Scope {
     Variants {
         model: Quickshell.screens
@@ -21,7 +21,7 @@ Scope {
                 readonly property bool isOwnerScreen: ScreenOwner.owns(TrayMenuState, root.screen)
                 readonly property bool active: TrayMenuState.open && root.isOwnerScreen
 
-                // Slide-down open/close, same mechanism as DashboardPanel.qml — 0 = open, 1 = closed, driving top margin and opacity together
+                // Slide-down open
                 property real offsetScale: root.active ? 0 : 1
                 readonly property int cornerSize: 14
 
@@ -44,15 +44,14 @@ Scope {
                 // Window setup
                 color: "transparent"
                 exclusiveZone: 0
-                // Stays mapped through the whole close slide, only hiding once
-                // fully back behind the bar
+                // Mapped while sliding
                 visible: offsetScale < 1
 
                 WlrLayershell.layer: WlrLayer.Overlay
                 WlrLayershell.namespace: "quickshell-tray-menu"
                 WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-                // Click-through everywhere except the panel itself
+                // Click-through mask
                 mask: Region {
                     item: panel
                 }
@@ -81,7 +80,7 @@ Scope {
                     Rectangle {
                         id: panel
 
-                        // Column.implicitWidth derives from its children's width, which they get back from the Column — measure the delegates directly or it deadlocks at the floor
+                        // Measure delegates directly
                         readonly property real contentWidth: {
                             let w = 0;
                             for (let i = 0; i < entryRepeater.count; i++) {
@@ -92,17 +91,15 @@ Scope {
                             return w;
                         }
 
-                        // Hangs down-right from the icon, clamped to the screen
+                        // Anchored to icon
                         x: Math.max(8, Math.min(TrayMenuState.anchorX, root.width - implicitWidth - 8))
-                        // The window's own origin already sits below the bar's
-                        // exclusive zone, so flush is 0 — not Config.bar.height
+                        // Flush below bar
                         anchors.top: parent.top
                         anchors.topMargin: -(panel.height + 5) * root.offsetScale
                         implicitWidth: Math.max(160, contentWidth + 12)
                         implicitHeight: list.implicitHeight + 12
                         radius: Motion.rounding.card
-                        // Top corners square so the fillets can merge them into
-                        // the bar; no border, since it can't outline three sides
+                        // Square top corners
                         topLeftRadius: 0
                         topRightRadius: 0
                         color: Colors.panel
@@ -131,7 +128,7 @@ Scope {
                         }
                     }
 
-                    // Concave fillets merging the panel's top corners into the bar
+                    // Bar fillets
                     Corner {
                         anchors { right: panel.left; top: panel.top }
                         size: root.cornerSize

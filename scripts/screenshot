@@ -48,7 +48,7 @@ capture() {
     fi
 }
 
-# Clickable notification, backgrounded — notify-send -A implies --wait and blocks until closed, but without -A nothing stays alive to catch the click
+# Backgrounded for click
 notify_and_open() {
     local title="$1" file="$2"
     (

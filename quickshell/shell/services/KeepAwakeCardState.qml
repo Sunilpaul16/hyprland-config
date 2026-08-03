@@ -3,7 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Keep Awake card visibility state (sidebar quick toggle)
+// Keep Awake card
 Singleton {
     id: root
 

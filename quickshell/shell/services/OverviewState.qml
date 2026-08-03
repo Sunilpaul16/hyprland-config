@@ -3,12 +3,12 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Workspace overview open/close state (mirrors CheatsheetState.qml)
+// Overview open state
 Singleton {
     id: root
 
     property bool open: false
-    // Monitor this panel is pinned to while open
+    // Pinned monitor
     property string ownerScreen: ""
 
     onOpenChanged: if (root.open) ScreenOwner.claim(root)

@@ -2,14 +2,13 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Pending-update count, hidden while there is nothing to report
+// Update count
 Item {
     id: root
 
     readonly property bool active: Config.updates.showInBar && Updates.total > 0
 
-    // Collapses to zero width rather than just hiding, so the bar's RowLayout
-    // reclaims the space — same approach as NotifIndicator
+    // Collapses to zero
     implicitWidth: active ? icon.implicitWidth + count.implicitWidth + 4 : 0
     implicitHeight: icon.implicitHeight
     visible: implicitWidth > 0
@@ -51,7 +50,7 @@ Item {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
-            SettingsState.currentPageIdx = 4; // Updates, per Content.qml's pageModel
+            SettingsState.currentPageIdx = 4;  // Updates page
             ScreenOwner.claim(SettingsState);
             SettingsState.open = true;
         }

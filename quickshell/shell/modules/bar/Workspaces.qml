@@ -16,7 +16,7 @@ Item {
 
     readonly property int minSlots: 4
 
-    // Build display slots (real + placeholder)
+    // Display slots
     readonly property var displaySlots: {
         const maxId = Math.max(root.minSlots, ...root.allWorkspaces.map(ws => ws.id), 0);
         const slots = [];
@@ -32,7 +32,7 @@ Item {
 
     readonly property int activeIndex: displaySlots.findIndex(ws => !ws.isPlaceholder && ws.monitor === root.monitor && ws.active)
 
-    // Distinct app classes per workspace
+    // Workspace app classes
     function appWmClasses(ws) {
         if (!ws || ws.isPlaceholder)
             return [];
@@ -53,7 +53,7 @@ Item {
     readonly property int iconSize: Math.round(pillSize * 0.62)
     readonly property int iconGap: 2
 
-    // Compute per-slot layout (width, icons)
+    // Slot layout
     readonly property var slotLayout: {
         let x = 0;
         const layout = [];
@@ -118,7 +118,7 @@ Item {
         Behavior on width { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
     }
 
-    // Slot content (icons or number)
+    // Slot content
     Repeater {
         model: root.slotLayout
 
@@ -174,7 +174,7 @@ Item {
                 Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
             }
 
-            // Click to switch workspace
+            // Click switches
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor

@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../../services"
 
-// Numeric setting control — readout plus a slider. Externally driven like the
-// controls it wraps: dragging emits moved(), the owner writes the value back
+// Numeric control
 RowLayout {
     id: root
 
@@ -13,13 +12,11 @@ RowLayout {
     property real stepSize: 0
     property int decimals: 0
     property string suffix: ""
-    // Readout multiplier — lets a 0..1 property display as a percentage
-    // without the slider having to work in different units
+    // Readout multiplier
     property real displayScale: 1
-    // Replaces the computed readout when set — for a value whose units aren't a
-    // plain suffix, like an interval read out as hours and minutes
+    // Readout override
     property string displayText: ""
-    // Fixed so the slider doesn't shift as digits change, and wide enough for "15000 ms" — ValueLabel elides, so too narrow truncates silently
+    // Fixed label width
     property int labelWidth: 78
 
     signal moved(real v)

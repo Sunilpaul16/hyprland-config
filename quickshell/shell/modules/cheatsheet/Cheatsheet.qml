@@ -43,7 +43,7 @@ Scope {
                 WlrLayershell.namespace: "quickshell-cheatsheet"
                 WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-                // Click-through everywhere except the panel itself
+                // Click-through mask
                 mask: Region {
                     item: panel
                 }

@@ -4,7 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
 
-// Facts the About page needs that only a subprocess can answer — loaded on demand, or they'd cost three spawns on every shell reload
+// About page facts
 Singleton {
     id: root
 
@@ -14,7 +14,7 @@ Singleton {
 
     property bool loaded: false
 
-    // Connected outputs, merged from Quickshell's screen list (no refresh rate) and Hyprland's monitor JSON (pre-rotation dimensions)
+    // Connected displays
     readonly property var displays: Quickshell.screens.map(screen => {
         const ipc = Hyprland.monitorFor(screen)?.lastIpcObject ?? null;
         return {
@@ -49,8 +49,7 @@ Singleton {
                 const line = text.split("\n").find(l => /"(VGA compatible controller|3D controller|Display controller)"/i.test(l));
                 if (!line)
                     return;
-                // -mm quotes each field: class, vendor, device, then subsystem.
-                // Collected with exec() in a loop — QML's JS engine has no matchAll
+                // Parse lspci fields
                 const fields = [];
                 const field = /"([^"]*)"/g;
                 let match;
@@ -58,7 +57,7 @@ Singleton {
                     fields.push(match[1]);
                 if (fields.length < 3)
                     return;
-                // Marketing name sits in brackets ("GP104 [GeForce GTX 1070]")
+                // Marketing name
                 const bracketed = /\[([^\]]+)\]/.exec(fields[2]);
                 root.gpuModel = `${root.cleanVendor(fields[1])} ${bracketed ? bracketed[1] : fields[2]}`.trim();
             }

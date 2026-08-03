@@ -4,8 +4,7 @@ import QtQuick.Layouts
 import Quickshell.Services.UPower
 import "../../services"
 
-// Performance tab: CPU/GPU hero cards over Storage/Network/Memory, plus a battery tank where present
-// Card visibility uses each Loader's `active`, never `visible` — binding to a descendant's effective visibility latches false forever
+// Performance tab
 Item {
     id: root
 
@@ -83,8 +82,7 @@ Item {
         }
     }
 
-    // Keeps the GPU service polling only while this tab is alive, so
-    // `Gpu.available` is populated before its card is gated on it
+    // Keep GPU polling
     Component.onCompleted: {
         Gpu.ref();
         Storage.ref();

@@ -1,7 +1,7 @@
 import QtQuick
 import "../../services"
 
-// Quick toggles card (sidebar)
+// Quick toggles card
 Rectangle {
     id: root
 

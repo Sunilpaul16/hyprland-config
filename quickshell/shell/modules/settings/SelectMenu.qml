@@ -4,8 +4,7 @@ import Quickshell
 import "../../services"
 import "../../components"
 
-// Dropdown for option lists too long to cycle through (SelectPill's mode)
-// Reparents onto the settings card rather than a PopupWindow — clears the page's clipping and avoids PopupAnchor, whose window property segfaults
+// Dropdown menu
 Item {
     id: root
 
@@ -13,11 +12,10 @@ Item {
     property var options: []
     property string current: ""
     property string placeholder: "—"
-    // Ceiling for the pill; long device names elide rather than stretch the row
+    // Pill width ceiling
     property int maxPillWidth: 330
 
-    // Menu height ceiling, in rows. Past this the list scrolls — a popup is a
-    // separate surface, so an uncapped one renders outside the panel entirely
+    // Menu height ceiling
     property int maxVisibleItems: 6
     readonly property int itemHeight: 36
 
@@ -35,7 +33,7 @@ Item {
         root.menuOpen = false;
     }
 
-    // Found by walking up rather than threaded through every page
+    // Walk up to card
     function menuSurface(): var {
         let p = root.parent;
         while (p) {
@@ -49,7 +47,7 @@ Item {
     Rectangle {
         id: pill
 
-        // Sized from the layout's natural width, never pill.width — measuring an eliding label against the container it sizes is the polish() loop trap
+        // Sized from layout
         implicitWidth: pillLayout.implicitWidth + 16 * 2
         implicitHeight: 34
         radius: height / 2
@@ -67,8 +65,7 @@ Item {
             StyledText {
                 id: label
 
-                // Constant ceiling, so a long device name elides instead of
-                // stretching the row
+                // Constant ceiling
                 Layout.maximumWidth: root.maxPillWidth - 16 * 2 - 24
                 text: root.displayText
                 font.pixelSize: Motion.fontSize.subhead
@@ -97,8 +94,7 @@ Item {
         }
     }
 
-    // Menu. A child of the card, not a popup surface, so it draws above the
-    // page and doubles as its own click-outside catcher
+    // Menu
     MouseArea {
         id: menuLayer
 
@@ -114,8 +110,7 @@ Item {
 
         Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-        // mapToItem is not reactive, so the bindings below read this to be
-        // recomputed whenever an ancestor moves -- notably on page scroll
+        // Recompute on move
         TransformWatcher {
             id: watcher
 
@@ -134,7 +129,7 @@ Item {
                 watcher.transform;
                 return pill.mapToItem(menuLayer, 0, 0).y - height - 6;
             }
-            // Flips above the pill when the menu would overrun the card
+            // Flip above pill
             readonly property bool flipped: belowY + height > menuLayer.height && aboveY >= 0
 
             x: {
@@ -152,7 +147,7 @@ Item {
             border.width: 1
             border.color: Colors.outlineVariant
 
-            // Absorbs clicks and wheel so they do not reach the catcher behind
+            // Absorb clicks
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true

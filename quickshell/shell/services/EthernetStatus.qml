@@ -3,7 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Wired link state via nmcli — Quickshell.Networking's DeviceType enum has only None/Wifi, so no native binding exists for ethernet
+// Wired link state
 Singleton {
     id: root
 
@@ -15,7 +15,7 @@ Singleton {
         statusProc.running = true;
     }
 
-    // Launch NetworkManager's connection editor — the "Edit Connections" target nm-applet opened before it was filtered out (see Tray.qml's hiddenIds)
+    // Open connection editor
     function openSettings(): void {
         settingsProc.running = true;
     }

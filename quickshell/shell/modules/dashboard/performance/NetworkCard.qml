@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import "../../../components"
 import "../../../services"
 
-// Network throughput: auto-scaling Shape/PathPolyline sparkline over Download/Upload/Total rows
+// Network card
 Rectangle {
     id: root
 
@@ -13,7 +13,7 @@ Rectangle {
     readonly property real maxSample: {
         const dl = NetworkUsage.downloadHistory;
         const ul = NetworkUsage.uploadHistory;
-        let max = 1024; // floor so a near-idle network doesn't flatten the scale oddly
+        let max = 1024;  // scale floor
         for (let i = 0; i < dl.length; i++)
             max = Math.max(max, dl[i]);
         for (let i = 0; i < ul.length; i++)
@@ -42,7 +42,7 @@ Rectangle {
         return fmt.value.toFixed(1) + " " + fmt.unit;
     }
 
-    // Session totals, formatted without the "/s" the speed unit carries
+    // Session totals
     function formatTotal(bytes: real): string {
         const fmt = NetworkUsage.formatBytes(bytes);
         return fmt.value.toFixed(1) + fmt.unit.replace("/s", "");
@@ -151,7 +151,7 @@ Rectangle {
         }
     }
 
-    // Icon + label on the left, value right-aligned
+    // Stat row
     component StatRow: RowLayout {
         id: statRow
 

@@ -8,7 +8,7 @@ Singleton {
     id: root
 
     property bool open: false
-    // Monitor this panel is pinned to while open
+    // Pinned monitor
     property string ownerScreen: ""
 
     onOpenChanged: {

@@ -5,7 +5,7 @@ import Quickshell.Wayland
 import "../../services"
 import "../../components"
 
-// Right sidebar overlay window
+// Right sidebar overlay
 Scope {
     Variants {
         model: Quickshell.screens
@@ -28,7 +28,7 @@ Scope {
                     NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
                 }
 
-                // Right-edge stack registration — always flush to the edge itself, but other panels need its open+width to offset past it
+                // Edge stack registration
                 readonly property int edgeMargin: 0
                 readonly property int cornerSize: 14
                 readonly property real registeredWidth: backdrop.width + edgeMargin
@@ -67,7 +67,7 @@ Scope {
                 WlrLayershell.namespace: "quickshell-sidebar-right"
                 WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-                // Click-through everywhere except the sidebar itself
+                // Click-through mask
                 mask: Region {
                     item: backdrop
                 }
@@ -83,18 +83,17 @@ Scope {
                             SidebarRightState.open = false;
                     }
 
-                    // Sidebar backdrop — full monitor height so NotificationsCard absorbs the leftover space
+                    // Backdrop
                     Rectangle {
                         id: backdrop
                         anchors { top: parent.top; right: parent.right; margins: root.edgeMargin }
                         width: Config.sidebar.width
                         height: parent.height - root.edgeMargin * 2
                         radius: Motion.rounding.drawer
-                        // Left corners square so the fillets below can flare this edge
-                        // out into the bar above and the screen bottom
+                        // Square left corners
                         topLeftRadius: 0
                         bottomLeftRadius: 0
-                        // Right corners too — they butt the screen edge, and the bar's concave fillet above must meet flush or a crescent of wallpaper shows through
+                        // Square right corners
                         topRightRadius: 0
                         bottomRightRadius: 0
                         color: Colors.panel
@@ -102,8 +101,7 @@ Scope {
                         transform: Translate { x: (1 - root.showProgress) * 24 }
                     }
 
-                    // Concave fillets flaring the sidebar's left edge into the bar
-                    // above and the screen bottom, same treatment as the session drawer
+                    // Edge fillets
                     Corner {
                         anchors { right: backdrop.left; top: backdrop.top }
                         size: root.cornerSize
@@ -122,7 +120,7 @@ Scope {
                         transform: Translate { x: (1 - root.showProgress) * 24 }
                     }
 
-                    // Slide-in wrapper — the animation lives here, not on the ColumnLayout, so qmllint stops reading the Translate's x as layout-managed geometry
+                    // Slide-in wrapper
                     Item {
                         anchors.fill: backdrop
                         visible: SidebarDialogState.openDialog === ""
@@ -130,7 +128,7 @@ Scope {
                         opacity: root.showProgress
                         transform: Translate { x: (1 - root.showProgress) * 24 }
 
-                        // Card stack, no outer Flickable — the notifications card fills the slack and scrolls internally, so the cards below stay pinned to the bottom
+                        // Card stack
                         ColumnLayout {
                             anchors.fill: parent
                             anchors.margins: Motion.spacing.large
@@ -142,7 +140,7 @@ Scope {
                             KeepAwakeCard { Layout.fillWidth: true; visible: KeepAwakeCardState.enabled }
                             ScreenRecorderCard { Layout.fillWidth: true; visible: ScreenRecorderCardState.enabled }
 
-                            // Separates the utility cards from the notifications region
+                            // Divider
                             Rectangle {
                                 Layout.fillWidth: true
                                 Layout.topMargin: Motion.spacing.tiny
@@ -166,7 +164,7 @@ Scope {
                         }
                     }
 
-                    // In-panel toggle dialogs, same overlay area (comparison.md #25)
+                    // Toggle dialogs
                     ToggleDialog {
                         anchors.fill: backdrop
                         shown: SidebarDialogState.openDialog === "bluetooth"

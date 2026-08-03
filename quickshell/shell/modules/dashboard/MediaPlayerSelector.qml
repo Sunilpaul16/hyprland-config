@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Multi-player selector, shown only with >1 active MPRIS player — owns its dropdown state, while the tab supplies a click-outside catcher covering the whole tab
+// Player selector
 Item {
     id: root
 
@@ -67,8 +67,7 @@ Item {
         implicitWidth: Math.max(pill.implicitWidth, list.implicitWidth + 12)
         implicitHeight: list.implicitHeight + 12
         radius: Motion.rounding.normal
-        // Surface, not background — this sits on top of the dashboard
-        // panel's own Colors.background, so it needs contrast against it
+        // Contrast on panel
         color: Colors.layer
         border.width: 1
         border.color: Colors.outline

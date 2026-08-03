@@ -2,13 +2,13 @@ import QtQuick
 import QtQuick.Layouts
 import "../../services"
 
-// Network page — this machine is wired-only, so Wi-Fi is just a row saying so; Wifi.qml still reports hardware presence and the section appears if an adapter turns up
+// Network page
 ScrollPage {
     id: root
 
     title: "Network"
 
-    // Throughput and VPN both poll, so only while this page is mounted
+    // Poll while mounted
     Component.onCompleted: {
         NetworkUsage.ref();
         Vpn.ref();
@@ -162,7 +162,7 @@ ScrollPage {
         }
     }
 
-    // Only ever shown if a Wi-Fi adapter appears; this box has none
+    // Wi-Fi section
     SectionLabel {
         visible: Wifi.hardwareAvailable
         text: "Wi-Fi"

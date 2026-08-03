@@ -3,7 +3,7 @@ import Quickshell.Services.SystemTray
 import "../../services"
 import "../../components"
 
-// Single tray icon: pixmap, hover highlight, click handling, tooltip
+// Tray icon
 Item {
     id: root
 
@@ -14,7 +14,7 @@ Item {
     implicitWidth: 18
     implicitHeight: 18
 
-    // App-provided pixmap, rendered as-is (not retinted)
+    // App pixmap
     Image {
         anchors.fill: parent
         source: root.item.icon
@@ -35,7 +35,7 @@ Item {
         Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }
 
-    // Left-click activate, right-click menu
+    // Click handling
     MouseArea {
         id: hoverArea
         anchors.fill: parent
@@ -49,8 +49,7 @@ Item {
                 root.item.activate();
             } else if (mouse.button === Qt.RightButton) {
                 if (root.item.hasMenu) {
-                    // The icon's left edge, not the cursor — the menu hangs
-                    // off the item so it lands in the same place every time
+                    // Anchor to icon
                     const pos = hoverArea.mapToItem(null, 0, 0);
                     TrayMenuState.showAt(root.item, pos.x);
                 } else {
@@ -62,14 +61,14 @@ Item {
 
     property bool tooltipVisible: false
 
-    // Simple hand-rolled tooltip delay (no QtQuick.Controls dependency)
+    // Tooltip delay
     Timer {
         id: tooltipDelay
         interval: 500
         onTriggered: root.tooltipVisible = true
     }
 
-    // Show/hide tooltip on hover
+    // Tooltip on hover
     Connections {
         target: hoverArea
         function onContainsMouseChanged(): void {
@@ -82,7 +81,7 @@ Item {
         }
     }
 
-    // Tooltip — its own PopupWindow, can't be clipped by the bar's bounds
+    // Tooltip popup
     PopupToolTip {
         hoverTarget: root
         text: root.tooltipStr

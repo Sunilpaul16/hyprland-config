@@ -13,12 +13,10 @@ hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("QT_QPA_PLATFORM", "wayland;xcb")
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 
--- Bridges the GTK icon theme (Papirus) to Qt; without it Qt sees only `hicolor` and
--- 100 of this system's 105 .desktop `Icon=` names resolve to nothing.
+-- Qt icon theme
 hl.env("QT_QPA_PLATFORMTHEME", "gtk3")
 
--- Flatpak app data (no-op if flatpak isn't installed). Guarded so repeated
--- `hyprctl reload`s don't keep re-prepending onto their own prior output.
+-- Flatpak app data
 local flatpak_share = v.home .. "/.local/share/flatpak/exports/share"
 local xdg_data_dirs = os.getenv("XDG_DATA_DIRS") or ""
 if not xdg_data_dirs:find(flatpak_share, 1, true) then

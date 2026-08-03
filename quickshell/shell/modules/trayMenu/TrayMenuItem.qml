@@ -3,7 +3,7 @@ import Quickshell
 import "../../services"
 import "../../components"
 
-// Single tray-menu entry (item or separator)
+// Menu entry
 Item {
     id: root
 
@@ -45,7 +45,7 @@ Item {
             spacing: Motion.spacing.normal
             opacity: root.entry.enabled ? 1 : 0.4
 
-            // Checkbox / radio glyph
+            // Check glyph
             StyledText {
                 visible: root.entry.buttonType !== QsMenuButtonType.None
                 anchors.verticalCenter: parent.verticalCenter
@@ -58,7 +58,7 @@ Item {
                 font.pixelSize: Motion.fontSize.body
             }
 
-            // App-provided icon, rendered as-is
+            // App icon
             Image {
                 visible: root.entry.icon.length > 0
                 anchors.verticalCenter: parent.verticalCenter
@@ -78,7 +78,7 @@ Item {
                 width: Math.min(implicitWidth, 220)
             }
 
-            // Submenu indicator (not expandable this pass)
+            // Submenu indicator
             StyledText {
                 visible: root.entry.hasChildren
                 anchors.verticalCenter: parent.verticalCenter

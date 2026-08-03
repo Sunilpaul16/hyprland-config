@@ -1,14 +1,13 @@
 import QtQuick
 import "../../services"
 
-// Updates page. Live against services/Updates.qml throughout
+// Updates page
 ScrollPage {
     id: root
 
     title: "Updates"
 
-    // Minutes into "6 h", "45 min", "2 h 30 min" — the interval reaches a day,
-    // where a bare minute count stops being readable
+    // Format interval
     function formatInterval(mins: int): string {
         const h = Math.floor(mins / 60);
         const m = mins % 60;
@@ -45,7 +44,7 @@ ScrollPage {
                 from: 15
                 to: 1440
                 stepSize: 15
-                // Wider than the default: "23 h 45 min" is the longest readout
+                // Wider readout
                 labelWidth: 104
                 displayText: root.formatInterval(Config.updates.intervalMinutes)
                 onMoved: v => Config.updates.intervalMinutes = Math.round(v)
@@ -119,8 +118,7 @@ ScrollPage {
         text: Updates.total === 0 ? "Pending" : `Pending · ${Updates.total}`
     }
 
-    // The actual packages. Nothing here upgrades anything — that belongs in a
-    // terminal where the output and any prompts are visible
+    // Package list
     SettingGroup {
         Repeater {
             model: Updates.repoUpdates.concat(Updates.aurUpdates)
@@ -189,7 +187,7 @@ ScrollPage {
                 live: true
                 icon: "download"
                 text: "Update now"
-                // Enabled regardless of the pending count — the helper re-syncs anyway, and a stale count shouldn't block a deliberate upgrade
+                // Always enabled
                 onClicked: Updates.runUpgrade()
             }
         }

@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import "../../../components"
 import "../../../services"
 
-// Storage: 270° usage arc beside used/total, disk selector underneath; Storage.qml merges a disk's mounts
+// Storage card
 Rectangle {
     id: root
 
@@ -22,7 +22,7 @@ Rectangle {
     Component.onCompleted: Storage.ref()
     Component.onDestruction: Storage.unref()
 
-    // Plain KiB -> MiB/GiB scaling helper, same shape as MemoryCard.qml's
+    // KiB scaling
     function formatKib(kib: real): string {
         if (!isFinite(kib) || kib < 0)
             return "0 KiB";
@@ -33,7 +33,7 @@ Rectangle {
         return Math.round(kib) + " KiB";
     }
 
-    // Click-outside catcher for the disk-menu dropdown
+    // Click-outside catcher
     MouseArea {
         anchors.fill: parent
         visible: root.diskMenuOpen
@@ -157,8 +157,7 @@ Rectangle {
                 }
             }
 
-            // Opens upward — the card sits on the panel's bottom row, so a
-            // downward menu would fall outside the panel
+            // Opens upward
             Rectangle {
                 id: dropdown
 

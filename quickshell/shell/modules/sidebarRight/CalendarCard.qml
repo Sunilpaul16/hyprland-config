@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Calendar card pinned to the bottom of the sidebar column
+// Calendar card
 Rectangle {
     id: root
 
@@ -26,9 +26,9 @@ Rectangle {
         anchors.margins: Motion.spacing.xlarge
         showTodayButton: false
         cellSpacing: 5
-        // Row height and marker size only; cell width stretches to fill the column
+        // Row height
         cellSize: 36
-        // Room for the collapse chevron at the head of the nav row
+        // Chevron inset
         headerLeftInset: 30
 
         opacity: root.collapsed ? 0 : 1
@@ -39,7 +39,7 @@ Rectangle {
         }
     }
 
-    // Collapsed state: chevron and the date on one line
+    // Collapsed state
     RowLayout {
         id: collapsedRow
 
@@ -65,7 +65,7 @@ Rectangle {
         }
     }
 
-    // Sits above both states so it stays clickable through the cross-fade
+    // Above both states
     Rectangle {
         id: chevron
 
@@ -94,8 +94,7 @@ Rectangle {
         }
     }
 
-    // The sidebar's LazyLoader keeps this alive between opens, so a month
-    // navigated to earlier would otherwise still be showing on the next open
+    // Reset on close
     Connections {
         target: SidebarRightState
 

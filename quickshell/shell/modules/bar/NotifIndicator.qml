@@ -2,14 +2,13 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Unread-notification bell, hidden while there's nothing to report
+// Unread bell
 Item {
     id: root
 
     readonly property bool active: DndState.enabled || Notifs.unread > 0
 
-    // Extra width so the count sits beside the bell rather than on it —
-    // the root clips, so anything outside these bounds would be cut off
+    // Extra count width
     implicitWidth: active ? icon.implicitWidth + 7 : 0
     implicitHeight: icon.implicitHeight
     visible: implicitWidth > 0
@@ -23,7 +22,7 @@ Item {
         id: icon
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        // Escapes, not literals — tooling strips private-use glyphs on write
+        // Escapes, not literals
         text: DndState.enabled ? "\uf1f6" : "\uf0f3" // bell-slash / bell
         font.family: Fonts.glyphFamily
         color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
@@ -32,7 +31,7 @@ Item {
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }
 
-    // Unread count, suppressed under Do Not Disturb since nothing popped up
+    // Unread count
     Rectangle {
         anchors { right: parent.right; top: parent.top; topMargin: 1 }
         visible: !DndState.enabled && Notifs.unread > 0

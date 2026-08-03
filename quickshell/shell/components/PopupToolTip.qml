@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell
 import "../services"
 
-// Hover tooltip as its own PopupWindow, escaping the bar's clip bounds (comparison.md #22)
+// Tooltip popup
 Loader {
     id: root
 
@@ -20,7 +20,7 @@ Loader {
             gravity: Edges.Bottom
             margins.top: 8
         }
-        // Non-interactive — clicks/hover pass straight through to whatever's beneath
+        // Click-through
         mask: Region {
             item: null
         }

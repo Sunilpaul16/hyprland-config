@@ -3,19 +3,16 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Light/dark mode and theme regeneration, both driven through switchwall so
-// the shell never regenerates colours by a second, divergent path
+// Theme mode and source
 Singleton {
     id: root
 
-    // "auto" | "light" | "dark" — auto picks by wallpaper brightness
+    // "auto" | "light" | "dark"
     property string mode: "auto"
-    // switchwall runs matugen plus a whole materialyoucolor pass, so this is
-    // seconds rather than instant
+    // Pipeline is slow
     property bool busy: false
 
-    // "dynamic" | "<scheme>/<flavour>" — setscheme owns the backing file, so
-    // read it rather than mirroring it into Config
+    // "dynamic" | "<scheme>/<flavour>"
     property string source: "dynamic"
     readonly property bool usingPreset: root.source !== "dynamic"
 
@@ -27,7 +24,7 @@ Singleton {
         return "Automatic";
     }
 
-    // `--mode` persists the choice itself and re-themes the current wallpaper
+    // Set mode
     function setMode(value: string): void {
         if (root.busy || value === root.mode)
             return;
@@ -36,7 +33,7 @@ Singleton {
         modeProc.running = true;
     }
 
-    // Re-runs the pipeline against the wallpaper already set
+    // Regenerate theme
     function regenerate(): void {
         if (root.busy)
             return;
@@ -66,7 +63,7 @@ Singleton {
         onExited: root.busy = false
     }
 
-    // setscheme owns this file, same arrangement as color_mode above
+    // Colour source file
     FileView {
         path: Directories.colorSourceFile
         watchChanges: true
@@ -79,8 +76,7 @@ Singleton {
         onFileChanged: reload()
     }
 
-    // switchwall owns this file, so read it rather than tracking the mode
-    // separately — an external `switchwall --mode dark` stays in sync
+    // Colour mode file
     FileView {
         path: Directories.colorModeFile
         watchChanges: true

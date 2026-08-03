@@ -3,12 +3,12 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Dashboard overlay open/close state (mirrors CheatsheetState.qml)
+// Dashboard open state
 Singleton {
     id: root
 
     property bool open: false
-    // Monitor this panel is pinned to while open
+    // Pinned monitor
     property string ownerScreen: ""
 
     function toggle(): void {
@@ -20,7 +20,7 @@ Singleton {
         root.open = true;
     }
 
-    // Hover-driven open/close — the bar pill's and the panel's HoverHandlers share this grace timer, so moving between them can't close the dashboard mid-transit
+    // Hover grace timer
     function cancelHoverClose(): void {
         hoverCloseTimer.stop();
     }
@@ -35,7 +35,7 @@ Singleton {
         onTriggered: root.open = false
     }
 
-    // Hover exclusivity + monitor pinning for any path that sets open directly
+    // Hover and pinning
     onOpenChanged: {
         if (root.open) {
             ScreenOwner.claim(root);

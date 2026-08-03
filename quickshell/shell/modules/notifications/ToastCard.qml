@@ -18,7 +18,7 @@ Rectangle {
         NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
     }
 
-    // Slide-in entrance, hold a lock while mounted
+    // Slide-in entrance
     x: width
     Component.onCompleted: {
         x = 0;
@@ -26,8 +26,7 @@ Rectangle {
     }
     Component.onDestruction: modelData.unlock(card)
 
-    // Off while dragging, so the card tracks the cursor instead of lagging
-    // behind it, but still springs back when a swipe falls short
+    // Off while dragging
     Behavior on x {
         enabled: !swipeArea.drag.active
         NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
@@ -38,7 +37,7 @@ Rectangle {
         onHoveredChanged: card.modelData.hovered = hovered
     }
 
-    // Click to dismiss outright, or swipe sideways to send it to history
+    // Click or swipe
     MouseArea {
         id: swipeArea
         anchors.fill: parent
@@ -54,7 +53,7 @@ Rectangle {
             else
                 card.modelData.popup = false;
         }
-        // Suppressed by QML when the press turned into a drag
+        // Suppressed on drag
         onClicked: card.modelData.close()
     }
 
@@ -72,7 +71,7 @@ Rectangle {
             anchors.top: parent.top
         }
 
-        // Summary + app name + body column
+        // Text column
         Column {
             id: textCol
             anchors.left: iconSlot.right
@@ -109,8 +108,7 @@ Rectangle {
                 text: card.modelData.body
                 color: Colors.textMuted
                 font.pixelSize: Motion.fontSize.body
-                // No onLinkActivated here — the toast closes on click, so a
-                // link target inside it would be unhittable
+                // No link handler
                 textFormat: card.modelData.bodyHasMarkup ? Text.StyledText : card.modelData.bodyHasMarkdown ? Text.MarkdownText : Text.PlainText
                 wrapMode: Text.NoWrap
                 elide: Text.ElideRight

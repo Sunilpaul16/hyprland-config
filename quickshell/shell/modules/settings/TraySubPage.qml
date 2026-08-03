@@ -4,16 +4,14 @@ import Quickshell.Services.SystemTray
 import "../../services"
 import "../../components"
 
-// Per-item tray visibility, reached from Panels' "Tray items" row.
-// Lists what is registered right now — an applet that isn't running can't be
-// listed, so hidden ids with no live item are shown separately below
+// Tray visibility page
 ScrollPage {
     id: root
 
     title: "Tray items"
     isSubPage: true
 
-    // Comma-separated ids, normalised the same way Tray.qml reads them
+    // Hidden ids
     readonly property var hiddenIds: Config.bar.trayHidden.split(",").map(s => s.trim().toLowerCase()).filter(s => s.length > 0)
     readonly property var liveIds: SystemTray.items.values.map(i => i.id.toLowerCase())
     readonly property var orphanedIds: root.hiddenIds.filter(id => !root.liveIds.includes(id))
@@ -65,8 +63,7 @@ ScrollPage {
         }
     }
 
-    // Ids kept in config whose applet isn't running — without this they'd be
-    // invisible and unremovable from here
+    // Offline hidden ids
     SectionLabel {
         visible: root.orphanedIds.length > 0
         text: "Hidden, not running"

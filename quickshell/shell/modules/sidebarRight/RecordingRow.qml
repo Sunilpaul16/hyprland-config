@@ -4,7 +4,7 @@ import Quickshell
 import "../../services"
 import "../../components"
 
-// Single recording row: name + play/reveal/delete (or delete confirm)
+// Recording row
 RowLayout {
     id: root
 

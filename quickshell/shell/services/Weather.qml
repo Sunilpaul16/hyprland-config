@@ -4,20 +4,18 @@ import QtQuick
 import Quickshell
 import "../utils"
 
-// Current weather (Open-Meteo), geolocated via ipinfo.io — no location config exists yet, so it always guesses from the public IP
-// Always-on rather than ref-counted like SystemUsage: one geolocation call at startup plus an hourly refetch
+// Weather service
 Singleton {
     id: root
 
     property real latitude: NaN
     property real longitude: NaN
     property string city: ""
-    // Follows Config.weather.units — the API returns bare numbers, so the
-    // symbol has to be derived here or every display hardcodes Celsius
+    // Unit symbol
     readonly property string unitSymbol: Config.weather.units === "fahrenheit" ? "°F" : "°C"
     property bool loading: true
     property bool hasError: false
-    // Distinguishes "never got real data" from "have cached data, latest poll failed"
+    // First load flag
     property bool hasLoadedOnce: false
 
     readonly property real currentTemp: _currentTemp
@@ -29,7 +27,7 @@ Singleton {
     readonly property real windSpeed: _windSpeed
     readonly property list<var> forecast: _forecast
 
-    // Formatted local time, "--:--" until a real daily fetch lands
+    // Formatted sun times
     readonly property string sunrise: _sunriseIso.length > 0 ? Qt.formatDateTime(new Date(_sunriseIso), Time.use12Hour ? "h:mm AP" : "hh:mm") : "--:--"
     readonly property string sunset: _sunsetIso.length > 0 ? Qt.formatDateTime(new Date(_sunsetIso), Time.use12Hour ? "h:mm AP" : "hh:mm") : "--:--"
 
@@ -44,7 +42,7 @@ Singleton {
     property string _sunsetIso: ""
     property list<var> _forecast: []
 
-    // Shared WMO weather-code -> Material Symbols icon mapping, so SmallWeatherCard and WeatherTab don't duplicate the table
+    // WMO code icons
     function iconFor(code: int): string {
         if (code === 0)
             return "sunny";
@@ -125,7 +123,7 @@ Singleton {
         const url = "https://api.open-meteo.com/v1/forecast" + "?latitude=" + root.latitude + "&longitude=" + root.longitude + "&current=temperature_2m,weather_code,relative_humidity_2m,apparent_temperature,wind_speed_10m" + "&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset" + "&timezone=auto&forecast_days=7" + (Config.weather.units === "fahrenheit" ? "&temperature_unit=fahrenheit" : "");
 
         Requests.get(url, data => {
-            // Current and daily checked independently, so a response missing one block doesn't blank what the other already provided
+            // Independent blocks
             let gotAny = false;
 
             if (data.current) {
@@ -142,7 +140,7 @@ Singleton {
                 root._todayLow = data.daily.temperature_2m_min[0];
                 root._sunriseIso = data.daily.sunrise[0] ?? "";
                 root._sunsetIso = data.daily.sunset[0] ?? "";
-                // "-" separators parse as UTC midnight, rolling back a day in any timezone behind UTC; "/" parses as local midnight
+                // Local midnight parse
                 root._forecast = (data.daily.time ?? []).map((date, i) => ({
                     date: date.replace(/-/g, "/"),
                     weatherCode: data.daily.weather_code[i],
@@ -157,7 +155,7 @@ Singleton {
             root.hasError = !gotAny && !root.hasLoadedOnce;
             root.loading = false;
         }, () => {
-            // Don't hide good cached data just because this one refetch failed
+            // Keep cached data
             root.hasError = !root.hasLoadedOnce;
             root.loading = false;
         });
@@ -165,7 +163,7 @@ Singleton {
 
     Component.onCompleted: root.geolocate()
 
-    // Refetch hourly; retries geolocate() too if it never succeeded at startup
+    // Hourly refetch
     Timer {
         interval: Math.max(5, Config.weather.refreshMinutes) * 60000
         running: true

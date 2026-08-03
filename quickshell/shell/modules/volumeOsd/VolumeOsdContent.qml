@@ -3,7 +3,7 @@ import QtQuick.Controls
 import "../../services"
 import "../../components"
 
-// Speaker + mic vertical sliders — right-edge drawer content
+// Volume sliders
 Column {
     id: root
 
@@ -40,7 +40,7 @@ Column {
         onMoved: newValue => Audio.setSourceVolume(newValue)
     }
 
-    // Vertical fill track — click/drag sets an absolute value, scroll steps; built on QtQuick.Templates' Slider for real press/move/release handling
+    // Vertical slider
     component VolumeSlider: Item {
         id: slider
 
@@ -48,8 +48,7 @@ Column {
         required property real value
         required property bool muted
 
-        // Value from the previous drag tick — lets onMoved tell an upward
-        // move from a downward one, updated every tick during a gesture
+        // Previous drag value
         property real lastDragValue: value
 
         readonly property int trackWidth: 24
@@ -86,16 +85,14 @@ Column {
                     control.value = Qt.binding(() => slider.value);
             }
 
-            // Pill-capped track, full control width — no separate hit-area
-            // padding, matching FilledSlider's background sizing
+            // Track
             background: Rectangle {
                 width: control.availableWidth
                 height: control.availableHeight
                 radius: width / 2
                 color: Colors.layer
 
-                // Driven off slider.value, not visualPosition, so it stays
-                // correct for drag, scroll, or external changes
+                // Fill
                 Rectangle {
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -109,8 +106,7 @@ Column {
                 }
             }
 
-            // Circular handle at the current value position — shows the
-            // icon, swaps to a live percentage while pressed
+            // Handle
             handle: Rectangle {
                 x: control.leftPadding + control.availableWidth / 2 - width / 2
                 y: (control.availableHeight - height) * (1 - Math.max(0, Math.min(1, slider.value)))
@@ -130,8 +126,7 @@ Column {
             }
         }
 
-        // Wheel-only overlay — acceptedButtons: NoButton lets press/drag
-        // fall through to the Slider beneath undisturbed
+        // Wheel overlay
         MouseArea {
             anchors.fill: control
             acceptedButtons: Qt.NoButton

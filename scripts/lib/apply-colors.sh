@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-# Shared colour-apply steps, sourced by switchwall and setscheme so both reach every themed app the same way
-# Expects the caller to have set CONFIG_FILE, COLORGEN_DIR and KITTY_THEME_OUT
+# Shared colour-apply steps
 
-# cfg <jq-path> <default> — missing file, missing key or null all fall back
+# cfg <jq-path> <default>
 cfg() {
     local value=""
     if [[ -s "$CONFIG_FILE" ]]; then
@@ -12,7 +11,7 @@ cfg() {
     [[ -n "$value" ]] && printf '%s' "$value" || printf '%s' "$2"
 }
 
-# cfgbool <jq-path> <default> — booleans can't use cfg, since jq's `//` treats a literal `false` as absent; only null/missing falls back here
+# cfgbool <jq-path> <default>
 cfgbool() {
     local value=""
     if [[ -s "$CONFIG_FILE" ]]; then
@@ -21,7 +20,7 @@ cfgbool() {
     [[ -n "$value" ]] && printf '%s' "$value" || printf '%s' "$2"
 }
 
-# apply_kitty_from_scss <scss-path> — rewrites the kitty theme from a stream of `$name: #RRGGBB;` lines, fed the same shape by matugen and by a static preset
+# apply_kitty_from_scss <scss-path>
 apply_kitty_from_scss() {
     local scss="$1"
     cp "$COLORGEN_DIR/terminal/kitty-theme.conf" "$KITTY_THEME_OUT"
@@ -33,8 +32,7 @@ apply_kitty_from_scss() {
         sed -i "s/${name} #/${hexval}/g" "$KITTY_THEME_OUT"
     done < "$scss"
 
-    # Terminal window transparency. dynamic_background_opacity is what lets
-    # kitty pick this up on SIGUSR1 instead of needing a restart
+    # Window transparency
     local opacity
     opacity="$(cfg '.theming.terminalOpacity' '1.0')"
     {
@@ -45,7 +43,7 @@ apply_kitty_from_scss() {
     } >> "$KITTY_THEME_OUT"
 }
 
-# apply_gsettings <light|dark> — GTK4 renders the wrong @media block without this
+# apply_gsettings <light|dark>
 apply_gsettings() {
     if [[ "$1" == light ]]; then
         gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'

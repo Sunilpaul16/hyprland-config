@@ -3,19 +3,19 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Settings panel open/close + current-page state
+// Settings panel state
 Singleton {
     id: root
 
     property bool open: false
-    // Monitor this panel is pinned to while open
+    // Pinned monitor
     property string ownerScreen: ""
-    // Index into SettingsPanel's pageModel
+    // Page index
     property int currentPageIdx: 0
-    // Key into Content.qml's subPageModel; "" means the page itself is shown. One level deep only
+    // Sub-page key
     property string subPage: ""
 
-    // Leaving a page abandons any sub-page it opened
+    // Reset sub-page
     onCurrentPageIdxChanged: root.subPage = ""
 
     function openSubPage(key: string): void {
@@ -31,8 +31,7 @@ Singleton {
             return;
         ScreenOwner.claim(root);
         root.subPage = "";
-        // Settings is a big centred overlay that covers the sidebar; neither
-        // dismisses the other through GlobalFocusGrab, so close it explicitly
+        // Close sidebar
         if (Config.sidebar.closeOnSettings)
             SidebarRightState.open = false;
     }
@@ -66,7 +65,7 @@ Singleton {
             root.closeSubPage();
         }
 
-        // Page switching without a click — the panel clamps out-of-range values
+        // Page switching
         function page(idx: int): void {
             root.currentPageIdx = idx;
         }

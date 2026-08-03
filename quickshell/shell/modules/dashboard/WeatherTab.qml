@@ -5,7 +5,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Weather tab: header, hero card, detail cards, 7-day forecast strip — auto-geolocated only, no manual location config yet
+// Weather tab
 Item {
     id: root
 
@@ -22,7 +22,7 @@ Item {
         anchors.fill: parent
         spacing: Motion.spacing.xlarge
 
-        // Header: city + date, sunrise/sunset
+        // Header
         RowLayout {
             Layout.fillWidth: true
 
@@ -62,7 +62,7 @@ Item {
             }
         }
 
-        // Hero card: icon + current temp + description
+        // Hero card
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: heroRow.implicitHeight + 48
@@ -101,7 +101,7 @@ Item {
             }
         }
 
-        // Detail cards: humidity / feels-like / wind speed
+        // Detail cards
         RowLayout {
             Layout.fillWidth: true
             spacing: Motion.spacing.large
@@ -158,7 +158,7 @@ Item {
             }
         }
 
-        // Forecast placeholder — current data can still be showing above
+        // Forecast placeholder
         StyledText {
             Layout.alignment: Qt.AlignHCenter
             visible: !root.hasForecast

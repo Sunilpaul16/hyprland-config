@@ -4,7 +4,7 @@ import Quickshell.Widgets
 import "../../services"
 import "../../components"
 
-// Notification icon — image, app icon, or flat glyph fallback
+// Notification icon
 Rectangle {
     id: root
 
@@ -38,7 +38,7 @@ Rectangle {
         source: root.hasAppIcon ? Quickshell.iconPath(root.notif.appIcon, "dialog-information") : ""
     }
 
-    // Shell-raised toasts name a Material Symbol instead of shipping an icon
+    // Material symbol
     MaterialIcon {
         anchors.centerIn: parent
         visible: !root.hasImage && !root.hasAppIcon && root.hasGlyph
@@ -47,7 +47,7 @@ Rectangle {
         font.pixelSize: Motion.fontSize.title
     }
 
-    // Flat monochrome fallback glyph, not a colorful emoji
+    // Glyph fallback
     StyledText {
         anchors.centerIn: parent
         anchors.verticalCenterOffset: -1

@@ -1,14 +1,14 @@
 import QtQuick
 import "../../services"
 
-// M3 slider, externally driven like ToggleSwitch — dragging emits moved() and never writes `value`, so owners wanting local state say `onMoved: nv => value = nv`
+// M3 slider
 Item {
     id: root
 
     property real from: 0
     property real to: 1
     property real value: 0.5
-    // 0 = continuous; otherwise the value snaps to multiples of this
+    // Step size
     property real stepSize: 0
 
     signal moved(real v)
@@ -19,8 +19,7 @@ Item {
     readonly property real trackHeight: 6
     readonly property real handleWidth: 4
     readonly property real span: root.to - root.from
-    // Guarded: a config value outside from..to would otherwise push the
-    // handle off the end of the track
+    // Clamped position
     readonly property real position: root.span === 0 ? 0 : Math.max(0, Math.min(1, (root.value - root.from) / root.span))
     readonly property real travel: root.width - root.handleWidth - 8
     readonly property real fillWidth: Math.round(root.travel * root.position)
@@ -67,7 +66,7 @@ Item {
         id: drag
 
         anchors.fill: parent
-        // Widened so the 4px handle is actually grabbable
+        // Grabbable handle
         anchors.topMargin: -6
         anchors.bottomMargin: -6
         cursorShape: Qt.PointingHandCursor

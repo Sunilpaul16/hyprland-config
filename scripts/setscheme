@@ -37,14 +37,13 @@ done
 
 mkdir -p "$CACHE_DIR" "$(dirname "$SOURCE_FILE")"
 
-# Back to wallpaper-derived colours — switchwall owns that path, so delegate
+# Delegate to switchwall
 if [[ "$TARGET" == dynamic ]]; then
     printf '%s' dynamic > "$SOURCE_FILE"
     exec switchwall --noswitch
 fi
 
-# Resolve the mode. A preset carries its own; 17 of 24 flavours are dark-only,
-# so the requested mode is a preference, not a guarantee
+# Resolve mode
 STORED_MODE=""
 [[ -s "$MODE_FILE" ]] && STORED_MODE="$(cat "$MODE_FILE")"
 WANT_MODE="${STORED_MODE:-dark}"
@@ -57,21 +56,19 @@ MODE="$WANT_MODE"
     echo "setscheme: $TARGET has no $WANT_MODE mode, using $MODE"
 }
 
-# Validate and generate before touching anything, so a rejected preset
-# leaves the existing theme intact
+# Validate before writing
 palette="$CACHE_DIR/preset_palette.json"
 scss="$CACHE_DIR/preset_colors.scss"
 "$HELPER" matugen "$TARGET" "$MODE" > "$palette"
 "$HELPER" scss "$TARGET" "$MODE" > "$scss"
 
-# Renders the same six templates the wallpaper path uses — matugen's json
-# subcommand takes literal values rather than deriving from a seed
+# Same templates as wallpaper
 matugen json "$palette"
 
 apply_kitty_from_scss "$scss"
 apply_gsettings "$MODE"
 
-# An "auto" preference belongs to the wallpaper path — overwriting it with this preset's concrete mode would strand it there on the way back to dynamic
+# Keep auto for dynamic
 [[ "$STORED_MODE" == auto ]] || printf '%s' "$MODE" > "$MODE_FILE"
 printf '%s' "$TARGET" > "$SOURCE_FILE"
 

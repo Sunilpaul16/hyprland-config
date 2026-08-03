@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Privacy indicator widget — mic and screencast in use
+// Privacy indicator
 Item {
     id: root
 
@@ -36,7 +36,7 @@ Item {
         }
     }
 
-    // Hover to name what is capturing
+    // Hover tooltip
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true

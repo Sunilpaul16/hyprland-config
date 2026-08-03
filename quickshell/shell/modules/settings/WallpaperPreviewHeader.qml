@@ -4,14 +4,13 @@ import Qt5Compat.GraphicalEffects
 import "../../services"
 import "../../components"
 
-// Wallpaper preview plus the Wallpapers/Colours sub-navigation.
-// Spacing matches ScrollPage's own column so wrapping these two changes nothing
+// Wallpaper preview header
 ColumnLayout {
     id: root
 
     required property real cappedWidth
 
-    // Span the page column explicitly — Layout.fillWidth alone leaves this nested layout at its implicit width, centring the children on the preview instead
+    // Span page column
     Layout.preferredWidth: cappedWidth
 
     spacing: Motion.spacing.wide
@@ -23,8 +22,7 @@ ColumnLayout {
         implicitWidth: Math.min(root.cappedWidth * 0.72, 470)
         implicitHeight: Math.round(implicitWidth * 9 / 16)
 
-        // Rounded via OpacityMask on a plain Image — a
-        // ClippingRectangle renders nothing inside these overlays
+        // OpacityMask rounding
         layer.enabled: true
         layer.effect: OpacityMask {
             maskSource: Rectangle {
@@ -49,7 +47,7 @@ ColumnLayout {
             cache: false
         }
 
-        // Fallback while the wallpaper (or its thumb) is missing
+        // Missing wallpaper fallback
         ColumnLayout {
             anchors.centerIn: parent
             visible: previewImage.status !== Image.Ready
@@ -84,7 +82,7 @@ ColumnLayout {
             onClicked: SettingsState.openSubPage("wallpapers")
         }
 
-        // Inert — nothing built behind this one yet
+        // Inert
         PillButton {
             icon: "palette"
             text: "Colours"

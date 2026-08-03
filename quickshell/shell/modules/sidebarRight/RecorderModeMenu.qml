@@ -3,7 +3,7 @@ import Quickshell
 import "../../services"
 import "../../components"
 
-// Small dropdown for picking the recording mode, anchored to the SplitButton's chevron (comparison.md #49)
+// Recording mode dropdown
 Loader {
     id: root
 

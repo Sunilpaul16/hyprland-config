@@ -4,12 +4,11 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Mpris
 
-// Media player (MPRIS) state — active player, or first available
+// MPRIS media state
 Singleton {
     id: root
 
-    // Active player selection — a manual pick overrides auto-detection, guarded against a stale reference by checking it's still in the live list
-    // Dedupe on the bus name with its ".instanceNNNN" suffix stripped (browsers register one per tab), preferring whichever instance is playing
+    // Player selection
     readonly property var players: {
         const raw = Mpris.players.values;
         const seen = new Map();
@@ -48,8 +47,7 @@ Singleton {
     readonly property bool canGoPrevious: activePlayer?.canGoPrevious ?? false
     readonly property bool canGoNext: activePlayer?.canGoNext ?? false
 
-    // Shuffle / loop — both may only be written if the player advertises
-    // canControl and its own xSupported flag (MprisPlayer.shuffle/loopState docs)
+    // Shuffle and loop
     readonly property bool shuffleSupported: (activePlayer?.canControl ?? false) && (activePlayer?.shuffleSupported ?? false)
     readonly property bool shuffle: activePlayer?.shuffle ?? false
     readonly property bool loopSupported: (activePlayer?.canControl ?? false) && (activePlayer?.loopSupported ?? false)
@@ -85,7 +83,7 @@ Singleton {
         root.activePlayer.loopState = next;
     }
 
-    // Poke position while playing so bound UI (popup progress bar) ticks
+    // Position tick
     Timer {
         running: root.isPlaying
         interval: 1000
@@ -93,8 +91,7 @@ Singleton {
         onTriggered: root.activePlayer?.positionChanged()
     }
 
-    // --- Cover art -----------------------------------------------------
-    // file:// art is used directly, http(s) art downloads into a cache dir — fetched once here rather than per-popup, so it isn't re-fetched per monitor
+    // Cover art
     readonly property string artUrl: activePlayer?.trackArtUrl ?? ""
     readonly property bool artIsRemote: artUrl.startsWith("http://") || artUrl.startsWith("https://")
     readonly property string artCacheDir: Directories.mediaArtCache
@@ -116,12 +113,12 @@ Singleton {
         artDownloader.running = true;
     }
 
-    // Download remote art to cache
+    // Download remote art
     Process {
         id: artDownloader
         property string pendingUrl: ""
         property string pendingDest: ""
-        // Own properties, not root.artUrl, so the command string is pinned at launch — escaped because pendingUrl is web-page-controlled (MPRIS trackArtUrl)
+        // Pinned escaped command
         command: ["bash", "-c", `mkdir -p "$(dirname '${StringUtils.shellSingleQuoteEscape(pendingDest)}')" && { [ -f '${StringUtils.shellSingleQuoteEscape(pendingDest)}' ] || curl -4 -sSL '${StringUtils.shellSingleQuoteEscape(pendingUrl)}' -o '${StringUtils.shellSingleQuoteEscape(pendingDest)}'; }`]
         onExited: exitCode => {
             root.artDownloaded = (exitCode === 0);

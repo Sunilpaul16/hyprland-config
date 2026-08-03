@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// GPU usage + temperature via nvidia-smi — Nvidia only (no AMD/Intel gpu_busy_percent fallback built); same ref-counted shape as SystemUsage.qml
+// GPU usage (nvidia-smi)
 Singleton {
     id: root
 

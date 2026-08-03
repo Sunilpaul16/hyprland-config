@@ -37,32 +37,32 @@ hl.bind(v.kbScreenshotFull, hl.dsp.exec_cmd(v.home .. "/.local/bin/screenshot fu
 hl.bind(v.kbScreenshotRegion, hl.dsp.exec_cmd(v.home .. "/.local/bin/screenshot region"), { description = "Screenshot: region" })
 hl.bind(v.kbScreenshotRegionEdit, hl.dsp.exec_cmd(v.home .. "/.local/bin/screenshot region --edit"), { description = "Screenshot: region + edit" })
 
--- Screen recording (press again to stop, regardless of which mode started it)
+-- Screen recording
 hl.bind(v.kbRecordRegion, hl.dsp.exec_cmd(v.home .. "/.local/bin/record region"), { description = "Record: region (toggle)" })
 hl.bind(v.kbRecordFull, hl.dsp.exec_cmd(v.home .. "/.local/bin/record full"), { description = "Record: fullscreen (toggle)" })
 
--- Move focus with arrow keys
+-- Move focus
 hl.bind(v.kbFocusLeft,  hl.dsp.focus({ direction = "left" }),  { description = "Window: focus left" })
 hl.bind(v.kbFocusRight, hl.dsp.focus({ direction = "right" }), { description = "Window: focus right" })
 hl.bind(v.kbFocusUp,    hl.dsp.focus({ direction = "up" }),    { description = "Window: focus up" })
 hl.bind(v.kbFocusDown,  hl.dsp.focus({ direction = "down" }),  { description = "Window: focus down" })
 
--- Switch workspaces with v.kbGoToWs/v.kbMoveWinToWs + [0-9]
+-- Switch workspaces
 for i = 1, 10 do
     local key = i % 10
     hl.bind(v.kbGoToWs .. " + " .. key,        hl.dsp.focus({ workspace = i}), { description = "Workspace: switch <N>" })
     hl.bind(v.kbMoveWinToWs .. " + " .. key,   hl.dsp.window.move({ workspace = i }), { description = "Workspace: move window to <N>" })
 end
 
--- Special workspace (scratchpad)
+-- Scratchpad
 hl.bind(v.kbSpecialWs,             hl.dsp.workspace.toggle_special("magic"), { description = "Workspace: toggle scratchpad" })
 hl.bind(v.kbMoveWinToScratchpad,   hl.dsp.window.move({ workspace = "special:magic" }), { description = "Workspace: move window to scratchpad" })
 
--- Scroll through workspaces
+-- Scroll workspaces
 hl.bind(v.kbWorkspaceNext, hl.dsp.focus({ workspace = "e+1" }), { description = "Workspace: next" })
 hl.bind(v.kbWorkspacePrev, hl.dsp.focus({ workspace = "e-1" }), { description = "Workspace: previous" })
 
--- Move/resize windows with mouse
+-- Mouse move/resize
 hl.bind(v.kbMoveWindow,   hl.dsp.window.drag(),   { mouse = true, description = "Window: drag with mouse" })
 hl.bind(v.kbResizeWindow, hl.dsp.window.resize(), { mouse = true, description = "Window: resize with mouse" })
 

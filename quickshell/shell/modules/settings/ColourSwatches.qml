@@ -2,12 +2,11 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// The generated palette, shown rather than described. Reads Colors directly,
-// so it re-tints the moment switchwall rewrites the theme
+// Palette swatches
 Flow {
     id: root
 
-    // [{ color, name }] — the roles worth eyeballing, not every M3 token
+    // Shown roles
     readonly property var roles: [
         { color: Colors.primary, name: "primary" },
         { color: Colors.secondary, name: "secondary" },
@@ -35,7 +34,7 @@ Flow {
             implicitHeight: 46
             radius: Motion.rounding.normal
             color: modelData.color
-            // Dark roles would vanish against the page, so outline everything
+            // Outline everything
             border.width: 1
             border.color: Colors.outlineVariant
 

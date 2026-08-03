@@ -19,7 +19,7 @@ Singleton {
         proc.running = true;
     }
 
-    // "Recording_2026-07-16_01.26.03.mp4" -> "Jul 16, 2026 - 1:26 AM"
+    // Display name
     function displayName(name: string): string {
         const m = name.match(/^Recording_(\d{4})-(\d{2})-(\d{2})_(\d{2})\.(\d{2})\.(\d{2})\.mp4$/);
         if (!m)

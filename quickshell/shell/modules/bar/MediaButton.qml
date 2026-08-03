@@ -2,7 +2,7 @@ import QtQuick
 import "../../services"
 import "../../components"
 
-// Media player icon + track title
+// Media button
 Item {
     id: root
 
@@ -27,7 +27,7 @@ Item {
 
             Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
-            // Higher-z hit target so this glyph actually toggles playback, not just opens the popup
+            // Playback hit target
             MouseArea {
                 id: playPauseHover
                 anchors.fill: parent
@@ -51,7 +51,7 @@ Item {
         }
     }
 
-    // Hover tracking for the label colors
+    // Hover tracking
     MouseArea {
         id: hoverArea
         anchors.fill: parent

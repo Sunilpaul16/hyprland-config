@@ -3,13 +3,13 @@ import QtQuick.Layouts
 import Quickshell.Io
 import "../../services"
 
-// Wallpaper & style page — preview, wallpaper/colour settings, fonts
+// Wallpaper and style page
 ScrollPage {
     id: root
 
     title: "Wallpaper & style"
 
-    // Applies the wallpaper-display toggle without waiting for the next switchwall run — --preview sets it and exits before any colour generation
+    // Apply display toggle
     Process {
         id: wallpaperDisplayProc
     }
@@ -66,8 +66,7 @@ ScrollPage {
 
         SettingRow {
             live: true
-            // The two opacity rows below only exist while transparency is on,
-            // so this row is the run's end whenever it's off
+            // Run end
             last: !Config.appearance.transparency
             label: "Transparency"
             subtext: "Translucent panel backgrounds, blurred by Hyprland"
@@ -117,8 +116,7 @@ ScrollPage {
             }
         }
     }
-    // No "dark theme" boolean here: the Colour mode row below is the real control
-    // and is tri-state (automatic/light/dark), which a checkbox can't express
+    // No dark boolean
 
     SectionLabel {
         text: "Colours"
@@ -261,7 +259,7 @@ ScrollPage {
     }
 
     SettingGroup {
-        // Curated shortlist — nothing distinguishes a UI-suitable family from the ~700 installed, and SelectMenu's popup neither scrolls nor caps its height
+        // Curated shortlist
         SettingRow {
             first: true
             live: true
@@ -274,7 +272,7 @@ ScrollPage {
             }
         }
 
-        // Icon glyphs only — enumerated rather than curated, since "ends in Nerd Font" is unambiguous and grows as fonts are installed
+        // Icon glyphs
         SettingRow {
             last: true
             live: true

@@ -4,8 +4,7 @@ import Quickshell.Services.UPower
 import "../../../services"
 import "../../../components"
 
-// Battery ring. PerformanceTab gates this on UPower.displayDevice
-// .isLaptopBattery, so nothing here hides itself.
+// Battery ring
 Rectangle {
     id: root
 

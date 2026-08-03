@@ -3,7 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Screen recording state, shared by the bar's RecordingIndicator and the sidebar's ScreenRecorderCard, backed by ~/.local/bin/record (wf-recorder underneath)
+// Screen recording state
 Singleton {
     id: root
 
@@ -12,11 +12,10 @@ Singleton {
     property bool active: false
     property real startedAt: 0
     property int elapsedSeconds: 0
-    // Seeded from config; cycleMode() overrides it for the session, which
-    // deliberately breaks the binding until the next restart
-    property string mode: Config.recorder.defaultMode // "full" | "region" — used for the next recording
+    // Session mode
+    property string mode: Config.recorder.defaultMode  // "full" | "region"
 
-    // Closes the window where a rapid double-toggle could double-start before the 1s poll catches up
+    // Double-start guard
     property bool starting: false
 
     readonly property string elapsedLabel: StringUtils.friendlyTimeForSeconds(root.elapsedSeconds)
@@ -25,13 +24,13 @@ Singleton {
         root.mode = root.mode === "full" ? "region" : "full";
     }
 
-    // Start (using the selected mode) if idle, stop if active
+    // Toggle recording
     function toggle(): void {
         if (root.active) {
             root.stop();
         } else if (!root.starting) {
             root.starting = true;
-            // The script takes --sound as its second argument
+            // Sound is arg 2
             const args = [root.recordBin, root.mode];
             if (Config.recorder.audio)
                 args.push("--sound");

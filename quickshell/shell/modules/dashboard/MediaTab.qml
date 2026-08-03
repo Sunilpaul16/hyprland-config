@@ -5,8 +5,7 @@ import Quickshell.Services.Mpris
 import "../../services"
 import "../../components"
 
-// Media tab: full-page now-playing — cover art, title block, wavy seek bar,
-// transport controls, and the bongocat gif
+// Media tab
 Item {
     id: root
 
@@ -64,7 +63,7 @@ Item {
             size: Config.dashboard.media.coverArtSize
         }
 
-        // Title block, seek bar, transport controls
+        // Title and transport
         ColumnLayout {
             Layout.preferredWidth: 360
             spacing: Motion.spacing.tiny
@@ -93,7 +92,7 @@ Item {
                 elide: Text.ElideRight
             }
 
-            // Seek row — labels are width-locked so ticking digits can't jog the slider
+            // Seek row
             RowLayout {
                 Layout.topMargin: Motion.spacing.section
                 Layout.fillWidth: true
@@ -196,7 +195,7 @@ Item {
         }
     }
 
-    // Click-outside catcher for the player-menu dropdown
+    // Click-outside catcher
     MouseArea {
         anchors.fill: parent
         visible: playerSelector.menuOpen

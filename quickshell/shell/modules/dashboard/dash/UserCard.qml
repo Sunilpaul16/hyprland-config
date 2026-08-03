@@ -4,7 +4,7 @@ import Quickshell.Io
 import "../../../services"
 import "../../../components"
 
-// Distro logo + avatar + uptime badge + WM pill, laid out horizontally
+// User card
 Rectangle {
     id: root
 
@@ -13,7 +13,7 @@ Rectangle {
     readonly property real logoBadgeSize: Config.dashboard.user.logoSize + 12
     readonly property real uptimeBadgeSize: Config.dashboard.user.uptimeSize + 8
 
-    // Config path first, then ~/.face, then the bundled bongocat
+    // Avatar path fallback
     readonly property string facePath: {
         const configured = Directories.resolve(Config.dashboard.user.avatarPath);
         if (configured.length > 0)
@@ -21,19 +21,19 @@ Rectangle {
         return faceProbe.exists ? Directories.faceIcon : Directories.bongocatGif;
     }
 
-    // Material Design container tones, derived from the single matugen primary
+    // Container tones
     readonly property color logoBg: Colors.tint(Colors.surface, Colors.primary, 0.30)
     readonly property color uptimeBg: Colors.tint(Colors.surface, Colors.hueShift(Colors.primary, 40), 0.30)
     readonly property color wmBg: Colors.tint(Colors.surface, Colors.hueShift(Colors.primary, -30), 0.24)
 
-    // Rotates a colour's hue, passing achromatic colours through untouched
+    // Hue rotate
     radius: Motion.rounding.large
     color: Colors.layer
     border.width: 1
     border.color: Colors.outline
     implicitHeight: root.avatarSize + 32
 
-    // Probes whether ~/.face exists so facePath can fall through to the bongocat
+    // ~/.face probe
     FileView {
         id: faceProbe
 
@@ -45,7 +45,7 @@ Rectangle {
         onLoadFailed: exists = false
     }
 
-    // Distro logo badge — sits top-left, overlapped by the avatar
+    // Distro logo badge
     Rectangle {
         id: logoBadge
 
@@ -66,8 +66,7 @@ Rectangle {
         }
     }
 
-    // Avatar. Deliberately unclipped: ClippingRectangle's shader and a
-    // layer/OpacityMask both render nothing inside this layershell overlay
+    // Avatar
     Rectangle {
         id: avatar
 
@@ -87,8 +86,7 @@ Rectangle {
             color: Colors.textMuted
         }
 
-        // AnimatedImage so a .gif avatar actually plays. Fit, not Crop —
-        // a wide source (the 200x126 bongocat) crops to empty centre pixels
+        // Animated avatar
         AnimatedImage {
             id: pfp
 
@@ -102,7 +100,7 @@ Rectangle {
         }
     }
 
-    // Uptime badge + label
+    // Uptime badge
     Rectangle {
         id: uptimeBadge
 
@@ -134,7 +132,7 @@ Rectangle {
         elide: Text.ElideRight
     }
 
-    // WM pill with its bubble tail trailing back toward the avatar
+    // WM pill
     Rectangle {
         id: wmPill
 
@@ -164,15 +162,14 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.wmName
                 font.pixelSize: Motion.fontSize.body
-                // Measured off the configured card width, never wmPill.width —
-                // that feeds wmPill.implicitWidth back through this Row and polish-loops
+                // Measured off config
                 width: Math.min(implicitWidth, Config.dashboard.user.width - wmPill.x - 56)
                 elide: Text.ElideRight
             }
         }
     }
 
-    // Speech-bubble dots trailing the WM pill
+    // Bubble tail dots
     Rectangle {
         id: bubbleLarge
 

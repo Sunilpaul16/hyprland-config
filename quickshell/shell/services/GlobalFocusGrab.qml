@@ -3,7 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 
-// Shared Hyprland focus grab spanning every open overlay, replacing each panel's own click-catcher + Exclusive grab
+// Shared focus grab
 Singleton {
     id: root
 
@@ -12,8 +12,7 @@ Singleton {
     property list<var> dismissable: []
     property list<var> persistent: []
 
-    // Reassign (not push/splice) so the list property's change notification
-    // actually fires and the HyprlandFocusGrab binding below re-evaluates
+    // Add dismissable
     function addDismissable(window): void {
         if (root.dismissable.indexOf(window) === -1)
             root.dismissable = [...root.dismissable, window];
