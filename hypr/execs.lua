@@ -18,7 +18,8 @@ hl.on("hyprland.start", function()
     -- caller's. uwsm finalizes the HYPRCURSOR/XCURSOR vars but not this one, so without
     -- the import the unit registers as "wayland,wayland-1" while every keybind calling
     -- `qs -c shell ipc call` computes "unk,wayland" and finds no running instance.
-    hl.exec_cmd([[bash -c 'systemctl --user import-environment QT_QPA_PLATFORM; systemctl --user start quickshell.service']])
+    -- QT_QPA_PLATFORMTHEME rides along so the shell's icon lookups see Papirus.
+    hl.exec_cmd([[bash -c 'systemctl --user import-environment QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME; systemctl --user start quickshell.service']])
 
     hl.exec_cmd([[bash -c 'f="$HOME/.local/state/quickshell/current_wallpaper"; [ -s "$f" ] && exec "$HOME/.local/bin/switchwall" --preview "$(cat "$f")"']])
 end)
