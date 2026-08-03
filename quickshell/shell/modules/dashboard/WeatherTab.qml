@@ -20,14 +20,14 @@ Item {
         id: content
 
         anchors.fill: parent
-        spacing: 16
+        spacing: Motion.spacing.xlarge
 
         // Header: city + date, sunrise/sunset
         RowLayout {
             Layout.fillWidth: true
 
             ColumnLayout {
-                spacing: 2
+                spacing: Motion.spacing.micro
 
                 StyledText {
                     text: Weather.city.length > 0 ? Weather.city : "Loading…"
@@ -46,7 +46,7 @@ Item {
 
             RowLayout {
                 visible: root.hasSunTimes
-                spacing: 24
+                spacing: Motion.spacing.section
 
                 WeatherStat {
                     iconName: "wb_twilight"
@@ -74,7 +74,7 @@ Item {
             RowLayout {
                 id: heroRow
                 anchors.centerIn: parent
-                spacing: 24
+                spacing: Motion.spacing.section
 
                 MaterialIcon {
                     text: root.hasCurrent ? Weather.iconFor(Weather.weatherCode) : "cloud_off"
@@ -92,7 +92,7 @@ Item {
                     }
 
                     StyledText {
-                        Layout.topMargin: 8
+                        Layout.topMargin: Motion.spacing.normal
                         text: root.hasCurrent ? Weather.descriptionFor(Weather.weatherCode) : (Weather.hasError ? "Unavailable" : "Loading…")
                         color: Colors.textMuted
                         font.pixelSize: Motion.fontSize.large
@@ -104,7 +104,7 @@ Item {
         // Detail cards: humidity / feels-like / wind speed
         RowLayout {
             Layout.fillWidth: true
-            spacing: 12
+            spacing: Motion.spacing.large
 
             DetailCard {
                 iconName: "water_drop"
@@ -127,7 +127,7 @@ Item {
 
         // 7-day forecast strip
         StyledText {
-            Layout.topMargin: 4
+            Layout.topMargin: Motion.spacing.tiny
             visible: root.hasForecast
             text: "7-Day Forecast"
             font.pixelSize: Motion.fontSize.subhead
@@ -138,7 +138,7 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             visible: root.hasForecast
-            spacing: 10
+            spacing: Motion.spacing.medium
 
             Repeater {
                 model: Weather.forecast
@@ -175,7 +175,7 @@ Item {
         required property string label
         required property string value
 
-        spacing: 8
+        spacing: Motion.spacing.normal
 
         MaterialIcon {
             text: stat.iconName
@@ -216,7 +216,7 @@ Item {
 
         RowLayout {
             anchors.centerIn: parent
-            spacing: 12
+            spacing: Motion.spacing.large
 
             MaterialIcon {
                 text: card.iconName
@@ -262,7 +262,7 @@ Item {
             id: dayContent
 
             anchors.centerIn: parent
-            spacing: 6
+            spacing: Motion.spacing.small
 
             StyledText {
                 Layout.alignment: Qt.AlignHCenter

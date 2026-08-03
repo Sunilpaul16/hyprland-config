@@ -62,7 +62,7 @@ Item {
             id: pillLayout
 
             anchors.centerIn: parent
-            spacing: 6
+            spacing: Motion.spacing.small
 
             StyledText {
                 id: label
@@ -161,7 +161,7 @@ Item {
 
             Flickable {
                 anchors.fill: parent
-                anchors.margins: 2
+                anchors.margins: Motion.spacing.micro
                 contentHeight: menuColumn.implicitHeight
                 interactive: contentHeight > height
                 clip: true
@@ -190,9 +190,9 @@ Item {
 
                             RowLayout {
                                 anchors.fill: parent
-                                anchors.leftMargin: 16
-                                anchors.rightMargin: 10
-                                spacing: 8
+                                anchors.leftMargin: Motion.spacing.xlarge
+                                anchors.rightMargin: Motion.spacing.medium
+                                spacing: Motion.spacing.normal
 
                                 StyledText {
                                     id: itemLabel

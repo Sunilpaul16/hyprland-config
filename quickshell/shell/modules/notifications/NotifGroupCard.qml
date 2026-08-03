@@ -29,7 +29,7 @@ Item {
     ColumnLayout {
         id: column
         width: parent.width
-        spacing: 8
+        spacing: Motion.spacing.normal
 
         // Group header — only shown once there's more than one notification to collapse
         Rectangle {
@@ -44,7 +44,7 @@ Item {
             RowLayout {
                 id: header
                 anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
-                spacing: 8
+                spacing: Motion.spacing.normal
 
                 // Representative icon
                 Rectangle {
@@ -108,7 +108,7 @@ Item {
 
                     RowLayout {
                         anchors.centerIn: parent
-                        spacing: 2
+                        spacing: Motion.spacing.micro
 
                         StyledText {
                             id: countLabel

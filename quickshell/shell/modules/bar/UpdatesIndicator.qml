@@ -35,7 +35,7 @@ Item {
         id: count
 
         anchors.left: icon.right
-        anchors.leftMargin: 4
+        anchors.leftMargin: Motion.spacing.tiny
         anchors.verticalCenter: parent.verticalCenter
         text: Updates.total > 99 ? "99+" : Updates.total
         color: hoverArea.containsMouse ? Colors.text : Colors.textMuted

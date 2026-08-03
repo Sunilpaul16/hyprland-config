@@ -27,7 +27,7 @@ Rectangle {
     RowLayout {
         id: layout
         anchors.centerIn: parent
-        spacing: 8
+        spacing: Motion.spacing.normal
 
         MaterialIcon {
             text: root.iconName

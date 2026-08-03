@@ -12,7 +12,7 @@ ColumnLayout {
 
     signal addRequested(toggleId: string)
 
-    spacing: 6
+    spacing: Motion.spacing.small
 
     StyledText {
         text: "Hidden"
@@ -22,7 +22,7 @@ ColumnLayout {
 
     Flow {
         Layout.fillWidth: true
-        spacing: 8
+        spacing: Motion.spacing.normal
 
         Repeater {
             model: root.models

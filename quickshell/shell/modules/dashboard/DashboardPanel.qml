@@ -147,7 +147,7 @@ Scope {
 
                             anchors.fill: parent
                             anchors.margins: 20
-                            spacing: 16
+                            spacing: Motion.spacing.xlarge
 
                             DashboardTabBar {
                                 model: root.tabModel

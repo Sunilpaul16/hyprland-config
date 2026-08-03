@@ -23,7 +23,7 @@ Rectangle {
         id: grid
 
         anchors.fill: parent
-        anchors.margins: 16
+        anchors.margins: Motion.spacing.xlarge
         showTodayButton: false
         cellSpacing: 5
         // Row height and marker size only; cell width stretches to fill the column
@@ -44,7 +44,7 @@ Rectangle {
         id: collapsedRow
 
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 12 }
-        spacing: 8
+        spacing: Motion.spacing.normal
 
         opacity: root.collapsed ? 1 : 0
         visible: opacity > 0

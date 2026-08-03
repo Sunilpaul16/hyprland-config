@@ -18,8 +18,8 @@ Item {
 
         anchors.fill: parent
         columns: 6
-        rowSpacing: 12
-        columnSpacing: 12
+        rowSpacing: Motion.spacing.large
+        columnSpacing: Motion.spacing.large
 
         // Weather spans the DateTime + part of the Calendar column beneath it
         SmallWeatherCard {
@@ -113,7 +113,7 @@ Item {
             }
 
             StyledText {
-                Layout.topMargin: 6
+                Layout.topMargin: Motion.spacing.small
                 Layout.alignment: Qt.AlignHCenter
                 visible: Time.use12Hour
                 text: Time.amPmStr
@@ -123,7 +123,7 @@ Item {
             }
 
             StyledText {
-                Layout.topMargin: 10
+                Layout.topMargin: Motion.spacing.medium
                 Layout.alignment: Qt.AlignHCenter
                 text: Time.dateStr
                 color: Colors.textMuted
@@ -144,7 +144,7 @@ Item {
             id: cal
 
             anchors.fill: parent
-            anchors.margins: 16
+            anchors.margins: Motion.spacing.xlarge
             cellSize: 26
             // True circle on the centred 26x26 marker
             dayRadius: cellSize / 2

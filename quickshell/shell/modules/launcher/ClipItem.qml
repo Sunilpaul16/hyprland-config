@@ -57,7 +57,7 @@ Item {
     // Row background
     Rectangle {
         anchors.fill: parent
-        anchors.margins: 2
+        anchors.margins: Motion.spacing.micro
         radius: Motion.rounding.item
         color: root.isAction ? (root.isCurrent ? Colors.layer : "transparent") : (root.isCurrent ? Colors.primary : "transparent")
         border.width: root.isAction ? 1 : 0
@@ -68,9 +68,9 @@ Item {
         // Icon/thumbnail + text
         Row {
             anchors.fill: parent
-            anchors.leftMargin: 12
-            anchors.rightMargin: 12
-            spacing: 12
+            anchors.leftMargin: Motion.spacing.large
+            anchors.rightMargin: Motion.spacing.large
+            spacing: Motion.spacing.large
 
             // Icon/thumbnail slot
             Item {

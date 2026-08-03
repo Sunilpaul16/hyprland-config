@@ -16,7 +16,7 @@ Item {
     Row {
         id: row
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 6
+        spacing: Motion.spacing.small
 
         StyledText {
             id: playPauseIcon

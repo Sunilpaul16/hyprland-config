@@ -64,7 +64,7 @@ Item {
         MaterialIcon {
             id: searchIcon
             anchors.left: parent.left
-            anchors.leftMargin: 16
+            anchors.leftMargin: Motion.spacing.xlarge
             anchors.verticalCenter: parent.verticalCenter
             text: "search"
             color: Colors.textMuted
@@ -73,7 +73,7 @@ Item {
 
         StyledText {
             anchors.left: searchIcon.right
-            anchors.leftMargin: 12
+            anchors.leftMargin: Motion.spacing.large
             anchors.verticalCenter: parent.verticalCenter
             visible: searchInput.text.length === 0
             text: "Search settings"
@@ -86,7 +86,7 @@ Item {
 
             anchors.fill: parent
             anchors.leftMargin: 48
-            anchors.rightMargin: 16
+            anchors.rightMargin: Motion.spacing.xlarge
             verticalAlignment: TextInput.AlignVCenter
             color: Colors.text
             font.pixelSize: Motion.fontSize.title
@@ -149,7 +149,7 @@ Item {
         StyledText {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            anchors.topMargin: 24
+            anchors.topMargin: Motion.spacing.section
             visible: root.filteredPages.length === 0
             text: "No settings found"
             color: Colors.textMuted

@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import "../../services"
 
 // Numeric setting control — readout plus a slider. Externally driven like the
 // controls it wraps: dragging emits moved(), the owner writes the value back
@@ -23,7 +24,7 @@ RowLayout {
 
     signal moved(real v)
 
-    spacing: 12
+    spacing: Motion.spacing.large
 
     ValueLabel {
         Layout.preferredWidth: root.labelWidth

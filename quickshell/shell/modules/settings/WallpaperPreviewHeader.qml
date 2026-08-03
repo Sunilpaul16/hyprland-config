@@ -14,7 +14,7 @@ ColumnLayout {
     // Span the page column explicitly — Layout.fillWidth alone leaves this nested layout at its implicit width, centring the children on the preview instead
     Layout.preferredWidth: cappedWidth
 
-    spacing: 14
+    spacing: Motion.spacing.wide
 
     // Wallpaper preview
     Item {
@@ -53,7 +53,7 @@ ColumnLayout {
         ColumnLayout {
             anchors.centerIn: parent
             visible: previewImage.status !== Image.Ready
-            spacing: 4
+            spacing: Motion.spacing.tiny
 
             MaterialIcon {
                 Layout.alignment: Qt.AlignHCenter
@@ -74,7 +74,7 @@ ColumnLayout {
     // Sub-navigation
     RowLayout {
         Layout.alignment: Qt.AlignHCenter
-        spacing: 10
+        spacing: Motion.spacing.medium
 
         PillButton {
             live: true

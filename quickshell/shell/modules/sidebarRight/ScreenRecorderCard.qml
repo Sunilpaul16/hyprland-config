@@ -15,12 +15,12 @@ Rectangle {
     ColumnLayout {
         id: column
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 16 }
-        spacing: 16
+        spacing: Motion.spacing.xlarge
 
         // --- Screen Recorder ---
         RowLayout {
             Layout.fillWidth: true
-            spacing: 12
+            spacing: Motion.spacing.large
 
             MaterialIcon {
                 text: Recorder.active ? "stop_circle" : "screen_record"
@@ -30,10 +30,10 @@ Rectangle {
 
             ColumnLayout {
                 Layout.fillWidth: true
-                spacing: 2
+                spacing: Motion.spacing.micro
 
                 RowLayout {
-                    spacing: 6
+                    spacing: Motion.spacing.small
 
                     StyledText {
                         text: "Screen Recorder"
@@ -77,7 +77,7 @@ Rectangle {
             // SplitButton: main segment starts/stops, chevron picks the mode (comparison.md #49)
             RowLayout {
                 Layout.alignment: Qt.AlignVCenter
-                spacing: 4
+                spacing: Motion.spacing.tiny
 
                 Rectangle {
                     id: mainSegment
@@ -157,7 +157,7 @@ Rectangle {
         ColumnLayout {
             id: recordingsSection
             Layout.fillWidth: true
-            spacing: 8
+            spacing: Motion.spacing.normal
 
             property bool expanded: false
             onExpandedChanged: if (expanded) Recordings.refresh()
@@ -171,7 +171,7 @@ Rectangle {
                     id: headerRow
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    spacing: 6
+                    spacing: Motion.spacing.small
 
                     MaterialIcon {
                         text: "video_library"
@@ -212,11 +212,11 @@ Rectangle {
             ColumnLayout {
                 Layout.fillWidth: true
                 visible: recordingsSection.expanded
-                spacing: 6
+                spacing: Motion.spacing.small
 
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
-                    Layout.topMargin: 4
+                    Layout.topMargin: Motion.spacing.tiny
                     visible: Recordings.entries.length === 0
                     text: "No recordings found"
                     color: Colors.textMuted
@@ -230,7 +230,7 @@ Rectangle {
                     visible: Recordings.entries.length > 0
                     interactive: contentHeight > height
                     clip: true
-                    spacing: 6
+                    spacing: Motion.spacing.small
 
                     model: ScriptModel {
                         values: Recordings.entries

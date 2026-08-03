@@ -17,7 +17,7 @@ SettingRow {
     PwObjectTracker { objects: [root.node] }
 
     RowLayout {
-        spacing: 8
+        spacing: Motion.spacing.normal
 
         MaterialIcon {
             text: root.node.audio.muted ? "volume_off" : "volume_up"

@@ -96,13 +96,13 @@ Scope {
                             anchors.top: parent.top
                             anchors.left: parent.left
                             anchors.right: parent.right
-                            anchors.margins: 24
-                            spacing: 12
+                            anchors.margins: Motion.spacing.section
+                            spacing: Motion.spacing.large
 
                             // Icon + main message
                             RowLayout {
                                 Layout.fillWidth: true
-                                spacing: 12
+                                spacing: Motion.spacing.large
 
                                 IconImage {
                                     Layout.preferredWidth: 32
@@ -142,7 +142,7 @@ Scope {
                                 TextInput {
                                     id: passwordInput
                                     anchors.fill: parent
-                                    anchors.margins: 10
+                                    anchors.margins: Motion.spacing.medium
                                     verticalAlignment: TextInput.AlignVCenter
                                     color: Colors.text
                                     font.pixelSize: Motion.fontSize.label
@@ -164,8 +164,8 @@ Scope {
                             // Cancel / Authenticate
                             RowLayout {
                                 Layout.fillWidth: true
-                                Layout.topMargin: 4
-                                spacing: 8
+                                Layout.topMargin: Motion.spacing.tiny
+                                spacing: Motion.spacing.normal
 
                                 Item { Layout.fillWidth: true }
 

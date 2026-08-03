@@ -77,12 +77,12 @@ Rectangle {
             id: textCol
             anchors.left: iconSlot.right
             anchors.right: parent.right
-            anchors.leftMargin: 8
-            spacing: 2
+            anchors.leftMargin: Motion.spacing.normal
+            spacing: Motion.spacing.micro
 
             Row {
                 width: parent.width
-                spacing: 6
+                spacing: Motion.spacing.small
 
                 StyledText {
                     id: summaryText

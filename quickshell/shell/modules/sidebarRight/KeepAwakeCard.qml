@@ -14,7 +14,7 @@ Rectangle {
     RowLayout {
         id: row
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 16 }
-        spacing: 12
+        spacing: Motion.spacing.large
 
         MaterialIcon {
             text: "coffee"
@@ -24,7 +24,7 @@ Rectangle {
 
         ColumnLayout {
             Layout.fillWidth: true
-            spacing: 2
+            spacing: Motion.spacing.micro
 
             StyledText {
                 text: "Keep Awake"
@@ -39,7 +39,7 @@ Rectangle {
             }
 
             Rectangle {
-                Layout.topMargin: 6
+                Layout.topMargin: Motion.spacing.small
                 radius: Motion.rounding.small
                 color: Colors.background
                 implicitWidth: activeSinceText.implicitWidth + 16

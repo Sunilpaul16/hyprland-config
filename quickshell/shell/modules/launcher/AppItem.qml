@@ -19,7 +19,7 @@ Item {
     // Row background
     Rectangle {
         anchors.fill: parent
-        anchors.margins: 2
+        anchors.margins: Motion.spacing.micro
         radius: Motion.rounding.item
         color: root.isCurrent ? Colors.primary : "transparent"
 
@@ -28,9 +28,9 @@ Item {
         // Icon + name/comment
         Row {
             anchors.fill: parent
-            anchors.leftMargin: 12
-            anchors.rightMargin: 12
-            spacing: 12
+            anchors.leftMargin: Motion.spacing.large
+            anchors.rightMargin: Motion.spacing.large
+            spacing: Motion.spacing.large
 
             IconImage {
                 anchors.verticalCenter: parent.verticalCenter
@@ -42,7 +42,7 @@ Item {
             Column {
                 anchors.verticalCenter: parent.verticalCenter
                 width: parent.width - 36 - parent.spacing
-                spacing: 2
+                spacing: Motion.spacing.micro
 
                 StyledText {
                     width: parent.width

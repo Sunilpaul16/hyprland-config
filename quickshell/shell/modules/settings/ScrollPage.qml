@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import "../../services"
 
 // Page contract for a scrolling stack of setting groups — children land in a
 // centred column capped at PageBase's content width
@@ -21,7 +22,7 @@ PageBase {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             width: root.cappedWidth
-            spacing: 14
+            spacing: Motion.spacing.wide
         }
     }
 }

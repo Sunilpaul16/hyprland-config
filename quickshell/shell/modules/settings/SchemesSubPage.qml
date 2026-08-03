@@ -47,7 +47,7 @@ ScrollPage {
 
     ColumnLayout {
         Layout.fillWidth: true
-        spacing: 4
+        spacing: Motion.spacing.tiny
 
         Repeater {
             model: Schemes.list
@@ -84,9 +84,9 @@ ScrollPage {
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 12
-                    anchors.rightMargin: 12
-                    spacing: 12
+                    anchors.leftMargin: Motion.spacing.large
+                    anchors.rightMargin: Motion.spacing.large
+                    spacing: Motion.spacing.large
 
                     // Two-tone preview in the preset's own colours: its surface
                     // as the disc, its primary filling the right half

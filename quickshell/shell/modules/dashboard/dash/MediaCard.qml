@@ -26,8 +26,8 @@ Rectangle {
         id: content
 
         anchors.fill: parent
-        anchors.margins: 16
-        spacing: 10
+        anchors.margins: Motion.spacing.xlarge
+        spacing: Motion.spacing.medium
 
         // Cover art, wrapped in a playback-progress arc
         Item {
@@ -80,7 +80,7 @@ Rectangle {
 
         ColumnLayout {
             Layout.fillWidth: true
-            spacing: 2
+            spacing: Motion.spacing.micro
 
             StyledText {
                 Layout.fillWidth: true
@@ -125,8 +125,8 @@ Rectangle {
         // Transport controls
         RowLayout {
             Layout.fillWidth: true
-            Layout.topMargin: 4
-            spacing: 6
+            Layout.topMargin: Motion.spacing.tiny
+            spacing: Motion.spacing.small
 
             MediaTransportButton {
                 glyph: "skip_previous"
@@ -153,7 +153,7 @@ Rectangle {
         AnimatedImage {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.margins: 6
+            Layout.margins: Motion.spacing.small
             visible: Config.dashboard.media.gifEnabled
             source: "file://" + root.gifPath
             speed: Config.dashboard.media.gifSpeed

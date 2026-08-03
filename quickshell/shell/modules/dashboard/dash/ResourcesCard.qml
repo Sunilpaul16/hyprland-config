@@ -29,8 +29,8 @@ Rectangle {
         id: content
 
         anchors.fill: parent
-        anchors.margins: 12
-        spacing: 10
+        anchors.margins: Motion.spacing.large
+        spacing: Motion.spacing.medium
 
         Ring {
             value: SystemUsage.cpuPercentage

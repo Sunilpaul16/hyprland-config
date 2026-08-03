@@ -42,9 +42,9 @@ Rectangle {
         id: layout
 
         anchors.fill: parent
-        anchors.leftMargin: 14
-        anchors.rightMargin: 14
-        spacing: 12
+        anchors.leftMargin: Motion.spacing.wide
+        anchors.rightMargin: Motion.spacing.wide
+        spacing: Motion.spacing.large
 
         // Icon chip
         Rectangle {

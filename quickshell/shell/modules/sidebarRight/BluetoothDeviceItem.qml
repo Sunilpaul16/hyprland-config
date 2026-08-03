@@ -10,7 +10,7 @@ RowLayout {
 
     required property BluetoothDevice device
 
-    spacing: 10
+    spacing: Motion.spacing.medium
 
     MaterialIcon {
         text: root.device.connected ? "bluetooth_connected" : "bluetooth"

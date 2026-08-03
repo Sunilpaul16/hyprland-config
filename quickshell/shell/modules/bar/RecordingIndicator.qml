@@ -15,7 +15,7 @@ Item {
     RowLayout {
         id: row
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 6
+        spacing: Motion.spacing.small
 
         // Blinking dot
         Rectangle {

@@ -40,7 +40,7 @@ Item {
         readonly property int currentItemWidth: 190
 
         orientation: ListView.Horizontal
-        spacing: 16
+        spacing: Motion.spacing.xlarge
         // Deliberately unclipped — a Shape renders nothing under a clipping ancestor, and the delegates round corners with one; they fade at the row's edges instead
         clip: false
 
@@ -82,7 +82,7 @@ Item {
     StyledText {
         id: caption
         anchors.top: row.bottom
-        anchors.topMargin: 4
+        anchors.topMargin: Motion.spacing.tiny
         text: (row.currentIndex >= 0 && root.results[row.currentIndex]) ? root.results[row.currentIndex].label : ""
         font.pixelSize: Motion.fontSize.label
         elide: Text.ElideMiddle

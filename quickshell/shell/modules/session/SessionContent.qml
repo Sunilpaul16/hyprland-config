@@ -5,7 +5,7 @@ import "../../services"
 Column {
     id: root
 
-    spacing: 16
+    spacing: Motion.spacing.xlarge
 
     // Focus the first action button — called once from SessionScreen.qml
     // when the drawer opens, so Up/Down/Enter work without a click first

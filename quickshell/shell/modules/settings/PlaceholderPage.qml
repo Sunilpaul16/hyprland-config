@@ -7,7 +7,7 @@ import "../../components"
 PageBase {
     ColumnLayout {
         anchors.centerIn: parent
-        spacing: 6
+        spacing: Motion.spacing.small
 
         MaterialIcon {
             Layout.alignment: Qt.AlignHCenter

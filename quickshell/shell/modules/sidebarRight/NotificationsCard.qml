@@ -56,7 +56,7 @@ Rectangle {
     ColumnLayout {
         id: column
         anchors { fill: parent; margins: 16 }
-        spacing: 12
+        spacing: Motion.spacing.large
 
         // Header — clear-all moved to the footer row
         StyledText {
@@ -78,7 +78,7 @@ Rectangle {
             ColumnLayout {
                 anchors.centerIn: parent
                 width: parent.width * 0.8
-                spacing: 24
+                spacing: Motion.spacing.section
 
                 opacity: root.isEmpty ? 1 : 0
                 visible: opacity > 0
@@ -114,7 +114,7 @@ Rectangle {
                 anchors.fill: parent
                 visible: !root.isEmpty
                 interactive: contentHeight > height
-                spacing: 8
+                spacing: Motion.spacing.normal
                 clip: true
 
                 model: ScriptModel {
@@ -161,7 +161,7 @@ Rectangle {
         // Footer: DND toggle · count · clear all
         RowLayout {
             Layout.fillWidth: true
-            spacing: 6
+            spacing: Motion.spacing.small
 
             StatusButton {
                 Layout.preferredWidth: 46

@@ -31,7 +31,7 @@ Item {
     // Icon + title
     Row {
         id: row
-        spacing: 8
+        spacing: Motion.spacing.normal
         opacity: root.isGloballyActive ? 1 : 0.6
 
         Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }

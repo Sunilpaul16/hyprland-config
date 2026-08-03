@@ -133,9 +133,9 @@ Scope {
                         // Card stack, no outer Flickable — the notifications card fills the slack and scrolls internally, so the cards below stay pinned to the bottom
                         ColumnLayout {
                             anchors.fill: parent
-                            anchors.margins: 12
+                            anchors.margins: Motion.spacing.large
 
-                            spacing: 12
+                            spacing: Motion.spacing.large
 
                             SystemHeaderCard { Layout.fillWidth: true }
                             QuickTogglesCard { Layout.fillWidth: true }
@@ -145,8 +145,8 @@ Scope {
                             // Separates the utility cards from the notifications region
                             Rectangle {
                                 Layout.fillWidth: true
-                                Layout.topMargin: 4
-                                Layout.bottomMargin: 4
+                                Layout.topMargin: Motion.spacing.tiny
+                                Layout.bottomMargin: Motion.spacing.tiny
                                 implicitHeight: 1
                                 color: Colors.outline
                                 opacity: 0.35

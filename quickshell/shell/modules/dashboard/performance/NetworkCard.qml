@@ -63,7 +63,7 @@ Rectangle {
         spacing: 0
 
         RowLayout {
-            spacing: 6
+            spacing: Motion.spacing.small
 
             MaterialIcon {
                 text: "swap_vert"
@@ -82,8 +82,8 @@ Rectangle {
         Item {
             id: sparkline
 
-            Layout.topMargin: 10
-            Layout.bottomMargin: 8
+            Layout.topMargin: Motion.spacing.medium
+            Layout.bottomMargin: Motion.spacing.normal
             Layout.fillWidth: true
             Layout.fillHeight: true
 
@@ -162,7 +162,7 @@ Rectangle {
         required property color valueColor
 
         Layout.fillWidth: true
-        spacing: 6
+        spacing: Motion.spacing.small
 
         MaterialIcon {
             text: statRow.iconName

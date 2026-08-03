@@ -34,7 +34,7 @@ Item {
 
         anchors.centerIn: parent
         visible: !Media.hasPlayer
-        spacing: 12
+        spacing: Motion.spacing.large
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter
@@ -67,7 +67,7 @@ Item {
         // Title block, seek bar, transport controls
         ColumnLayout {
             Layout.preferredWidth: 360
-            spacing: 4
+            spacing: Motion.spacing.tiny
 
             StyledText {
                 Layout.fillWidth: true
@@ -95,9 +95,9 @@ Item {
 
             // Seek row — labels are width-locked so ticking digits can't jog the slider
             RowLayout {
-                Layout.topMargin: 24
+                Layout.topMargin: Motion.spacing.section
                 Layout.fillWidth: true
-                spacing: 8
+                spacing: Motion.spacing.normal
 
                 TextMetrics {
                     id: timeMetrics
@@ -140,9 +140,9 @@ Item {
 
             // Transport controls
             RowLayout {
-                Layout.topMargin: 16
+                Layout.topMargin: Motion.spacing.xlarge
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 10
+                spacing: Motion.spacing.medium
 
                 MediaTransportButton {
                     glyph: "shuffle"
@@ -208,6 +208,6 @@ Item {
 
         anchors.top: parent.top
         anchors.right: parent.right
-        anchors.margins: 16
+        anchors.margins: Motion.spacing.xlarge
     }
 }

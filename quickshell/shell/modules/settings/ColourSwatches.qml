@@ -23,7 +23,7 @@ Flow {
         { color: Colors.errorContainer, name: "errorContainer" }
     ]
 
-    spacing: 8
+    spacing: Motion.spacing.normal
 
     Repeater {
         model: root.roles

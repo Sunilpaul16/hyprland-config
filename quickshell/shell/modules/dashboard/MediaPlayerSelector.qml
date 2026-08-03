@@ -32,7 +32,7 @@ Item {
         RowLayout {
             id: pillRow
             anchors.centerIn: parent
-            spacing: 6
+            spacing: Motion.spacing.small
 
             StyledText {
                 text: Media.hasManualPlayer ? (Media.activePlayer?.identity || Media.activePlayer?.dbusName || "Unknown") : "Auto"
@@ -63,7 +63,7 @@ Item {
         visible: root.menuOpen
         anchors.top: pill.bottom
         anchors.right: parent.right
-        anchors.topMargin: 6
+        anchors.topMargin: Motion.spacing.small
         implicitWidth: Math.max(pill.implicitWidth, list.implicitWidth + 12)
         implicitHeight: list.implicitHeight + 12
         radius: Motion.rounding.normal
@@ -78,8 +78,8 @@ Item {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.margins: 6
-            spacing: 2
+            anchors.margins: Motion.spacing.small
+            spacing: Motion.spacing.micro
 
             PlayerMenuEntry {
                 label: "Auto"
@@ -125,10 +125,10 @@ Item {
             id: entryRow
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.left
-            anchors.leftMargin: 10
+            anchors.leftMargin: Motion.spacing.medium
             anchors.right: parent.right
-            anchors.rightMargin: 10
-            spacing: 8
+            anchors.rightMargin: Motion.spacing.medium
+            spacing: Motion.spacing.normal
 
             StyledText {
                 text: entry.selected ? "\u{25CF}" : ""

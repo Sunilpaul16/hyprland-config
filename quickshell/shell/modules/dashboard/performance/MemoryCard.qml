@@ -33,10 +33,10 @@ Rectangle {
         id: layout
 
         anchors.centerIn: parent
-        spacing: 4
+        spacing: Motion.spacing.tiny
 
         RowLayout {
-            spacing: 6
+            spacing: Motion.spacing.small
 
             MaterialIcon {
                 text: "memory_alt"
@@ -53,7 +53,7 @@ Rectangle {
         }
 
         CircularProgress {
-            Layout.topMargin: 8
+            Layout.topMargin: Motion.spacing.normal
             Layout.alignment: Qt.AlignHCenter
 
             implicitSize: usageColumn.implicitHeight + thickness + 26

@@ -17,15 +17,15 @@ Item {
 
         anchors.left: parent.left
         anchors.right: parent.right
-        spacing: 12
+        spacing: Motion.spacing.large
 
         ColumnLayout {
             Layout.fillWidth: true
-            spacing: 12
+            spacing: Motion.spacing.large
 
             // Hero row
             RowLayout {
-                spacing: 12
+                spacing: Motion.spacing.large
 
                 CardLoader {
                     active: true
@@ -57,7 +57,7 @@ Item {
 
             // Detail row
             RowLayout {
-                spacing: 12
+                spacing: Motion.spacing.large
 
                 CardLoader {
                     active: Storage.disks.length > 0

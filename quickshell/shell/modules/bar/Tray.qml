@@ -41,7 +41,7 @@ Item {
     Row {
         id: row
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 10
+        spacing: Motion.spacing.medium
 
         Repeater {
             model: root.displayedItems

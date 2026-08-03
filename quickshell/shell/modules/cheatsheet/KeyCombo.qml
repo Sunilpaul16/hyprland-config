@@ -8,7 +8,7 @@ Row {
 
     required property var rowData
 
-    spacing: 4
+    spacing: Motion.spacing.tiny
 
     // Special key display labels
     readonly property var keyLabels: ({
@@ -56,7 +56,7 @@ Row {
 
         Row {
             required property string modelData
-            spacing: 4
+            spacing: Motion.spacing.tiny
 
             KeyCap { label: modelData }
             Item {

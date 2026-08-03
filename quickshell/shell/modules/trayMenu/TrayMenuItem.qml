@@ -20,7 +20,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: 4
+        anchors.margins: Motion.spacing.tiny
         height: 1
         color: Colors.outline
         opacity: 0.5
@@ -39,10 +39,10 @@ Item {
             id: row
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.left
-            anchors.leftMargin: 10
+            anchors.leftMargin: Motion.spacing.medium
             anchors.right: parent.right
-            anchors.rightMargin: 10
-            spacing: 8
+            anchors.rightMargin: Motion.spacing.medium
+            spacing: Motion.spacing.normal
             opacity: root.entry.enabled ? 1 : 0.4
 
             // Checkbox / radio glyph

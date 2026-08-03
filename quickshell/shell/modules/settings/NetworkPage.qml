@@ -79,7 +79,7 @@ ScrollPage {
             subtext: Vpn.available ? "" : "nordvpn CLI not responding"
 
             RowLayout {
-                spacing: 8
+                spacing: Motion.spacing.normal
 
                 ValueLabel {
                     text: Vpn.statusLabel

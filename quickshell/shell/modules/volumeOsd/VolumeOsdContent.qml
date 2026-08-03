@@ -7,7 +7,7 @@ import "../../components"
 Column {
     id: root
 
-    spacing: 16
+    spacing: Motion.spacing.xlarge
 
     readonly property string speakerIcon: {
         if (Audio.muted)

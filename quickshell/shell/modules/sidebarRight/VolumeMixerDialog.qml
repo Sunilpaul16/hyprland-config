@@ -12,8 +12,8 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 16
-        spacing: 12
+        anchors.margins: Motion.spacing.xlarge
+        spacing: Motion.spacing.large
 
         // Header
         RowLayout {
@@ -42,11 +42,11 @@ Rectangle {
             ColumnLayout {
                 id: sections
                 width: parent.width
-                spacing: 16
+                spacing: Motion.spacing.xlarge
 
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 10
+                    spacing: Motion.spacing.medium
                     visible: Audio.outputAppNodes.length > 0
 
                     StyledText { text: "Playing"; color: Colors.textMuted; font.pixelSize: Motion.fontSize.small }
@@ -63,7 +63,7 @@ Rectangle {
 
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 10
+                    spacing: Motion.spacing.medium
                     visible: Audio.inputAppNodes.length > 0
 
                     StyledText { text: "Recording"; color: Colors.textMuted; font.pixelSize: Motion.fontSize.small }
@@ -80,7 +80,7 @@ Rectangle {
 
                 StyledText {
                     Layout.fillWidth: true
-                    Layout.topMargin: 24
+                    Layout.topMargin: Motion.spacing.section
                     horizontalAlignment: Text.AlignHCenter
                     visible: Audio.outputAppNodes.length === 0 && Audio.inputAppNodes.length === 0
                     text: "No apps are using audio right now"

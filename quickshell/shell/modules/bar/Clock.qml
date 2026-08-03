@@ -12,7 +12,7 @@ Item {
     Row {
         id: row
         anchors.centerIn: parent
-        spacing: 6
+        spacing: Motion.spacing.small
 
         StyledText {
             anchors.verticalCenter: parent.verticalCenter

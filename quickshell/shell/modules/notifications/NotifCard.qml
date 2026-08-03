@@ -130,7 +130,7 @@ Rectangle {
             anchors.right: parent.right
             anchors.rightMargin: content.actionsReserve
             anchors.top: parent.top
-            anchors.leftMargin: 8
+            anchors.leftMargin: Motion.spacing.normal
             visible: card.modelData.expanded && card.modelData.appName.length > 0
             height: visible ? implicitHeight : 0
             text: card.modelData.appName
@@ -146,13 +146,13 @@ Rectangle {
             anchors.right: parent.right
             anchors.rightMargin: content.actionsReserve
             anchors.top: appNameText.bottom
-            anchors.leftMargin: 8
-            spacing: 2
+            anchors.leftMargin: Motion.spacing.normal
+            spacing: Motion.spacing.micro
 
             // Summary · time
             Row {
                 width: parent.width
-                spacing: 6
+                spacing: Motion.spacing.small
 
                 StyledText {
                     id: summaryText
@@ -215,7 +215,7 @@ Rectangle {
 
                 RowLayout {
                     anchors.fill: parent
-                    spacing: 8
+                    spacing: Motion.spacing.normal
 
                     CardButton {
                         Layout.fillWidth: true

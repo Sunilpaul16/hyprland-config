@@ -17,7 +17,7 @@ Rectangle {
         id: content
 
         anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; margins: 16 }
-        spacing: 8
+        spacing: Motion.spacing.normal
 
         StyledText {
             text: SysInfo.osGlyph

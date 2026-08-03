@@ -6,7 +6,7 @@ import "../../components"
 // Heading above a run of SettingRows
 StyledText {
     Layout.fillWidth: true
-    Layout.topMargin: 8
+    Layout.topMargin: Motion.spacing.normal
     Layout.bottomMargin: -6
     color: Colors.primary
     font.pixelSize: Motion.fontSize.label

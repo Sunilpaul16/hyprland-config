@@ -5,7 +5,7 @@ import "../../services"
 // Terminal palette tuning — bends kitty's 16-colour ANSI set toward the accent.
 // Spacing matches ScrollPage's own column so wrapping these two changes nothing
 ColumnLayout {
-    spacing: 14
+    spacing: Motion.spacing.wide
 
     SectionLabel {
         text: "Terminal colours"

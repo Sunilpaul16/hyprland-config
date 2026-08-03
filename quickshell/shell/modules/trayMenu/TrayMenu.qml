@@ -115,8 +115,8 @@ Scope {
                             anchors.top: parent.top
                             anchors.left: parent.left
                             anchors.right: parent.right
-                            anchors.margins: 6
-                            spacing: 2
+                            anchors.margins: Motion.spacing.small
+                            spacing: Motion.spacing.micro
 
                             Repeater {
                                 id: entryRepeater

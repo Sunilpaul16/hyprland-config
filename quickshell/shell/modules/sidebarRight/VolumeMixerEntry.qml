@@ -11,7 +11,7 @@ RowLayout {
 
     required property PwNode node
 
-    spacing: 10
+    spacing: Motion.spacing.medium
 
     PwObjectTracker { objects: [root.node] }
 
@@ -25,7 +25,7 @@ RowLayout {
 
     ColumnLayout {
         Layout.fillWidth: true
-        spacing: 2
+        spacing: Motion.spacing.micro
 
         StyledText {
             Layout.fillWidth: true
@@ -36,7 +36,7 @@ RowLayout {
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: Motion.spacing.normal
 
             MaterialIcon {
                 text: root.node.audio.muted ? "volume_off" : "volume_up"

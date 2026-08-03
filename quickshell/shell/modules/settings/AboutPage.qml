@@ -25,7 +25,7 @@ ScrollPage {
 
             anchors.centerIn: parent
             width: parent.width - 30 * 2
-            spacing: 4
+            spacing: Motion.spacing.tiny
 
             StyledText {
                 Layout.alignment: Qt.AlignHCenter
@@ -37,7 +37,7 @@ ScrollPage {
 
             StyledText {
                 Layout.alignment: Qt.AlignHCenter
-                Layout.topMargin: 8
+                Layout.topMargin: Motion.spacing.normal
                 text: SysInfo.osName
                 font.pixelSize: Motion.fontSize.xlarge
             }

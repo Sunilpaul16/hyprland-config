@@ -35,7 +35,7 @@ Rectangle {
         anchors.fill: parent
         anchors.leftMargin: 18
         anchors.rightMargin: 18
-        spacing: 14
+        spacing: Motion.spacing.wide
 
         ColumnLayout {
             Layout.fillWidth: true

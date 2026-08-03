@@ -197,7 +197,7 @@ Item {
     Rectangle {
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.margins: 10
+        anchors.margins: Motion.spacing.medium
         width: 30
         height: 30
         radius: width / 2

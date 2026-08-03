@@ -50,7 +50,7 @@ Scope {
                     // Active window pill
                     SectionPill {
                         anchors.left: parent.left
-                        anchors.leftMargin: 14
+                        anchors.leftMargin: Motion.spacing.wide
                         anchors.verticalCenter: parent.verticalCenter
                         visible: Config.bar.showWindowTitle && activeWindow.hasContent
 
@@ -65,7 +65,7 @@ Scope {
                         id: centerRow
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
-                        spacing: 8
+                        spacing: Motion.spacing.normal
 
                         SectionPill {
                             Layout.alignment: Qt.AlignVCenter
@@ -128,7 +128,7 @@ Scope {
                         reveal: workspaceScrollZone.containsMouse
                         icon: "swap_horiz"
                         anchors.left: centerRow.right
-                        anchors.leftMargin: 6
+                        anchors.leftMargin: Motion.spacing.small
                         anchors.verticalCenter: parent.verticalCenter
                     }
 
@@ -136,9 +136,9 @@ Scope {
                     RowLayout {
                         id: rightRow
                         anchors.right: parent.right
-                        anchors.rightMargin: 14
+                        anchors.rightMargin: Motion.spacing.wide
                         anchors.verticalCenter: parent.verticalCenter
-                        spacing: 8
+                        spacing: Motion.spacing.normal
 
                         // Recording indicator
                         RecordingIndicator {
@@ -189,9 +189,9 @@ Scope {
                         id: volumeScrollZone
                         anchors {
                             left: centerRow.right
-                            leftMargin: 12
+                            leftMargin: Motion.spacing.large
                             right: rightRow.left
-                            rightMargin: 8
+                            rightMargin: Motion.spacing.normal
                             top: parent.top
                             bottom: parent.bottom
                         }

@@ -15,7 +15,7 @@ SettingRow {
     subtext: BluetoothStatus.deviceStatus(root.device)
 
     RowLayout {
-        spacing: 8
+        spacing: Motion.spacing.normal
 
         // Spinner while bluez works — pair and connect are both slow enough
         // to look like nothing happened

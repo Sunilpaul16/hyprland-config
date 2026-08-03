@@ -12,7 +12,7 @@ RowLayout {
     property bool confirmingDelete: false
 
     Layout.fillWidth: true
-    spacing: 4
+    spacing: Motion.spacing.tiny
 
     StyledText {
         Layout.fillWidth: true

@@ -42,7 +42,7 @@ ScrollPage {
     // Sub-navigation
     RowLayout {
         Layout.alignment: Qt.AlignHCenter
-        spacing: 10
+        spacing: Motion.spacing.medium
 
         PillButton {
             live: true
@@ -187,8 +187,8 @@ ScrollPage {
 
                     StyledText {
                         anchors.fill: parent
-                        anchors.leftMargin: 8
-                        anchors.rightMargin: 8
+                        anchors.leftMargin: Motion.spacing.normal
+                        anchors.rightMargin: Motion.spacing.normal
                         verticalAlignment: Text.AlignVCenter
                         text: tile.modelData.label
                         color: tile.isCurrent ? Colors.primary : Colors.text
@@ -200,7 +200,7 @@ ScrollPage {
                 MaterialIcon {
                     anchors.top: parent.top
                     anchors.right: parent.right
-                    anchors.margins: 6
+                    anchors.margins: Motion.spacing.small
                     visible: tile.modelData.isVideo
                     text: "movie"
                     color: Colors.text

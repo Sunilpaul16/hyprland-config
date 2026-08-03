@@ -22,7 +22,7 @@ Rectangle {
         id: layout
 
         anchors.centerIn: parent
-        spacing: 8
+        spacing: Motion.spacing.normal
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter

@@ -1,7 +1,7 @@
 pragma Singleton
 import QtQuick
 
-// Animation timing, plus the corner-radius and font-size ladders every module sizes against
+// Animation timing, plus the corner-radius, font-size and gap ladders every module sizes against
 QtObject {
     id: root
 
@@ -80,5 +80,19 @@ QtObject {
         readonly property int header: 18   // prominent headers
         readonly property int display: 20  // dashboard figures
         readonly property int xlarge: 22   // the largest non-numeral text
+    }
+
+    // Gap ladder, 2-24 — covers spacing, padding and margins alike; same rule again, pick a step rather than a raw literal
+    // 0 stays a literal: it means "no gap", never a tunable one
+    readonly property QtObject spacing: QtObject {
+        readonly property int micro: 2    // hairline gaps inside a chip or badge
+        readonly property int tiny: 4     // icon-to-label, dense inner rows
+        readonly property int small: 6    // between small inner elements
+        readonly property int normal: 8   // the default gap between siblings, the most common
+        readonly property int medium: 10  // roomier inner grouping
+        readonly property int large: 12   // between cards in a column
+        readonly property int wide: 14    // generous card padding
+        readonly property int xlarge: 16  // panel edge padding and top-level insets
+        readonly property int section: 24 // between major sections of a page
     }
 }

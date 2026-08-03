@@ -8,7 +8,7 @@ import "../../components"
 ColumnLayout {
     id: root
 
-    spacing: 12
+    spacing: Motion.spacing.large
 
     // Feature/state only — visibility/order/size live in Persistent.quickToggleLayout (comparison.md #24)
     readonly property list<QuickToggleModel> toggleModels: [

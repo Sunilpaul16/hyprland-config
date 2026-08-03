@@ -318,7 +318,7 @@ Item {
 
             StyledText {
                 anchors.left: parent.left
-                anchors.leftMargin: 16
+                anchors.leftMargin: Motion.spacing.xlarge
                 anchors.verticalCenter: parent.verticalCenter
                 text: "\u{1F50D}"
                 font.pixelSize: Motion.fontSize.subhead

@@ -15,8 +15,8 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 16
-        spacing: 12
+        anchors.margins: Motion.spacing.xlarge
+        spacing: Motion.spacing.large
 
         // Header
         RowLayout {
@@ -45,11 +45,11 @@ Rectangle {
             ColumnLayout {
                 id: sections
                 width: parent.width
-                spacing: 16
+                spacing: Motion.spacing.xlarge
 
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 6
+                    spacing: Motion.spacing.small
                     visible: BluetoothStatus.connectedDevices.length > 0
 
                     StyledText { text: "Connected"; color: Colors.textMuted; font.pixelSize: Motion.fontSize.small }
@@ -66,7 +66,7 @@ Rectangle {
 
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 6
+                    spacing: Motion.spacing.small
                     visible: BluetoothStatus.pairedDevices.length > 0
 
                     StyledText { text: "Paired"; color: Colors.textMuted; font.pixelSize: Motion.fontSize.small }
@@ -83,7 +83,7 @@ Rectangle {
 
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 6
+                    spacing: Motion.spacing.small
                     visible: BluetoothStatus.availableDevices.length > 0
 
                     StyledText { text: "Available"; color: Colors.textMuted; font.pixelSize: Motion.fontSize.small }
@@ -100,7 +100,7 @@ Rectangle {
 
                 StyledText {
                     Layout.fillWidth: true
-                    Layout.topMargin: 24
+                    Layout.topMargin: Motion.spacing.section
                     horizontalAlignment: Text.AlignHCenter
                     visible: BluetoothStatus.connectedDevices.length === 0 && BluetoothStatus.pairedDevices.length === 0 && BluetoothStatus.availableDevices.length === 0
                     text: BluetoothStatus.discovering ? "Scanning…" : "No devices found"

@@ -37,7 +37,7 @@ Loader {
             Column {
                 id: column
                 anchors { fill: parent; margins: 4 }
-                spacing: 2
+                spacing: Motion.spacing.micro
 
                 Repeater {
                     model: [{ value: "full", label: "Full" }, { value: "region", label: "Region" }]

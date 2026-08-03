@@ -26,7 +26,7 @@ Rectangle {
 
         anchors.left: parent.left
         anchors.top: parent.top
-        anchors.margins: 16
+        anchors.margins: Motion.spacing.xlarge
 
         implicitSize: 42
         strokeWidth: 4
@@ -47,8 +47,8 @@ Rectangle {
         anchors.left: usageRing.right
         anchors.right: blob.left
         anchors.verticalCenter: usageRing.verticalCenter
-        anchors.leftMargin: 12
-        anchors.rightMargin: 12
+        anchors.leftMargin: Motion.spacing.large
+        anchors.rightMargin: Motion.spacing.large
         spacing: 1
 
         StyledText {
@@ -75,11 +75,11 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.margins: 18
         width: root.width * 0.55
-        spacing: 4
+        spacing: Motion.spacing.tiny
 
         // Temperature readout
         RowLayout {
-            spacing: 4
+            spacing: Motion.spacing.tiny
 
             MaterialIcon {
                 text: root.temperature > 90 ? "thermometer_alert" : "thermometer"
@@ -117,7 +117,7 @@ Rectangle {
 
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        anchors.margins: 14
+        anchors.margins: Motion.spacing.wide
 
         implicitSize: 76
         value: root.usage

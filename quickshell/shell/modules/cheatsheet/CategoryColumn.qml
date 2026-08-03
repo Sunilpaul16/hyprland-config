@@ -40,11 +40,11 @@ Rectangle {
         anchors.margins: root.padding
         anchors.top: parent.top
         anchors.left: parent.left
-        spacing: 10
+        spacing: Motion.spacing.medium
 
         // Category header
         Row {
-            spacing: 8
+            spacing: Motion.spacing.normal
 
             MaterialIcon {
                 text: root.categoryIcon
@@ -71,14 +71,14 @@ Rectangle {
 
         // Bind rows
         Column {
-            spacing: 6
+            spacing: Motion.spacing.small
 
             Repeater {
                 model: root.rows
 
                 RowLayout {
                     required property var modelData
-                    spacing: 12
+                    spacing: Motion.spacing.large
 
                     KeyCombo { rowData: modelData; Layout.alignment: Qt.AlignVCenter }
 

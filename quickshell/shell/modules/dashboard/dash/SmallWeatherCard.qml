@@ -30,7 +30,7 @@ Rectangle {
         }
 
         ColumnLayout {
-            spacing: 2
+            spacing: Motion.spacing.micro
 
             StyledText {
                 Layout.alignment: Qt.AlignHCenter

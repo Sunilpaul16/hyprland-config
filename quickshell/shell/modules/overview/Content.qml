@@ -81,7 +81,7 @@ Item {
 
     StyledText {
         anchors.bottom: list.top
-        anchors.bottomMargin: 8
+        anchors.bottomMargin: Motion.spacing.normal
         anchors.left: list.left
         text: "Workspaces"
         font.pixelSize: Motion.fontSize.title

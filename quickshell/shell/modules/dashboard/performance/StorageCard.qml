@@ -44,11 +44,11 @@ Rectangle {
         id: layout
 
         anchors.centerIn: parent
-        spacing: 10
+        spacing: Motion.spacing.medium
 
         RowLayout {
             Layout.alignment: Qt.AlignHCenter
-            spacing: 16
+            spacing: Motion.spacing.xlarge
 
             CircularProgress {
                 implicitSize: usageColumn.implicitHeight + thickness + 24
@@ -88,7 +88,7 @@ Rectangle {
             }
 
             ColumnLayout {
-                spacing: 2
+                spacing: Motion.spacing.micro
 
                 StyledText {
                     text: "Storage"
@@ -125,7 +125,7 @@ Rectangle {
                 RowLayout {
                     id: pillRow
                     anchors.centerIn: parent
-                    spacing: 6
+                    spacing: Motion.spacing.small
 
                     MaterialIcon {
                         text: "storage"
@@ -165,7 +165,7 @@ Rectangle {
                 visible: root.diskMenuOpen
                 anchors.bottom: pill.top
                 anchors.horizontalCenter: pill.horizontalCenter
-                anchors.bottomMargin: 6
+                anchors.bottomMargin: Motion.spacing.small
                 implicitWidth: Math.max(pill.implicitWidth, list.implicitWidth + 12)
                 implicitHeight: list.implicitHeight + 12
                 radius: Motion.rounding.normal
@@ -178,8 +178,8 @@ Rectangle {
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.margins: 6
-                    spacing: 2
+                    anchors.margins: Motion.spacing.small
+                    spacing: Motion.spacing.micro
 
                     DiskMenuEntry {
                         label: "Auto"
@@ -227,10 +227,10 @@ Rectangle {
             id: entryRow
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.left
-            anchors.leftMargin: 10
+            anchors.leftMargin: Motion.spacing.medium
             anchors.right: parent.right
-            anchors.rightMargin: 10
-            spacing: 8
+            anchors.rightMargin: Motion.spacing.medium
+            spacing: Motion.spacing.normal
 
             StyledText {
                 text: entry.selected ? "\u{25CF}" : ""

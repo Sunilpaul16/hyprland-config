@@ -93,7 +93,7 @@ Rectangle {
             id: pfp
 
             anchors.fill: parent
-            anchors.margins: 4
+            anchors.margins: Motion.spacing.tiny
             source: root.facePath.length > 0 ? "file://" + root.facePath : ""
             fillMode: Image.PreserveAspectFit
             playing: true
@@ -125,9 +125,9 @@ Rectangle {
 
     StyledText {
         anchors.left: uptimeBadge.right
-        anchors.leftMargin: 8
+        anchors.leftMargin: Motion.spacing.normal
         anchors.right: parent.right
-        anchors.rightMargin: 16
+        anchors.rightMargin: Motion.spacing.xlarge
         anchors.verticalCenter: uptimeBadge.verticalCenter
         text: SysInfo.uptimeLong
         font.pixelSize: Motion.fontSize.body
@@ -141,7 +141,7 @@ Rectangle {
         anchors.left: avatar.right
         anchors.leftMargin: 22
         anchors.top: parent.top
-        anchors.topMargin: 14
+        anchors.topMargin: Motion.spacing.wide
         implicitWidth: Math.min(wmLabel.implicitWidth + 20, parent.width - x - 16)
         implicitHeight: wmLabel.implicitHeight + 12
         radius: Motion.rounding.normal
@@ -151,7 +151,7 @@ Rectangle {
             id: wmLabel
 
             anchors.centerIn: parent
-            spacing: 4
+            spacing: Motion.spacing.tiny
 
             MaterialIcon {
                 anchors.verticalCenter: parent.verticalCenter
@@ -177,7 +177,7 @@ Rectangle {
         id: bubbleLarge
 
         anchors.left: avatar.right
-        anchors.leftMargin: 8
+        anchors.leftMargin: Motion.spacing.normal
         anchors.verticalCenter: wmPill.bottom
         implicitWidth: 13
         implicitHeight: 13

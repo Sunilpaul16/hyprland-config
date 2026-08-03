@@ -58,12 +58,12 @@ Item {
         id: content
 
         anchors.fill: parent
-        spacing: 8
+        spacing: Motion.spacing.normal
 
         // Month navigation + jump-to-today
         RowLayout {
             Layout.fillWidth: true
-            spacing: 4
+            spacing: Motion.spacing.tiny
 
             Item {
                 visible: root.headerLeftInset > 0
