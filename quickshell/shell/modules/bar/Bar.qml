@@ -145,6 +145,10 @@ Scope {
                             Layout.alignment: Qt.AlignVCenter
                         }
 
+                        PrivacyIndicator {
+                            Layout.alignment: Qt.AlignVCenter
+                        }
+
                         SectionPill {
                             Layout.alignment: Qt.AlignVCenter
                             horizontalPadding: 8
