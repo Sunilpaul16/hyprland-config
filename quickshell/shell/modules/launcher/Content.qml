@@ -74,9 +74,9 @@ Item {
 
     // Wide enough for five slots with one of them enlarged
     // (4 * 150 + 190 + 4 * 16 + 2 * panelPad)
-    readonly property int wallpaperPanelWidth: 900
+    readonly property int wallpaperPanelWidth: Config.launcher.wallpaperPanelWidth
     readonly property int wallpaperRowHeight: 130
-    readonly property int appPanelWidth: 460
+    readonly property int appPanelWidth: Config.launcher.panelWidth
     readonly property int listItemHeight: 56
 
     readonly property int clipItemHeight: 76

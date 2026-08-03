@@ -87,7 +87,7 @@ Scope {
                     Rectangle {
                         id: backdrop
                         anchors { top: parent.top; right: parent.right; margins: root.edgeMargin }
-                        width: 360
+                        width: Config.sidebar.width
                         height: parent.height - root.edgeMargin * 2
                         radius: Motion.rounding.drawer
                         // Left corners square so the fillets below can flare this edge

@@ -104,6 +104,7 @@ Singleton {
                 property string noNotifsImage: "" // notifications empty-state watermark; "" = the bundled assets/dino.png
                 property bool calendarCollapsed: false // sidebar calendar card starts collapsed
                 property bool closeOnSettings: true // close the sidebar when settings opens
+                property int width: 360             // drawer width
             }
 
             property JsonObject session: JsonObject {
@@ -205,6 +206,8 @@ Singleton {
                 property bool fuzzy: true      // subsequence matching; off = plain substring
                 property real frequencyWeight: 0.3 // how hard launch history lifts a result; 0 disables ranking entirely
                 property string searchPrefix: "@"  // "@e foo" scopes the match to a field; empty disables prefix parsing
+                property int panelWidth: 460          // app/command/clipboard panel width
+                property int wallpaperPanelWidth: 900 // wider, since the wallpaper carousel is horizontal
             }
 
             property JsonObject audio: JsonObject {

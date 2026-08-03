@@ -280,6 +280,36 @@ ScrollPage {
 
         SettingRow {
             live: true
+            label: "Panel width"
+            subtext: "Apps, commands and clipboard"
+
+            NumberControl {
+                value: Config.launcher.panelWidth
+                from: 320
+                to: 900
+                stepSize: 10
+                suffix: " px"
+                onMoved: v => Config.launcher.panelWidth = Math.round(v)
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Wallpaper panel width"
+            subtext: "Wider, for the horizontal carousel"
+
+            NumberControl {
+                value: Config.launcher.wallpaperPanelWidth
+                from: 600
+                to: 1600
+                stepSize: 20
+                suffix: " px"
+                onMoved: v => Config.launcher.wallpaperPanelWidth = Math.round(v)
+            }
+        }
+
+        SettingRow {
+            live: true
             label: "Favour frequently used"
             subtext: "How hard launch history lifts a result; 0 ranks by match only"
 
@@ -329,6 +359,20 @@ ScrollPage {
     SettingGroup {
         SettingRow {
             first: true
+            live: true
+            label: "Sidebar width"
+
+            NumberControl {
+                value: Config.sidebar.width
+                from: 280
+                to: 640
+                stepSize: 10
+                suffix: " px"
+                onMoved: v => Config.sidebar.width = Math.round(v)
+            }
+        }
+
+        SettingRow {
             live: true
             label: "Quick toggles"
             subtext: "Opens the sidebar's edit mode"
