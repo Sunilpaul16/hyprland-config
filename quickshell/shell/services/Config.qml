@@ -27,6 +27,7 @@ Singleton {
     property alias wallpaper: adapter.wallpaper
     property alias dashboard: adapter.dashboard
     property alias apps: adapter.apps
+    property alias idle: adapter.idle
 
     // Gates panels from reading config before the FileView has loaded
     property bool ready: false
@@ -108,6 +109,15 @@ Singleton {
             property JsonObject session: JsonObject {
                 property int autoCloseDuration: 5000 // ms the drawer stays open unhovered before closing itself
                 property bool keepAwakeDefault: false // hold the idle inhibitor from shell start
+            }
+
+            // Idle timeouts in seconds, 0 meaning never. Defaults match the listener blocks
+            // hypridle.conf used to own; its general{} block still handles the logind side
+            property JsonObject idle: JsonObject {
+                property int lockTimeout: 900     // lock the screen after this long idle
+                property int dpmsTimeout: 1800    // turn the displays off after this long idle
+                property int suspendTimeout: 3600 // suspend the machine after this long idle
+                property bool inhibitWhenAudio: true // a playing MPRIS player suppresses all of the above
             }
 
             property JsonObject notifications: JsonObject {

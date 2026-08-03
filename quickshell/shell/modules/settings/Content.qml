@@ -26,6 +26,7 @@ Item {
 
         // System
         { label: "Updates", icon: "update", description: "System updates", category: "system", component: updatesPage },
+        { label: "Idle & power", icon: "bedtime", description: "Lock, displays, suspend", category: "system", component: idlePowerPage },
 
         // Shell
         { label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", category: "shell", component: panelsPage },
@@ -271,6 +272,12 @@ Item {
         id: updatesPage
 
         UpdatesPage {}
+    }
+
+    Component {
+        id: idlePowerPage
+
+        IdlePowerPage {}
     }
 
     Component {

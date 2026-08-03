@@ -17,6 +17,8 @@ Singleton {
     // implementation to fall back to. Don't "fix" this by adding a loginctl chain; it would just fail louder.
     readonly property var poweroffCommand: ["systemctl", "poweroff"]
     readonly property var rebootCommand: ["systemctl", "reboot"]
+    // Same reasoning as above — loginctl has no suspend verb either, so there is no fallback to chain
+    readonly property var suspendCommand: ["systemctl", "suspend"]
 
     function lock(): void {
         Quickshell.execDetached(root.lockCommand);
@@ -32,5 +34,9 @@ Singleton {
 
     function reboot(): void {
         Quickshell.execDetached(root.rebootCommand);
+    }
+
+    function suspend(): void {
+        Quickshell.execDetached(root.suspendCommand);
     }
 }

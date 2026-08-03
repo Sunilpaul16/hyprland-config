@@ -7,6 +7,7 @@ import "modules/bar"
 import "modules/dashboard"
 import "modules/launcher"
 import "modules/cheatsheet"
+import "modules/idle"
 import "modules/notifications"
 import "modules/overview"
 import "modules/polkit"
@@ -45,4 +46,5 @@ ShellRoot {
     DashboardPanel {}
     SettingsPanel {}
     ScreenCorners {}
+    IdleMonitors {}
 }
