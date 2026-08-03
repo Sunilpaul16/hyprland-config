@@ -116,8 +116,15 @@ if ! $NOSWITCH && ! $COLORS_PREVIEW && { $PREVIEW || [[ "$(cfgbool '.wallpaper.d
     [[ ${#MONITORS[@]} -gt 0 ]] || { echo "switchwall: no monitors found in $HYPR_GENERAL" >&2; exit 1; }
 
     pkill -f -9 mpvpaper >/dev/null 2>&1 || true
+    # Each mpvpaper runs as its own app-graphical.slice unit via uwsm: plain backgrounding leaves it in
+    # the caller's cgroup, so a launcher-driven switch died on the next shell restart and a
+    # terminal-driven one died with the terminal. -t service because the default scope type blocks
     for mon in "${MONITORS[@]}"; do
-        mpvpaper -o "$MPV_OPTS" "$mon" "$wallpaper" &
+        if command -v uwsm >/dev/null; then
+            uwsm app -t service -a "mpvpaper-$mon" -- mpvpaper -o "$MPV_OPTS" "$mon" "$wallpaper"
+        else
+            mpvpaper -o "$MPV_OPTS" "$mon" "$wallpaper" &
+        fi
         sleep 0.1
     done
 fi

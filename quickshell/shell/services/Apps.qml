@@ -102,12 +102,14 @@ Singleton {
     }
 
     // Launch (terminal apps via the configured terminal's -e)
+    // Through `uwsm app` so the app gets its own app-graphical.slice scope: execDetached alone
+    // leaves it inside quickshell.service, whose KillMode=control-group kills it on every shell restart or crash
     function launch(entry): void {
         root.recordLaunch(entry);
         if (entry.runInTerminal)
-            Quickshell.execDetached([Config.apps.terminal, "-e", ...entry.command]);
+            Quickshell.execDetached(["uwsm", "app", "--", Config.apps.terminal, "-e", ...entry.command]);
         else
-            Quickshell.execDetached(entry.command);
+            Quickshell.execDetached(["uwsm", "app", "--", ...entry.command]);
     }
 
     // Reassigned rather than mutated in place, so bindings reading launchCounts re-evaluate
