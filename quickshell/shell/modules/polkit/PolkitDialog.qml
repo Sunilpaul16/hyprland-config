@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Wayland
 import Quickshell.Widgets
 import "../../services"
 import "../../components"
@@ -15,31 +14,17 @@ Scope {
             id: panelLoader
             required property var modelData
 
-            component: PanelWindow {
+            component: OverlayWindow {
                 id: root
                 screen: panelLoader.modelData
+                state: PolkitState
+                namespace: "quickshell-polkit"
+                maskItem: panel
 
-                readonly property bool isOwnerScreen: ScreenOwner.owns(PolkitState, root.screen)
-                readonly property bool active: PolkitState.isActive && root.isOwnerScreen
+                onDismissed: root.flow?.cancelAuthenticationRequest()
+                onEscapePressed: root.flow?.cancelAuthenticationRequest()
+
                 readonly property var flow: PolkitState.flow
-
-                property real showProgress: active ? 1 : 0
-
-                Behavior on showProgress {
-                    NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
-                }
-
-                // Positioning
-                anchors { top: true; left: true; right: true; bottom: true }
-
-                // Window setup
-                color: "transparent"
-                exclusiveZone: 0
-                visible: showProgress > 0.001
-
-                WlrLayershell.layer: WlrLayer.Overlay
-                WlrLayershell.namespace: "quickshell-polkit"
-                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
                 // Focus password field
                 onFlowChanged: if (root.flow?.isResponseRequired) passwordInput.forceActiveFocus()
@@ -51,134 +36,108 @@ Scope {
                     }
                 }
 
-                // Click-through mask
-                mask: Region {
-                    item: panel
-                }
+                // Panel
+                Rectangle {
+                    id: panel
+                    anchors.centerIn: parent
+                    width: 380
+                    implicitHeight: content.implicitHeight + 48
+                    radius: Motion.rounding.large
+                    color: Colors.panel
+                    border.width: 1
+                    border.color: Colors.outline
 
-                // Shared focus-grab registration
-                onActiveChanged: {
-                    if (root.active)
-                        GlobalFocusGrab.addDismissable(root);
-                    else
-                        GlobalFocusGrab.removeDismissable(root);
-                }
-                Connections {
-                    target: GlobalFocusGrab
-                    function onDismissed() {
-                        root.flow?.cancelAuthenticationRequest();
-                    }
-                }
+                    opacity: root.showProgress
+                    scale: 0.96 + 0.04 * root.showProgress
+                    transformOrigin: Item.Center
 
-                // Focus scope
-                Item {
-                    anchors.fill: parent
-                    focus: root.active
-                    Keys.onEscapePressed: root.flow?.cancelAuthenticationRequest()
+                    ColumnLayout {
+                        id: content
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.margins: Motion.spacing.section
+                        spacing: Motion.spacing.large
 
-                    // Panel
-                    Rectangle {
-                        id: panel
-                        anchors.centerIn: parent
-                        width: 380
-                        implicitHeight: content.implicitHeight + 48
-                        radius: Motion.rounding.large
-                        color: Colors.panel
-                        border.width: 1
-                        border.color: Colors.outline
-
-                        opacity: root.showProgress
-                        scale: 0.96 + 0.04 * root.showProgress
-                        transformOrigin: Item.Center
-
-                        ColumnLayout {
-                            id: content
-                            anchors.top: parent.top
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.margins: Motion.spacing.section
+                        // Icon and message
+                        RowLayout {
+                            Layout.fillWidth: true
                             spacing: Motion.spacing.large
 
-                            // Icon and message
-                            RowLayout {
-                                Layout.fillWidth: true
-                                spacing: Motion.spacing.large
-
-                                IconImage {
-                                    Layout.preferredWidth: 32
-                                    Layout.preferredHeight: 32
-                                    source: root.flow?.iconName ? Quickshell.iconPath(root.flow.iconName, "dialog-password") : ""
-                                }
-
-                                StyledText {
-                                    Layout.fillWidth: true
-                                    text: root.flow?.message ?? ""
-                                    font.pixelSize: Motion.fontSize.subhead
-                                    wrapMode: Text.WordWrap
-                                }
+                            IconImage {
+                                Layout.preferredWidth: 32
+                                Layout.preferredHeight: 32
+                                source: root.flow?.iconName ? Quickshell.iconPath(root.flow.iconName, "dialog-password") : ""
                             }
 
-                            // Error message
                             StyledText {
                                 Layout.fillWidth: true
-                                visible: (root.flow?.supplementaryMessage ?? "").length > 0
-                                text: root.flow?.supplementaryMessage ?? ""
-                                color: root.flow?.supplementaryIsError ? Colors.error : Colors.textMuted
-                                font.pixelSize: Motion.fontSize.body
+                                text: root.flow?.message ?? ""
+                                font.pixelSize: Motion.fontSize.subhead
                                 wrapMode: Text.WordWrap
                             }
+                        }
 
-                            // Response field
-                            Rectangle {
-                                Layout.fillWidth: true
-                                visible: root.flow?.isResponseRequired ?? false
-                                implicitHeight: 40
-                                radius: Motion.rounding.small
-                                color: Colors.layer
-                                border.width: 1
-                                border.color: Colors.outline
+                        // Error message
+                        StyledText {
+                            Layout.fillWidth: true
+                            visible: (root.flow?.supplementaryMessage ?? "").length > 0
+                            text: root.flow?.supplementaryMessage ?? ""
+                            color: root.flow?.supplementaryIsError ? Colors.error : Colors.textMuted
+                            font.pixelSize: Motion.fontSize.body
+                            wrapMode: Text.WordWrap
+                        }
 
-                                TextInput {
-                                    id: passwordInput
-                                    anchors.fill: parent
-                                    anchors.margins: Motion.spacing.medium
-                                    verticalAlignment: TextInput.AlignVCenter
-                                    color: Colors.text
-                                    font.pixelSize: Motion.fontSize.label
-                                    echoMode: root.flow?.responseVisible ? TextInput.Normal : TextInput.Password
-                                    clip: true
+                        // Response field
+                        Rectangle {
+                            Layout.fillWidth: true
+                            visible: root.flow?.isResponseRequired ?? false
+                            implicitHeight: 40
+                            radius: Motion.rounding.small
+                            color: Colors.layer
+                            border.width: 1
+                            border.color: Colors.outline
 
-                                    Keys.onReturnPressed: root.flow?.submit(passwordInput.text)
-                                    Keys.onEnterPressed: root.flow?.submit(passwordInput.text)
-                                    Keys.onEscapePressed: root.flow?.cancelAuthenticationRequest()
+                            TextInput {
+                                id: passwordInput
+                                anchors.fill: parent
+                                anchors.margins: Motion.spacing.medium
+                                verticalAlignment: TextInput.AlignVCenter
+                                color: Colors.text
+                                font.pixelSize: Motion.fontSize.label
+                                echoMode: root.flow?.responseVisible ? TextInput.Normal : TextInput.Password
+                                clip: true
 
-                                    // Clear on prompt
-                                    Connections {
-                                        target: root.flow
-                                        function onInputPromptChanged() { passwordInput.text = ""; }
-                                    }
+                                Keys.onReturnPressed: root.flow?.submit(passwordInput.text)
+                                Keys.onEnterPressed: root.flow?.submit(passwordInput.text)
+                                Keys.onEscapePressed: root.flow?.cancelAuthenticationRequest()
+
+                                // Clear on prompt
+                                Connections {
+                                    target: root.flow
+                                    function onInputPromptChanged() { passwordInput.text = ""; }
                                 }
                             }
+                        }
 
-                            // Cancel / Authenticate
-                            RowLayout {
-                                Layout.fillWidth: true
-                                Layout.topMargin: Motion.spacing.tiny
-                                spacing: Motion.spacing.normal
+                        // Cancel / Authenticate
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Layout.topMargin: Motion.spacing.tiny
+                            spacing: Motion.spacing.normal
 
-                                Item { Layout.fillWidth: true }
+                            Item { Layout.fillWidth: true }
 
-                                DialogButton {
-                                    text: "Cancel"
-                                    onClicked: root.flow?.cancelAuthenticationRequest()
-                                }
+                            DialogButton {
+                                text: "Cancel"
+                                onClicked: root.flow?.cancelAuthenticationRequest()
+                            }
 
-                                DialogButton {
-                                    text: "Authenticate"
-                                    primary: true
-                                    visible: root.flow?.isResponseRequired ?? false
-                                    onClicked: root.flow?.submit(passwordInput.text)
-                                }
+                            DialogButton {
+                                text: "Authenticate"
+                                primary: true
+                                visible: root.flow?.isResponseRequired ?? false
+                                onClicked: root.flow?.submit(passwordInput.text)
                             }
                         }
                     }

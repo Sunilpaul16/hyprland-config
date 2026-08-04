@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
-import Quickshell.Wayland
 import "../../services"
+import "../../components"
 
 // Settings overlay window
 Scope {
@@ -12,18 +12,19 @@ Scope {
             id: panelLoader
             required property var modelData
 
-            component: PanelWindow {
+            component: OverlayWindow {
                 id: root
                 screen: panelLoader.modelData
+                state: SettingsState
+                namespace: "quickshell-settings"
+                maskItem: panel
 
-                // Visibility state
-                readonly property bool isOwnerScreen: ScreenOwner.owns(SettingsState, root.screen)
-                readonly property bool active: SettingsState.open && root.isOwnerScreen
-
-                property real showProgress: active ? 1 : 0
-
-                Behavior on showProgress {
-                    NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
+                onDismissed: SettingsState.open = false
+                onEscapePressed: {
+                    if (SettingsState.subPage)
+                        SettingsState.closeSubPage();
+                    else
+                        SettingsState.open = false;
                 }
 
                 // Panel geometry
@@ -40,80 +41,31 @@ Scope {
                 readonly property real panelWidth: Math.max(700, Math.round(targetWidth * fitScale))
                 readonly property real panelHeight: Math.max(460, Math.round(targetHeight * fitScale))
 
-                // Positioning
-                anchors {
-                    top: true
-                    left: true
-                    right: true
-                    bottom: true
-                }
+                // Panel
+                Rectangle {
+                    id: panel
 
-                // Window setup
-                color: "transparent"
-                exclusiveZone: 0
-                visible: showProgress > 0.001
+                    // Menu reparent surface
+                    property bool isSettingsCard: true
 
-                WlrLayershell.layer: WlrLayer.Overlay
-                WlrLayershell.namespace: "quickshell-settings"
-                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+                    anchors.centerIn: parent
+                    width: root.panelWidth
+                    height: root.panelHeight
+                    radius: Motion.rounding.page
+                    color: Colors.panel
+                    border.width: 1
+                    border.color: Colors.outlineVariant
+                    clip: true
 
-                // Click-through mask
-                mask: Region {
-                    item: panel
-                }
+                    opacity: root.showProgress
+                    scale: 0.96 + 0.04 * root.showProgress
+                    transformOrigin: Item.Center
 
-                // Shared focus-grab registration
-                onActiveChanged: {
-                    if (root.active)
-                        GlobalFocusGrab.addDismissable(root);
-                    else
-                        GlobalFocusGrab.removeDismissable(root);
-                }
-                Connections {
-                    target: GlobalFocusGrab
-                    function onDismissed() {
-                        SettingsState.open = false;
-                    }
-                }
+                    Content {
+                        id: content
 
-                // Focus scope
-                FocusScope {
-                    anchors.fill: parent
-                    focus: root.active
-                    // Escape handling
-            Keys.onEscapePressed: {
-                if (SettingsState.subPage)
-                    SettingsState.closeSubPage();
-                else
-                    SettingsState.open = false;
-            }
-
-                    // Panel
-                    Rectangle {
-                        id: panel
-
-                        // Menu reparent surface
-                        property bool isSettingsCard: true
-
-                        anchors.centerIn: parent
-                        width: root.panelWidth
-                        height: root.panelHeight
-                        radius: Motion.rounding.page
-                        color: Colors.panel
-                        border.width: 1
-                        border.color: Colors.outlineVariant
-                        clip: true
-
-                        opacity: root.showProgress
-                        scale: 0.96 + 0.04 * root.showProgress
-                        transformOrigin: Item.Center
-
-                        Content {
-                            id: content
-
-                            anchors.fill: parent
-                            panelActive: root.active
-                        }
+                        anchors.fill: parent
+                        panelActive: root.active
                     }
                 }
             }
