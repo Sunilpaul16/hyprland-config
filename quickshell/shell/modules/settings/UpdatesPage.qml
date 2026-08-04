@@ -97,7 +97,7 @@ ScrollPage {
             subtext: Updates.aurHelperChecked && !Updates.aurHelperAvailable ? `${Updates.aurHelper} is not installed` : "Helper used to query for updates"
 
             SelectPill {
-                options: [{ value: "yay", label: "yay" }, { value: "paru", label: "paru" }]
+                options: [{ value: "yay", label: "yay" }]
                 current: Config.updates.aurHelper
                 onSelected: v => Config.updates.aurHelper = v
             }
