@@ -6,19 +6,11 @@ set -euo pipefail
 # Paths and constants
 HYPR_GENERAL="$HOME/.config/hypr/general.lua"
 VENV_PYTHON="$HOME/.local/state/quickshell/.venv/bin/python3"
-COLORGEN_DIR="$HOME/.config/matugen/colorgen"
-CACHE_DIR="$HOME/.cache/matugen"
-KITTY_THEME_OUT="$HOME/.config/kitty/theme.conf"
 
 # shellcheck source=lib/apply-colors.sh
 source "$(dirname "$(readlink -f "$0")")/lib/apply-colors.sh"
 
 STATE_FILE="$HOME/.local/state/quickshell/current_wallpaper"
-MODE_FILE="$HOME/.local/state/quickshell/color_mode"
-# Preset colours are fixed
-SOURCE_FILE="$HOME/.local/state/quickshell/color_source"
-# Settings panel owns these
-CONFIG_FILE="$HOME/.config/quickshell/config.json"
 # Palette-only config
 PREVIEW_CONFIG="$HOME/.config/matugen/preview.toml"
 PREVIEW_COLORS="$HOME/.cache/matugen/preview-colors.json"

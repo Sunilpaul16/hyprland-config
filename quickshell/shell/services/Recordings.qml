@@ -19,14 +19,11 @@ Singleton {
         proc.running = true;
     }
 
-    // Display name
-    function displayName(name: string): string {
-        const m = name.match(/^Recording_(\d{4})-(\d{2})-(\d{2})_(\d{2})\.(\d{2})\.(\d{2})\.mp4$/);
-        if (!m)
-            return name;
-        const [, y, mo, d, h, mi, s] = m.map(Number);
-        const date = new Date(y, mo - 1, d, h, mi, s);
-        return Qt.formatDateTime(date, "MMM d, yyyy — " + Time.clockFormat);
+    // Display name, from mtime not the filename
+    function displayName(entry): string {
+        if (!entry?.mtimeMs)
+            return entry?.name ?? "";
+        return Qt.formatDateTime(new Date(entry.mtimeMs), "MMM d, yyyy — " + Time.clockFormat);
     }
 
     Component.onCompleted: root.refresh()

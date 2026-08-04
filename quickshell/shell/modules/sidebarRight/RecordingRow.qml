@@ -16,7 +16,7 @@ RowLayout {
 
     StyledText {
         Layout.fillWidth: true
-        text: root.confirmingDelete ? "Delete this recording?" : Recordings.displayName(root.modelData.name)
+        text: root.confirmingDelete ? "Delete this recording?" : Recordings.displayName(root.modelData)
         color: root.confirmingDelete ? Colors.error : Colors.textMuted
         font.pixelSize: Motion.fontSize.body
         elide: Text.ElideRight

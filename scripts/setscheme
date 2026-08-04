@@ -4,12 +4,6 @@ set -euo pipefail
 
 # Paths and constants
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-COLORGEN_DIR="$HOME/.config/matugen/colorgen"
-CACHE_DIR="$HOME/.cache/matugen"
-KITTY_THEME_OUT="$HOME/.config/kitty/theme.conf"
-CONFIG_FILE="$HOME/.config/quickshell/config.json"
-MODE_FILE="$HOME/.local/state/quickshell/color_mode"
-SOURCE_FILE="$HOME/.local/state/quickshell/color_source"
 HELPER="$SCRIPT_DIR/lib/preset-palette.py"
 
 # shellcheck source=lib/apply-colors.sh

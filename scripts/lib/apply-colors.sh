@@ -2,6 +2,14 @@
 
 # Shared colour-apply steps
 
+# Paths both entrypoints use
+COLORGEN_DIR="$HOME/.config/matugen/colorgen"
+CACHE_DIR="$HOME/.cache/matugen"
+KITTY_THEME_OUT="$HOME/.config/kitty/theme.conf"
+CONFIG_FILE="$HOME/.config/quickshell/config.json"
+MODE_FILE="$HOME/.local/state/quickshell/color_mode"
+SOURCE_FILE="$HOME/.local/state/quickshell/color_source"
+
 # cfg <jq-path> <default>
 cfg() {
     local value=""
