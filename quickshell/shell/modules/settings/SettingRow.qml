@@ -16,8 +16,8 @@ Rectangle {
 
     default property alias control: controlSlot.data
 
-    readonly property int endRadius: 18
-    readonly property int innerRadius: 6
+    readonly property int endRadius: Motion.rounding.large
+    readonly property int innerRadius: Motion.rounding.tiny
 
     Layout.fillWidth: true
     implicitHeight: Math.max(layout.implicitHeight + 12 * 2, 56)

@@ -23,7 +23,7 @@ Scope {
 
                 // Slide-down open
                 property real offsetScale: root.active ? 0 : 1
-                readonly property int cornerSize: 14
+                readonly property int cornerSize: Motion.cornerSize
 
                 Behavior on offsetScale {
                     NumberAnimation {

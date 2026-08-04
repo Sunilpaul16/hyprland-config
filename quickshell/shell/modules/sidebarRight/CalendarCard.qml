@@ -43,7 +43,7 @@ Rectangle {
     RowLayout {
         id: collapsedRow
 
-        anchors { left: parent.left; right: parent.right; top: parent.top; margins: 12 }
+        anchors { left: parent.left; right: parent.right; top: parent.top; margins: Motion.spacing.large }
         spacing: Motion.spacing.normal
 
         opacity: root.collapsed ? 1 : 0
@@ -69,7 +69,7 @@ Rectangle {
     Rectangle {
         id: chevron
 
-        anchors { left: parent.left; top: parent.top; margins: 12 }
+        anchors { left: parent.left; top: parent.top; margins: Motion.spacing.large }
         implicitWidth: 26
         implicitHeight: 26
         radius: width / 2

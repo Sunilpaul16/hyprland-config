@@ -65,7 +65,7 @@ Rectangle {
     // Content
     Item {
         id: content
-        anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
+        anchors { left: parent.left; right: parent.right; top: parent.top; margins: Motion.spacing.medium }
         implicitHeight: Math.max(iconSlot.height, textCol.implicitHeight)
 
         // Icon

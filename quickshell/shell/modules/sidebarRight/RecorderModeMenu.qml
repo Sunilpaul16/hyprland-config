@@ -36,7 +36,7 @@ Loader {
 
             Column {
                 id: column
-                anchors { fill: parent; margins: 4 }
+                anchors { fill: parent; margins: Motion.spacing.tiny }
                 spacing: Motion.spacing.micro
 
                 Repeater {

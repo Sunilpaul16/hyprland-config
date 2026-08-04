@@ -81,7 +81,7 @@ Scope {
 
                         // Flush to sidebar
                         readonly property int restingMargin: 0
-                        readonly property int cornerSize: 14
+                        readonly property int cornerSize: Motion.cornerSize
                         readonly property int closedMargin: -(drawer.implicitWidth + restingMargin)
 
                         // Stack offset

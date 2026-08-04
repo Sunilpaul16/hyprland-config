@@ -59,7 +59,7 @@ Item {
         }
 
         StyledText {
-            anchors { top: parent.top; left: parent.left; margins: 8 }
+            anchors { top: parent.top; left: parent.left; margins: Motion.spacing.normal }
             text: root.slot?.id ?? ""
             color: root.isFocused ? Colors.primary : Colors.textMuted
             font.pixelSize: Motion.fontSize.label

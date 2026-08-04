@@ -15,7 +15,7 @@ Rectangle {
     RowLayout {
         id: content
 
-        anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; margins: 16 }
+        anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; margins: Motion.spacing.xlarge }
         spacing: Motion.spacing.normal
 
         StyledText {

@@ -56,7 +56,7 @@ Scope {
                 readonly property bool heightFixed: Config.dashboard.panel.heightMode === "fixed"
                 // Resting position
                 readonly property real restingTopMargin: 0
-                readonly property int cornerSize: 14
+                readonly property int cornerSize: Motion.cornerSize
 
                 // Positioning
                 anchors {

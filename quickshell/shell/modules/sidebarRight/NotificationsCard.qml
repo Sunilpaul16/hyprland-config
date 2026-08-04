@@ -55,7 +55,7 @@ Rectangle {
 
     ColumnLayout {
         id: column
-        anchors { fill: parent; margins: 16 }
+        anchors { fill: parent; margins: Motion.spacing.xlarge }
         spacing: Motion.spacing.large
 
         // Header

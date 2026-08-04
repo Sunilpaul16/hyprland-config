@@ -60,7 +60,7 @@ Item {
         readonly property real badgeSize: Math.max(14, Math.min(32, baseSize * (compact ? 0.35 : 0.15)))
 
         visible: root.iconName !== ""
-        anchors { right: parent.right; bottom: parent.bottom; margins: 4 }
+        anchors { right: parent.right; bottom: parent.bottom; margins: Motion.spacing.tiny }
         width: badgeSize
         height: badgeSize
         radius: width * 0.3

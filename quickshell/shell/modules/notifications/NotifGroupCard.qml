@@ -43,7 +43,7 @@ Item {
 
             RowLayout {
                 id: header
-                anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
+                anchors { left: parent.left; right: parent.right; top: parent.top; margins: Motion.spacing.medium }
                 spacing: Motion.spacing.normal
 
                 // Representative icon

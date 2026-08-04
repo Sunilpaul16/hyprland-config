@@ -64,6 +64,9 @@ QtObject {
         readonly property int hero: 26  // hero, performance cards
     }
 
+    // Concave fillet at a panel joint
+    readonly property int cornerSize: 14
+
     // Font size ladder
     readonly property QtObject fontSize: QtObject {
         readonly property int micro: 9  // badge counts

@@ -401,14 +401,14 @@ Item {
     // Edge fillets
     Corner {
         anchors { right: parent.left; bottom: parent.bottom }
-        size: 14
+        size: Motion.cornerSize
         color: Colors.layer
         corner: "bottomRight"
     }
 
     Corner {
         anchors { left: parent.right; bottom: parent.bottom }
-        size: 14
+        size: Motion.cornerSize
         color: Colors.layer
         corner: "bottomLeft"
     }

@@ -11,6 +11,6 @@ Rectangle {
 
     QuickTogglesRow {
         id: content
-        anchors { left: parent.left; right: parent.right; top: parent.top; margins: 16 }
+        anchors { left: parent.left; right: parent.right; top: parent.top; margins: Motion.spacing.xlarge }
     }
 }

@@ -21,7 +21,7 @@ Scope {
 
                 // Dimensions
                 readonly property int barContentHeight: Config.bar.height
-                readonly property int cornerSize: 14
+                readonly property int cornerSize: Motion.cornerSize
 
                 // Positioning
                 anchors {
@@ -78,7 +78,7 @@ Scope {
                         Item {
                             id: dashboardHoverZone
                             Layout.alignment: Qt.AlignVCenter
-                            implicitWidth: 60 // TEMP: debug sizing
+                            implicitWidth: 60
                             implicitHeight: bar.barContentHeight
 
                             HoverHandler {

@@ -1,11 +1,12 @@
 import QtQuick
 import QtQuick.Shapes
+import "../services"
 
 // Corner decorator
 Item {
     id: root
     property color color: "black"
-    property int size: 14
+    property int size: Motion.cornerSize
 
     // "topLeft" | "topRight" | "bottomLeft" | "bottomRight"
     property string corner: "topLeft"

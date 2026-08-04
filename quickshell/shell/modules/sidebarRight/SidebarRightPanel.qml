@@ -30,7 +30,7 @@ Scope {
 
                 // Edge stack registration
                 readonly property int edgeMargin: 0
-                readonly property int cornerSize: 14
+                readonly property int cornerSize: Motion.cornerSize
                 readonly property real registeredWidth: backdrop.width + edgeMargin
 
                 onActiveChanged: {
