@@ -11,8 +11,13 @@ Singleton {
     property real latitude: NaN
     property real longitude: NaN
     property string city: ""
+    // "celsius" | "fahrenheit"
+    readonly property string units: Config.weather.units
     // Unit symbol
-    readonly property string unitSymbol: Config.weather.units === "fahrenheit" ? "°F" : "°C"
+    readonly property string unitSymbol: root.units === "fahrenheit" ? "°F" : "°C"
+
+    // Unit is baked into the URL
+    onUnitsChanged: root.fetchForecast()
     property bool loading: true
     property bool hasError: false
     // First load flag
@@ -120,7 +125,7 @@ Singleton {
         if (isNaN(root.latitude) || isNaN(root.longitude))
             return;
 
-        const url = "https://api.open-meteo.com/v1/forecast" + "?latitude=" + root.latitude + "&longitude=" + root.longitude + "&current=temperature_2m,weather_code,relative_humidity_2m,apparent_temperature,wind_speed_10m" + "&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset" + "&timezone=auto&forecast_days=7" + (Config.weather.units === "fahrenheit" ? "&temperature_unit=fahrenheit" : "");
+        const url = "https://api.open-meteo.com/v1/forecast" + "?latitude=" + root.latitude + "&longitude=" + root.longitude + "&current=temperature_2m,weather_code,relative_humidity_2m,apparent_temperature,wind_speed_10m" + "&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset" + "&timezone=auto&forecast_days=7" + (root.units === "fahrenheit" ? "&temperature_unit=fahrenheit" : "");
 
         Requests.get(url, data => {
             // Independent blocks

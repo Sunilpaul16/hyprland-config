@@ -17,6 +17,15 @@ Singleton {
 
     signal presetLoaded(string id)
 
+    // Swatches are mode-specific
+    Connections {
+        target: Theme
+        function onModeChanged(): void {
+            listProc.running = false;
+            listProc.running = true;
+        }
+    }
+
     function loadPreset(id: string, mode: string): void {
         root.pendingId = id;
         readProc.command = [Directories.presetHelper, "matugen", id, mode];
