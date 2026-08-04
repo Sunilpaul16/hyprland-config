@@ -72,6 +72,10 @@ Singleton {
         onLoadFailed: error => {
             if (error === FileViewError.FileNotFound)
                 writeAdapter();
+            else
+                console.warn("[Config] could not read config.json — running on defaults");
+            // Defaults beat no desktop
+            root.ready = true;
         }
 
         // Persisted values
