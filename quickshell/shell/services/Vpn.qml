@@ -16,12 +16,18 @@ Singleton {
     property string ip: ""
     // In flight
     property bool busy: false
+    property string lastActionFailed: "" // "" | "connect" | "disconnect"
+    property bool _exited: false
 
     readonly property string statusLabel: {
         if (!root.available)
             return "Not available";
         if (root.busy)
             return "Working…";
+        if (root.lastActionFailed === "connect")
+            return "Couldn't connect";
+        if (root.lastActionFailed === "disconnect")
+            return "Couldn't disconnect";
         if (!root.connected)
             return "Disconnected";
         return root.country ? `${root.server} · ${root.country}` : root.server;
@@ -48,6 +54,8 @@ Singleton {
         if (root.busy)
             return;
         root.busy = true;
+        root.lastActionFailed = "";
+        root._exited = false;
         connectProc.running = true;
     }
 
@@ -55,6 +63,8 @@ Singleton {
         if (root.busy)
             return;
         root.busy = true;
+        root.lastActionFailed = "";
+        root._exited = false;
         disconnectProc.running = true;
     }
 
@@ -107,17 +117,43 @@ Singleton {
     Process {
         id: connectProc
         command: [root.cli, "connect"]
-        onExited: root.refresh()
+
+        onExited: exitCode => {
+            root._exited = true;
+            if (exitCode !== 0)
+                root.lastActionFailed = "connect";
+            root.refresh();
+        }
+
         // Also fires on failure to start
-        onRunningChanged: if (!connectProc.running) root.busy = false
+        onRunningChanged: {
+            if (!connectProc.running) {
+                if (!root._exited)
+                    root.lastActionFailed = "connect";
+                root.busy = false;
+            }
+        }
     }
 
     Process {
         id: disconnectProc
         command: [root.cli, "disconnect"]
-        onExited: root.refresh()
+
+        onExited: exitCode => {
+            root._exited = true;
+            if (exitCode !== 0)
+                root.lastActionFailed = "disconnect";
+            root.refresh();
+        }
+
         // Also fires on failure to start
-        onRunningChanged: if (!disconnectProc.running) root.busy = false
+        onRunningChanged: {
+            if (!disconnectProc.running) {
+                if (!root._exited)
+                    root.lastActionFailed = "disconnect";
+                root.busy = false;
+            }
+        }
     }
 
     Timer {
