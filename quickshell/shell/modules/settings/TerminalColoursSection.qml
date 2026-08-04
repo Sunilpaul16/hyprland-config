@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
+import "../../components"
 
 // Terminal palette tuning
 ColumnLayout {

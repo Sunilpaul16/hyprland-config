@@ -1,5 +1,6 @@
 import QtQuick
 import "../../services"
+import "../../components"
 
 // Idle and power page
 ScrollPage {

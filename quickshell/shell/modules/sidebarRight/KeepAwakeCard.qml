@@ -57,32 +57,10 @@ Rectangle {
             }
         }
 
-        // Toggle switch
-        Rectangle {
+        ToggleSwitch {
             Layout.alignment: Qt.AlignVCenter
-            implicitWidth: 40
-            implicitHeight: 22
-            radius: height / 2
-            color: IdleInhibitState.enabled ? Colors.primary : Colors.outline
-
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-            Rectangle {
-                width: 18
-                height: 18
-                radius: width / 2
-                color: Colors.background
-                anchors.verticalCenter: parent.verticalCenter
-                x: IdleInhibitState.enabled ? parent.width - width - 2 : 2
-
-                Behavior on x { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: IdleInhibitState.toggle()
-            }
+            checked: IdleInhibitState.enabled
+            onToggled: IdleInhibitState.toggle()
         }
     }
 }

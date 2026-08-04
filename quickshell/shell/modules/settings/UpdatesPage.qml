@@ -1,5 +1,6 @@
 import QtQuick
 import "../../services"
+import "../../components"
 
 // Updates page
 ScrollPage {

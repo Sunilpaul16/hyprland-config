@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
 import "../../services"
+import "../../components"
 
 // Wallpaper and style page
 ScrollPage {

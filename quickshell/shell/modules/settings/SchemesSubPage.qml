@@ -44,9 +44,11 @@ ScrollPage {
         Layout.fillWidth: true
     }
 
-    ColumnLayout {
+    GridLayout {
         Layout.fillWidth: true
-        spacing: Motion.spacing.tiny
+        columns: 3
+        columnSpacing: Motion.spacing.small
+        rowSpacing: Motion.spacing.tiny
 
         Repeater {
             model: Schemes.list
@@ -122,14 +124,14 @@ ScrollPage {
 
                         StyledText {
                             Layout.fillWidth: true
-                            text: row.modelData.flavour
+                            text: row.modelData.scheme
                             font.pixelSize: Motion.fontSize.label
                             elide: Text.ElideRight
                         }
 
                         StyledText {
                             Layout.fillWidth: true
-                            text: row.modelData.scheme
+                            text: row.modelData.flavour
                             color: Colors.textMuted
                             font.pixelSize: Motion.fontSize.small
                             elide: Text.ElideRight

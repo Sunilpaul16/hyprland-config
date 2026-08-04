@@ -1,6 +1,5 @@
 import QtQuick
-import "../../services"
-import "../../components"
+import "../services"
 
 // M3 switch
 Rectangle {

@@ -1,4 +1,5 @@
 import "../../services"
+import "../../components"
 
 // Services page
 ScrollPage {
