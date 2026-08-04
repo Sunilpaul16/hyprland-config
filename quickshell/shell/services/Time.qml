@@ -17,11 +17,10 @@ Singleton {
     readonly property int seconds: clock.seconds
 
     // Formatted strings
-    readonly property string timeStr: format(root.use12Hour ? "hh:mm:A" : "hh:mm")
-    readonly property list<string> timeComponents: timeStr.split(":")
-    readonly property string hourStr: timeComponents[0] ?? ""
-    readonly property string minuteStr: timeComponents[1] ?? ""
-    readonly property string amPmStr: timeComponents[2] ?? ""
+    readonly property string timeStr: format(root.use12Hour ? "hh:mm AP" : "hh:mm")
+    readonly property string hourStr: format("hh")
+    readonly property string minuteStr: format("mm")
+    readonly property string amPmStr: root.use12Hour ? format("AP") : ""
 
     readonly property string dateStr: format("ddd, MMM d")
 

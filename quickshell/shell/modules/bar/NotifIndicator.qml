@@ -45,7 +45,7 @@ Item {
             anchors.centerIn: parent
             text: Notifs.unread > 9 ? "9+" : Notifs.unread
             color: Colors.textOnPrimary
-            font.pixelSize: 8
+            font.pixelSize: Motion.fontSize.micro
             font.bold: true
         }
     }
