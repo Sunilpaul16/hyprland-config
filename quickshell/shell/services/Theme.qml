@@ -11,6 +11,8 @@ Singleton {
     property string mode: "auto"
     // Pipeline is slow
     property bool busy: false
+    property bool lastRunFailed: false
+    property bool _exited: false
 
     // "dynamic" | "<scheme>/<flavour>"
     property string source: "dynamic"
@@ -29,6 +31,8 @@ Singleton {
         if (root.busy || value === root.mode)
             return;
         root.busy = true;
+        root.lastRunFailed = false;
+        root._exited = false;
         modeProc.command = [Directories.switchwallScript, "--mode", value];
         modeProc.running = true;
     }
@@ -38,6 +42,8 @@ Singleton {
         if (root.busy)
             return;
         root.busy = true;
+        root.lastRunFailed = false;
+        root._exited = false;
         modeProc.command = [Directories.switchwallScript, "--noswitch"];
         modeProc.running = true;
     }
@@ -46,6 +52,8 @@ Singleton {
         if (root.busy)
             return;
         root.busy = true;
+        root.lastRunFailed = false;
+        root._exited = false;
         modeProc.command = [Directories.setschemeScript, id];
         modeProc.running = true;
     }
@@ -54,14 +62,28 @@ Singleton {
         if (root.busy || !root.usingPreset)
             return;
         root.busy = true;
+        root.lastRunFailed = false;
+        root._exited = false;
         modeProc.command = [Directories.setschemeScript, "dynamic"];
         modeProc.running = true;
     }
 
     Process {
         id: modeProc
+
+        onExited: exitCode => {
+            root._exited = true;
+            root.lastRunFailed = exitCode !== 0;
+        }
+
         // Also fires on failure to start
-        onRunningChanged: if (!modeProc.running) root.busy = false
+        onRunningChanged: {
+            if (!modeProc.running) {
+                if (!root._exited)
+                    root.lastRunFailed = true;
+                root.busy = false;
+            }
+        }
     }
 
     // Colour source file

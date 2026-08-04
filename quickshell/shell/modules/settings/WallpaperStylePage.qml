@@ -215,12 +215,12 @@ ScrollPage {
             last: true
             live: true
             label: "Regenerate theme"
-            subtext: "Re-runs switchwall on the current wallpaper"
+            subtext: Theme.lastRunFailed ? "Theme generation failed" : "Re-runs switchwall on the current wallpaper"
 
             SelectPill {
                 enabled: !Theme.busy
                 opacity: enabled ? 1 : 0.5
-                value: Theme.busy ? "Working…" : "Regenerate"
+                value: Theme.busy ? "Working…" : (Theme.lastRunFailed ? "Failed" : "Regenerate")
                 icon: "refresh"
                 onClicked: Theme.regenerate()
             }
