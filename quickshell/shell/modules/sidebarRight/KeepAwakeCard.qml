@@ -49,7 +49,7 @@ Rectangle {
                     id: activeSinceText
                     anchors.centerIn: parent
                     text: IdleInhibitState.enabled
-                        ? "Active since " + Qt.formatDateTime(new Date(IdleInhibitState.activeSince), "hh:mm")
+                        ? "Active since " + Qt.formatDateTime(new Date(IdleInhibitState.activeSince), Time.use12Hour ? "h:mm AP" : "hh:mm")
                         : "Active since —"
                     color: Colors.textMuted
                     font.pixelSize: Motion.fontSize.tiny
