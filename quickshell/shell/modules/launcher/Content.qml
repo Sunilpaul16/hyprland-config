@@ -368,8 +368,18 @@ Item {
 
                 Keys.onUpPressed: if (content.mode !== "wallpaper") verticalList.decrementCurrentIndex()
                 Keys.onDownPressed: if (content.mode !== "wallpaper") verticalList.incrementCurrentIndex()
-                Keys.onLeftPressed: if (content.mode === "wallpaper") content.navigateWallpaper(-1)
-                Keys.onRightPressed: if (content.mode === "wallpaper") content.navigateWallpaper(1)
+                Keys.onLeftPressed: event => {
+                    if (content.mode === "wallpaper")
+                        content.navigateWallpaper(-1);
+                    else
+                        event.accepted = false;
+                }
+                Keys.onRightPressed: event => {
+                    if (content.mode === "wallpaper")
+                        content.navigateWallpaper(1);
+                    else
+                        event.accepted = false;
+                }
             }
         }
     }
