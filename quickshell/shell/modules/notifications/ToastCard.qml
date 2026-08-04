@@ -24,7 +24,11 @@ Rectangle {
         x = 0;
         modelData.lock(card);
     }
-    Component.onDestruction: modelData.unlock(card)
+    Component.onDestruction: {
+        modelData.unlock(card);
+        // Destroying a HoverHandler emits nothing
+        modelData.hovered = false;
+    }
 
     // Off while dragging
     Behavior on x {

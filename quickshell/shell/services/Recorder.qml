@@ -17,6 +17,8 @@ Singleton {
 
     // Double-start guard
     property bool starting: false
+    // Spawn grace
+    property real startRequestedAt: 0
 
     readonly property string elapsedLabel: StringUtils.friendlyTimeForSeconds(root.elapsedSeconds)
 
@@ -30,6 +32,7 @@ Singleton {
             root.stop();
         } else if (!root.starting) {
             root.starting = true;
+            root.startRequestedAt = Date.now();
             // Sound is arg 2
             const args = [root.recordBin, root.mode];
             if (Config.recorder.audio)
@@ -58,15 +61,20 @@ Singleton {
     // Poll for wf-recorder
     Process {
         id: pollProc
-        command: ["pgrep", "-x", "wf-recorder"]
-        onExited: exitCode => {
-            const nowActive = exitCode === 0;
-            if (nowActive && !root.active)
-                root.startedAt = Date.now();
-            root.active = nowActive;
-            if (!nowActive)
-                root.elapsedSeconds = 0;
-            root.starting = false;
+        command: ["bash", "-c", "pgrep -x wf-recorder >/dev/null && echo rec || { pgrep -x slurp >/dev/null && echo sel || echo idle; }"]
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const state = text.trim();
+                const nowActive = state === "rec";
+                if (nowActive && !root.active)
+                    root.startedAt = Date.now();
+                root.active = nowActive;
+                if (!nowActive)
+                    root.elapsedSeconds = 0;
+                // Hold while selecting or still spawning
+                root.starting = !nowActive && (state === "sel" || (Date.now() - root.startRequestedAt) < 2000);
+            }
         }
     }
 }
