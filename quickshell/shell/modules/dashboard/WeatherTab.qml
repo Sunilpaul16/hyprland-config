@@ -69,7 +69,7 @@ Item {
             radius: Motion.rounding.hero
             color: Colors.layer
             border.width: 1
-            border.color: Colors.outline
+            border.color: Colors.outlineVariant
 
             RowLayout {
                 id: heroRow
@@ -212,7 +212,7 @@ Item {
         radius: Motion.rounding.nested
         color: Colors.layer
         border.width: 1
-        border.color: Colors.outline
+        border.color: Colors.outlineVariant
 
         RowLayout {
             anchors.centerIn: parent
@@ -254,7 +254,7 @@ Item {
         radius: Motion.rounding.nested
         color: Colors.layer
         border.width: 1
-        border.color: Colors.outline
+        border.color: Colors.outlineVariant
         implicitWidth: dayContent.implicitWidth + 24
         implicitHeight: dayContent.implicitHeight + 24
 

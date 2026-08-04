@@ -23,10 +23,10 @@ Flickable {
     property real currentPaneHeight: currentPane?.height ?? 0
     // Pane content width
     readonly property real livePaneWidth: currentPane?.item?.implicitWidth ?? 0
-    // Latched width
+    // Latched width, widest pane seen
     property real currentPaneWidth: 0
     onLivePaneWidthChanged: if (livePaneWidth > 0)
-        currentPaneWidth = livePaneWidth
+        currentPaneWidth = Math.max(currentPaneWidth, livePaneWidth)
 
     Layout.fillWidth: true
     Layout.fillHeight: root.heightFixed

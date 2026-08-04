@@ -78,7 +78,7 @@ Item {
         radius: Motion.rounding.large
         color: Colors.layer
         border.width: 1
-        border.color: Colors.outline
+        border.color: Colors.outlineVariant
         clip: true
         // Fixed width
         implicitWidth: Config.dashboard.clock.width
@@ -136,7 +136,7 @@ Item {
         radius: Motion.rounding.large
         color: Colors.layer
         border.width: 1
-        border.color: Colors.outline
+        border.color: Colors.outlineVariant
         implicitHeight: cal.implicitHeight + 32
 
         CalendarGrid {

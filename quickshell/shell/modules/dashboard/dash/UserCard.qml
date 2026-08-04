@@ -30,7 +30,7 @@ Rectangle {
     radius: Motion.rounding.large
     color: Colors.layer
     border.width: 1
-    border.color: Colors.outline
+    border.color: Colors.outlineVariant
     implicitHeight: root.avatarSize + 32
 
     // ~/.face probe

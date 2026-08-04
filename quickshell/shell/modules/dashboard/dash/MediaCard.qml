@@ -18,7 +18,7 @@ Rectangle {
     radius: Motion.rounding.large
     color: Colors.layer
     border.width: 1
-    border.color: Colors.outline
+    border.color: Colors.outlineVariant
     clip: true
     implicitHeight: content.implicitHeight + 32
 

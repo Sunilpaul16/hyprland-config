@@ -25,7 +25,7 @@ Item {
         radius: implicitHeight / 2
         color: root.menuOpen ? Colors.layer : (pillHover.containsMouse ? Colors.layer : "transparent")
         border.width: 1
-        border.color: Colors.outline
+        border.color: Colors.outlineVariant
 
         Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
@@ -70,7 +70,7 @@ Item {
         // Contrast on panel
         color: Colors.layer
         border.width: 1
-        border.color: Colors.outline
+        border.color: Colors.outlineVariant
 
         Column {
             id: list
