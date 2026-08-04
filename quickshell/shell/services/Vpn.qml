@@ -86,8 +86,20 @@ Singleton {
             }
         }
 
+        // Exited this run
+        property bool sawExit: false
+
         onExited: exitCode => {
+            statusProc.sawExit = true;
             if (exitCode !== 0)
+                root.available = false;
+        }
+
+        // Covers failure to start
+        onRunningChanged: {
+            if (statusProc.running)
+                statusProc.sawExit = false;
+            else if (!statusProc.sawExit)
                 root.available = false;
         }
     }
@@ -95,19 +107,17 @@ Singleton {
     Process {
         id: connectProc
         command: [root.cli, "connect"]
-        onExited: {
-            root.busy = false;
-            root.refresh();
-        }
+        onExited: root.refresh()
+        // Also fires on failure to start
+        onRunningChanged: if (!connectProc.running) root.busy = false
     }
 
     Process {
         id: disconnectProc
         command: [root.cli, "disconnect"]
-        onExited: {
-            root.busy = false;
-            root.refresh();
-        }
+        onExited: root.refresh()
+        // Also fires on failure to start
+        onRunningChanged: if (!disconnectProc.running) root.busy = false
     }
 
     Timer {

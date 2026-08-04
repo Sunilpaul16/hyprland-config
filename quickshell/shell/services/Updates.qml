@@ -108,6 +108,15 @@ Singleton {
             root._repoDone = true;
             root._settle();
         }
+
+        // Covers failure to start
+        onRunningChanged: {
+            if (!repoProc.running && root.checking && !root._repoDone) {
+                root.repoUpdates = [];
+                root._repoDone = true;
+                root._settle();
+            }
+        }
     }
 
     Process {
@@ -123,6 +132,15 @@ Singleton {
                 root.aurUpdates = [];
             root._aurDone = true;
             root._settle();
+        }
+
+        // Covers failure to start
+        onRunningChanged: {
+            if (!aurProc.running && root.checking && !root._aurDone) {
+                root.aurUpdates = [];
+                root._aurDone = true;
+                root._settle();
+            }
         }
     }
 

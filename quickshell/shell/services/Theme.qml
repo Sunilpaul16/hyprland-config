@@ -60,7 +60,8 @@ Singleton {
 
     Process {
         id: modeProc
-        onExited: root.busy = false
+        // Also fires on failure to start
+        onRunningChanged: if (!modeProc.running) root.busy = false
     }
 
     // Colour source file
