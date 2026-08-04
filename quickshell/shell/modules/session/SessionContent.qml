@@ -33,6 +33,7 @@ Column {
     Item {
         implicitWidth: 64
         implicitHeight: 64
+        clip: true
 
         AnimatedImage {
             anchors.centerIn: parent
@@ -54,7 +55,7 @@ Column {
 
     SessionActionButton {
         id: rebootBtn
-        icon: "cached"
+        icon: "restart_alt"
         command: Session.rebootCommand
         warnIfBusy: true
         KeyNavigation.up: lockBtn

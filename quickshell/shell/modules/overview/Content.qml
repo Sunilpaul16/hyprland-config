@@ -25,8 +25,8 @@ Item {
         return slots;
     }
 
-    // Card sizing
-    readonly property int cardHeight: 200
+    // Card sizing, scaled to the screen
+    readonly property int cardHeight: Math.max(180, Math.min(360, Math.round((root.screen?.height ?? 1080) * 0.22)))
     readonly property int cardSpacing: 16
 
     // Card width

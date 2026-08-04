@@ -313,13 +313,13 @@ Item {
                 visible: input.text.length === 0
             }
 
-            StyledText {
+            MaterialIcon {
                 anchors.left: parent.left
                 anchors.leftMargin: Motion.spacing.xlarge
                 anchors.verticalCenter: parent.verticalCenter
-                text: "\u{1F50D}"
-                font.pixelSize: Motion.fontSize.subhead
-                opacity: 0.6
+                text: "search"
+                color: Colors.textMuted
+                font.pixelSize: Motion.fontSize.large
             }
 
             // Search input

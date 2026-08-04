@@ -71,7 +71,11 @@ Rectangle {
 
         // Bind rows
         Column {
+            id: bindRows
             spacing: Motion.spacing.small
+
+            // Widest combo in this column
+            property real comboWidth: 0
 
             Repeater {
                 model: root.rows
@@ -80,13 +84,19 @@ Rectangle {
                     required property var modelData
                     spacing: Motion.spacing.large
 
-                    KeyCombo { rowData: modelData; Layout.alignment: Qt.AlignVCenter }
+                    KeyCombo {
+                        rowData: modelData
+                        Layout.alignment: Qt.AlignVCenter
+                        Layout.preferredWidth: bindRows.comboWidth
+                        onImplicitWidthChanged: bindRows.comboWidth = Math.max(bindRows.comboWidth, implicitWidth)
+                        Component.onCompleted: bindRows.comboWidth = Math.max(bindRows.comboWidth, implicitWidth)
+                    }
 
                     StyledText {
                         text: modelData.label
                         color: Colors.textMuted
                         font.pixelSize: Motion.fontSize.body
-                        Layout.preferredWidth: root.columnWidth - 130
+                        Layout.preferredWidth: root.columnWidth - bindRows.comboWidth - Motion.spacing.large
                         wrapMode: Text.Wrap
                         Layout.alignment: Qt.AlignVCenter
                     }
