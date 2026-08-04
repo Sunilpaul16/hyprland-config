@@ -10,7 +10,8 @@ Rectangle {
 
     implicitHeight: content.implicitHeight + 20
     radius: Motion.rounding.card
-    color: Colors.layer
+    // Floats over arbitrary windows
+    color: Colors.layerOpaque
     border.width: modelData.critical ? 1 : 0
     border.color: Colors.error
 
