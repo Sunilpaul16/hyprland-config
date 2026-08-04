@@ -30,10 +30,11 @@ RowLayout {
         }
 
         StyledText {
-            visible: root.device.batteryAvailable
-            text: Math.round(root.device.battery * 100) + "%"
+            Layout.fillWidth: true
+            text: BluetoothStatus.deviceStatus(root.device)
             color: Colors.textMuted
             font.pixelSize: Motion.fontSize.small
+            elide: Text.ElideRight
         }
     }
 
