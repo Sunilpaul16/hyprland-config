@@ -131,7 +131,9 @@ Singleton {
             historyFile.setText("[]");
             return;
         }
-        historyFile.setText(JSON.stringify(root.list.filter(n => !n.closed && !n.isTransient).map(n => root.notifToJSON(n)), null, 2));
+        // Newest first, so slice from the front
+        const kept = root.list.filter(n => !n.closed && !n.isTransient).slice(0, Math.max(1, Config.notifications.historyLimit));
+        historyFile.setText(JSON.stringify(kept.map(n => root.notifToJSON(n)), null, 2));
     }
 
     // Notification server

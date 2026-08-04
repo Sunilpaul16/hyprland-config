@@ -123,6 +123,7 @@ Singleton {
             property JsonObject notifications: JsonObject {
                 property int toastDismissDuration: 5000  // toast timeout ms
                 property bool keepAcrossRestarts: true  // persist history to disk
+                property int historyLimit: 200  // newest kept on disk
                 property int groupPreviewNum: 3  // collapsed group size
                 property real swipeThreshold: 0.3  // swipe dismiss fraction
                 property string fullscreen: "on"  // "on" | "off"

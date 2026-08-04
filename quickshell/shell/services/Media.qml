@@ -124,4 +124,10 @@ Singleton {
             root.artDownloaded = (exitCode === 0);
         }
     }
+
+    // Cache dir prune
+    Process {
+        running: true
+        command: ["bash", "-c", `mkdir -p '${Directories.mediaArtCache}' && find '${Directories.mediaArtCache}' -type f -mtime +14 -delete 2>/dev/null`]
+    }
 }
