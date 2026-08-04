@@ -14,6 +14,8 @@ Singleton {
 
     property var list: []
 
+    readonly property bool loading: scanProc.running
+
     signal thumbnailReady(string path)
 
     function isVideoName(name: string): bool {

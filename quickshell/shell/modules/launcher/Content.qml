@@ -285,7 +285,7 @@ Item {
             StyledText {
                 anchors.centerIn: parent
                 visible: content.currentModeResults.length === 0
-                text: content.mode === "wallpaper" ? "No wallpapers found" : (content.mode === "commands" ? "No commands found" : (content.mode === "clip" ? "No clipboard entries found" : "No apps found"))
+                text: content.mode === "wallpaper" ? (Wallpapers.loading ? "Loading…" : "No wallpapers found") : (content.mode === "commands" ? "No commands found" : (content.mode === "clip" ? "No clipboard entries found" : "No apps found"))
                 color: Colors.textMuted
                 font.pixelSize: Motion.fontSize.title
             }
