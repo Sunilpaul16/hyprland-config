@@ -80,6 +80,24 @@ Singleton {
             if (Colors.hasOwnProperty(key))
                 Colors[key] = json[key];
         }
+
+        root.harmonise(json);
+    }
+
+    // Guard generated roles
+    function harmonise(json): void {
+        // Read the incoming values; the properties are still animating
+        const text = json.text ? Qt.color(json.text) : Colors.text;
+        const bg = json.background ? Qt.color(json.background) : Colors.background;
+        const err = json.error ? Qt.color(json.error) : Colors.error;
+        const prim = json.primary ? Qt.color(json.primary) : Colors.primary;
+
+        // Generators put muted text far too close to body text
+        Colors.textMuted = Qt.rgba(text.r + (bg.r - text.r) * 0.28, text.g + (bg.g - text.g) * 0.28, text.b + (bg.b - text.b) * 0.28, 1);
+
+        // A red wallpaper can collapse error onto primary
+        if (Colors.distance(err, prim) < 0.25)
+            Colors.error = Qt.hsla(err.hslHue, 0.85, 0.45, 1);
     }
 
     function applyPreview(text: string): void {
