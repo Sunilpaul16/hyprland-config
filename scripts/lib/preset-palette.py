@@ -179,7 +179,7 @@ def require(colours, names, what):
 
 def main():
     if len(sys.argv) < 2:
-        sys.exit("usage: preset-palette.py list|modes|matugen|scss|check ...")
+        sys.exit("usage: preset-palette.py list|listall|modes|matugen|scss|check ...")
     cmd = sys.argv[1]
 
     if cmd == "check":

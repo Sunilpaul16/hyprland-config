@@ -40,7 +40,7 @@ Item {
     // Decode entry thumbnail
     Process {
         id: decodeProc
-        command: ["bash", "-c", `[ -f '${root.thumbPath}' ] || ${Cliphist.cliphistBinary} decode > '${root.thumbPath}'`]
+        command: ["bash", "-c", `[ -s '${root.thumbPath}' ] || { ${Cliphist.cliphistBinary} decode > '${root.thumbPath}.part' && mv '${root.thumbPath}.part' '${root.thumbPath}' || { rm -f '${root.thumbPath}.part'; exit 1; }; }`]
         stdinEnabled: true
         onStarted: {
             decodeProc.write(root.modelData.entry + "\n");

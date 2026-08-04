@@ -56,11 +56,17 @@ MODE="$WANT_MODE"
     echo "setscheme: $TARGET has no $WANT_MODE mode, using $MODE"
 }
 
+# Role drift guard
+"$HELPER" check || echo "setscheme: colour role lists disagree (see above)" >&2
+
 # Validate before writing
 palette="$CACHE_DIR/preset_palette.json"
 scss="$CACHE_DIR/preset_colors.scss"
-"$HELPER" matugen "$TARGET" "$MODE" > "$palette"
-"$HELPER" scss "$TARGET" "$MODE" > "$scss"
+trap 'rm -f "$palette.part" "$scss.part"' EXIT
+"$HELPER" matugen "$TARGET" "$MODE" > "$palette.part"
+"$HELPER" scss "$TARGET" "$MODE" > "$scss.part"
+mv "$palette.part" "$palette"
+mv "$scss.part" "$scss"
 
 # Same templates as wallpaper
 matugen json "$palette"
