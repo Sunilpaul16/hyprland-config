@@ -192,33 +192,18 @@ Item {
     }
 
     // Close button
-    Rectangle {
+    IconAction {
+        id: closeButton
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.margins: Motion.spacing.medium
-        width: 30
-        height: 30
+        implicitWidth: 30
+        implicitHeight: 30
         radius: width / 2
-        color: closeHover.containsMouse ? Colors.layer : "transparent"
-
-        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-        MaterialIcon {
-            anchors.centerIn: parent
-            text: "close"
-            color: closeHover.containsMouse ? Colors.error : Colors.textMuted
-            font.pixelSize: Motion.fontSize.header
-
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-        }
-
-        MouseArea {
-            id: closeHover
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: SettingsState.open = false
-        }
+        iconName: "close"
+        iconSize: Motion.fontSize.header
+        iconColor: closeButton.hovered ? Colors.error : Colors.textMuted
+        onTriggered: SettingsState.open = false
     }
 
     // Sub-pages

@@ -22,7 +22,7 @@ QtObject {
         if (isNaN(then))
             return "";
 
-        const clock = Config.time.use12Hour ? "h:mm AP" : "hh:mm";
+        const clock = Time.clockFormat;
         const mins = Math.floor((Date.now() - then) / 60000);
 
         if (mins < 1)

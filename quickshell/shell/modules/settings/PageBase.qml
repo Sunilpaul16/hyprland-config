@@ -14,34 +14,18 @@ Item {
 
     default property alias content: body.data
 
-    Rectangle {
+    IconAction {
         id: backButton
 
         anchors.left: parent.left
         anchors.verticalCenter: header.verticalCenter
         visible: root.isSubPage
-        width: 32
-        height: 32
+        implicitWidth: 32
+        implicitHeight: 32
         radius: width / 2
-        color: backHover.containsMouse ? Colors.layer : "transparent"
-
-        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-        MaterialIcon {
-            anchors.centerIn: parent
-            text: "arrow_back"
-            color: Colors.text
-            font.pixelSize: Motion.fontSize.display
-        }
-
-        MouseArea {
-            id: backHover
-
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: SettingsState.closeSubPage()
-        }
+        iconName: "arrow_back"
+        iconSize: Motion.fontSize.display
+        onTriggered: SettingsState.closeSubPage()
     }
 
     StyledText {

@@ -26,7 +26,7 @@ Singleton {
             return name;
         const [, y, mo, d, h, mi, s] = m.map(Number);
         const date = new Date(y, mo - 1, d, h, mi, s);
-        return Qt.formatDateTime(date, Time.use12Hour ? "MMM d, yyyy — h:mm AP" : "MMM d, yyyy — hh:mm");
+        return Qt.formatDateTime(date, "MMM d, yyyy — " + Time.clockFormat);
     }
 
     Component.onCompleted: root.refresh()

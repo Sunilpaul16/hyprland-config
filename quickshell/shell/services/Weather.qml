@@ -33,8 +33,8 @@ Singleton {
     readonly property list<var> forecast: _forecast
 
     // Formatted sun times
-    readonly property string sunrise: _sunriseIso.length > 0 ? Qt.formatDateTime(new Date(_sunriseIso), Time.use12Hour ? "h:mm AP" : "hh:mm") : "--:--"
-    readonly property string sunset: _sunsetIso.length > 0 ? Qt.formatDateTime(new Date(_sunsetIso), Time.use12Hour ? "h:mm AP" : "hh:mm") : "--:--"
+    readonly property string sunrise: _sunriseIso.length > 0 ? Qt.formatDateTime(new Date(_sunriseIso), Time.clockFormat) : "--:--"
+    readonly property string sunset: _sunsetIso.length > 0 ? Qt.formatDateTime(new Date(_sunsetIso), Time.clockFormat) : "--:--"
 
     property real _currentTemp: NaN
     property int _weatherCode: -1

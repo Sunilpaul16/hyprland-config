@@ -55,7 +55,6 @@ Scope {
                 readonly property bool widthFixed: Config.dashboard.panel.widthMode === "fixed"
                 readonly property bool heightFixed: Config.dashboard.panel.heightMode === "fixed"
                 // Resting position
-                readonly property real restingTopMargin: 0
                 readonly property int cornerSize: Motion.cornerSize
 
                 // Positioning
@@ -107,7 +106,7 @@ Scope {
 
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.top: parent.top
-                        anchors.topMargin: root.restingTopMargin - (panel.height + 5) * root.offsetScale
+                        anchors.topMargin: -(panel.height + 5) * root.offsetScale
                         width: root.widthFixed
                             ? Math.min(Config.dashboard.panel.width, (root.screen?.width ?? 1280) * 0.95)
                             : Math.min(Math.max(tabView.currentPaneWidth + 40, 700), (root.screen?.width ?? 1280) * 0.85, 1400)

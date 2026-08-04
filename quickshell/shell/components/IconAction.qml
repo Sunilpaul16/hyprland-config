@@ -7,6 +7,8 @@ Rectangle {
 
     property string iconName: "circle"
     property color iconColor: Colors.text
+    property int iconSize: Motion.fontSize.title
+    readonly property alias hovered: hoverArea.containsMouse
 
     signal triggered
 
@@ -22,7 +24,7 @@ Rectangle {
         anchors.centerIn: parent
         text: root.iconName
         color: root.iconColor
-        font.pixelSize: Motion.fontSize.title
+        font.pixelSize: root.iconSize
     }
 
     MouseArea {

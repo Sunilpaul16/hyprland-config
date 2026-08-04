@@ -17,6 +17,9 @@ Singleton {
     readonly property int seconds: clock.seconds
 
     // Formatted strings
+    // "h:mm AP" | "hh:mm"
+    readonly property string clockFormat: root.use12Hour ? "h:mm AP" : "hh:mm"
+    // Padded, so the bar does not jitter
     readonly property string timeStr: format(root.use12Hour ? "hh:mm AP" : "hh:mm")
     readonly property string hourStr: format("hh")
     readonly property string minuteStr: format("mm")

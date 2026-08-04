@@ -29,9 +29,8 @@ Scope {
                 }
 
                 // Edge stack registration
-                readonly property int edgeMargin: 0
                 readonly property int cornerSize: Motion.cornerSize
-                readonly property real registeredWidth: backdrop.width + edgeMargin
+                readonly property real registeredWidth: backdrop.width
 
                 onActiveChanged: {
                     RightEdgeStack.register(root.screen, "sidebar", root.active, registeredWidth);
@@ -87,9 +86,9 @@ Scope {
                     // Backdrop
                     Rectangle {
                         id: backdrop
-                        anchors { top: parent.top; right: parent.right; margins: root.edgeMargin }
+                        anchors { top: parent.top; right: parent.right }
                         width: Config.sidebar.width
-                        height: parent.height - root.edgeMargin * 2
+                        height: parent.height
                         // Square left corners
                         topLeftRadius: 0
                         bottomLeftRadius: 0
