@@ -42,6 +42,7 @@ Scope {
                         GlobalFocusGrab.addDismissable(root);
                     }
                 }
+                onRegisteredWidthChanged: RightEdgeStack.register(root.screen, "sidebar", root.active, registeredWidth)
                 Component.onCompleted: RightEdgeStack.register(root.screen, "sidebar", root.active, registeredWidth)
                 Connections {
                     target: GlobalFocusGrab
@@ -89,7 +90,6 @@ Scope {
                         anchors { top: parent.top; right: parent.right; margins: root.edgeMargin }
                         width: Config.sidebar.width
                         height: parent.height - root.edgeMargin * 2
-                        radius: Motion.rounding.drawer
                         // Square left corners
                         topLeftRadius: 0
                         bottomLeftRadius: 0
