@@ -13,7 +13,8 @@ Rectangle {
     implicitWidth: 24
     implicitHeight: 24
     radius: Motion.rounding.small
-    color: hoverArea.containsMouse ? Colors.panel : "transparent"
+    // State layer, not a surface
+    color: hoverArea.containsMouse ? Qt.alpha(Colors.text, 0.1) : "transparent"
 
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 

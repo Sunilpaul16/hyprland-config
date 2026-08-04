@@ -64,7 +64,7 @@ Item {
         width: badgeSize
         height: badgeSize
         radius: width * 0.3
-        color: Colors.background
+        color: Colors.panel
 
         Behavior on width { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
         Behavior on height { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }

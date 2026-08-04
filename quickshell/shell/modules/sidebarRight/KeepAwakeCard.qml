@@ -41,7 +41,7 @@ Rectangle {
             Rectangle {
                 Layout.topMargin: Motion.spacing.small
                 radius: Motion.rounding.small
-                color: Colors.background
+                color: Colors.panel
                 implicitWidth: activeSinceText.implicitWidth + 16
                 implicitHeight: activeSinceText.implicitHeight + 6
 

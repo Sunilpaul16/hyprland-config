@@ -76,7 +76,7 @@ Rectangle {
         implicitWidth: root.avatarSize
         implicitHeight: root.avatarSize
         radius: width / 2
-        color: Colors.background
+        color: Colors.panel
 
         MaterialIcon {
             anchors.centerIn: parent

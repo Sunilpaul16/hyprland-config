@@ -20,7 +20,7 @@ Item {
     layer.effect: DropShadow {
         radius: Motion.rounding.item
         samples: 21
-        color: Colors.background
+        color: Colors.panel
         opacity: 0.4
         verticalOffset: 2
     }
@@ -43,7 +43,7 @@ Item {
         Rectangle {
             anchors.fill: parent
             radius: width / 2
-            color: Colors.background
+            color: Colors.panel
         }
 
         Image {

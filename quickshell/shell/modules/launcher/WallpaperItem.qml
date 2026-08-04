@@ -63,7 +63,7 @@ Item {
             anchors.fill: parent
             anchors.margins: root.isCurrent ? 3 : 2
             radius: Motion.rounding.small
-            color: Colors.background
+            color: Colors.panel
 
             Image {
                 id: thumb

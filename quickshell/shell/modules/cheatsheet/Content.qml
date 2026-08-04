@@ -79,7 +79,7 @@ Item {
         visible: flickable.contentX > 1
         gradient: Gradient {
             orientation: Gradient.Horizontal
-            GradientStop { position: 0; color: Colors.background }
+            GradientStop { position: 0; color: Colors.panel }
             GradientStop { position: 1; color: Qt.rgba(Colors.background.r, Colors.background.g, Colors.background.b, 0) }
         }
     }
@@ -91,7 +91,7 @@ Item {
         gradient: Gradient {
             orientation: Gradient.Horizontal
             GradientStop { position: 0; color: Qt.rgba(Colors.background.r, Colors.background.g, Colors.background.b, 0) }
-            GradientStop { position: 1; color: Colors.background }
+            GradientStop { position: 1; color: Colors.panel }
         }
     }
 }

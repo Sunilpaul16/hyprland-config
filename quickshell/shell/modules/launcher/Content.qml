@@ -199,7 +199,7 @@ Item {
         // Square bottom corners
         bottomLeftRadius: 0
         bottomRightRadius: 0
-        color: Colors.layer
+        color: Colors.panel
         // No border
 
         // Absorb clicks
@@ -301,7 +301,7 @@ Item {
             anchors.margins: content.panelPad
             height: content.searchHeight
             radius: height / 2
-            color: Colors.panel
+            color: Colors.layer
 
             StyledText {
                 anchors.left: parent.left
