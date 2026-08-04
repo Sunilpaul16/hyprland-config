@@ -48,6 +48,7 @@ Rectangle {
         anchors.fill: parent
         cursorShape: pressed ? Qt.ClosedHandCursor : Qt.PointingHandCursor
         preventStealing: true
+        acceptedButtons: Qt.LeftButton | Qt.MiddleButton
 
         drag.target: card
         drag.axis: Drag.XAxis
@@ -59,7 +60,11 @@ Rectangle {
                 card.modelData.popup = false;
         }
         // Suppressed on drag
-        onClicked: card.modelData.close()
+        onClicked: mouse => {
+            if (mouse.button !== Qt.MiddleButton)
+                card.modelData.activate();
+            card.modelData.popup = false;
+        }
     }
 
     // Content

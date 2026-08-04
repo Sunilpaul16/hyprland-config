@@ -144,6 +144,19 @@ QtObject {
         }));
     }
 
+    // Default or sole action
+    function defaultAction(): var {
+        return notif.actions.find(a => a.identifier === "default") ?? (notif.actions.length === 1 ? notif.actions[0] : null);
+    }
+
+    function activate(): bool {
+        const action = notif.defaultAction();
+        if (!action)
+            return false;
+        action.invoke();
+        return true;
+    }
+
     // Ref-counted lock
     function lock(item: Item): void {
         locks.add(item);

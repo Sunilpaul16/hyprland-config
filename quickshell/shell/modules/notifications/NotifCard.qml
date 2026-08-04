@@ -102,9 +102,7 @@ Rectangle {
             }
             if (card.modelData.expanded)
                 return;
-            const actions = card.modelData.actions;
-            if (actions.length === 1)
-                actions[0].invoke();
+            card.modelData.activate();
         }
     }
 
