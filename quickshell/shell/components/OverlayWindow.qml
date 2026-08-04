@@ -50,11 +50,14 @@ PanelWindow {
     }
 
     // Shared focus-grab registration
-    onActiveChanged: {
-        if (root.active)
-            GlobalFocusGrab.addDismissable(root);
-        else
-            GlobalFocusGrab.removeDismissable(root);
+    Connections {
+        target: root
+        function onActiveChanged() {
+            if (root.active)
+                GlobalFocusGrab.addDismissable(root);
+            else
+                GlobalFocusGrab.removeDismissable(root);
+        }
     }
     Connections {
         target: GlobalFocusGrab

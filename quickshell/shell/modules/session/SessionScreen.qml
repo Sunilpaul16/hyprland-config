@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell
-import Quickshell.Wayland
 import "../../services"
 import "../../components"
 
@@ -13,141 +12,98 @@ Scope {
             id: panelLoader
             required property var modelData
 
-            component: PanelWindow {
+            component: OverlayWindow {
                 id: root
                 screen: panelLoader.modelData
+                state: SessionState
+                namespace: "quickshell-session"
+                maskItem: drawer
 
-                // Visibility state
-                readonly property bool isOwnerScreen: ScreenOwner.owns(SessionState, root.screen)
-                readonly property bool active: SessionState.open && root.isOwnerScreen
+                onDismissed: SessionState.open = false
+                onEscapePressed: SessionState.open = false
 
-                property real showProgress: active ? 1 : 0
-
-                Behavior on showProgress {
-                    NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
-                }
-
-                // Stack and grab
+                // Stack and warnings
                 onActiveChanged: {
                     RightEdgeStack.register(root.screen, "session", root.active, drawer.registeredWidth);
                     if (root.active) {
                         SessionWarnings.refresh();
-                        GlobalFocusGrab.addDismissable(root);
-                    } else {
-                        GlobalFocusGrab.removeDismissable(root);
-                    }
-                }
-                Connections {
-                    target: GlobalFocusGrab
-                    function onDismissed() {
-                        SessionState.open = false;
+                        if (loader.item)
+                            loader.item.focusFirst();
                     }
                 }
 
-                // Positioning
-                anchors {
-                    top: true
-                    left: true
-                    right: true
-                    bottom: true
-                }
-
-                // Window setup
-                color: "transparent"
-                exclusiveZone: 0
-                visible: showProgress > 0.001
-
-                WlrLayershell.layer: WlrLayer.Overlay
-                WlrLayershell.namespace: "quickshell-session"
-                WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
-
-                // Click-through mask
-                mask: Region {
-                    item: drawer
-                }
-
-                // Focus scope
+                // Drawer
                 Item {
-                    anchors.fill: parent
-                    focus: root.active
-                    Keys.onEscapePressed: SessionState.open = false
+                    id: drawer
 
-                    // Focus first button
-                    onFocusChanged: if (focus && loader.item) loader.item.focusFirst()
+                    // Flush to sidebar
+                    readonly property int restingMargin: 0
+                    readonly property int cornerSize: Motion.cornerSize
+                    readonly property int closedMargin: -(drawer.implicitWidth + restingMargin)
 
-                    // Drawer
-                    Item {
-                        id: drawer
+                    // Stack offset
+                    property real stackOffset: RightEdgeStack.offsetFor(root.screen, "session")
+                    Behavior on stackOffset {
+                        NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
+                    }
 
-                        // Flush to sidebar
-                        readonly property int restingMargin: 0
-                        readonly property int cornerSize: Motion.cornerSize
-                        readonly property int closedMargin: -(drawer.implicitWidth + restingMargin)
+                    // Registered width
+                    property real registeredWidth: implicitWidth + restingMargin
+                    onRegisteredWidthChanged: RightEdgeStack.register(root.screen, "session", root.active, registeredWidth)
+                    Component.onCompleted: RightEdgeStack.register(root.screen, "session", root.active, registeredWidth)
 
-                        // Stack offset
-                        property real stackOffset: RightEdgeStack.offsetFor(root.screen, "session")
-                        Behavior on stackOffset {
-                            NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
+                    readonly property int contentPadding: 10
+
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: closedMargin + (restingMargin - closedMargin) * root.showProgress + stackOffset
+                    // First-frame fallback
+                    implicitWidth: ((loader.item ? loader.item.implicitWidth : 0) || 64) + contentPadding * 2
+                    implicitHeight: ((loader.item ? loader.item.implicitHeight : 0) || 384) + contentPadding * 2
+                    opacity: root.showProgress
+
+                    // Hover holds open
+                    HoverHandler {
+                        onHoveredChanged: {
+                            if (hovered)
+                                SessionState.cancelAutoClose();
+                            else
+                                SessionState.scheduleAutoClose();
                         }
+                    }
 
-                        // Registered width
-                        property real registeredWidth: implicitWidth + restingMargin
-                        onRegisteredWidthChanged: RightEdgeStack.register(root.screen, "session", root.active, registeredWidth)
-                        Component.onCompleted: RightEdgeStack.register(root.screen, "session", root.active, registeredWidth)
+                    // Backdrop
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: Motion.rounding.drawer
+                        topRightRadius: 0
+                        bottomRightRadius: 0
+                        color: Colors.panel
+                    }
 
-                        readonly property int contentPadding: 10
+                    // Edge fillets
+                    Corner {
+                        anchors { right: parent.right; bottom: parent.top }
+                        size: drawer.cornerSize
+                        color: Colors.panel
+                        corner: "bottomRight"
+                    }
 
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.right: parent.right
-                        anchors.rightMargin: closedMargin + (restingMargin - closedMargin) * root.showProgress + stackOffset
-                        // First-frame fallback
-                        implicitWidth: ((loader.item ? loader.item.implicitWidth : 0) || 64) + contentPadding * 2
-                        implicitHeight: ((loader.item ? loader.item.implicitHeight : 0) || 384) + contentPadding * 2
-                        opacity: root.showProgress
+                    Corner {
+                        anchors { right: parent.right; top: parent.bottom }
+                        size: drawer.cornerSize
+                        color: Colors.panel
+                        corner: "topRight"
+                    }
 
-                        // Hover holds open
-                        HoverHandler {
-                            onHoveredChanged: {
-                                if (hovered)
-                                    SessionState.cancelAutoClose();
-                                else
-                                    SessionState.scheduleAutoClose();
-                            }
-                        }
-
-                        // Backdrop
-                        Rectangle {
-                            anchors.fill: parent
-                            radius: Motion.rounding.drawer
-                            topRightRadius: 0
-                            bottomRightRadius: 0
-                            color: Colors.panel
-                        }
-
-                        // Edge fillets
-                        Corner {
-                            anchors { right: parent.right; bottom: parent.top }
-                            size: drawer.cornerSize
-                            color: Colors.panel
-                            corner: "bottomRight"
-                        }
-
-                        Corner {
-                            anchors { right: parent.right; top: parent.bottom }
-                            size: drawer.cornerSize
-                            color: Colors.panel
-                            corner: "topRight"
-                        }
-
-                        // Lazy content
-                        Loader {
-                            id: loader
-                            anchors.centerIn: parent
-                            active: root.active || root.showProgress > 0.001
-                            sourceComponent: SessionContent {}
-                            // Focus after load
-                            onLoaded: if (root.active) item.focusFirst()
-                        }
+                    // Lazy content
+                    Loader {
+                        id: loader
+                        anchors.centerIn: parent
+                        active: root.active || root.showProgress > 0.001
+                        sourceComponent: SessionContent {}
+                        // Focus after load
+                        onLoaded: if (root.active) item.focusFirst()
                     }
                 }
             }
