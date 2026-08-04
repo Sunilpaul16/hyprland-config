@@ -24,6 +24,18 @@ Singleton {
 
     readonly property string aurHelper: Config.updates.aurHelper
 
+    // Helper on PATH
+    property bool aurHelperAvailable: false
+    property bool aurHelperChecked: false
+
+    onAurHelperChanged: root.checkAurHelper()
+    Component.onCompleted: root.checkAurHelper()
+
+    function checkAurHelper(): void {
+        aurCheckProc.running = false;
+        aurCheckProc.running = true;
+    }
+
     readonly property string lastCheckedLabel: {
         // Tick dependency
         root._labelTick;
@@ -55,7 +67,13 @@ Singleton {
         root._repoDone = false;
         root._aurDone = false;
         repoProc.running = true;
-        aurProc.running = true;
+        // Skip a helper we know is missing
+        if (root.aurHelperChecked && !root.aurHelperAvailable) {
+            root.aurUpdates = [];
+            root._aurDone = true;
+        } else {
+            aurProc.running = true;
+        }
     }
 
     property bool _repoDone: false
@@ -91,6 +109,17 @@ Singleton {
                 to: parts[3] ?? ""
             };
         });
+    }
+
+    // Helper preflight
+    Process {
+        id: aurCheckProc
+        command: ["sh", "-c", `command -v "${root.aurHelper}" >/dev/null 2>&1`]
+
+        onExited: exitCode => {
+            root.aurHelperAvailable = (exitCode === 0);
+            root.aurHelperChecked = true;
+        }
     }
 
     Process {

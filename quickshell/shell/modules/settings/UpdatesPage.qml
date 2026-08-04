@@ -94,7 +94,7 @@ ScrollPage {
         SettingRow {
             live: true
             label: "AUR"
-            subtext: "Helper used to query for updates"
+            subtext: Updates.aurHelperChecked && !Updates.aurHelperAvailable ? `${Updates.aurHelper} is not installed` : "Helper used to query for updates"
 
             SelectPill {
                 options: [{ value: "yay", label: "yay" }, { value: "paru", label: "paru" }]
