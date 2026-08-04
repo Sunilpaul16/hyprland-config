@@ -28,7 +28,7 @@ VALID_SCHEMES="scheme-tonal-spot scheme-vibrant scheme-expressive scheme-content
 MPV_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 video-align-x=0.5 video-align-y=0.5 load-scripts=no"
 
 usage() {
-    echo "Usage: $(basename "$0") [--preview] [--mode auto|light|dark] [--scheme auto|scheme-*] <path-to-image-or-video>" >&2
+    echo "Usage: $(basename "$0") [--preview] [--force-display] [--mode auto|light|dark] [--scheme auto|scheme-*] <path-to-image-or-video>" >&2
     echo "       $(basename "$0") --noswitch" >&2
     echo "       $(basename "$0") --colors-preview <path>   (palette only, changes nothing)" >&2
     echo "       $(basename "$0") --mode auto|light|dark   (re-themes the current wallpaper)" >&2
@@ -46,12 +46,14 @@ is_video() {
 PREVIEW=false
 COLORS_PREVIEW=false
 NOSWITCH=false
+FORCE_DISPLAY=false
 SET_MODE=""
 SET_SCHEME=""
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --preview)  PREVIEW=true; shift ;;
         --colors-preview) COLORS_PREVIEW=true; shift ;;
+        --force-display) FORCE_DISPLAY=true; shift ;;
         --noswitch) NOSWITCH=true; shift ;;
         --mode)     [[ -n "${2:-}" ]] || usage; SET_MODE="$2"; shift 2 ;;
         --scheme)   [[ -n "${2:-}" ]] || usage; SET_SCHEME="$2"; shift 2 ;;
@@ -105,7 +107,7 @@ fi
 mkdir -p "$CACHE_DIR"
 
 # 1. Wallpaper display
-if ! $NOSWITCH && ! $COLORS_PREVIEW && { $PREVIEW || [[ "$(cfgbool '.wallpaper.display' true)" != "false" ]]; }; then
+if ! $NOSWITCH && ! $COLORS_PREVIEW && { $FORCE_DISPLAY || [[ "$(cfgbool '.wallpaper.display' true)" != "false" ]]; }; then
     # Derived here only
     command -v mpvpaper >/dev/null || { echo "switchwall: missing required binary: mpvpaper" >&2; exit 1; }
     mapfile -t MONITORS < <(grep -oP 'hl\.monitor\(\{\s*output\s*=\s*"\K[^"]+' "$HYPR_GENERAL")

@@ -15,7 +15,7 @@ ScrollPage {
     }
 
     function applyWallpaperDisplay(on: bool): void {
-        wallpaperDisplayProc.command = on ? ["sh", "-c", "switchwall --preview \"$(cat \"$HOME/.local/state/quickshell/current_wallpaper\")\""] : ["pkill", "-f", "mpvpaper"];
+        wallpaperDisplayProc.command = on ? ["sh", "-c", "switchwall --preview --force-display \"$(cat \"$HOME/.local/state/quickshell/current_wallpaper\")\""] : ["pkill", "-f", "mpvpaper"];
         wallpaperDisplayProc.running = true;
     }
 
