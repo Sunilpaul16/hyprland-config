@@ -26,6 +26,7 @@ M.kbWallpaperPicker   = "SUPER + T"
 M.kbRandomWallpaper   = "SUPER + SHIFT + T"
 M.kbCheatsheet        = "SUPER + Slash"
 M.kbOverview          = "SUPER + Tab" -- quickshell workspace overview
+M.kbDashboard         = "SUPER + D" -- quickshell dashboard
 M.kbSettings          = "SUPER + I" -- quickshell settings panel
 
 -- Window actions

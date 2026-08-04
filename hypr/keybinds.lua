@@ -28,7 +28,7 @@ hl.bind(v.kbRandomWallpaper, hl.dsp.global("quickshell:randomWallpaper"), { desc
 hl.bind(v.kbCodeEditor, hl.dsp.exec_cmd(v.codeEditor), { description = "App: code editor" })
 hl.bind(v.kbCheatsheet, hl.dsp.exec_cmd("qs -c shell ipc call cheatsheet toggle"), { description = "Launcher: keybind cheatsheet" })
 hl.bind(v.kbOverview, hl.dsp.exec_cmd("qs -c shell ipc call overview toggle"), { description = "Launcher: workspace overview" })
-hl.bind("SUPER + D", hl.dsp.exec_cmd("qs -c shell ipc call dashboard toggle"), { description = "Launcher: dashboard" }) -- kb constant intentionally not added to variables.lua, out of scope for this change
+hl.bind(v.kbDashboard, hl.dsp.exec_cmd("qs -c shell ipc call dashboard toggle"), { description = "Launcher: dashboard" })
 hl.bind(v.kbSettings, hl.dsp.exec_cmd("qs -c shell ipc call settings toggle"), { description = "Launcher: settings" })
 
 
