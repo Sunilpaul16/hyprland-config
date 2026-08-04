@@ -141,7 +141,7 @@ ScrollPage {
             first: true
             last: true
             live: true
-            label: Updates.checking ? "Checking…" : "Everything is up to date"
+            label: Updates.checking ? "Checking…" : (Updates.lastCheckFailed ? "Check failed" : "Everything is up to date")
         }
     }
 

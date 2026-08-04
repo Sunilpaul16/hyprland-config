@@ -28,6 +28,8 @@ Singleton {
     property bool aurHelperAvailable: false
     property bool aurHelperChecked: false
 
+    property bool lastCheckFailed: false
+
     onAurHelperChanged: root.checkAurHelper()
     Component.onCompleted: root.checkAurHelper()
 
@@ -66,6 +68,7 @@ Singleton {
         root.checking = true;
         root._repoDone = false;
         root._aurDone = false;
+        root.lastCheckFailed = false;
         repoProc.running = true;
         // Skip a helper we know is missing
         if (root.aurHelperChecked && !root.aurHelperAvailable) {
@@ -134,6 +137,8 @@ Singleton {
         onExited: exitCode => {
             if (exitCode === 2)
                 root.repoUpdates = [];
+            else if (exitCode !== 0)
+                root.lastCheckFailed = true;
             root._repoDone = true;
             root._settle();
         }
@@ -142,6 +147,7 @@ Singleton {
         onRunningChanged: {
             if (!repoProc.running && root.checking && !root._repoDone) {
                 root.repoUpdates = [];
+                root.lastCheckFailed = true;
                 root._repoDone = true;
                 root._settle();
             }
@@ -167,6 +173,7 @@ Singleton {
         onRunningChanged: {
             if (!aurProc.running && root.checking && !root._aurDone) {
                 root.aurUpdates = [];
+                root.lastCheckFailed = true;
                 root._aurDone = true;
                 root._settle();
             }
