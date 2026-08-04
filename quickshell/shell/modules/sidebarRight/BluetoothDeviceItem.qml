@@ -62,13 +62,13 @@ RowLayout {
 
     IconAction {
         visible: root.device.paired && !root.device.connected
-        iconName: "check_circle"
+        iconName: "bluetooth_connected"
         onTriggered: root.device.connect()
     }
 
     IconAction {
         visible: !root.device.paired
-        iconName: "bluetooth_searching"
+        iconName: "add_link"
         onTriggered: root.device.pair()
     }
 
