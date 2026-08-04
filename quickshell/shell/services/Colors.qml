@@ -12,9 +12,14 @@ QtObject {
 
     // Rotate hue
     function hueShift(c: color, degrees: real): color {
-        if (c.hslSaturation <= 0.01)
-            return c;
-        return Qt.hsla((c.hslHue * 360 + degrees + 360) % 360 / 360, c.hslSaturation, c.hslLightness, c.a);
+        // Greys need a hue to rotate
+        const sat = Math.max(c.hslSaturation, 0.25);
+        return Qt.hsla((c.hslHue * 360 + degrees + 360) % 360 / 360, sat, c.hslLightness, c.a);
+    }
+
+    // Straight RGB distance
+    function distance(a: color, b: color): real {
+        return Math.sqrt((a.r - b.r) ** 2 + (a.g - b.g) ** 2 + (a.b - b.b) ** 2);
     }
 
     function luminance(c: color): real {
@@ -49,9 +54,13 @@ QtObject {
     // Card and pill fill
     readonly property color layer: {
         const transparent = Config.appearance.transparency;
-        const target = root.elevationFloor + (transparent ? 0.3 * (1 - Config.appearance.panelOpacity) : 0);
+        // Must outrun a bright wallpaper
+        const target = root.elevationFloor + (transparent ? 1.2 * (1 - Config.appearance.panelOpacity) : 0);
         return root.elevate(background, surface, target, transparent ? Config.appearance.layerOpacity : 1);
     }
+
+    // Card fill for free-floating popups
+    readonly property color layerOpaque: root.elevate(background, surface, root.elevationFloor, 1)
 
     property color background: "#0f1417"
     Behavior on background { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
