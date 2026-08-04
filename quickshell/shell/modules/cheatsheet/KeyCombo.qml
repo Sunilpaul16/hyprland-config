@@ -29,8 +29,6 @@ Row {
         "XF86AudioLowerVolume": "Vol -",
         "XF86AudioMute": "Mute",
         "XF86AudioMicMute": "Mic",
-        "XF86MonBrightnessUp": "Bright +",
-        "XF86MonBrightnessDown": "Bright -",
         "XF86AudioNext": "Next",
         "XF86AudioPause": "Pause",
         "XF86AudioPlay": "Play",

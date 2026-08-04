@@ -70,8 +70,6 @@ hl.bind(v.kbVolumeUp,       hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@
 hl.bind(v.kbVolumeDown,     hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true, description = "Media: volume down" })
 hl.bind(v.kbMute,           hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true, description = "Media: mute" })
 hl.bind(v.kbMicMute,        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),   { locked = true, repeating = true, description = "Media: mic mute" })
-hl.bind(v.kbBrightnessUp,   hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true, description = "Media: brightness up" })
-hl.bind(v.kbBrightnessDown, hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true, description = "Media: brightness down" })
 
 -- Media playback
 hl.bind(v.kbMediaNext,  hl.dsp.exec_cmd("playerctl next"),       { locked = true, description = "Media: next track" })
