@@ -11,28 +11,40 @@ Rectangle {
     required property var command
     // Warn if busy
     property bool warnIfBusy: false
+    // Awaiting confirmation
+    property bool armed: false
 
     implicitWidth: 64
     implicitHeight: 64
     radius: width / 2
     // Resting fill
-    color: hoverArea.containsMouse ? Colors.tint(Colors.layer, Colors.primary, 0.18) : Colors.layer
+    color: root.armed ? Colors.tint(Colors.layer, Colors.error, 0.4) : (hoverArea.containsMouse ? Colors.tint(Colors.layer, Colors.primary, 0.18) : Colors.layer)
     border.width: root.activeFocus ? 2 : 0
     border.color: Colors.primary
 
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
     function activate(): void {
-        if (root.warnIfBusy && (SessionWarnings.downloadRunning || SessionWarnings.packageManagerRunning)) {
+        if (root.warnIfBusy && !root.armed && (SessionWarnings.downloadRunning || SessionWarnings.packageManagerRunning)) {
             const reasons = [];
             if (SessionWarnings.downloadRunning)
                 reasons.push("a download may still be running");
             if (SessionWarnings.packageManagerRunning)
                 reasons.push("your package manager is running");
-            Quickshell.execDetached(["notify-send", "-a", "quickshell", "-u", "critical", "Careful — session action requested", reasons.join(" and ") + "."]);
+            Quickshell.execDetached(["notify-send", "-a", "quickshell", "-u", "critical", "Careful — press again to confirm", reasons.join(" and ") + "."]);
+            root.armed = true;
+            disarmTimer.restart();
+            return;
         }
         Quickshell.execDetached(root.command);
         SessionState.open = false;
+    }
+
+    // Confirmation window
+    Timer {
+        id: disarmTimer
+        interval: 4000
+        onTriggered: root.armed = false
     }
 
     Keys.onReturnPressed: root.activate()
