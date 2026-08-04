@@ -23,16 +23,17 @@ Singleton {
     readonly property var primaryDisk: root.disks.length > 0 ? root.disks[0] : null
 
     // Manual disk pick
-    property var manualDisk: null
-    readonly property bool hasManualDisk: root.manualDisk !== null && root.disks.includes(root.manualDisk)
+    property string manualDiskName: ""
+    readonly property var manualDisk: root.manualDiskName === "" ? null : (root.disks.find(d => d.name === root.manualDiskName) ?? null)
+    readonly property bool hasManualDisk: root.manualDisk !== null
     readonly property var selectedDisk: root.hasManualDisk ? root.manualDisk : root.primaryDisk
 
     function selectDisk(disk): void {
-        root.manualDisk = disk;
+        root.manualDiskName = disk ? disk.name : "";
     }
 
     function clearDiskOverride(): void {
-        root.manualDisk = null;
+        root.manualDiskName = "";
     }
 
     property string _dfText: ""
