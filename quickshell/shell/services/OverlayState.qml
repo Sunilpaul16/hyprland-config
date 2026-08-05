@@ -46,30 +46,32 @@ Singleton {
         }
     ]
 
-    readonly property var entries: Persistent.overlayWidgets ?? ({})
+    readonly property var entries: Persistent.overlayWidgets
+    // Shared, so a miss is not a new object
+    readonly property var emptyEntry: ({})
 
     readonly property var openIds: {
         const out = [];
         for (const w of root.widgets)
-            if (root.entries[w.identifier]?.open)
+            if (root.entries?.[w.identifier]?.open)
                 out.push(w.identifier);
         return out;
     }
 
     readonly property bool hasPinned: {
         for (const id of root.openIds)
-            if (root.entries[id]?.pinned)
+            if (root.entries?.[id]?.pinned)
                 return true;
         return false;
     }
 
     function entry(id: string): var {
-        return root.entries[id] ?? ({});
+        return root.entries?.[id] ?? root.emptyEntry;
     }
 
     // Merge and persist
     function update(id: string, changes: var): void {
-        const all = JSON.parse(JSON.stringify(root.entries));
+        const all = JSON.parse(JSON.stringify(root.entries ?? {}));
         all[id] = Object.assign(all[id] ?? {}, changes);
         Persistent.overlayWidgets = all;
     }

@@ -8,7 +8,6 @@ MouseArea {
 
     required property string identifier
     required property Item canvas
-    property string label: ""
     property bool showBackground: true
 
     // Sized by drag, not content
@@ -20,13 +19,22 @@ MouseArea {
 
     default property alias widgetContent: holder.data
 
+    readonly property var meta: OverlayState.widgets.find(w => w.identifier === root.identifier) ?? ({})
+    readonly property string icon: root.meta.icon ?? "widgets"
+    readonly property string title: root.meta.label ?? root.identifier
+
     readonly property var entry: OverlayState.entry(root.identifier)
     readonly property bool pinned: root.entry.pinned ?? false
     readonly property bool editing: OverlayState.open
 
+    // Title bar always reserves space
+    readonly property int chromeHeight: 28
+    readonly property int contentW: root.resizable ? root.storedWidth : holder.childrenRect.width
+    readonly property int contentH: root.resizable ? root.storedHeight : holder.childrenRect.height
+
     visible: root.editing || root.pinned
-    implicitWidth: root.resizable ? root.storedWidth : holder.childrenRect.width
-    implicitHeight: root.resizable ? root.storedHeight : holder.childrenRect.height
+    implicitWidth: Math.max(root.contentW, titleRow.implicitWidth + Motion.spacing.small * 2)
+    implicitHeight: root.chromeHeight + root.contentH
 
     hoverEnabled: root.editing
     acceptedButtons: root.editing ? Qt.LeftButton : Qt.NoButton
@@ -79,9 +87,10 @@ MouseArea {
 
     onReleased: root.saveGeometry()
 
+    // Centres content, not frame
     function center(): void {
         root.x = Math.round((root.canvas.width - root.width) / 2);
-        root.y = Math.round((root.canvas.height - root.height) / 2);
+        root.y = Math.round((root.canvas.height - root.contentH) / 2 - root.chromeHeight);
         root.saveGeometry();
     }
 
@@ -96,7 +105,7 @@ MouseArea {
     // Widget surface
     Rectangle {
         anchors.fill: parent
-        anchors.margins: -Motion.spacing.normal
+        anchors.topMargin: root.chromeHeight
         radius: Motion.rounding.card
         color: Colors.layerOpaque
         visible: root.showBackground
@@ -105,7 +114,6 @@ MouseArea {
     // Edit outline
     Rectangle {
         anchors.fill: parent
-        anchors.margins: -Motion.spacing.normal
         radius: Motion.rounding.card
         color: "transparent"
         border.width: 1
@@ -119,9 +127,72 @@ MouseArea {
         Behavior on border.color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     }
 
+    // Title bar
+    Rectangle {
+        id: titleBar
+        anchors { top: parent.top; left: parent.left; right: parent.right }
+        height: root.chromeHeight
+        topLeftRadius: Motion.rounding.card
+        topRightRadius: Motion.rounding.card
+        color: root.showBackground ? "transparent" : Colors.layerOpaque
+        opacity: root.editing ? 1 : 0
+        visible: opacity > 0.001
+
+        Behavior on opacity {
+            NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing }
+        }
+
+        Row {
+            id: titleRow
+            anchors.left: parent.left
+            anchors.leftMargin: Motion.spacing.small
+            height: parent.height
+            spacing: Motion.spacing.tiny
+
+            MaterialIcon {
+                anchors.verticalCenter: parent.verticalCenter
+                text: root.icon
+                color: Colors.textMuted
+                font.pixelSize: Motion.fontSize.subhead
+            }
+
+            StyledText {
+                anchors.verticalCenter: parent.verticalCenter
+                text: root.title
+                color: Colors.textMuted
+                font.pixelSize: Motion.fontSize.small
+                rightPadding: Motion.spacing.normal
+            }
+
+            IconAction {
+                iconName: "filter_center_focus"
+                onTriggered: root.center()
+            }
+
+            IconAction {
+                iconName: "keep"
+                iconColor: root.pinned ? Colors.primary : Colors.text
+                onTriggered: OverlayState.update(root.identifier, {
+                    pinned: !root.pinned
+                })
+            }
+
+            IconAction {
+                iconName: "close"
+                onTriggered: OverlayState.update(root.identifier, {
+                    open: false
+                })
+            }
+        }
+    }
+
+    // Content
     Item {
         id: holder
-        anchors.fill: parent
+        anchors.top: titleBar.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: root.contentW
+        height: root.contentH
     }
 
     // Resize grip
@@ -139,7 +210,7 @@ MouseArea {
                 return;
             const p = grip.mapToItem(root, event.x, event.y);
             root.storedWidth = Math.max(root.minWidth, Math.round(p.x));
-            root.storedHeight = Math.max(root.minHeight, Math.round(p.y));
+            root.storedHeight = Math.max(root.minHeight, Math.round(p.y - root.chromeHeight));
         }
         onReleased: root.saveGeometry()
 
@@ -148,40 +219,6 @@ MouseArea {
             text: "resize"
             color: Colors.textMuted
             font.pixelSize: Motion.fontSize.small
-        }
-    }
-
-    // Widget toolbar
-    Row {
-        anchors.bottom: parent.top
-        anchors.bottomMargin: Motion.spacing.large
-        anchors.horizontalCenter: parent.horizontalCenter
-        spacing: Motion.spacing.tiny
-        opacity: root.editing && root.containsMouse ? 1 : 0
-        visible: opacity > 0.001
-
-        Behavior on opacity {
-            NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing }
-        }
-
-        IconAction {
-            iconName: root.pinned ? "keep" : "keep_off"
-            iconColor: root.pinned ? Colors.primary : Colors.text
-            onTriggered: OverlayState.update(root.identifier, {
-                pinned: !root.pinned
-            })
-        }
-
-        IconAction {
-            iconName: "filter_center_focus"
-            onTriggered: root.center()
-        }
-
-        IconAction {
-            iconName: "close"
-            onTriggered: OverlayState.update(root.identifier, {
-                open: false
-            })
         }
     }
 }

@@ -10,7 +10,6 @@ OverlayWidget {
     readonly property int reach: root.cfg.gap + root.cfg.length + (root.cfg.outline ? 2 : 0)
 
     identifier: "crosshair"
-    label: "Crosshair"
     showBackground: false
 
     Item {

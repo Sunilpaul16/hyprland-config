@@ -9,7 +9,6 @@ OverlayWidget {
     id: root
 
     identifier: "notes"
-    label: "Notes"
     resizable: true
     minWidth: 180
     minHeight: 120

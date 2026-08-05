@@ -12,7 +12,6 @@ OverlayWidget {
     readonly property bool hasImage: root.resolved !== "" && image.status === Image.Ready
 
     identifier: "floatingImage"
-    label: "Image"
     showBackground: !root.hasImage
 
     AnimatedImage {
