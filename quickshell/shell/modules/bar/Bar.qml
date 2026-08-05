@@ -14,6 +14,7 @@ Scope {
         PanelLoader {
             id: panelLoader
             required property var modelData
+            extraCondition: BarState.open
 
             component: PanelWindow {
                 id: bar

@@ -28,6 +28,7 @@ M.kbCheatsheet        = "SUPER + Slash"
 M.kbOverview          = "SUPER + Tab" -- quickshell workspace overview
 M.kbDashboard         = "SUPER + D" -- quickshell dashboard
 M.kbSettings          = "SUPER + I" -- quickshell settings panel
+M.kbToggleBar         = "SUPER + B" -- quickshell bar visibility
 
 -- Window actions
 M.kbCloseWindow           = "SUPER + Q"

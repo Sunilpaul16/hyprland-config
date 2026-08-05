@@ -30,6 +30,7 @@ hl.bind(v.kbCheatsheet, hl.dsp.exec_cmd("qs -c shell ipc call cheatsheet toggle"
 hl.bind(v.kbOverview, hl.dsp.exec_cmd("qs -c shell ipc call overview toggle"), { description = "Launcher: workspace overview" })
 hl.bind(v.kbDashboard, hl.dsp.exec_cmd("qs -c shell ipc call dashboard toggle"), { description = "Launcher: dashboard" })
 hl.bind(v.kbSettings, hl.dsp.exec_cmd("qs -c shell ipc call settings toggle"), { description = "Launcher: settings" })
+hl.bind(v.kbToggleBar, hl.dsp.exec_cmd("qs -c shell ipc call bar toggle"), { description = "Shell: toggle bar" })
 
 
 -- Screenshots
