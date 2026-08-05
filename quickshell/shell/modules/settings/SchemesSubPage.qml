@@ -12,6 +12,16 @@ ScrollPage {
 
     property string hoveredId: ""
 
+    // Grid sizing
+    readonly property int columnCount: 3
+    readonly property int rowCount: Math.max(1, Math.ceil(Schemes.list.length / root.columnCount))
+    readonly property int gridSpace: root.availableHeight - grid.y - Motion.spacing.section
+    readonly property int cellHeight: Math.max(56, Math.floor((root.gridSpace - Motion.spacing.small * (root.rowCount - 1)) / root.rowCount))
+
+    function titleCase(s: string): string {
+        return s.replace(/(^|[\s-])\S/g, c => c.toUpperCase());
+    }
+
     onHoveredIdChanged: {
         if (root.hoveredId)
             Schemes.loadPreset(root.hoveredId, Theme.mode === "light" ? "light" : "dark");
@@ -45,10 +55,12 @@ ScrollPage {
     }
 
     GridLayout {
+        id: grid
+
         Layout.fillWidth: true
-        columns: 3
+        columns: root.columnCount
         columnSpacing: Motion.spacing.small
-        rowSpacing: Motion.spacing.tiny
+        rowSpacing: Motion.spacing.small
 
         Repeater {
             model: Schemes.list
@@ -61,8 +73,8 @@ ScrollPage {
                 readonly property bool active: row.modelData.id === Theme.source
 
                 Layout.fillWidth: true
-                implicitHeight: 52
-                radius: Motion.rounding.item
+                implicitHeight: root.cellHeight
+                radius: Motion.rounding.card
                 color: rowArea.containsMouse ? Colors.layer : "transparent"
 
                 MouseArea {
@@ -93,8 +105,10 @@ ScrollPage {
                     Rectangle {
                         id: swatch
 
-                        implicitWidth: 32
-                        implicitHeight: 32
+                        readonly property int size: Math.min(52, row.height - Motion.spacing.section)
+
+                        implicitWidth: swatch.size
+                        implicitHeight: swatch.size
                         radius: width / 2
                         color: row.modelData.surface
                         border.width: 1
@@ -124,16 +138,16 @@ ScrollPage {
 
                         StyledText {
                             Layout.fillWidth: true
-                            text: row.modelData.scheme
-                            font.pixelSize: Motion.fontSize.label
+                            text: root.titleCase(row.modelData.scheme)
+                            font.pixelSize: Motion.fontSize.title
                             elide: Text.ElideRight
                         }
 
                         StyledText {
                             Layout.fillWidth: true
-                            text: row.modelData.flavour
+                            text: root.titleCase(row.modelData.flavour)
                             color: Colors.textMuted
-                            font.pixelSize: Motion.fontSize.small
+                            font.pixelSize: Motion.fontSize.body
                             elide: Text.ElideRight
                         }
                     }

@@ -11,6 +11,8 @@ Item {
     property bool isSubPage: false
     // Capped content width
     readonly property int cappedWidth: Math.min(Config.settings.maxContentWidth, body.width)
+    // Space below the header
+    readonly property int availableHeight: body.height
 
     default property alias content: body.data
 
