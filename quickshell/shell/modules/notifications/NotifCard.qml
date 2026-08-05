@@ -55,9 +55,10 @@ Rectangle {
     }
 
     // Slide-in entrance
-    x: width
+    property bool entered: false
+    x: card.entered ? 0 : width
     Component.onCompleted: {
-        x = 0;
+        card.entered = true;
         modelData.lock(card);
     }
     Component.onDestruction: {
