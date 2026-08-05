@@ -128,6 +128,10 @@ Singleton {
 
             property JsonObject overlay: JsonObject {
                 property bool darkenScreen: true  // scrim while editing
+                property JsonObject floatingImage: JsonObject {
+                    property string source: "assets/bongocat.gif"  // image or gif path
+                    property real scale: 1.0
+                }
                 property JsonObject crosshair: JsonObject {
                     property string color: "#00ff66"
                     property real opacity: 0.85

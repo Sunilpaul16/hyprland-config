@@ -2,6 +2,7 @@ import QtQuick
 import "../../services"
 import "../../components"
 import "crosshair"
+import "floatingImage"
 import "notes"
 
 // Overlay canvas
@@ -117,6 +118,8 @@ FocusScope {
                         return crosshairComponent;
                     case "notes":
                         return notesComponent;
+                    case "floatingImage":
+                        return floatingImageComponent;
                     }
                     return null;
                 }
@@ -136,6 +139,14 @@ FocusScope {
         id: notesComponent
 
         Notes {
+            canvas: widgetCanvas
+        }
+    }
+
+    Component {
+        id: floatingImageComponent
+
+        FloatingImage {
             canvas: widgetCanvas
         }
     }

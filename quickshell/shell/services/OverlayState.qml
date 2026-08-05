@@ -38,6 +38,11 @@ Singleton {
             identifier: "notes",
             icon: "note_stack",
             label: "Notes"
+        },
+        {
+            identifier: "floatingImage",
+            icon: "imagesmode",
+            label: "Image"
         }
     ]
 
