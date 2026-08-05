@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
-import "../../components"
 
 // Network page
 ScrollPage {
@@ -159,37 +158,6 @@ ScrollPage {
 
             ValueLabel {
                 text: root.totalLabel(NetworkUsage.uploadTotal)
-            }
-        }
-    }
-
-    // Wi-Fi section
-    SectionLabel {
-        visible: Wifi.hardwareAvailable
-        text: "Wi-Fi"
-    }
-
-    SettingGroup {
-        visible: Wifi.hardwareAvailable
-
-        SettingRow {
-            first: true
-            live: true
-            label: "Wi-Fi"
-
-            ToggleSwitch {
-                checked: Wifi.enabled
-                onToggled: Wifi.toggle()
-            }
-        }
-
-        SettingRow {
-            last: true
-            live: true
-            label: "Connected network"
-
-            ValueLabel {
-                text: Wifi.networkName || "Not connected"
             }
         }
     }
