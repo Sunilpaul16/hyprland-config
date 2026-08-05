@@ -161,18 +161,6 @@ ScrollPage {
 
         SettingRow {
             live: true
-            label: "Presets"
-            subtext: Theme.usingPreset ? Theme.source : "Catppuccin, Gruvbox, Dracula and more"
-
-            SelectPill {
-                value: "Browse"
-                icon: "palette"
-                onClicked: SettingsState.subPage = "schemes"
-            }
-        }
-
-        SettingRow {
-            live: true
             enabled: !Theme.usingPreset
             opacity: enabled ? 1 : 0.5
             label: "Scheme"

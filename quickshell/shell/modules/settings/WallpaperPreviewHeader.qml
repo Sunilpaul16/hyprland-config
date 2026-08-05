@@ -82,10 +82,11 @@ ColumnLayout {
             onClicked: SettingsState.openSubPage("wallpapers")
         }
 
-        // Inert
         PillButton {
+            live: true
             icon: "palette"
             text: "Colours"
+            onClicked: SettingsState.openSubPage("schemes")
         }
     }
 }
