@@ -41,7 +41,8 @@ Item {
     readonly property var subPageModel: ({
         "wallpapers": wallpapersSubPage,
         "schemes": schemesSubPage,
-        "tray": traySubPage
+        "tray": traySubPage,
+        "quickToggles": quickTogglesSubPage
     })
 
     NavList {
@@ -224,6 +225,12 @@ Item {
         id: traySubPage
 
         TraySubPage {}
+    }
+
+    Component {
+        id: quickTogglesSubPage
+
+        QuickTogglesSubPage {}
     }
 
     // Pages

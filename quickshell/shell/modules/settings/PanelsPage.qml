@@ -398,18 +398,12 @@ ScrollPage {
         SettingRow {
             live: true
             label: "Quick toggles"
-            subtext: "Opens the sidebar's edit mode"
+            subtext: "Show, hide, reorder and resize the sidebar pills"
 
-            SelectPill {
-                value: "Edit"
-                icon: "chevron_right"
-                // Close settings first
-                onClicked: {
-                    SettingsState.open = false;
-                    ScreenOwner.claim(SidebarRightState);
-                    SidebarRightState.open = true;
-                    SidebarRightState.quickTogglesEditMode = true;
-                }
+            PillButton {
+                live: true
+                text: "Edit"
+                onClicked: SettingsState.openSubPage("quickToggles")
             }
         }
 

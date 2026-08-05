@@ -14,7 +14,7 @@ ColumnLayout {
     readonly property list<QuickToggleModel> toggleModels: [
         QuickToggleModel {
             toggleId: "ethernet"
-            name: "Ethernet"
+            name: QuickToggles.nameFor("ethernet")
             icon: "lan"
             toggled: EthernetStatus.connected
             available: EthernetStatus.available
@@ -22,7 +22,7 @@ ColumnLayout {
         },
         QuickToggleModel {
             toggleId: "bluetooth"
-            name: "Bluetooth"
+            name: QuickToggles.nameFor("bluetooth")
             icon: BluetoothStatus.connected ? "bluetooth_connected" : (BluetoothStatus.enabled ? "bluetooth" : "bluetooth_disabled")
             toggled: BluetoothStatus.enabled
             available: BluetoothStatus.available
@@ -31,7 +31,7 @@ ColumnLayout {
         },
         QuickToggleModel {
             toggleId: "volume"
-            name: "Volume"
+            name: QuickToggles.nameFor("volume")
             icon: Audio.muted ? "volume_off" : "volume_up"
             toggled: !Audio.muted
             mainAction: () => Audio.toggleMute()
@@ -39,7 +39,7 @@ ColumnLayout {
         },
         QuickToggleModel {
             toggleId: "mic"
-            name: "Microphone"
+            name: QuickToggles.nameFor("mic")
             icon: Audio.micMuted ? "mic_off" : "mic"
             toggled: !Audio.micMuted
             mainAction: () => Audio.toggleMicMute()
@@ -47,128 +47,49 @@ ColumnLayout {
         },
         QuickToggleModel {
             toggleId: "nightlight"
-            name: "Night Light"
+            name: QuickToggles.nameFor("nightlight")
             icon: "bedtime"
             toggled: NightLightState.enabled
             mainAction: () => NightLightState.toggle()
         },
         QuickToggleModel {
             toggleId: "dnd"
-            name: "Do Not Disturb"
+            name: QuickToggles.nameFor("dnd")
             icon: DndState.enabled ? "notifications_off" : "notifications"
             toggled: DndState.enabled
             mainAction: () => DndState.toggle()
         },
         QuickToggleModel {
             toggleId: "recording"
-            name: "Screen Recorder"
+            name: QuickToggles.nameFor("recording")
             icon: "screen_record"
             toggled: ScreenRecorderCardState.enabled
             mainAction: () => ScreenRecorderCardState.toggle()
         },
         QuickToggleModel {
             toggleId: "keepawake"
-            name: "Keep Awake"
+            name: QuickToggles.nameFor("keepawake")
             icon: "coffee"
             toggled: KeepAwakeCardState.enabled
             mainAction: () => KeepAwakeCardState.toggle()
         },
         QuickToggleModel {
             toggleId: "gamemode"
-            name: "Game Mode"
+            name: QuickToggles.nameFor("gamemode")
             icon: "sports_esports"
             toggled: GameModeState.enabled
             mainAction: () => GameModeState.toggle()
         }
     ]
 
-    // Default layout
-    readonly property var defaultLayout: root.toggleModels.map(t => ({ type: t.toggleId, size: "small" }))
-
-    // Reconciled visible
-    readonly property var orderedVisible: {
-        const knownIds = root.toggleModels.map(t => t.toggleId);
-        const source = Persistent.quickToggleLayout.length > 0 ? Persistent.quickToggleLayout : root.defaultLayout;
-        return source.filter(entry => knownIds.indexOf(entry.type) !== -1);
-    }
-
-    // Hidden models
-    readonly property var hiddenModels: {
-        const visibleIds = root.orderedVisible.map(e => e.type);
-        return root.toggleModels.filter(t => visibleIds.indexOf(t.toggleId) === -1);
-    }
-
     function modelFor(toggleId) {
         return root.toggleModels.find(t => t.toggleId === toggleId);
     }
 
-    // Layout mutations
-    function addToggle(toggleId) {
-        const list = Persistent.quickToggleLayout.slice();
-        list.push({ type: toggleId, size: "small" });
-        Persistent.quickToggleLayout = list;
-    }
-
-    function removeToggle(toggleId) {
-        Persistent.quickToggleLayout = root.orderedVisible.filter(e => e.type !== toggleId);
-    }
-
-    function moveToggle(toggleId, delta) {
-        const list = root.orderedVisible.slice();
-        const idx = list.findIndex(e => e.type === toggleId);
-        const newIdx = idx + delta;
-        if (idx === -1 || newIdx < 0 || newIdx >= list.length)
-            return;
-        const entry = list.splice(idx, 1)[0];
-        list.splice(newIdx, 0, entry);
-        Persistent.quickToggleLayout = list;
-    }
-
-    function cycleSize(toggleId) {
-        const list = root.orderedVisible.slice();
-        const idx = list.findIndex(e => e.type === toggleId);
-        if (idx === -1)
-            return;
-        list[idx] = { type: toggleId, size: list[idx].size === "large" ? "small" : "large" };
-        Persistent.quickToggleLayout = list;
-    }
-
-    // Header
-    RowLayout {
-        Layout.fillWidth: true
-
-        StyledText {
-            text: "Quick Toggles"
-            font.pixelSize: Motion.fontSize.title
-            font.bold: true
-        }
-
-        Item { Layout.fillWidth: true }
-
-        // Edit mode toggle
-        Rectangle {
-            Layout.preferredWidth: 26
-            Layout.preferredHeight: 26
-            radius: Motion.rounding.small
-            color: SidebarRightState.quickTogglesEditMode ? Colors.primary : (editHover.containsMouse ? Colors.layer : "transparent")
-
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-
-            MaterialIcon {
-                anchors.centerIn: parent
-                text: SidebarRightState.quickTogglesEditMode ? "check" : "edit"
-                color: SidebarRightState.quickTogglesEditMode ? Colors.background : Colors.text
-                font.pixelSize: Motion.fontSize.title
-            }
-
-            MouseArea {
-                id: editHover
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: SidebarRightState.quickTogglesEditMode = !SidebarRightState.quickTogglesEditMode
-            }
-        }
+    StyledText {
+        text: "Quick Toggles"
+        font.pixelSize: Motion.fontSize.title
+        font.bold: true
     }
 
     // Visible toggles
@@ -179,36 +100,30 @@ ColumnLayout {
 
         readonly property int minSpacing: 8
         readonly property int cellWidth: 40 // small TogglePill
-        readonly property bool allSmall: root.orderedVisible.every(e => e.size === "small")
+        readonly property bool allSmall: QuickToggles.orderedVisible.every(e => e.size === "small")
         // Per-row count
-        readonly property int perRow: Math.min(root.orderedVisible.length, Math.max(1, Math.floor((width + minSpacing) / (cellWidth + minSpacing))))
+        readonly property int perRow: Math.min(QuickToggles.orderedVisible.length, Math.max(1, Math.floor((width + minSpacing) / (cellWidth + minSpacing))))
 
         spacing: allSmall && perRow > 1 ? Math.max(minSpacing, (width - perRow * cellWidth) / (perRow - 1)) : minSpacing
 
         Repeater {
-            model: root.orderedVisible
+            model: QuickToggles.orderedVisible
 
-            QuickToggleSlot {
+            TogglePill {
+                id: pill
+
                 required property var modelData
-                required property int index
 
-                toggleModel: root.modelFor(modelData.type)
-                size: modelData.size
-                editMode: SidebarRightState.quickTogglesEditMode
-                isFirst: index === 0
-                isLast: index === root.orderedVisible.length - 1
+                readonly property QuickToggleModel toggleModel: root.modelFor(modelData.type)
 
-                onResizeRequested: root.cycleSize(modelData.type)
-                onHideRequested: root.removeToggle(modelData.type)
-                onMoveRequested: delta => root.moveToggle(modelData.type, delta)
+                iconName: pill.toggleModel.icon
+                active: pill.toggleModel.toggled
+                enabled: pill.toggleModel.available
+                large: pill.modelData.size === "large"
+                label: pill.toggleModel.name
+                onClicked: pill.toggleModel.mainAction()
+                onAltClicked: if (pill.toggleModel.altAction) pill.toggleModel.altAction()
             }
         }
-    }
-
-    QuickTogglesHiddenPanel {
-        Layout.fillWidth: true
-        visible: SidebarRightState.quickTogglesEditMode && root.hiddenModels.length > 0
-        models: root.hiddenModels
-        onAddRequested: toggleId => root.addToggle(toggleId)
     }
 }

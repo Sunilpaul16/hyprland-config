@@ -10,14 +10,10 @@ Singleton {
     property bool open: false
     // Pinned monitor
     property string ownerScreen: ""
-    // Edit mode
-    property bool quickTogglesEditMode: false
 
     onOpenChanged: {
         if (root.open)
             ScreenOwner.claim(root);
-        else
-            root.quickTogglesEditMode = false;
     }
 
     function toggle(): void {
