@@ -7,18 +7,25 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    property string openDialog: "" // "" | "bluetooth" | "volume"
+    property string openDialog: "" // "" | "bluetooth"
+    // Inline mixer card
+    property bool mixerOpen: false
 
     function openBluetooth(): void {
         root.openDialog = "bluetooth";
     }
 
     function openVolume(): void {
-        root.openDialog = "volume";
+        root.mixerOpen = true;
+    }
+
+    function toggleMixer(): void {
+        root.mixerOpen = !root.mixerOpen;
     }
 
     function close(): void {
         root.openDialog = "";
+        root.mixerOpen = false;
     }
 
     // IPC handler
@@ -31,6 +38,10 @@ Singleton {
 
         function openVolume(): void {
             root.openVolume();
+        }
+
+        function toggleMixer(): void {
+            root.toggleMixer();
         }
 
         function close(): void {

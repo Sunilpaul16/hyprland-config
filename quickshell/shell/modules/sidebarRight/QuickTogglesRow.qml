@@ -35,7 +35,7 @@ ColumnLayout {
             icon: Audio.muted ? "volume_off" : "volume_up"
             toggled: !Audio.muted
             mainAction: () => Audio.toggleMute()
-            altAction: () => SidebarDialogState.openVolume()
+            altAction: () => SidebarDialogState.toggleMixer()
         },
         QuickToggleModel {
             toggleId: "mic"
@@ -43,7 +43,7 @@ ColumnLayout {
             icon: Audio.micMuted ? "mic_off" : "mic"
             toggled: !Audio.micMuted
             mainAction: () => Audio.toggleMicMute()
-            altAction: () => SidebarDialogState.openVolume()
+            altAction: () => SidebarDialogState.toggleMixer()
         },
         QuickToggleModel {
             toggleId: "nightlight"

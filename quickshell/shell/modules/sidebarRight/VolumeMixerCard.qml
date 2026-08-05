@@ -3,20 +3,41 @@ import QtQuick.Layouts
 import "../../services"
 import "../../components"
 
-// Volume mixer
+// Volume mixer card
 Rectangle {
     id: root
 
-    radius: Motion.rounding.drawer
-    color: Colors.panel
+    readonly property bool expanded: SidebarDialogState.mixerOpen
+    readonly property int maxHeight: 320
+    // Chrome around the list
+    readonly property int chrome: header.implicitHeight + Motion.spacing.large + 32
+    readonly property int naturalHeight: root.chrome + sections.implicitHeight
+
+    radius: Motion.rounding.large
+    color: Colors.layer
+    clip: true
+
+    implicitHeight: root.expanded ? Math.min(root.naturalHeight, root.maxHeight) : 0
+    opacity: root.expanded ? 1 : 0
+    // Drops its layout spacing
+    visible: root.expanded || root.implicitHeight > 0
+
+    Behavior on implicitHeight {
+        NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
+    }
+
+    Behavior on opacity {
+        NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
+    }
 
     ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: Motion.spacing.xlarge
+        anchors { left: parent.left; right: parent.right; top: parent.top; margins: Motion.spacing.xlarge }
         spacing: Motion.spacing.large
 
         // Header
         RowLayout {
+            id: header
+
             Layout.fillWidth: true
 
             StyledText {
@@ -34,16 +55,19 @@ Rectangle {
 
         Flickable {
             Layout.fillWidth: true
-            Layout.fillHeight: true
+            Layout.preferredHeight: Math.min(sections.implicitHeight, root.maxHeight - root.chrome)
             contentWidth: width
             contentHeight: sections.implicitHeight
+            boundsBehavior: Flickable.StopAtBounds
             clip: true
 
             ColumnLayout {
                 id: sections
+
                 width: parent.width
                 spacing: Motion.spacing.xlarge
 
+                // Playback streams
                 ColumnLayout {
                     Layout.fillWidth: true
                     spacing: Motion.spacing.medium
@@ -61,6 +85,7 @@ Rectangle {
                     }
                 }
 
+                // Capture streams
                 ColumnLayout {
                     Layout.fillWidth: true
                     spacing: Motion.spacing.medium
@@ -80,7 +105,6 @@ Rectangle {
 
                 StyledText {
                     Layout.fillWidth: true
-                    Layout.topMargin: Motion.spacing.section
                     horizontalAlignment: Text.AlignHCenter
                     visible: Audio.outputAppNodes.length === 0 && Audio.inputAppNodes.length === 0
                     text: "No apps are using audio right now"

@@ -22,7 +22,7 @@ Scope {
 
                 onDismissed: SidebarRightState.open = false
                 onEscapePressed: {
-                    if (SidebarDialogState.openDialog !== "")
+                    if (SidebarDialogState.openDialog !== "" || SidebarDialogState.mixerOpen)
                         SidebarDialogState.close();
                     else
                         SidebarRightState.open = false;
@@ -93,6 +93,7 @@ Scope {
 
                         SystemHeaderCard { Layout.fillWidth: true }
                         QuickTogglesCard { Layout.fillWidth: true }
+                        VolumeMixerCard { Layout.fillWidth: true }
                         KeepAwakeCard { Layout.fillWidth: true; visible: KeepAwakeCardState.enabled }
                         ScreenRecorderCard { Layout.fillWidth: true; visible: ScreenRecorderCardState.enabled }
 
@@ -125,12 +126,6 @@ Scope {
                     anchors.fill: backdrop
                     shown: SidebarDialogState.openDialog === "bluetooth"
                     sourceComponent: BluetoothDialog {}
-                }
-
-                ToggleDialog {
-                    anchors.fill: backdrop
-                    shown: SidebarDialogState.openDialog === "volume"
-                    sourceComponent: VolumeMixerDialog {}
                 }
             }
         }
