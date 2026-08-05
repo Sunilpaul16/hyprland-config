@@ -73,6 +73,9 @@ Rectangle {
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: Motion.spacing.medium }
         implicitHeight: Math.max(iconSlot.height, textCol.implicitHeight)
 
+        // Constant, or it loops
+        readonly property int chevronReserve: 24
+
         // Icon
         NotifIcon {
             id: iconSlot
@@ -86,6 +89,7 @@ Rectangle {
             id: textCol
             anchors.left: iconSlot.right
             anchors.right: parent.right
+            anchors.rightMargin: content.chevronReserve
             anchors.leftMargin: Motion.spacing.normal
             spacing: Motion.spacing.micro
 
@@ -113,6 +117,7 @@ Rectangle {
             }
 
             StyledText {
+                id: bodyText
                 width: parent.width
                 visible: card.modelData.body.length > 0
                 text: card.modelData.body
@@ -120,9 +125,38 @@ Rectangle {
                 font.pixelSize: Motion.fontSize.body
                 // No link handler
                 textFormat: card.modelData.bodyHasMarkup ? Text.StyledText : card.modelData.bodyHasMarkdown ? Text.MarkdownText : Text.PlainText
-                wrapMode: Text.NoWrap
+                wrapMode: card.modelData.expanded ? Text.WordWrap : Text.NoWrap
                 elide: Text.ElideRight
-                maximumLineCount: 1
+                maximumLineCount: card.modelData.expanded ? 8 : 1
+            }
+        }
+
+        // Expand/collapse toggle
+        Item {
+            id: chevron
+            anchors.right: parent.right
+            anchors.top: parent.top
+            width: 18
+            height: 18
+            visible: bodyText.visible && (bodyText.truncated || card.modelData.expanded)
+
+            StyledText {
+                anchors.centerIn: parent
+                text: "⌄" // chevron down
+                color: chevronArea.containsMouse ? Colors.text : Colors.textMuted
+                font.pixelSize: Motion.fontSize.label
+                rotation: card.modelData.expanded ? 180 : 0
+
+                Behavior on rotation { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+            }
+
+            MouseArea {
+                id: chevronArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: card.modelData.expanded = !card.modelData.expanded
             }
         }
     }
