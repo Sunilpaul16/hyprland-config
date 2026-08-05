@@ -9,6 +9,7 @@ import "modules/launcher"
 import "modules/cheatsheet"
 import "modules/idle"
 import "modules/notifications"
+import "modules/overlay"
 import "modules/overview"
 import "modules/polkit"
 import "modules/screenCorners"
@@ -37,6 +38,7 @@ ShellRoot {
     TrayMenu {}
     SidebarRightPanel {}
     Overview {}
+    Overlay {}
     DashboardPanel {}
     SettingsPanel {}
     ScreenCorners {}

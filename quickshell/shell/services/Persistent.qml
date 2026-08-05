@@ -21,6 +21,9 @@ Singleton {
     property alias quickToggleLayout: adapter.quickToggleLayout
     // Last announced count
     property alias lastNotifiedUpdateTotal: adapter.lastNotifiedUpdateTotal
+    // Overlay widget geometry
+    property alias overlayWidgets: adapter.overlayWidgets
+    property alias overlayScreen: adapter.overlayScreen
 
     // State file
     FileView {
@@ -50,6 +53,8 @@ Singleton {
             property list<var> quickToggleLayout: []
             property int lastNotifiedUpdateTotal: 0
             property string lastHyprlandInstanceSignature: ""
+            property var overlayWidgets: ({})
+            property string overlayScreen: ""
         }
     }
 

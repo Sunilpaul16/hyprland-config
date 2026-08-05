@@ -28,6 +28,7 @@ Singleton {
     property alias dashboard: adapter.dashboard
     property alias apps: adapter.apps
     property alias idle: adapter.idle
+    property alias overlay: adapter.overlay
 
     // Load gate
     property bool ready: false
@@ -123,6 +124,20 @@ Singleton {
                 property int dpmsTimeout: 1800  // displays off
                 property int suspendTimeout: 3600  // suspend
                 property bool inhibitWhenAudio: true  // media suppresses idle
+            }
+
+            property JsonObject overlay: JsonObject {
+                property bool darkenScreen: true  // scrim while editing
+                property JsonObject crosshair: JsonObject {
+                    property string color: "#00ff66"
+                    property real opacity: 0.85
+                    property int gap: 6  // centre to line
+                    property int length: 8
+                    property int thickness: 2
+                    property bool outline: true
+                    property bool centerDot: true
+                    property int dotSize: 2
+                }
             }
 
             property JsonObject notifications: JsonObject {
