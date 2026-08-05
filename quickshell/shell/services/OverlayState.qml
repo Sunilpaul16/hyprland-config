@@ -33,6 +33,11 @@ Singleton {
             identifier: "crosshair",
             icon: "point_scan",
             label: "Crosshair"
+        },
+        {
+            identifier: "notes",
+            icon: "note_stack",
+            label: "Notes"
         }
     ]
 

@@ -11,6 +11,13 @@ MouseArea {
     property string label: ""
     property bool showBackground: true
 
+    // Sized by drag, not content
+    property bool resizable: false
+    property int minWidth: 120
+    property int minHeight: 80
+    property int storedWidth: 260
+    property int storedHeight: 180
+
     default property alias widgetContent: holder.data
 
     readonly property var entry: OverlayState.entry(root.identifier)
@@ -18,8 +25,8 @@ MouseArea {
     readonly property bool editing: OverlayState.open
 
     visible: root.editing || root.pinned
-    implicitWidth: holder.childrenRect.width
-    implicitHeight: holder.childrenRect.height
+    implicitWidth: root.resizable ? root.storedWidth : holder.childrenRect.width
+    implicitHeight: root.resizable ? root.storedHeight : holder.childrenRect.height
 
     hoverEnabled: root.editing
     acceptedButtons: root.editing ? Qt.LeftButton : Qt.NoButton
@@ -35,12 +42,25 @@ MouseArea {
         if ((root.canvas?.width ?? 0) <= 0 || (root.canvas?.height ?? 0) <= 0)
             return;
         root.restored = true;
+        if (root.resizable) {
+            root.storedWidth = Math.max(root.minWidth, root.entry.w ?? root.storedWidth);
+            root.storedHeight = Math.max(root.minHeight, root.entry.h ?? root.storedHeight);
+        }
         if (root.entry.x === undefined || root.entry.y === undefined) {
             root.center();
             return;
         }
         root.x = root.entry.x;
         root.y = root.entry.y;
+    }
+
+    function saveGeometry(): void {
+        OverlayState.update(root.identifier, {
+            x: Math.round(root.x),
+            y: Math.round(root.y),
+            w: root.storedWidth,
+            h: root.storedHeight
+        });
     }
 
     Component.onCompleted: root.restore()
@@ -57,18 +77,12 @@ MouseArea {
         }
     }
 
-    onReleased: OverlayState.update(root.identifier, {
-        x: Math.round(root.x),
-        y: Math.round(root.y)
-    })
+    onReleased: root.saveGeometry()
 
     function center(): void {
         root.x = Math.round((root.canvas.width - root.width) / 2);
         root.y = Math.round((root.canvas.height - root.height) / 2);
-        OverlayState.update(root.identifier, {
-            x: root.x,
-            y: root.y
-        });
+        root.saveGeometry();
     }
 
     Connections {
@@ -79,12 +93,21 @@ MouseArea {
         }
     }
 
-    // Edit-mode frame
+    // Widget surface
     Rectangle {
         anchors.fill: parent
         anchors.margins: -Motion.spacing.normal
         radius: Motion.rounding.card
-        color: root.showBackground ? Colors.layer : "transparent"
+        color: Colors.layerOpaque
+        visible: root.showBackground
+    }
+
+    // Edit outline
+    Rectangle {
+        anchors.fill: parent
+        anchors.margins: -Motion.spacing.normal
+        radius: Motion.rounding.card
+        color: "transparent"
         border.width: 1
         border.color: root.containsMouse ? Colors.primary : Colors.outline
         opacity: root.editing ? 1 : 0
@@ -99,6 +122,33 @@ MouseArea {
     Item {
         id: holder
         anchors.fill: parent
+    }
+
+    // Resize grip
+    MouseArea {
+        id: grip
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        width: 18
+        height: 18
+        visible: root.resizable && root.editing
+        cursorShape: Qt.SizeFDiagCursor
+
+        onPositionChanged: event => {
+            if (!grip.pressed)
+                return;
+            const p = grip.mapToItem(root, event.x, event.y);
+            root.storedWidth = Math.max(root.minWidth, Math.round(p.x));
+            root.storedHeight = Math.max(root.minHeight, Math.round(p.y));
+        }
+        onReleased: root.saveGeometry()
+
+        MaterialIcon {
+            anchors.centerIn: parent
+            text: "resize"
+            color: Colors.textMuted
+            font.pixelSize: Motion.fontSize.small
+        }
     }
 
     // Widget toolbar

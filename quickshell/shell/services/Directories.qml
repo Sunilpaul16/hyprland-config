@@ -14,6 +14,7 @@ QtObject {
     readonly property string colorSourceFile: home + "/.local/state/quickshell/color_source"
     readonly property string notificationsFile: home + "/.local/state/quickshell/notifications.json"
     readonly property string appUsageFile: home + "/.local/state/quickshell/app-usage.json"
+    readonly property string notesFile: home + "/.local/state/quickshell/notes.txt"
 
     readonly property string localBin: home + "/.local/bin"
     readonly property string recordScript: localBin + "/record"

@@ -2,6 +2,7 @@ import QtQuick
 import "../../services"
 import "../../components"
 import "crosshair"
+import "notes"
 
 // Overlay canvas
 FocusScope {
@@ -110,7 +111,15 @@ FocusScope {
                 required property string modelData
 
                 active: true
-                sourceComponent: modelData === "crosshair" ? crosshairComponent : null
+                sourceComponent: {
+                    switch (modelData) {
+                    case "crosshair":
+                        return crosshairComponent;
+                    case "notes":
+                        return notesComponent;
+                    }
+                    return null;
+                }
             }
         }
     }
@@ -119,6 +128,14 @@ FocusScope {
         id: crosshairComponent
 
         Crosshair {
+            canvas: widgetCanvas
+        }
+    }
+
+    Component {
+        id: notesComponent
+
+        Notes {
             canvas: widgetCanvas
         }
     }
