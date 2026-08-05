@@ -30,6 +30,7 @@ Item {
 
         // Shell
         { label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", category: "shell", component: panelsPage },
+        { label: "Overlay widgets", icon: "widgets", description: "Crosshair, notes, floating image", category: "shell", component: overlayPage },
         { label: "Services", icon: "build", description: "Poll intervals, notifications", category: "shell", component: servicesPage },
 
         // About
@@ -266,6 +267,12 @@ Item {
         id: panelsPage
 
         PanelsPage {}
+    }
+
+    Component {
+        id: overlayPage
+
+        OverlayPage {}
     }
 
     Component {

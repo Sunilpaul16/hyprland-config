@@ -199,10 +199,9 @@ ScrollPage {
             label: "Terminal used for upgrades"
             subtext: "Also used for desktop entries that ask to run in a terminal"
 
-            SelectPill {
-                options: [{ value: "kitty", label: "kitty" }, { value: "foot", label: "foot" }, { value: "alacritty", label: "alacritty" }, { value: "ghostty", label: "ghostty" }]
-                current: Config.apps.terminal
-                onSelected: v => Config.apps.terminal = v
+            ValueLabel {
+                // Read-only
+                text: Config.apps.terminal
             }
         }
     }
