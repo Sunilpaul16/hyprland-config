@@ -23,6 +23,19 @@ Scope {
                 // Dimensions
                 readonly property int barContentHeight: Config.bar.height
                 readonly property int cornerSize: Motion.cornerSize
+                readonly property int revealHeight: 2
+
+                // Auto-hide state
+                readonly property bool autoHide: Config.bar.autoHide.enable
+                property bool revealed: false
+                readonly property bool slidAway: bar.autoHide && !bar.revealed
+
+                // Absorbs input-region churn
+                Timer {
+                    id: hideDebounce
+                    interval: 250
+                    onTriggered: bar.revealed = false
+                }
 
                 // Positioning
                 anchors {
@@ -33,204 +46,237 @@ Scope {
 
                 // Window setup
                 implicitHeight: barContentHeight + cornerSize
-                exclusiveZone: barContentHeight
+                exclusiveZone: bar.autoHide && (!bar.revealed || !Config.bar.autoHide.pushWindows) ? 0 : bar.barContentHeight
                 color: "transparent"
                 WlrLayershell.layer: WlrLayer.Top
                 WlrLayershell.namespace: "quickshell-bar"
+                mask: Region {
+                    item: barBody
+                }
 
                 // Persistent focus grab
                 Component.onCompleted: GlobalFocusGrab.addPersistent(bar)
                 Component.onDestruction: GlobalFocusGrab.removePersistent(bar)
 
-                // Bar content
-                Rectangle {
-                    id: content
+                // Input region and body
+                Item {
+                    id: barBody
                     anchors { top: parent.top; left: parent.left; right: parent.right }
-                    height: bar.barContentHeight
-                    color: Colors.panel
-                    // Active window pill
-                    SectionPill {
-                        anchors.left: parent.left
-                        anchors.leftMargin: Motion.spacing.wide
-                        anchors.verticalCenter: parent.verticalCenter
-                        visible: Config.bar.showWindowTitle && activeWindow.hasContent
+                    height: bar.slidAway ? bar.revealHeight : bar.barContentHeight
 
-                        ActiveWindow {
-                            id: activeWindow
-                            screen: bar.screen
+                    HoverHandler {
+                        id: revealHover
+                        onHoveredChanged: {
+                            if (hovered) {
+                                hideDebounce.stop();
+                                bar.revealed = true;
+                            } else {
+                                hideDebounce.restart();
+                            }
                         }
                     }
 
-                    // Center widgets
-                    RowLayout {
-                        id: centerRow
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        spacing: Motion.spacing.normal
+                    // Bar content
+                    Rectangle {
+                        id: content
+                        anchors { top: parent.top; left: parent.left; right: parent.right }
+                        anchors.topMargin: bar.slidAway ? -bar.barContentHeight : 0
+                        height: bar.barContentHeight
+                        color: Colors.panel
 
+                        // Slide animation
+                        Behavior on anchors.topMargin {
+                            NumberAnimation {
+                                duration: Motion.smoothDuration
+                                easing.type: Motion.smoothEasing
+                            }
+                        }
+                        // Active window pill
                         SectionPill {
-                            Layout.alignment: Qt.AlignVCenter
-                            visible: Media.hasPlayer
+                            anchors.left: parent.left
+                            anchors.leftMargin: Motion.spacing.wide
+                            anchors.verticalCenter: parent.verticalCenter
+                            visible: Config.bar.showWindowTitle && activeWindow.hasContent
 
-                            MediaButton {}
+                            ActiveWindow {
+                                id: activeWindow
+                                screen: bar.screen
+                            }
                         }
 
-                        // Dashboard hover zone
-                        Item {
-                            id: dashboardHoverZone
-                            Layout.alignment: Qt.AlignVCenter
-                            implicitWidth: 60
-                            implicitHeight: bar.barContentHeight
+                        // Center widgets
+                        RowLayout {
+                            id: centerRow
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: Motion.spacing.normal
 
-                            HoverHandler {
-                                target: dashboardHoverZone
-                                onHoveredChanged: {
-                                    if (hovered) {
-                                        DashboardState.cancelHoverClose();
-                                        DashboardState.show();
-                                    } else {
-                                        DashboardState.scheduleHoverClose();
+                            SectionPill {
+                                Layout.alignment: Qt.AlignVCenter
+                                visible: Media.hasPlayer
+
+                                MediaButton {}
+                            }
+
+                            // Dashboard hover zone
+                            Item {
+                                id: dashboardHoverZone
+                                Layout.alignment: Qt.AlignVCenter
+                                implicitWidth: 60
+                                implicitHeight: bar.barContentHeight
+
+                                HoverHandler {
+                                    target: dashboardHoverZone
+                                    onHoveredChanged: {
+                                        if (hovered) {
+                                            DashboardState.cancelHoverClose();
+                                            DashboardState.show();
+                                        } else {
+                                            DashboardState.scheduleHoverClose();
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Workspaces pill
+                            MouseArea {
+                                id: workspaceScrollZone
+                                Layout.alignment: Qt.AlignVCenter
+                                implicitWidth: workspacesPill.implicitWidth
+                                implicitHeight: workspacesPill.implicitHeight
+
+                                hoverEnabled: true
+                                acceptedButtons: Qt.NoButton
+
+                                onWheel: event => {
+                                    if (event.angleDelta.y < 0)
+                                        Hyprland.dispatch(`hl.dsp.focus({ workspace = "e+1" })`);
+                                    else if (event.angleDelta.y > 0)
+                                        Hyprland.dispatch(`hl.dsp.focus({ workspace = "e-1" })`);
+                                }
+
+                                SectionPill {
+                                    id: workspacesPill
+                                    anchors.fill: parent
+
+                                    Workspaces {
+                                        screen: bar.screen
                                     }
                                 }
                             }
                         }
 
-                        // Workspaces pill
+                        // Scroll hint
+                        ScrollHint {
+                            reveal: workspaceScrollZone.containsMouse
+                            icon: "swap_horiz"
+                            anchors.left: centerRow.right
+                            anchors.leftMargin: Motion.spacing.small
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        // Right-side widgets
+                        RowLayout {
+                            id: rightRow
+                            anchors.right: parent.right
+                            anchors.rightMargin: Motion.spacing.wide
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: Motion.spacing.normal
+
+                            // Recording indicator
+                            RecordingIndicator {
+                                Layout.alignment: Qt.AlignVCenter
+                            }
+
+                            PrivacyIndicator {
+                                Layout.alignment: Qt.AlignVCenter
+                            }
+
+                            SectionPill {
+                                Layout.alignment: Qt.AlignVCenter
+                                horizontalPadding: 8
+                                visible: notifIndicator.active
+
+                                NotifIndicator {
+                                    id: notifIndicator
+                                }
+                            }
+
+                            SectionPill {
+                                Layout.alignment: Qt.AlignVCenter
+                                horizontalPadding: 8
+                                visible: updatesIndicator.active
+
+                                UpdatesIndicator {
+                                    id: updatesIndicator
+                                }
+                            }
+
+                            // Tray
+                            SectionPill {
+                                Layout.alignment: Qt.AlignVCenter
+                                visible: Config.bar.showTray && tray.hasItems
+
+                                Tray {
+                                    id: tray
+                                }
+                            }
+
+                            // Clock
+                            SectionPill {
+                                Layout.alignment: Qt.AlignVCenter
+
+                                Clock {}
+                            }
+
+                        }
+
+                        // Volume scroll zone
                         MouseArea {
-                            id: workspaceScrollZone
-                            Layout.alignment: Qt.AlignVCenter
-                            implicitWidth: workspacesPill.implicitWidth
-                            implicitHeight: workspacesPill.implicitHeight
+                            id: volumeScrollZone
+                            anchors {
+                                left: centerRow.right
+                                leftMargin: Motion.spacing.large
+                                right: rightRow.left
+                                rightMargin: Motion.spacing.normal
+                                top: parent.top
+                                bottom: parent.bottom
+                            }
 
                             hoverEnabled: true
                             acceptedButtons: Qt.NoButton
 
                             onWheel: event => {
                                 if (event.angleDelta.y < 0)
-                                    Hyprland.dispatch(`hl.dsp.focus({ workspace = "e+1" })`);
+                                    Audio.decrementVolume();
                                 else if (event.angleDelta.y > 0)
-                                    Hyprland.dispatch(`hl.dsp.focus({ workspace = "e-1" })`);
+                                    Audio.incrementVolume();
                             }
 
-                            SectionPill {
-                                id: workspacesPill
-                                anchors.fill: parent
-
-                                Workspaces {
-                                    screen: bar.screen
-                                }
+                            ScrollHint {
+                                reveal: volumeScrollZone.containsMouse
+                                icon: "volume_up"
+                                anchors.centerIn: parent
                             }
                         }
                     }
-
-                    // Scroll hint
-                    ScrollHint {
-                        reveal: workspaceScrollZone.containsMouse
-                        icon: "swap_horiz"
-                        anchors.left: centerRow.right
-                        anchors.leftMargin: Motion.spacing.small
-                        anchors.verticalCenter: parent.verticalCenter
+                    // Round decorators
+                    Corner {
+                        id: cornerTL
+                        anchors { top: content.bottom; left: parent.left }
+                        visible: content.anchors.topMargin > -bar.barContentHeight
+                        size: bar.cornerSize
+                        color: Colors.panel
+                        corner: "topLeft"
                     }
-
-                    // Right-side widgets
-                    RowLayout {
-                        id: rightRow
-                        anchors.right: parent.right
-                        anchors.rightMargin: Motion.spacing.wide
-                        anchors.verticalCenter: parent.verticalCenter
-                        spacing: Motion.spacing.normal
-
-                        // Recording indicator
-                        RecordingIndicator {
-                            Layout.alignment: Qt.AlignVCenter
-                        }
-
-                        PrivacyIndicator {
-                            Layout.alignment: Qt.AlignVCenter
-                        }
-
-                        SectionPill {
-                            Layout.alignment: Qt.AlignVCenter
-                            horizontalPadding: 8
-                            visible: notifIndicator.active
-
-                            NotifIndicator {
-                                id: notifIndicator
-                            }
-                        }
-
-                        SectionPill {
-                            Layout.alignment: Qt.AlignVCenter
-                            horizontalPadding: 8
-                            visible: updatesIndicator.active
-
-                            UpdatesIndicator {
-                                id: updatesIndicator
-                            }
-                        }
-
-                        // Tray
-                        SectionPill {
-                            Layout.alignment: Qt.AlignVCenter
-                            visible: Config.bar.showTray && tray.hasItems
-
-                            Tray {
-                                id: tray
-                            }
-                        }
-
-                        // Clock
-                        SectionPill {
-                            Layout.alignment: Qt.AlignVCenter
-
-                            Clock {}
-                        }
-
+                    Corner {
+                        id: cornerTR
+                        anchors { top: content.bottom; right: parent.right }
+                        visible: content.anchors.topMargin > -bar.barContentHeight
+                        size: bar.cornerSize
+                        color: Colors.panel
+                        corner: "topRight"
                     }
-
-                    // Volume scroll zone
-                    MouseArea {
-                        id: volumeScrollZone
-                        anchors {
-                            left: centerRow.right
-                            leftMargin: Motion.spacing.large
-                            right: rightRow.left
-                            rightMargin: Motion.spacing.normal
-                            top: parent.top
-                            bottom: parent.bottom
-                        }
-
-                        hoverEnabled: true
-                        acceptedButtons: Qt.NoButton
-
-                        onWheel: event => {
-                            if (event.angleDelta.y < 0)
-                                Audio.decrementVolume();
-                            else if (event.angleDelta.y > 0)
-                                Audio.incrementVolume();
-                        }
-
-                        ScrollHint {
-                            reveal: volumeScrollZone.containsMouse
-                            icon: "volume_up"
-                            anchors.centerIn: parent
-                        }
-                    }
-                }
-                // Round decorators
-                Corner {
-                    id: cornerTL
-                    anchors { top: content.bottom; left: parent.left }
-                    size: bar.cornerSize
-                    color: Colors.panel
-                    corner: "topLeft"
-                }
-                Corner {
-                    id: cornerTR
-                    anchors { top: content.bottom; right: parent.right }
-                    size: bar.cornerSize
-                    color: Colors.panel
-                    corner: "topRight"
                 }
             }
         }

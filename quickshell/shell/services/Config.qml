@@ -98,6 +98,11 @@ Singleton {
                 property bool showWindowTitle: true // active-window pill
                 // Hidden tray ids
                 property string trayHidden: "nm-applet,blueman"
+                // Slide off-screen until hovered
+                property JsonObject autoHide: JsonObject {
+                    property bool enable: false
+                    property bool pushWindows: false  // reserve space when revealed
+                }
             }
 
             property JsonObject sidebar: JsonObject {

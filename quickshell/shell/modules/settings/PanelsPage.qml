@@ -120,6 +120,28 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
+            label: "Auto-hide"
+            subtext: "Slide the bar away until the top edge is hovered"
+
+            ToggleSwitch {
+                checked: Config.bar.autoHide.enable
+                onToggled: v => Config.bar.autoHide.enable = v
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Push windows on reveal"
+            subtext: "Reserve space for the bar while it is revealed"
+
+            ToggleSwitch {
+                checked: Config.bar.autoHide.pushWindows
+                onToggled: v => Config.bar.autoHide.pushWindows = v
+            }
+        }
+
+        SettingRow {
             last: true
             live: true
             label: "Tray items"
