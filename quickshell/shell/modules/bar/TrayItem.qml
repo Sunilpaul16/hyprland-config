@@ -11,35 +11,36 @@ Item {
 
     readonly property string tooltipStr: root.item.tooltipTitle.length > 0 ? root.item.tooltipTitle : root.item.title
 
-    implicitWidth: 18
-    implicitHeight: 18
+    readonly property int iconSize: 18
+
+    implicitWidth: 26
+    implicitHeight: 26
+
+    // Hover highlight
+    Rectangle {
+        anchors.fill: parent
+        radius: width / 2
+        color: Qt.alpha(Colors.primary, 0.3)
+        opacity: hoverArea.containsMouse ? 1 : 0
+
+        Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+    }
 
     // App pixmap
     Image {
-        anchors.fill: parent
+        anchors.centerIn: parent
+        width: root.iconSize
+        height: root.iconSize
         source: root.item.icon
         fillMode: Image.PreserveAspectFit
         smooth: true
         asynchronous: true
     }
 
-    // Hover highlight
-    Rectangle {
-        anchors.fill: parent
-        anchors.margins: -5
-        radius: Motion.rounding.tiny
-        color: Colors.outline
-        opacity: hoverArea.containsMouse ? 0.5 : 0
-        z: -1
-
-        Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-    }
-
     // Click handling
     MouseArea {
         id: hoverArea
         anchors.fill: parent
-        anchors.margins: -5
         hoverEnabled: true
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         cursorShape: Qt.PointingHandCursor

@@ -40,7 +40,7 @@ Item {
     Row {
         id: row
         anchors.verticalCenter: parent.verticalCenter
-        spacing: Motion.spacing.medium
+        spacing: Motion.spacing.micro
 
         Repeater {
             model: root.displayedItems
@@ -55,8 +55,8 @@ Item {
         Item {
             id: overflowBtn
             visible: root.hasOverflow
-            implicitWidth: 18
-            implicitHeight: 18
+            implicitWidth: 26
+            implicitHeight: 26
 
             MaterialIcon {
                 anchors.centerIn: parent
