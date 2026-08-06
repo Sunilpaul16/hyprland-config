@@ -91,17 +91,13 @@ Scope {
                                 easing.type: Motion.smoothEasing
                             }
                         }
-                        // Active window pill
-                        SectionPill {
+                        ActiveWindow {
+                            id: activeWindow
                             anchors.left: parent.left
                             anchors.leftMargin: Motion.spacing.wide
                             anchors.verticalCenter: parent.verticalCenter
                             visible: Config.bar.showWindowTitle && activeWindow.hasContent
-
-                            ActiveWindow {
-                                id: activeWindow
-                                screen: bar.screen
-                            }
+                            screen: bar.screen
                         }
 
                         // Center widgets
@@ -222,11 +218,8 @@ Scope {
                                 }
                             }
 
-                            // Clock
-                            SectionPill {
+                            Clock {
                                 Layout.alignment: Qt.AlignVCenter
-
-                                Clock {}
                             }
 
                         }
