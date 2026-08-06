@@ -402,14 +402,14 @@ Item {
     Corner {
         anchors { right: parent.left; bottom: parent.bottom }
         size: Motion.cornerSize
-        color: Colors.layer
+        color: Colors.panel
         corner: "bottomRight"
     }
 
     Corner {
         anchors { left: parent.right; bottom: parent.bottom }
         size: Motion.cornerSize
-        color: Colors.layer
+        color: Colors.panel
         corner: "bottomLeft"
     }
 }
