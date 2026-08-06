@@ -19,19 +19,19 @@ Item {
         // Appearance
         { label: "Wallpaper & style", icon: "palette", description: "Wallpaper, fonts, colours", category: "appearance", component: wallpaperStylePage },
 
-        // Connectivity
-        { label: "Network", icon: "lan", description: "Ethernet, VPN, usage", category: "connectivity", component: networkPage },
-        { label: "Connected devices", icon: "devices_other", description: "Bluetooth, pairing", category: "connectivity", component: connectedDevicesPage },
-        { label: "Audio", icon: "volume_up", description: "App volumes, sound devices", category: "connectivity", component: audioPage },
+        // Shell
+        { label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", category: "shell", component: panelsPage },
+        { label: "Overlay widgets", icon: "widgets", description: "Crosshair, notes, floating image", category: "shell", component: overlayPage },
+        { label: "Services", icon: "build", description: "Poll intervals, notifications", category: "shell", component: servicesPage },
 
         // System
         { label: "Updates", icon: "update", description: "System updates", category: "system", component: updatesPage },
         { label: "Idle & power", icon: "bedtime", description: "Lock, displays, suspend", category: "system", component: idlePowerPage },
 
-        // Shell
-        { label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", category: "shell", component: panelsPage },
-        { label: "Overlay widgets", icon: "widgets", description: "Crosshair, notes, floating image", category: "shell", component: overlayPage },
-        { label: "Services", icon: "build", description: "Poll intervals, notifications", category: "shell", component: servicesPage },
+        // Connectivity
+        { label: "Network", icon: "lan", description: "Ethernet, VPN, usage", category: "connectivity", component: networkPage },
+        { label: "Connected devices", icon: "devices_other", description: "Bluetooth, pairing", category: "connectivity", component: connectedDevicesPage },
+        { label: "Audio", icon: "volume_up", description: "App volumes, sound devices", category: "connectivity", component: audioPage },
 
         // About
         { label: "About", icon: "info", description: "System information, credits", category: "about", component: aboutPage }
