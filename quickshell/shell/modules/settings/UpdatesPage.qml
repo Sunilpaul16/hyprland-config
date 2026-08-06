@@ -8,6 +8,8 @@ ScrollPage {
 
     title: "Updates"
 
+    property bool pendingExpanded: false
+
     // Format interval
     function formatInterval(mins: int): string {
         const h = Math.floor(mins / 60);
@@ -116,36 +118,6 @@ ScrollPage {
     }
 
     SectionLabel {
-        text: Updates.total === 0 ? "Pending" : `Pending · ${Updates.total}`
-    }
-
-    // Package list
-    SettingGroup {
-        Repeater {
-            model: Updates.repoUpdates.concat(Updates.aurUpdates)
-
-            SettingRow {
-                required property int index
-                required property var modelData
-
-                live: true
-                first: index === 0
-                last: index === Updates.total - 1
-                label: modelData.name
-                subtext: modelData.from && modelData.to ? `${modelData.from} → ${modelData.to}` : ""
-            }
-        }
-
-        SettingRow {
-            visible: Updates.total === 0
-            first: true
-            last: true
-            live: true
-            label: Updates.checking ? "Checking…" : (Updates.lastCheckFailed ? "Check failed" : "Everything is up to date")
-        }
-    }
-
-    SectionLabel {
         text: "Notifications"
     }
 
@@ -202,6 +174,51 @@ ScrollPage {
             ValueLabel {
                 // Read-only
                 text: Config.apps.terminal
+            }
+        }
+    }
+
+    SectionLabel {
+        text: Updates.total === 0 ? "Pending" : `Pending · ${Updates.total}`
+    }
+
+    // Package list
+    SettingGroup {
+        // Expand toggle
+        SettingRow {
+            first: true
+            last: !root.pendingExpanded
+            live: true
+            label: Updates.total === 0
+                ? (Updates.checking ? "Checking…" : (Updates.lastCheckFailed ? "Check failed" : "Everything is up to date"))
+                : `${Updates.total} package${Updates.total === 1 ? "" : "s"} pending`
+            subtext: Updates.total === 0 || root.pendingExpanded ? "" : "Show the full list"
+
+            IconAction {
+                visible: Updates.total > 0
+                implicitWidth: 32
+                implicitHeight: 32
+                radius: width / 2
+                iconName: "expand_more"
+                iconSize: Motion.fontSize.header
+                rotation: root.pendingExpanded ? 180 : 0
+                onTriggered: root.pendingExpanded = !root.pendingExpanded
+
+                Behavior on rotation { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+            }
+        }
+
+        Repeater {
+            model: root.pendingExpanded ? Updates.repoUpdates.concat(Updates.aurUpdates) : []
+
+            SettingRow {
+                required property int index
+                required property var modelData
+
+                live: true
+                last: index === Updates.total - 1
+                label: modelData.name
+                subtext: modelData.from && modelData.to ? `${modelData.from} → ${modelData.to}` : ""
             }
         }
     }
