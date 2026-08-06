@@ -92,7 +92,7 @@ Item {
             width: modelData.width
             height: root.pillSize
             radius: height / 2
-            color: Colors.layer
+            color: Colors.pill
             opacity: (modelData.occupied && index !== root.activeIndex) ? 1 : 0
 
             Behavior on x { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }

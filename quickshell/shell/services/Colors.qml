@@ -51,13 +51,19 @@ QtObject {
     // Panel background
     readonly property color panel: Config.appearance.transparency ? Qt.alpha(background, Config.appearance.panelOpacity) : background
 
-    // Card and pill fill
-    readonly property color layer: {
+    // Elevated fill at alpha
+    function elevatedAt(alpha: real): color {
         const transparent = Config.appearance.transparency;
         // Must outrun a bright wallpaper
         const target = root.elevationFloor + (transparent ? 1.2 * (1 - Config.appearance.panelOpacity) : 0);
-        return root.elevate(background, surface, target, transparent ? Config.appearance.layerOpacity : 1);
+        return root.elevate(background, surface, target, transparent ? alpha : 1);
     }
+
+    // Card fill
+    readonly property color layer: root.elevatedAt(Config.appearance.layerOpacity)
+
+    // Bar pill fill
+    readonly property color pill: root.elevatedAt(Config.appearance.pillOpacity)
 
     // Card fill for free-floating popups
     readonly property color layerOpaque: root.elevate(background, surface, root.elevationFloor, 1)

@@ -196,6 +196,7 @@ Singleton {
                 property bool transparency: false
                 property real panelOpacity: 0.85  // panel opacity
                 property real layerOpacity: 0.55  // layer opacity
+                property real pillOpacity: 0.55   // bar pill opacity
                 // Fonts
                 property string fontInterface: "Noto Sans"  // shell text
                 property string fontGlyph: "JetBrainsMono Nerd Font"  // icon glyphs

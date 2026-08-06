@@ -82,7 +82,7 @@ ScrollPage {
             live: true
             visible: Config.appearance.transparency
             label: "Card opacity"
-            subtext: "Cards and pills; lower than the panel or they read as solid"
+            subtext: "Cards, rows and menus; lower than the panel or they read as solid"
 
             NumberControl {
                 value: Config.appearance.layerOpacity
@@ -94,6 +94,25 @@ ScrollPage {
                 suffix: "%"
                 labelWidth: 46
                 onMoved: v => Config.appearance.layerOpacity = v
+            }
+        }
+
+        SettingRow {
+            live: true
+            visible: Config.appearance.transparency
+            label: "Bar pill opacity"
+            subtext: "The pills on the top bar; 0% hides them entirely"
+
+            NumberControl {
+                value: Config.appearance.pillOpacity
+                from: 0
+                to: 1
+                stepSize: 0.05
+                displayScale: 100
+                decimals: 0
+                suffix: "%"
+                labelWidth: 46
+                onMoved: v => Config.appearance.pillOpacity = v
             }
         }
 

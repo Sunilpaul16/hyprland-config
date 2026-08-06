@@ -16,7 +16,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: height / 2
-        color: Colors.layer
+        color: Colors.pill
     }
 
     // Content slot
