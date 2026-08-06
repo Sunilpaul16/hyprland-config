@@ -25,13 +25,13 @@ Item {
         { label: "Services", icon: "build", description: "Poll intervals, notifications", category: "shell", component: servicesPage },
 
         // System
+        { label: "Audio", icon: "volume_up", description: "App volumes, sound devices", category: "system", component: audioPage },
         { label: "Updates", icon: "update", description: "System updates", category: "system", component: updatesPage },
-        { label: "Idle & power", icon: "bedtime", description: "Lock, displays, suspend", category: "system", component: idlePowerPage },
 
         // Connectivity
+        { label: "Idle & power", icon: "bedtime", description: "Lock, displays, suspend", category: "connectivity", component: idlePowerPage },
         { label: "Network", icon: "lan", description: "Ethernet, VPN, usage", category: "connectivity", component: networkPage },
         { label: "Connected devices", icon: "devices_other", description: "Bluetooth, pairing", category: "connectivity", component: connectedDevicesPage },
-        { label: "Audio", icon: "volume_up", description: "App volumes, sound devices", category: "connectivity", component: audioPage },
 
         // About
         { label: "About", icon: "info", description: "System information, credits", category: "about", component: aboutPage }
