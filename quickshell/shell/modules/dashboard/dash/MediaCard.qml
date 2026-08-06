@@ -71,7 +71,7 @@ Rectangle {
                             startAngle: -90 - Config.dashboard.media.progressSweep / 2
                             sweepAngle: Config.dashboard.media.progressSweep * root.progress
 
-                            Behavior on sweepAngle { NumberAnimation { duration: 300; easing.type: Easing.OutSine } }
+                            Behavior on sweepAngle { NumberAnimation { duration: Motion.scaled(300); easing.type: Easing.OutSine } }
                         }
                     }
                 }

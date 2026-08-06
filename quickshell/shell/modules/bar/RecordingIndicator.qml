@@ -27,10 +27,11 @@ Item {
             color: Colors.recording
 
             SequentialAnimation on opacity {
-                running: Recorder.active
+                running: Recorder.active && !Motion.reduced
                 loops: Animation.Infinite
-                NumberAnimation { from: 1; to: 0.3; duration: 700; easing.type: Easing.InOutQuad }
-                NumberAnimation { from: 0.3; to: 1; duration: 700; easing.type: Easing.InOutQuad }
+                onRunningChanged: if (!running) dot.opacity = 1
+                NumberAnimation { from: 1; to: 0.3; duration: Motion.scaled(700); easing.type: Easing.InOutQuad }
+                NumberAnimation { from: 0.3; to: 1; duration: Motion.scaled(700); easing.type: Easing.InOutQuad }
             }
         }
 

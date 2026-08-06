@@ -43,6 +43,7 @@ Rectangle {
 
                     // Blinking REC pill
                     Rectangle {
+                        id: recPill
                         visible: Recorder.active
                         radius: height / 2
                         color: Colors.recording
@@ -50,10 +51,11 @@ Rectangle {
                         implicitHeight: recText.implicitHeight + 4
 
                         SequentialAnimation on opacity {
-                            running: Recorder.active
+                            running: Recorder.active && !Motion.reduced
                             loops: Animation.Infinite
-                            NumberAnimation { from: 1; to: 0.25; duration: 600; easing.type: Easing.InQuad }
-                            NumberAnimation { from: 0.25; to: 1; duration: 1000; easing.type: Easing.OutQuad }
+                            onRunningChanged: if (!running) recPill.opacity = 1
+                            NumberAnimation { from: 1; to: 0.25; duration: Motion.scaled(600); easing.type: Easing.InQuad }
+                            NumberAnimation { from: 0.25; to: 1; duration: Motion.scaled(1000); easing.type: Easing.OutQuad }
                         }
 
                         StyledText {

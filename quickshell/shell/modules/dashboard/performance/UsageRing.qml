@@ -14,7 +14,7 @@ Item {
     readonly property real clampedValue: Math.max(0, Math.min(1, value))
 
     Behavior on value {
-        NumberAnimation { duration: 400; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: Motion.scaled(400); easing.type: Easing.OutCubic }
     }
 
     Shape {
