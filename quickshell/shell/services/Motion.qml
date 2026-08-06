@@ -44,11 +44,17 @@ QtObject {
         ColorAnimation { duration: root.deliberateDuration; easing.type: root.deliberateEasing }
     }
 
-    // M3 bezier curves
-    readonly property QtObject animationCurves: QtObject {
-        readonly property list<real> expressiveDefaultSpatial: [0.38, 1.21, 0.22, 1.00, 1, 1]
-        readonly property int expressiveDefaultSpatialDuration: root.scaled(500)
-    }
+    // Shared easing curve
+    readonly property list<real> curve: [0.34, 0.80, 0.34, 1.00, 1, 1]
+
+    // Motion durations
+    readonly property var anim: ({
+        enter: 350,
+        exit: 220,
+        spatial: 300,
+        effects: 200,
+        effectsFast: 150
+    })
 
     // Rounding ladder
     readonly property QtObject rounding: QtObject {
