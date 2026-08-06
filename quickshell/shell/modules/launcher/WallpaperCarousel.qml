@@ -96,6 +96,6 @@ Item {
             return Math.max(0, Math.min(row.width - width, centre - width / 2));
         }
 
-        Behavior on x { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+        Behavior on x { Anim {} }
     }
 }

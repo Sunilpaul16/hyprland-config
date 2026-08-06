@@ -23,7 +23,7 @@ Item {
     readonly property real overflow: Math.max(root.view.contentX - root.x, (root.x + root.width) - (root.view.contentX + root.view.width))
     opacity: root.overflow <= 0 ? 1 : Math.max(0, 1 - root.overflow / 12)
 
-    Behavior on width { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+    Behavior on width { Anim {} }
 
     signal activated
 
@@ -54,8 +54,8 @@ Item {
         border.width: root.isCurrent ? 2 : 0
         border.color: Colors.primary
 
-        Behavior on height { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
-        Behavior on anchors.bottomMargin { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+        Behavior on height { Anim {} }
+        Behavior on anchors.bottomMargin { Anim {} }
 
         Rectangle {
             id: well

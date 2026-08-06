@@ -94,8 +94,8 @@ Item {
         return chromeHeight + n * itemHeight + (n - 1) * listSpacing;
     }
 
-    Behavior on implicitWidth { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
-    Behavior on implicitHeight { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+    Behavior on implicitWidth { Anim {} }
+    Behavior on implicitHeight { Anim {} }
 
     // Actions per mode
     function launchApp(entry): void {

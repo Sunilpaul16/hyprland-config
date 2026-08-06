@@ -114,8 +114,8 @@ Item {
         x: activeSlot ? activeSlot.x : 0
         width: activeSlot ? activeSlot.width : root.pillSize
 
-        Behavior on x { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
-        Behavior on width { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+        Behavior on x { Anim {} }
+        Behavior on width { Anim {} }
     }
 
     // Slot content
