@@ -26,8 +26,7 @@ Scope {
                     anchors.bottom: parent.bottom
                     anchors.horizontalCenter: parent.horizontalCenter
                     opacity: root.showProgress
-                    scale: 0.94 + 0.06 * root.showProgress
-                    transformOrigin: Item.Bottom
+                    transform: Translate { y: (1 - root.showProgress) * 32 }
                 }
             }
         }

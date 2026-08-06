@@ -54,7 +54,7 @@ Scope {
                     bottomRightRadius: 0
                     color: Colors.panel
                     opacity: root.showProgress
-                    transform: Translate { x: (1 - root.showProgress) * 24 }
+                    transform: Translate { x: (1 - root.showProgress) * backdrop.width }
                 }
 
                 // Edge fillets
@@ -64,7 +64,7 @@ Scope {
                     color: Colors.panel
                     corner: "topRight"
                     opacity: root.showProgress
-                    transform: Translate { x: (1 - root.showProgress) * 24 }
+                    transform: Translate { x: (1 - root.showProgress) * backdrop.width }
                 }
 
                 Corner {
@@ -73,7 +73,7 @@ Scope {
                     color: Colors.panel
                     corner: "bottomRight"
                     opacity: root.showProgress
-                    transform: Translate { x: (1 - root.showProgress) * 24 }
+                    transform: Translate { x: (1 - root.showProgress) * backdrop.width }
                 }
 
                 // Slide-in wrapper
@@ -82,7 +82,7 @@ Scope {
                     visible: SidebarDialogState.openDialog === ""
 
                     opacity: root.showProgress
-                    transform: Translate { x: (1 - root.showProgress) * 24 }
+                    transform: Translate { x: (1 - root.showProgress) * backdrop.width }
 
                     // Card stack
                     ColumnLayout {
