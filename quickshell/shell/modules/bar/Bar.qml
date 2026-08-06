@@ -145,6 +145,8 @@ Scope {
                                 acceptedButtons: Qt.NoButton
 
                                 onWheel: event => {
+                                    if (!Config.bar.scroll.workspaces)
+                                        return;
                                     if (event.angleDelta.y < 0)
                                         Hyprland.dispatch(`hl.dsp.focus({ workspace = "e+1" })`);
                                     else if (event.angleDelta.y > 0)
@@ -164,6 +166,7 @@ Scope {
 
                         // Scroll hint
                         ScrollHint {
+                            visible: Config.bar.scroll.workspaces && Config.bar.scroll.workspacesHint
                             reveal: workspaceScrollZone.containsMouse
                             icon: "swap_horiz"
                             anchors.left: centerRow.right
@@ -240,6 +243,8 @@ Scope {
                             acceptedButtons: Qt.NoButton
 
                             onWheel: event => {
+                                if (!Config.bar.scroll.volume)
+                                    return;
                                 if (event.angleDelta.y < 0)
                                     Audio.decrementVolume();
                                 else if (event.angleDelta.y > 0)
@@ -247,6 +252,7 @@ Scope {
                             }
 
                             ScrollHint {
+                                visible: Config.bar.scroll.volume && Config.bar.scroll.volumeHint
                                 reveal: volumeScrollZone.containsMouse
                                 icon: "volume_up"
                                 anchors.centerIn: parent

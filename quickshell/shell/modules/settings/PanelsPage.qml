@@ -156,6 +156,64 @@ ScrollPage {
     }
 
     SectionLabel {
+        text: "Bar scrolling"
+    }
+
+    SettingGroup {
+        SettingRow {
+            first: true
+            live: true
+            // Run end
+            last: !Config.bar.scroll.workspaces
+            label: "Scroll to switch workspaces"
+            subtext: "Wheel over the workspaces pill moves to the next or previous workspace"
+
+            ToggleSwitch {
+                checked: Config.bar.scroll.workspaces
+                onToggled: v => Config.bar.scroll.workspaces = v
+            }
+        }
+
+        SettingRow {
+            live: true
+            visible: Config.bar.scroll.workspaces
+            label: "Workspace scroll hint"
+            subtext: "Arrows and glyph beside the pill while it is hovered"
+
+            ToggleSwitch {
+                checked: Config.bar.scroll.workspacesHint
+                onToggled: v => Config.bar.scroll.workspacesHint = v
+            }
+        }
+
+        SettingRow {
+            live: true
+            // Run end
+            last: !Config.bar.scroll.volume
+            label: "Scroll to change volume"
+            subtext: "Wheel over the empty bar area between the clock and the workspaces"
+
+            ToggleSwitch {
+                checked: Config.bar.scroll.volume
+                onToggled: v => Config.bar.scroll.volume = v
+            }
+        }
+
+        SettingRow {
+            last: true
+            live: true
+            visible: Config.bar.scroll.volume
+            label: "Volume scroll hint"
+            subtext: "Arrows and glyph in the scroll area while it is hovered"
+
+            ToggleSwitch {
+                checked: Config.bar.scroll.volumeHint
+                onToggled: v => Config.bar.scroll.volumeHint = v
+            }
+        }
+    }
+
+    SectionLabel {
         text: "Dashboard"
     }
 

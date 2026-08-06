@@ -104,6 +104,13 @@ Singleton {
                     property bool enable: false
                     property bool pushWindows: false  // reserve space when revealed
                 }
+                // Wheel gestures
+                property JsonObject scroll: JsonObject {
+                    property bool workspaces: true      // wheel switches workspace
+                    property bool workspacesHint: true  // swap_horiz glyph
+                    property bool volume: true          // wheel changes volume
+                    property bool volumeHint: true      // volume_up glyph
+                }
             }
 
             property JsonObject sidebar: JsonObject {
