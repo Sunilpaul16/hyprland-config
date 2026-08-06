@@ -24,7 +24,7 @@ PanelWindow {
     property real showProgress: active ? 1 : 0
 
     Behavior on showProgress {
-        NumberAnimation { duration: Motion.smoothDuration; easing.type: Motion.smoothEasing }
+        Anim { type: root.active ? "enter" : "exit" }
     }
 
     // Positioning

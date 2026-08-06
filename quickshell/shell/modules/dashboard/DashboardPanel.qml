@@ -26,11 +26,7 @@ Scope {
                 property real offsetScale: root.active ? 0 : 1
 
                 Behavior on offsetScale {
-                    NumberAnimation {
-                        duration: Motion.animationCurves.expressiveDefaultSpatialDuration
-                        easing.type: Easing.BezierSpline
-                        easing.bezierCurve: Motion.animationCurves.expressiveDefaultSpatial
-                    }
+                    Anim { type: root.active ? "enter" : "exit" }
                 }
 
                 // Tab state

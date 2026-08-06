@@ -26,11 +26,7 @@ Scope {
                 readonly property int cornerSize: Motion.cornerSize
 
                 Behavior on offsetScale {
-                    NumberAnimation {
-                        duration: Motion.animationCurves.expressiveDefaultSpatialDuration
-                        easing.type: Easing.BezierSpline
-                        easing.bezierCurve: Motion.animationCurves.expressiveDefaultSpatial
-                    }
+                    Anim { type: root.active ? "enter" : "exit" }
                 }
 
                 // Positioning
