@@ -45,8 +45,12 @@ PanelWindow {
     WlrLayershell.keyboardFocus: root.active ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
     // Click-through mask
+    // Layout rect, not transformed
     mask: Region {
-        item: root.maskItem
+        x: root.maskItem?.x ?? 0
+        y: root.maskItem?.y ?? 0
+        width: root.maskItem?.width ?? 0
+        height: root.maskItem?.height ?? 0
     }
 
     // Shared focus-grab registration
