@@ -14,6 +14,8 @@ Singleton {
     property int currentPageIdx: 0
     // Sub-page key
     property string subPage: ""
+    // Deep-link page key
+    property string pendingPage: ""
 
     // Reset sub-page
     onCurrentPageIdxChanged: root.subPage = ""
@@ -38,6 +40,13 @@ Singleton {
 
     function toggle(): void {
         ScreenOwner.toggle(root);
+    }
+
+    // Open page by key
+    function openPage(key: string): void {
+        root.pendingPage = key;
+        ScreenOwner.claim(root);
+        root.open = true;
     }
 
     // IPC handler

@@ -49,10 +49,6 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            SettingsState.currentPageIdx = 4;  // Updates page
-            ScreenOwner.claim(SettingsState);
-            SettingsState.open = true;
-        }
+        onClicked: SettingsState.openPage("updates")
     }
 }

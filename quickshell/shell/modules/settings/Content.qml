@@ -17,24 +17,24 @@ Item {
     // Page registry
     readonly property var pageModel: [
         // Appearance
-        { label: "Wallpaper & style", icon: "palette", description: "Wallpaper, fonts, colours", category: "appearance", component: wallpaperStylePage },
+        { key: "wallpaperStyle", label: "Wallpaper & style", icon: "palette", description: "Wallpaper, fonts, colours", category: "appearance", component: wallpaperStylePage },
 
         // Shell
-        { label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", category: "shell", component: panelsPage },
-        { label: "Overlay widgets", icon: "widgets", description: "Crosshair, notes, floating image", category: "shell", component: overlayPage },
-        { label: "Services", icon: "build", description: "Poll intervals, notifications", category: "shell", component: servicesPage },
+        { key: "panels", label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", category: "shell", component: panelsPage },
+        { key: "overlay", label: "Overlay widgets", icon: "widgets", description: "Crosshair, notes, floating image", category: "shell", component: overlayPage },
+        { key: "services", label: "Services", icon: "build", description: "Poll intervals, notifications", category: "shell", component: servicesPage },
 
         // System
-        { label: "Audio", icon: "volume_up", description: "App volumes, sound devices", category: "system", component: audioPage },
-        { label: "Updates", icon: "update", description: "System updates", category: "system", component: updatesPage },
+        { key: "audio", label: "Audio", icon: "volume_up", description: "App volumes, sound devices", category: "system", component: audioPage },
+        { key: "updates", label: "Updates", icon: "update", description: "System updates", category: "system", component: updatesPage },
 
         // Connectivity
-        { label: "Idle & power", icon: "bedtime", description: "Lock, displays, suspend", category: "connectivity", component: idlePowerPage },
-        { label: "Network", icon: "lan", description: "Ethernet, VPN, usage", category: "connectivity", component: networkPage },
-        { label: "Connected devices", icon: "devices_other", description: "Bluetooth, pairing", category: "connectivity", component: connectedDevicesPage },
+        { key: "idlePower", label: "Idle & power", icon: "bedtime", description: "Lock, displays, suspend", category: "connectivity", component: idlePowerPage },
+        { key: "network", label: "Network", icon: "lan", description: "Ethernet, VPN, usage", category: "connectivity", component: networkPage },
+        { key: "connectedDevices", label: "Connected devices", icon: "devices_other", description: "Bluetooth, pairing", category: "connectivity", component: connectedDevicesPage },
 
         // About
-        { label: "About", icon: "info", description: "System information, credits", category: "about", component: aboutPage }
+        { key: "about", label: "About", icon: "info", description: "System information, credits", category: "about", component: aboutPage }
     ]
 
     // Sub-page registry
@@ -44,6 +44,25 @@ Item {
         "tray": traySubPage,
         "quickToggles": quickTogglesSubPage
     })
+
+    // Resolve deep link
+    function resolvePendingPage(): void {
+        if (!SettingsState.pendingPage)
+            return;
+        const idx = root.pageModel.findIndex(p => p.key === SettingsState.pendingPage);
+        SettingsState.pendingPage = "";
+        if (idx >= 0)
+            SettingsState.currentPageIdx = idx;
+    }
+
+    Component.onCompleted: root.resolvePendingPage()
+
+    Connections {
+        target: SettingsState
+        function onPendingPageChanged() {
+            root.resolvePendingPage();
+        }
+    }
 
     NavList {
         id: navList
