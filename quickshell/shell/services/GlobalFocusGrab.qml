@@ -31,8 +31,8 @@ Singleton {
         root.persistent = root.persistent.filter(w => w !== window);
     }
 
+    // Windows deregister themselves
     function dismiss(): void {
-        root.dismissable = [];
         root.dismissed();
     }
 
