@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import Quickshell.Widgets
 import "../../services"
 import "../../components"
@@ -44,6 +45,19 @@ Item {
                 thumb.source = "file://" + root.modelData.thumbPath;
             }
         }
+    }
+
+    // Lifts the selection
+    RectangularShadow {
+        anchors.fill: tile
+        radius: tile.radius
+        color: Qt.alpha("black", 0.7)
+        blur: 13
+        spread: -2
+        offset.y: 4
+
+        opacity: root.isCurrent ? 1 : 0
+        Behavior on opacity { Anim { type: "effects" } }
     }
 
     // Thumbnail
