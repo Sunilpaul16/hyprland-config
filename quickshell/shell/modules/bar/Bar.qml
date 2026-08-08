@@ -86,18 +86,26 @@ Scope {
 
                         // Slide animation
                         Behavior on anchors.topMargin {
-                            NumberAnimation {
-                                duration: Motion.smoothDuration
-                                easing.type: Motion.smoothEasing
-                            }
+                            Anim { type: "effectsFast" }
                         }
-                        ActiveWindow {
-                            id: activeWindow
+                        // Left-side widgets
+                        RowLayout {
+                            id: leftRow
                             anchors.left: parent.left
                             anchors.leftMargin: Motion.spacing.wide
                             anchors.verticalCenter: parent.verticalCenter
-                            visible: Config.bar.showWindowTitle && activeWindow.hasContent
-                            screen: bar.screen
+                            spacing: Motion.spacing.normal
+
+                            OsLogo {
+                                Layout.alignment: Qt.AlignVCenter
+                            }
+
+                            ActiveWindow {
+                                id: activeWindow
+                                Layout.alignment: Qt.AlignVCenter
+                                visible: Config.bar.showWindowTitle && activeWindow.hasContent
+                                screen: bar.screen
+                            }
                         }
 
                         // Center widgets

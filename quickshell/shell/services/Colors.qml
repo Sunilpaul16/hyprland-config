@@ -26,6 +26,40 @@ QtObject {
         return Math.sqrt(0.299 * c.r ** 2 + 0.587 * c.g ** 2 + 0.114 * c.b ** 2);
     }
 
+    // WCAG relative luminance
+    function relLuminance(c: color): real {
+        const f = v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b);
+    }
+
+    // WCAG contrast ratio
+    function contrast(a: color, b: color): real {
+        const la = root.relLuminance(a);
+        const lb = root.relLuminance(b);
+        return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+    }
+
+    // Minimum text contrast
+    readonly property real contrastFloor: 4.5
+
+    // Accent legible on panel
+    function readable(c: color): color {
+        if (root.contrast(c, root.background) >= root.contrastFloor)
+            return c;
+        // Lift lightness, keep hue
+        const shade = l => Qt.hsla(c.hslHue, c.hslSaturation, l, c.a);
+        let lo = c.hslLightness;
+        let hi = root.isLight ? 0 : 1;
+        for (let i = 0; i < 14; i++) {
+            const m = (lo + hi) / 2;
+            if (root.contrast(shade(m), root.background) >= root.contrastFloor)
+                hi = m;
+            else
+                lo = m;
+        }
+        return shade(hi);
+    }
+
     // Elevate above base
     function elevate(base: color, c: color, target: real, alpha: real): color {
         const lc = root.luminance(c);
@@ -59,19 +93,19 @@ QtObject {
     readonly property color panel: Config.appearance.transparency ? Qt.alpha(background, Config.appearance.panelOpacity) : background
 
     // Elevated fill at alpha
-    function elevatedAt(alpha: real): color {
+    function elevatedAt(alpha: real, alwaysAlpha: bool): color {
         const transparent = Config.appearance.transparency;
         // Must outrun a bright wallpaper
         const boost = 1 + root.wallLuminance * root.luminanceLift;
         const target = root.elevationFloor + (transparent ? 1.2 * (1 - Config.appearance.panelOpacity) * boost : 0);
-        return root.elevate(background, surface, target, transparent ? alpha : 1);
+        return root.elevate(background, surface, target, (transparent || alwaysAlpha) ? alpha : 1);
     }
 
     // Card fill
-    readonly property color layer: root.elevatedAt(Config.appearance.layerOpacity)
+    readonly property color layer: root.elevatedAt(Config.appearance.layerOpacity, false)
 
     // Bar pill fill
-    readonly property color pill: root.elevatedAt(Config.appearance.pillOpacity)
+    readonly property color pill: root.elevatedAt(Config.appearance.pillOpacity, true)
 
     // Card fill for free-floating popups
     readonly property color layerOpaque: root.elevate(background, surface, root.elevationFloor, 1)

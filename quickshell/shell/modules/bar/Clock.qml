@@ -17,35 +17,31 @@ Item {
         StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: Time.timeStr
+            color: Colors.readable(Colors.tertiary)
             font.pixelSize: Motion.fontSize.large
             font.bold: true
+
+            Behavior on color { CAnim {} }
         }
 
         StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: "·"
-            color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
-            font.pixelSize: Motion.fontSize.subhead
+            color: Colors.readable(Colors.tertiary)
+            font.pixelSize: Motion.fontSize.large
+            font.bold: true
 
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+            Behavior on color { CAnim {} }
         }
 
         StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: Time.dateStr
-            color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
-            font.pixelSize: Motion.fontSize.label
+            color: Colors.readable(Colors.tertiary)
+            font.pixelSize: Motion.fontSize.large
+            font.bold: true
 
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+            Behavior on color { CAnim {} }
         }
-    }
-
-    // Click opens sidebar
-    MouseArea {
-        id: hoverArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: SidebarRightState.toggle()
     }
 }

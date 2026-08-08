@@ -12,8 +12,8 @@ Column {
     opacity: reveal ? 1 : 0
     scale: reveal ? 1 : 0.85
 
-    Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
-    Behavior on scale { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+    Behavior on opacity { Anim { type: "effectsFast" } }
+    Behavior on scale { Anim { type: "effectsFast" } }
 
     MaterialIcon {
         text: "keyboard_arrow_up"

@@ -23,7 +23,7 @@ Item {
         color: Qt.alpha(Colors.primary, 0.3)
         opacity: hoverArea.containsMouse ? 1 : 0
 
-        Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+        Behavior on opacity { Anim { type: "effectsFast" } }
     }
 
     // App pixmap

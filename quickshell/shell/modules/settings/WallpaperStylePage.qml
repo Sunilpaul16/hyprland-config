@@ -67,8 +67,6 @@ ScrollPage {
 
         SettingRow {
             live: true
-            // Run end
-            last: !Config.appearance.transparency
             label: "Transparency"
             subtext: "Translucent panel backgrounds, blurred by Hyprland"
 
@@ -99,7 +97,8 @@ ScrollPage {
 
         SettingRow {
             live: true
-            visible: Config.appearance.transparency
+            // Run end
+            last: !Config.appearance.transparency
             label: "Bar pill opacity"
             subtext: "The pills on the top bar; 0% hides them entirely"
 

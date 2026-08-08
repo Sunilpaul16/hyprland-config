@@ -25,7 +25,7 @@ Item {
             color: (hoverArea.containsMouse || playPauseHover.containsMouse) ? Colors.text : Colors.textMuted
             font.pixelSize: Motion.fontSize.body
 
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+            Behavior on color { CAnim {} }
 
             // Playback hit target
             MouseArea {
@@ -47,7 +47,7 @@ Item {
             font.pixelSize: Motion.fontSize.label
             elide: Text.ElideRight
 
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+            Behavior on color { CAnim {} }
         }
     }
 

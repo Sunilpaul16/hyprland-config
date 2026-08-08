@@ -34,7 +34,7 @@ Item {
     implicitHeight: row.implicitHeight
 
     Behavior on implicitWidth {
-        NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing }
+        Anim {}
     }
 
     Row {

@@ -15,7 +15,7 @@ Item {
     clip: true
 
     Behavior on implicitWidth {
-        NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing }
+        Anim { type: "effectsFast" }
     }
 
     MaterialIcon {
@@ -24,10 +24,10 @@ Item {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
         text: "update"
-        color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
+        color: hoverArea.containsMouse ? Colors.text : Colors.readable(Colors.tertiary)
         font.pixelSize: Motion.fontSize.title
 
-        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+        Behavior on color { CAnim {} }
     }
 
     StyledText {
@@ -37,10 +37,10 @@ Item {
         anchors.leftMargin: Motion.spacing.tiny
         anchors.verticalCenter: parent.verticalCenter
         text: Updates.total > 99 ? "99+" : Updates.total
-        color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
+        color: hoverArea.containsMouse ? Colors.text : Colors.readable(Colors.tertiary)
         font.pixelSize: Motion.fontSize.body
 
-        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+        Behavior on color { CAnim {} }
     }
 
     MouseArea {

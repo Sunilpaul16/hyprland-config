@@ -15,7 +15,7 @@ Item {
     clip: true
 
     Behavior on implicitWidth {
-        NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing }
+        Anim { type: "effectsFast" }
     }
 
     StyledText {
@@ -28,7 +28,7 @@ Item {
         color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
         font.pixelSize: Motion.fontSize.label
 
-        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+        Behavior on color { CAnim {} }
     }
 
     // Unread count

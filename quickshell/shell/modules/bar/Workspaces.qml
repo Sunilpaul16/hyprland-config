@@ -1,6 +1,4 @@
 import QtQuick
-import Quickshell
-import Quickshell.Widgets
 import Quickshell.Hyprland
 import "../../services"
 import "../../components"
@@ -32,35 +30,39 @@ Item {
 
     readonly property int activeIndex: displaySlots.findIndex(ws => !ws.isPlaceholder && ws.monitor === root.monitor && ws.active)
 
-    // Workspace app classes
-    function appWmClasses(ws) {
+    // Workspace category glyphs
+    function appGlyphs(ws) {
         if (!ws || ws.isPlaceholder)
             return [];
         const seen = new Set();
-        const classes = [];
+        const glyphs = [];
         for (const tl of ws.toplevels.values) {
             const wmClass = tl.lastIpcObject?.class ?? "";
-            if (!wmClass || seen.has(wmClass))
+            if (!wmClass)
                 continue;
-            seen.add(wmClass);
-            classes.push(wmClass);
+            const glyph = AppIcons.categoryFor(wmClass, "terminal");
+            if (seen.has(glyph))
+                continue;
+            seen.add(glyph);
+            glyphs.push(glyph);
         }
-        return classes;
+        return glyphs;
     }
 
 
     readonly property int maxIconsPerSlot: 3
-    readonly property int iconSize: Math.round(pillSize * 0.62)
-    readonly property int iconGap: 2
+    readonly property int iconSize: Math.round(pillSize * 0.66)
+    readonly property int iconGap: Motion.spacing.small
+    readonly property int iconPadding: Motion.spacing.small
 
     // Slot layout
     readonly property var slotLayout: {
         let x = 0;
         const layout = [];
         for (const ws of root.displaySlots) {
-            const wmClasses = root.appWmClasses(ws);
-            const shownIcons = wmClasses.slice(0, root.maxIconsPerSlot).map(c => AppIcons.resolve(c)).filter(i => i.length > 0);
-            const extra = Math.max(0, wmClasses.length - root.maxIconsPerSlot);
+            const glyphs = root.appGlyphs(ws);
+            const shownIcons = glyphs.slice(0, root.maxIconsPerSlot);
+            const extra = Math.max(0, glyphs.length - root.maxIconsPerSlot);
             const occupied = !ws.isPlaceholder && ws.toplevels.values.length > 0;
 
             let width = root.pillSize;
@@ -68,7 +70,7 @@ Item {
                 const iconsWidth = shownIcons.length * root.iconSize + Math.max(0, shownIcons.length - 1) * root.iconGap;
                 const extraWidth = extra > 0 ? root.iconSize : 0;
                 const gapBeforeExtra = (extra > 0 && shownIcons.length > 0) ? root.iconGap : 0;
-                width = Math.max(root.pillSize, iconsWidth + gapBeforeExtra + extraWidth + root.iconGap * 2);
+                width = Math.max(root.pillSize, iconsWidth + gapBeforeExtra + extraWidth + root.iconPadding * 2);
             }
 
             layout.push({ ws, x, width, occupied, shownIcons, extra });
@@ -95,9 +97,9 @@ Item {
             color: Colors.pill
             opacity: (modelData.occupied && index !== root.activeIndex) ? 1 : 0
 
-            Behavior on x { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
-            Behavior on width { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
-            Behavior on opacity { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+            Behavior on x { Anim {} }
+            Behavior on width { Anim {} }
+            Behavior on opacity { Anim {} }
         }
     }
 
@@ -134,8 +136,8 @@ Item {
             width: modelData.width
             height: root.pillSize
 
-            Behavior on x { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
-            Behavior on width { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+            Behavior on x { Anim {} }
+            Behavior on width { Anim {} }
 
             Row {
                 visible: slot.hasIcons
@@ -145,21 +147,32 @@ Item {
                 Repeater {
                     model: slot.modelData.shownIcons
 
-                    IconImage {
+                    Item {
                         required property string modelData
 
-                        asynchronous: true
-                        source: Quickshell.iconPath(modelData, "")
-                        implicitSize: root.iconSize
+                        implicitWidth: root.iconSize
+                        implicitHeight: root.iconSize
+
+                        MaterialIcon {
+                            anchors.centerIn: parent
+                            text: parent.modelData
+                            font.pixelSize: root.iconSize
+                            color: slot.isActive ? Colors.textOnPrimary : Colors.textMuted
+
+                            Behavior on color { CAnim {} }
+                        }
                     }
                 }
 
                 StyledText {
+                    anchors.verticalCenter: parent.verticalCenter
                     visible: slot.modelData.extra > 0
                     text: "+" + slot.modelData.extra
                     font.pixelSize: Motion.fontSize.tiny
                     font.bold: slot.isActive
                     color: slot.isActive ? Colors.textOnPrimary : Colors.textMuted
+
+                    Behavior on color { CAnim {} }
                 }
             }
 
@@ -171,7 +184,7 @@ Item {
                 font.bold: slot.isActive
                 color: slot.isActive ? Colors.textOnPrimary : (modelData.occupied ? Colors.text : Colors.textMuted)
 
-                Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                Behavior on color { CAnim {} }
             }
 
             // Click switches

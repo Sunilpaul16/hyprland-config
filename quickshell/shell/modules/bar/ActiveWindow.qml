@@ -34,7 +34,7 @@ Item {
         spacing: Motion.spacing.normal
         opacity: root.isGloballyActive ? 1 : 0.6
 
-        Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+        Behavior on opacity { Anim { type: "effectsFast" } }
 
         IconImage {
             anchors.verticalCenter: parent.verticalCenter
@@ -47,11 +47,11 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             width: Math.min(implicitWidth, root.maxTitleWidth)
             text: root.title
-            color: root.isGloballyActive ? Colors.text : Colors.textMuted
+            color: root.isGloballyActive ? Colors.readable(Colors.primary) : Colors.textMuted
             font.pixelSize: Motion.fontSize.label
             elide: Text.ElideRight
 
-            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+            Behavior on color { CAnim {} }
         }
     }
 }
