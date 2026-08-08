@@ -328,7 +328,7 @@ Item {
 
                 anchors.fill: parent
                 anchors.leftMargin: 44
-                anchors.rightMargin: 18
+                anchors.rightMargin: clearButton.width + Motion.spacing.large * 2
                 verticalAlignment: TextInput.AlignVCenter
                 color: Colors.text
                 font.pixelSize: Motion.fontSize.title
@@ -379,6 +379,30 @@ Item {
                         content.navigateWallpaper(1);
                     else
                         event.accepted = false;
+                }
+            }
+
+            // Clear input
+            IconAction {
+                id: clearButton
+
+                anchors.right: parent.right
+                anchors.rightMargin: Motion.spacing.large
+                anchors.verticalCenter: parent.verticalCenter
+
+                radius: width / 2
+                iconName: "close"
+                iconColor: Colors.textMuted
+                iconSize: Motion.fontSize.large
+
+                enabled: input.text.length > 0
+                opacity: enabled ? 1 : 0
+
+                Behavior on opacity { Anim { type: "effects" } }
+
+                onTriggered: {
+                    input.text = "";
+                    input.forceActiveFocus();
                 }
             }
         }
