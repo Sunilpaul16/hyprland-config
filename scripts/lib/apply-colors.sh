@@ -61,6 +61,42 @@ apply_gsettings() {
     nautilus -q || true
 }
 
+# apply_qt <light|dark>
+apply_qt() {
+    local mode="$1" enabled
+    enabled="$(cfgbool '.theming.qt' 'true')"
+
+    local ct dir conf palette
+    for ct in qt6ct qt5ct; do
+        dir="$HOME/.config/$ct"
+        conf="$dir/$ct.conf"
+        palette="$dir/colors/matugen.conf"
+        [[ -f "$palette" ]] || continue
+        mkdir -p "$dir"
+
+        if [[ ! -f "$conf" ]]; then
+            printf '[Appearance]\n' > "$conf"
+        fi
+        # Section may be absent
+        grep -q '^\[Appearance\]' "$conf" || printf '\n[Appearance]\n' >> "$conf"
+
+        qt_set "$conf" custom_palette "$([[ "$enabled" == true ]] && echo true || echo false)"
+        qt_set "$conf" color_scheme_path "$palette"
+        qt_set "$conf" style Fusion
+        qt_set "$conf" icon_theme "$([[ "$mode" == light ]] && echo Papirus-Light || echo Papirus-Dark)"
+    done
+}
+
+# qt_set <file> <key> <value>
+qt_set() {
+    local file="$1" key="$2" value="$3"
+    if grep -q "^${key}=" "$file"; then
+        sed -i "s|^${key}=.*|${key}=${value}|" "$file"
+    else
+        sed -i "0,/^\[Appearance\]/s||[Appearance]\n${key}=${value}|" "$file"
+    fi
+}
+
 reload_all() {
     hyprctl reload >/dev/null
     pkill -SIGUSR1 -x kitty >/dev/null 2>&1 || true

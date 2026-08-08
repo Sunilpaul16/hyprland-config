@@ -212,6 +212,7 @@ Singleton {
             // Read by switchwall
             property JsonObject theming: JsonObject {
                 property string scheme: "auto"  // "auto" | "scheme-*"
+                property bool qt: true  // theme Qt apps
                 property real terminalHarmony: 0.8
                 property int terminalHarmonizeThreshold: 100
                 property real terminalFgBoost: 0.35

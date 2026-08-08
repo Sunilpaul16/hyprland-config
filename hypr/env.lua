@@ -13,8 +13,8 @@ hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("QT_QPA_PLATFORM", "wayland;xcb")
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 
--- Qt icon theme
-hl.env("QT_QPA_PLATFORMTHEME", "gtk3")
+-- Qt palette from matugen
+hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 
 -- Flatpak app data
 local flatpak_share = v.home .. "/.local/share/flatpak/exports/share"

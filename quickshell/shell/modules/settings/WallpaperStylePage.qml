@@ -208,6 +208,20 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
+            label: "Theme Qt apps"
+            subtext: "Feeds the palette to qt6ct and qt5ct; takes effect on next app launch"
+
+            ToggleSwitch {
+                checked: Config.theming.qt
+                onToggled: v => {
+                    Config.theming.qt = v;
+                    Theme.regenerate();
+                }
+            }
+        }
+
+        SettingRow {
             last: true
             live: true
             label: "Regenerate theme"

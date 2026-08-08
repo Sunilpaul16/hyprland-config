@@ -187,6 +187,7 @@ matugen image "$colorsource" --source-color-index 0 --mode "$MODE" --type "$SCHE
 
 
 apply_gsettings "$MODE"
+apply_qt "$MODE"
 
 # 4. Kitty palette
 TERM_HARMONY="$(cfg '.theming.terminalHarmony' '0.8')"

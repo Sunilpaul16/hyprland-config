@@ -67,6 +67,7 @@ matugen json "$palette"
 
 apply_kitty_from_scss "$scss"
 apply_gsettings "$MODE"
+apply_qt "$MODE"
 
 # Keep auto for dynamic
 [[ "$STORED_MODE" == auto ]] || printf '%s' "$MODE" > "$MODE_FILE"
