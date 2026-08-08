@@ -17,6 +17,10 @@ Item {
             return "wallpaper";
         if (text.startsWith(">clip"))
             return "clip";
+        if (text.startsWith(">scheme"))
+            return "scheme";
+        if (text.startsWith(">variant"))
+            return "variant";
         return "commands";
     }
 
@@ -31,10 +35,49 @@ Item {
         const rest = input.text.slice(">clip".length);
         return rest.startsWith(" ") ? rest.slice(1) : rest;
     }
+    readonly property string schemeQuery: {
+        const rest = input.text.slice(">scheme".length);
+        return rest.startsWith(" ") ? rest.slice(1) : rest;
+    }
+    readonly property string variantQuery: {
+        const rest = input.text.slice(">variant".length);
+        return rest.startsWith(" ") ? rest.slice(1) : rest;
+    }
 
     readonly property var appResults: Apps.query(input.text)
     readonly property var commandResults: Commands.query(commandQuery)
     readonly property var wallpaperResults: Wallpapers.query(wallpaperQuery)
+
+    // Presets, dynamic first
+    readonly property var schemeResults: {
+        const rows = Schemes.query(content.schemeQuery).map(s => ({
+            id: s.id,
+            label: `${s.scheme.charAt(0).toUpperCase()}${s.scheme.slice(1)} ${s.flavour}`,
+            description: s.modes.length > 0 ? s.modes.join(" · ") : s.id,
+            surface: s.surface,
+            primary: s.primary,
+            outline: s.outline
+        }));
+        const query = content.schemeQuery.trim().toLowerCase();
+        if (query && !"dynamic".startsWith(query))
+            return rows;
+        return [
+            {
+                id: "dynamic",
+                label: "Dynamic",
+                description: "Colours generated from the wallpaper",
+                isDynamic: true
+            },
+            ...rows
+        ];
+    }
+
+    readonly property var variantResults: SchemeVariants.query(content.variantQuery).map(v => ({
+        value: v.value,
+        label: v.label,
+        icon: v.icon,
+        description: v.value === Config.theming.scheme ? `${v.description} · in use` : v.description
+    }))
 
     // Clip actions
     readonly property var clipActions: ({
@@ -63,8 +106,49 @@ Item {
     }
 
     readonly property var clipResults: content.clipActionRow ? [content.clipActionRow] : Cliphist.query(clipQuery)
-    readonly property var currentModeResults: mode === "wallpaper" ? wallpaperResults : (mode === "commands" ? commandResults : (mode === "clip" ? clipResults : appResults))
+    readonly property var currentModeResults: {
+        if (content.mode === "wallpaper")
+            return content.wallpaperResults;
+        if (content.mode === "commands")
+            return content.commandResults;
+        if (content.mode === "clip")
+            return content.clipResults;
+        if (content.mode === "scheme")
+            return content.schemeResults;
+        if (content.mode === "variant")
+            return content.variantResults;
+        return content.appResults;
+    }
 
+
+    // Per-mode copy
+    readonly property string placeholderText: {
+        if (content.mode === "wallpaper")
+            return "Search wallpapers…";
+        if (content.mode === "commands")
+            return "Type a command…";
+        if (content.mode === "clip")
+            return "Search clipboard… (Shift+Enter deletes)";
+        if (content.mode === "scheme")
+            return "Search colour palettes…";
+        if (content.mode === "variant")
+            return "Search scheme variants…";
+        return "Search apps…";
+    }
+
+    readonly property string emptyText: {
+        if (content.mode === "wallpaper")
+            return Wallpapers.loading ? "Loading…" : "No wallpapers found";
+        if (content.mode === "commands")
+            return "No commands found";
+        if (content.mode === "clip")
+            return "No clipboard entries found";
+        if (content.mode === "scheme")
+            return Schemes.available ? "No palettes found" : "No palettes available";
+        if (content.mode === "variant")
+            return "No variants found";
+        return "No apps found";
+    }
 
     // Panel sizing constants
     readonly property int panelPad: 20
@@ -107,8 +191,34 @@ Item {
     function selectCommand(cmd): void {
         if (!cmd)
             return;
+        // Some act, some autocomplete
+        if (cmd.execute) {
+            cmd.execute();
+            LauncherState.open = false;
+            return;
+        }
         input.text = `>${cmd.name} `;
         input.cursorPosition = input.text.length;
+    }
+
+    function applyScheme(row): void {
+        if (!row)
+            return;
+        if (row.isDynamic)
+            Theme.setDynamic();
+        else
+            Theme.applyPreset(row.id);
+        LauncherState.open = false;
+    }
+
+    function applyVariant(row): void {
+        if (!row)
+            return;
+        Config.theming.scheme = row.value;
+        // Presets ignore the variant
+        if (!Theme.usingPreset)
+            Theme.regenerate();
+        LauncherState.open = false;
     }
 
     function copyClip(row): void {
@@ -165,6 +275,10 @@ Item {
             content.selectCommand(content.commandResults[verticalList.currentIndex]);
         else if (content.mode === "clip")
             content.copyClip(content.clipResults[verticalList.currentIndex]);
+        else if (content.mode === "scheme")
+            content.applyScheme(content.schemeResults[verticalList.currentIndex]);
+        else if (content.mode === "variant")
+            content.applyVariant(content.variantResults[verticalList.currentIndex]);
         else
             content.confirmSelection(content.wallpaperResults[carousel.currentIndex]);
     }
@@ -246,10 +360,18 @@ Item {
                 preferredHighlightBegin: 0
                 preferredHighlightEnd: height
 
-                model: content.mode === "commands" ? content.commandResults : (content.mode === "clip" ? content.clipResults : content.appResults)
+                model: content.mode === "wallpaper" ? [] : content.currentModeResults
                 onModelChanged: currentIndex = count > 0 ? 0 : -1
 
-                delegate: content.mode === "commands" ? commandItemComponent : (content.mode === "clip" ? clipItemComponent : appItemComponent)
+                delegate: {
+                    if (content.mode === "commands" || content.mode === "variant")
+                        return commandItemComponent;
+                    if (content.mode === "clip")
+                        return clipItemComponent;
+                    if (content.mode === "scheme")
+                        return schemeItemComponent;
+                    return appItemComponent;
+                }
 
                 // Delegate factories
                 Component {
@@ -265,6 +387,14 @@ Item {
                     CommandItem {
                         isCurrent: ListView.isCurrentItem
                         onActivated: content.selectCommand(modelData)
+                    }
+                }
+
+                Component {
+                    id: schemeItemComponent
+                    SchemeItem {
+                        isCurrent: ListView.isCurrentItem
+                        onActivated: content.applyScheme(modelData)
                     }
                 }
 
@@ -285,7 +415,7 @@ Item {
             StyledText {
                 anchors.centerIn: parent
                 visible: content.currentModeResults.length === 0
-                text: content.mode === "wallpaper" ? (Wallpapers.loading ? "Loading…" : "No wallpapers found") : (content.mode === "commands" ? "No commands found" : (content.mode === "clip" ? "No clipboard entries found" : "No apps found"))
+                text: content.emptyText
                 color: Colors.textMuted
                 font.pixelSize: Motion.fontSize.title
             }
@@ -307,7 +437,7 @@ Item {
                 anchors.left: parent.left
                 anchors.leftMargin: 44
                 anchors.verticalCenter: parent.verticalCenter
-                text: content.mode === "wallpaper" ? "Search wallpapers…" : (content.mode === "commands" ? "Type a command…" : (content.mode === "clip" ? "Search clipboard… (Shift+Enter deletes)" : "Search apps…"))
+                text: content.placeholderText
                 color: Colors.textMuted
                 font.pixelSize: Motion.fontSize.title
                 visible: input.text.length === 0

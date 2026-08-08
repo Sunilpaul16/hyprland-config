@@ -26,6 +26,14 @@ Singleton {
         }
     }
 
+    // Fuzzy query
+    function query(search: string): var {
+        const trimmed = search.trim();
+        if (!trimmed)
+            return root.list;
+        return Fuzzy.go(trimmed, root.list, { key: "id", all: true }).map(r => r.obj);
+    }
+
     function loadPreset(id: string, mode: string): void {
         root.pendingId = id;
         readProc.command = [Directories.presetHelper, "matugen", id, mode];

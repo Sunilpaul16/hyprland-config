@@ -186,18 +186,7 @@ ScrollPage {
             subtext: "Automatic picks one to suit the wallpaper"
 
             SelectMenu {
-                options: [
-                    { value: "auto", label: "Automatic" },
-                    { value: "scheme-tonal-spot", label: "Tonal spot" },
-                    { value: "scheme-vibrant", label: "Vibrant" },
-                    { value: "scheme-expressive", label: "Expressive" },
-                    { value: "scheme-content", label: "Content" },
-                    { value: "scheme-fidelity", label: "Fidelity" },
-                    { value: "scheme-fruit-salad", label: "Fruit salad" },
-                    { value: "scheme-monochrome", label: "Monochrome" },
-                    { value: "scheme-neutral", label: "Neutral" },
-                    { value: "scheme-rainbow", label: "Rainbow" }
-                ]
+                options: SchemeVariants.list
                 current: Config.theming.scheme
                 onSelected: v => Config.theming.scheme = v
             }
