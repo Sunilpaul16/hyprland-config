@@ -10,7 +10,13 @@ Item {
     required property bool isCurrent
 
     readonly property bool isDynamic: root.modelData.isDynamic === true
-    readonly property bool active: root.isDynamic ? !Theme.usingPreset : root.modelData.id === Theme.source
+    readonly property bool isRandom: root.modelData.isRandom === true
+    // Random is never the current one
+    readonly property bool active: root.isRandom ? false : (root.isDynamic ? !Theme.usingPreset : root.modelData.id === Theme.source)
+
+    readonly property color swatchBase: root.isRandom ? Colors.secondaryContainer : (root.isDynamic ? Colors.surface : root.modelData.surface)
+    readonly property color swatchAccent: root.isRandom ? Colors.tertiary : (root.isDynamic ? Colors.primary : root.modelData.primary)
+    readonly property color swatchEdge: root.isRandom ? Colors.tertiary : (root.isDynamic ? Colors.outline : root.modelData.outline)
 
     width: ListView.view.width
     height: 56
@@ -38,9 +44,9 @@ Item {
                 width: 32
                 height: 32
                 radius: width / 2
-                color: root.isDynamic ? Colors.surface : root.modelData.surface
+                color: root.swatchBase
                 border.width: 1
-                border.color: root.isDynamic ? Colors.outline : root.modelData.outline
+                border.color: root.swatchEdge
 
                 // Accent half
                 Item {
@@ -55,7 +61,7 @@ Item {
                         height: parent.height
                         x: -parent.width
                         radius: height / 2
-                        color: root.isDynamic ? Colors.primary : root.modelData.primary
+                        color: root.swatchAccent
                     }
                 }
             }

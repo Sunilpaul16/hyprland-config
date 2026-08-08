@@ -59,17 +59,22 @@ Item {
             outline: s.outline
         }));
         const query = content.schemeQuery.trim().toLowerCase();
-        if (query && !"dynamic".startsWith(query))
-            return rows;
-        return [
-            {
+        const pinned = [];
+        if (!query || "dynamic".startsWith(query))
+            pinned.push({
                 id: "dynamic",
                 label: "Dynamic",
                 description: "Colours generated from the wallpaper",
                 isDynamic: true
-            },
-            ...rows
-        ];
+            });
+        if (!query || "random".startsWith(query))
+            pinned.push({
+                id: "random",
+                label: "Random",
+                description: "Any palette, or back to the wallpaper",
+                isRandom: true
+            });
+        return [...pinned, ...rows];
     }
 
     readonly property var variantResults: SchemeVariants.query(content.variantQuery).map(v => ({
@@ -204,7 +209,9 @@ Item {
     function applyScheme(row): void {
         if (!row)
             return;
-        if (row.isDynamic)
+        if (row.isRandom)
+            Theme.applyRandomPreset();
+        else if (row.isDynamic)
             Theme.setDynamic();
         else
             Theme.applyPreset(row.id);

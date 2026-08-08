@@ -69,6 +69,17 @@ Singleton {
         modeProc.running = true;
     }
 
+    // Any preset, or dynamic
+    function applyRandomPreset(): void {
+        if (root.busy)
+            return;
+        root.busy = true;
+        root.lastRunFailed = false;
+        root._exited = false;
+        modeProc.command = [Directories.setschemeScript, "--random"];
+        modeProc.running = true;
+    }
+
     function setDynamic(): void {
         if (root.busy || !root.usingPreset)
             return;

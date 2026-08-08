@@ -44,6 +44,24 @@ ScrollPage {
         text: "Presets"
     }
 
+    SettingRow {
+        last: true
+        live: true
+        label: "Surprise me"
+        subtext: "Any preset, or back to wallpaper colours"
+
+        SelectPill {
+            enabled: !Theme.busy && Schemes.available
+            opacity: enabled ? 1 : 0.5
+            value: Theme.busy ? "Working…" : "Random"
+            icon: "casino"
+            onClicked: {
+                ColorsLoader.clearPreview();
+                Theme.applyRandomPreset();
+            }
+        }
+    }
+
     // Missing corpus
     StyledText {
         visible: !Schemes.available

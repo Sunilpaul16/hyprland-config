@@ -12,6 +12,7 @@ source "$SCRIPT_DIR/lib/apply-colors.sh"
 usage() {
     echo "Usage: $(basename "$0") <scheme>/<flavour>   (e.g. gruvbox/medium)" >&2
     echo "       $(basename "$0") dynamic              (back to wallpaper colours)" >&2
+    echo "       $(basename "$0") --random             (any preset, or dynamic)" >&2
     echo "       $(basename "$0") --list" >&2
     exit 1
 }
@@ -20,10 +21,17 @@ usage() {
 
 case "$1" in
     --list) exec "$HELPER" list ;;
+    --random)
+        mapfile -t CHOICES < <("$HELPER" list | cut -f1)
+        [[ ${#CHOICES[@]} -gt 0 ]] || { echo "setscheme: no presets found" >&2; exit 1; }
+        # Wallpaper colours are in the draw
+        CHOICES+=(dynamic)
+        TARGET="${CHOICES[RANDOM % ${#CHOICES[@]}]}"
+        echo "setscheme: random pick: $TARGET"
+        ;;
     -*)     usage ;;
+    *)      TARGET="$1" ;;
 esac
-
-TARGET="$1"
 
 for bin in matugen jq gsettings hyprctl; do
     command -v "$bin" >/dev/null || { echo "setscheme: missing required binary: $bin" >&2; exit 1; }
