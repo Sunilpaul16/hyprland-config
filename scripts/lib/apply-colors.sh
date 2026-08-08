@@ -72,8 +72,12 @@ apply_gsettings() {
 
 # apply_qt <light|dark>
 apply_qt() {
-    local mode="$1" enabled
+    local mode="$1" enabled icon
     enabled="$(cfgbool '.theming.qt' 'true')"
+
+    # Match whatever GTK already uses
+    icon="$(gsettings get org.gnome.desktop.interface icon-theme 2>/dev/null | tr -d "'\"")"
+    [[ -n "$icon" ]] || icon="$([[ "$mode" == light ]] && echo Papirus-Light || echo Papirus-Dark)"
 
     local ct dir conf palette
     for ct in qt6ct qt5ct; do
@@ -92,7 +96,7 @@ apply_qt() {
         qt_set "$conf" custom_palette "$([[ "$enabled" == true ]] && echo true || echo false)"
         qt_set "$conf" color_scheme_path "$palette"
         qt_set "$conf" style Fusion
-        qt_set "$conf" icon_theme "$([[ "$mode" == light ]] && echo Papirus-Light || echo Papirus-Dark)"
+        qt_set "$conf" icon_theme "$icon"
     done
 }
 
