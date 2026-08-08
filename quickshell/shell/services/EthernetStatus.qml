@@ -11,6 +11,18 @@ Singleton {
     property bool connected: false
     property string interfaceName: ""
 
+    // Refcounted polling
+    property int refCount: 0
+
+    function ref(): void {
+        root.refCount++;
+        root.refresh();
+    }
+
+    function unref(): void {
+        root.refCount = Math.max(0, root.refCount - 1);
+    }
+
     function refresh(): void {
         statusProc.running = true;
     }
@@ -47,7 +59,7 @@ Singleton {
 
     Timer {
         interval: Config.polling.networkStatus
-        running: true
+        running: root.refCount > 0
         repeat: true
         onTriggered: root.refresh()
     }

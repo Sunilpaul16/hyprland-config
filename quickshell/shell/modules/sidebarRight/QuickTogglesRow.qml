@@ -86,6 +86,18 @@ ColumnLayout {
         return root.toggleModels.find(t => t.toggleId === toggleId);
     }
 
+    // Poll while sidebar open
+    Connections {
+        target: SidebarRightState
+
+        function onOpenChanged(): void {
+            if (SidebarRightState.open)
+                EthernetStatus.ref();
+            else
+                EthernetStatus.unref();
+        }
+    }
+
     StyledText {
         text: "Quick Toggles"
         font.pixelSize: Motion.fontSize.title

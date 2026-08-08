@@ -12,11 +12,13 @@ ScrollPage {
     Component.onCompleted: {
         NetworkUsage.ref();
         Vpn.ref();
+        EthernetStatus.ref();
     }
 
     Component.onDestruction: {
         NetworkUsage.unref();
         Vpn.unref();
+        EthernetStatus.unref();
     }
 
     function speedLabel(bytes: real): string {
