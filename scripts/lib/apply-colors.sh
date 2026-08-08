@@ -5,6 +5,7 @@
 # Paths both entrypoints use
 COLORGEN_DIR="$HOME/.config/matugen/colorgen"
 CACHE_DIR="$HOME/.cache/matugen"
+WALLPAPER_CACHE_DIR="$CACHE_DIR/wallpapers"
 KITTY_THEME_OUT="$HOME/.config/kitty/theme.conf"
 CONFIG_FILE="$HOME/.config/quickshell/config.json"
 MODE_FILE="$HOME/.local/state/quickshell/color_mode"
@@ -26,6 +27,13 @@ cfgbool() {
         value="$(jq -r "$1 | if . == null then empty else . end" "$CONFIG_FILE" 2>/dev/null || true)"
     fi
     [[ -n "$value" ]] && printf '%s' "$value" || printf '%s' "$2"
+}
+
+# wall_cache <wallpaper> — per-file dir, keyed by contents
+wall_cache() {
+    local hash
+    hash="$(sha256sum "$1" | cut -d' ' -f1)" || return 1
+    printf '%s/%s' "$WALLPAPER_CACHE_DIR" "$hash"
 }
 
 # apply_kitty_from_scss <scss-path>

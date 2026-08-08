@@ -128,17 +128,20 @@ if ! $COLORS_PREVIEW; then
 fi
 
 # 2. Colour source
+WALL_CACHE="$(wall_cache "$wallpaper")"
+mkdir -p "$WALL_CACHE"
+
 colorsource="$wallpaper"
 lumsource="$wallpaper"
 if is_video "$wallpaper"; then
-    frame="$CACHE_DIR/$(basename "$wallpaper").frame.jpg"
-    ffmpeg -y -i "$wallpaper" -vframes 1 "$frame" >/dev/null 2>&1
+    frame="$WALL_CACHE/frame.jpg"
+    [[ -s "$frame" ]] || ffmpeg -y -i "$wallpaper" -vframes 1 "$frame" >/dev/null 2>&1
     [[ -s "$frame" ]] || { echo "switchwall: ffmpeg failed to extract a frame from $wallpaper" >&2; exit 1; }
     colorsource="$frame"
 
     # Brightness only
-    lumframe="$CACHE_DIR/$(basename "$wallpaper").lum.jpg"
-    ffmpeg -y -ss 00:00:01 -i "$wallpaper" -frames:v 1 "$lumframe" >/dev/null 2>&1 || true
+    lumframe="$WALL_CACHE/lum.jpg"
+    [[ -s "$lumframe" ]] || ffmpeg -y -ss 00:00:01 -i "$wallpaper" -frames:v 1 "$lumframe" >/dev/null 2>&1 || true
     if [[ -s "$lumframe" ]]; then
         lumsource="$lumframe"
     else
@@ -165,13 +168,20 @@ fi
 SCHEME_ARGS=(--scheme scheme-tonal-spot --smart)
 [[ "$SCHEME_PREF" != auto ]] && SCHEME_ARGS=(--scheme "$SCHEME_PREF")
 
-mapfile -t RESOLVED < <("$VENV_PYTHON" "$COLORGEN_DIR/generate_colors_material.py" \
-    --path "$colorsource" \
-    --luminance-path "$lumsource" \
-    "${SCHEME_ARGS[@]}" \
-    --mode "$COLOR_MODE" \
-    --print-scheme \
-    --print-mode)
+# Answer depends on image plus both prefs
+resolved_cache="$WALL_CACHE/resolved-${SCHEME_PREF}-${COLOR_MODE}.txt"
+if [[ -s "$resolved_cache" ]]; then
+    mapfile -t RESOLVED < "$resolved_cache"
+else
+    mapfile -t RESOLVED < <("$VENV_PYTHON" "$COLORGEN_DIR/generate_colors_material.py" \
+        --path "$colorsource" \
+        --luminance-path "$lumsource" \
+        "${SCHEME_ARGS[@]}" \
+        --mode "$COLOR_MODE" \
+        --print-scheme \
+        --print-mode)
+    [[ ${#RESOLVED[@]} -eq 2 ]] && printf '%s\n%s\n' "${RESOLVED[0]}" "${RESOLVED[1]}" > "$resolved_cache"
+fi
 [[ ${#RESOLVED[@]} -eq 2 ]] || { echo "switchwall: failed to resolve scheme/mode" >&2; exit 1; }
 SCHEME="${RESOLVED[0]}"
 MODE="${RESOLVED[1]}"
