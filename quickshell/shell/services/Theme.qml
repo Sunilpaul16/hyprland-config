@@ -48,6 +48,17 @@ Singleton {
         modeProc.running = true;
     }
 
+    // Discard cached frames and analysis
+    function refresh(): void {
+        if (root.busy)
+            return;
+        root.busy = true;
+        root.lastRunFailed = false;
+        root._exited = false;
+        modeProc.command = [Directories.switchwallScript, "--refresh"];
+        modeProc.running = true;
+    }
+
     function applyPreset(id: string): void {
         if (root.busy)
             return;

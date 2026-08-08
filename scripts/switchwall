@@ -24,6 +24,7 @@ usage() {
     echo "       $(basename "$0") --noswitch" >&2
     echo "       $(basename "$0") --colors-preview <path>   (palette only, changes nothing)" >&2
     echo "       $(basename "$0") --mode auto|light|dark   (re-themes the current wallpaper)" >&2
+    echo "       $(basename "$0") --refresh   (discards this wallpaper's cached frames and analysis)" >&2
     exit 1
 }
 
@@ -39,6 +40,7 @@ PREVIEW=false
 COLORS_PREVIEW=false
 NOSWITCH=false
 FORCE_DISPLAY=false
+REFRESH=false
 SET_MODE=""
 SET_SCHEME=""
 while [[ $# -gt 0 ]]; do
@@ -47,6 +49,7 @@ while [[ $# -gt 0 ]]; do
         --colors-preview) COLORS_PREVIEW=true; shift ;;
         --force-display) FORCE_DISPLAY=true; shift ;;
         --noswitch) NOSWITCH=true; shift ;;
+        --refresh)  REFRESH=true; NOSWITCH=true; shift ;;
         --mode)     [[ -n "${2:-}" ]] || usage; SET_MODE="$2"; shift 2 ;;
         --scheme)   [[ -n "${2:-}" ]] || usage; SET_SCHEME="$2"; shift 2 ;;
         --)         shift; break ;;
@@ -129,6 +132,9 @@ fi
 
 # 2. Colour source
 WALL_CACHE="$(wall_cache "$wallpaper")"
+if $REFRESH; then
+    rm -rf "$WALL_CACHE"
+fi
 mkdir -p "$WALL_CACHE"
 
 colorsource="$wallpaper"

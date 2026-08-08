@@ -222,6 +222,20 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
+            label: "Rebuild from wallpaper"
+            subtext: "Discards the cached frames and analysis, then re-reads the wallpaper"
+
+            SelectPill {
+                enabled: !Theme.busy
+                opacity: enabled ? 1 : 0.5
+                value: Theme.busy ? "Working…" : "Rebuild"
+                icon: "cached"
+                onClicked: Theme.refresh()
+            }
+        }
+
+        SettingRow {
             last: true
             live: true
             label: "Regenerate theme"
