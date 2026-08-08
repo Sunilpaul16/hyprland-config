@@ -47,7 +47,10 @@ Singleton {
 
     // Poll + tick
     Timer {
-        interval: 1000
+        // Fast while busy
+        readonly property bool watching: root.active || root.starting
+
+        interval: watching ? 1000 : 5000
         running: true
         repeat: true
         onTriggered: {
