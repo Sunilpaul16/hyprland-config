@@ -10,6 +10,7 @@ KITTY_THEME_OUT="$HOME/.config/kitty/theme.conf"
 CONFIG_FILE="$HOME/.config/quickshell/config.json"
 MODE_FILE="$HOME/.local/state/quickshell/color_mode"
 SOURCE_FILE="$HOME/.local/state/quickshell/color_source"
+LUM_FILE="$HOME/.local/state/quickshell/wallpaper_luminance"
 
 # cfg <jq-path> <default>
 cfg() {

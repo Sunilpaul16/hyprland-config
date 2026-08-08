@@ -176,21 +176,26 @@ SCHEME_ARGS=(--scheme scheme-tonal-spot --smart)
 
 # Answer depends on image plus both prefs
 resolved_cache="$WALL_CACHE/resolved-${SCHEME_PREF}-${COLOR_MODE}.txt"
+RESOLVED=()
 if [[ -s "$resolved_cache" ]]; then
     mapfile -t RESOLVED < "$resolved_cache"
-else
+fi
+# Older caches held two lines
+if [[ ${#RESOLVED[@]} -ne 3 ]]; then
     mapfile -t RESOLVED < <("$VENV_PYTHON" "$COLORGEN_DIR/generate_colors_material.py" \
         --path "$colorsource" \
         --luminance-path "$lumsource" \
         "${SCHEME_ARGS[@]}" \
         --mode "$COLOR_MODE" \
         --print-scheme \
-        --print-mode)
-    [[ ${#RESOLVED[@]} -eq 2 ]] && printf '%s\n%s\n' "${RESOLVED[0]}" "${RESOLVED[1]}" > "$resolved_cache"
+        --print-mode \
+        --print-luminance)
+    [[ ${#RESOLVED[@]} -eq 3 ]] && printf '%s\n%s\n%s\n' "${RESOLVED[0]}" "${RESOLVED[1]}" "${RESOLVED[2]}" > "$resolved_cache"
 fi
-[[ ${#RESOLVED[@]} -eq 2 ]] || { echo "switchwall: failed to resolve scheme/mode" >&2; exit 1; }
+[[ ${#RESOLVED[@]} -eq 3 ]] || { echo "switchwall: failed to resolve scheme/mode" >&2; exit 1; }
 SCHEME="${RESOLVED[0]}"
 MODE="${RESOLVED[1]}"
+LUMINANCE="${RESOLVED[2]}"
 
 if $COLORS_PREVIEW; then
     matugen image "$colorsource" --config "$PREVIEW_CONFIG" \
@@ -201,6 +206,9 @@ fi
 
 matugen image "$colorsource" --source-color-index 0 --mode "$MODE" --type "$SCHEME"
 
+# Read by the shell for panel lift
+mkdir -p "$(dirname "$LUM_FILE")"
+printf '%s' "$LUMINANCE" > "$LUM_FILE"
 
 apply_gsettings "$MODE"
 apply_qt "$MODE"

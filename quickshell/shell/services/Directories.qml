@@ -12,6 +12,7 @@ QtObject {
     readonly property string stateFile: home + "/.local/state/quickshell/state.json"
     readonly property string colorModeFile: home + "/.local/state/quickshell/color_mode"
     readonly property string colorSourceFile: home + "/.local/state/quickshell/color_source"
+    readonly property string wallpaperLuminanceFile: home + "/.local/state/quickshell/wallpaper_luminance"
     readonly property string notificationsFile: home + "/.local/state/quickshell/notifications.json"
     readonly property string appUsageFile: home + "/.local/state/quickshell/app-usage.json"
     readonly property string notesFile: home + "/.local/state/quickshell/notes.txt"

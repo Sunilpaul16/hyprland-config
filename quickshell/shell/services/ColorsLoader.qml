@@ -13,6 +13,18 @@ Singleton {
     // Queued preview path
     property string pendingPath: ""
 
+    // Wallpaper brightness
+    property FileView luminanceFile: FileView {
+        path: Directories.wallpaperLuminanceFile
+        watchChanges: true
+
+        onLoaded: {
+            const value = parseFloat(text().trim());
+            Colors.wallLuminance = isNaN(value) ? 0 : Math.max(0, Math.min(1, value));
+        }
+        onFileChanged: reload()
+    }
+
     // Preview from image
     function preview(path: string): void {
         if (!path || path === root.previewPath)

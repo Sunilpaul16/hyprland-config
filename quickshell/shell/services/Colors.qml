@@ -48,6 +48,13 @@ QtObject {
     // Minimum separation
     readonly property real elevationFloor: 0.04
 
+    // Measured wallpaper brightness
+    property real wallLuminance: 0
+    Behavior on wallLuminance { NumberAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }
+
+    // How hard brightness lifts cards
+    readonly property real luminanceLift: 0.8
+
     // Panel background
     readonly property color panel: Config.appearance.transparency ? Qt.alpha(background, Config.appearance.panelOpacity) : background
 
@@ -55,7 +62,8 @@ QtObject {
     function elevatedAt(alpha: real): color {
         const transparent = Config.appearance.transparency;
         // Must outrun a bright wallpaper
-        const target = root.elevationFloor + (transparent ? 1.2 * (1 - Config.appearance.panelOpacity) : 0);
+        const boost = 1 + root.wallLuminance * root.luminanceLift;
+        const target = root.elevationFloor + (transparent ? 1.2 * (1 - Config.appearance.panelOpacity) * boost : 0);
         return root.elevate(background, surface, target, transparent ? alpha : 1);
     }
 

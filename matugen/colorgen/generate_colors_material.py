@@ -30,6 +30,7 @@ parser.add_argument('--cache', type=str, default=None, help='file path to store 
 parser.add_argument('--debug', action='store_true', default=False, help='debug mode')
 parser.add_argument('--print-scheme', action='store_true', default=False, help='print the resolved scheme name and exit, without generating colors')
 parser.add_argument('--print-mode', action='store_true', default=False, help='print the resolved dark/light mode and exit, without generating colors')
+parser.add_argument('--print-luminance', action='store_true', default=False, help='print the measured wallpaper luminance and exit, without generating colors')
 args = parser.parse_args()
 
 if args.path is None and args.color is None:
@@ -135,11 +136,13 @@ if args.mode == 'auto':
 darkmode = (args.mode == 'dark')
 
 # Resolve once for switchwall
-if args.print_scheme or args.print_mode:
+if args.print_scheme or args.print_mode or args.print_luminance:
     if args.print_scheme:
         print(args.scheme)
     if args.print_mode:
         print(args.mode)
+    if args.print_luminance:
+        print(f'{luminance:.4f}' if luminance is not None else '0')
     raise SystemExit(0)
 
 if args.scheme == 'scheme-fruit-salad':
