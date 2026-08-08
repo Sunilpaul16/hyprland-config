@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell.Widgets
 import "../../services"
 import "../../components"
 
@@ -46,7 +47,7 @@ Item {
     }
 
     // Thumbnail
-    Rectangle {
+    ClippingRectangle {
         id: tile
 
         anchors.horizontalCenter: parent.horizontalCenter
@@ -65,35 +66,6 @@ Item {
             source: "file://" + root.modelData.thumbPath
             sourceSize.width: root.view.tileWidth * 2
             sourceSize.height: root.view.tileHeight * 2
-        }
-
-        // Rounds image corners
-        Corner {
-            anchors { left: parent.left; top: parent.top }
-            size: tile.radius
-            color: Colors.panel
-            corner: "topLeft"
-        }
-
-        Corner {
-            anchors { right: parent.right; top: parent.top }
-            size: tile.radius
-            color: Colors.panel
-            corner: "topRight"
-        }
-
-        Corner {
-            anchors { left: parent.left; bottom: parent.bottom }
-            size: tile.radius
-            color: Colors.panel
-            corner: "bottomLeft"
-        }
-
-        Corner {
-            anchors { right: parent.right; bottom: parent.bottom }
-            size: tile.radius
-            color: Colors.panel
-            corner: "bottomRight"
         }
     }
 
