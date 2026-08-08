@@ -13,13 +13,17 @@ Rectangle {
     property bool warnIfBusy: false
     // Awaiting confirmation
     property bool armed: false
+    // Keyboard in use
+    property bool keyNav: false
+
+    signal navigated(bool byKey)
 
     implicitWidth: 64
     implicitHeight: 64
     radius: width / 2
     // Resting fill
     color: root.armed ? Colors.tint(Colors.layer, Colors.error, 0.4) : (hoverArea.containsMouse ? Colors.tint(Colors.layer, Colors.primary, 0.18) : Colors.layer)
-    border.width: root.activeFocus ? 2 : 0
+    border.width: root.activeFocus && root.keyNav ? 2 : 0
     border.color: Colors.primary
 
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
@@ -47,6 +51,12 @@ Rectangle {
         onTriggered: root.armed = false
     }
 
+    // Reveal focus ring
+    Keys.onPressed: event => {
+        root.navigated(true);
+        event.accepted = false;
+    }
+
     Keys.onReturnPressed: root.activate()
     Keys.onEnterPressed: root.activate()
 
@@ -63,5 +73,12 @@ Rectangle {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: root.activate()
+        // Pointer takes over
+        onContainsMouseChanged: {
+            if (hoverArea.containsMouse) {
+                root.navigated(false);
+                root.forceActiveFocus();
+            }
+        }
     }
 }

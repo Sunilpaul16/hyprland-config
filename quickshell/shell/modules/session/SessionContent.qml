@@ -7,6 +7,9 @@ Column {
 
     spacing: Motion.spacing.xlarge
 
+    // Keyboard in use
+    property bool keyNav: false
+
     // Focus first button
     function focusFirst(): void {
         logoutBtn.forceActiveFocus();
@@ -17,6 +20,8 @@ Column {
         icon: "logout"
         command: Session.logoutCommand
         warnIfBusy: true
+        keyNav: root.keyNav
+        onNavigated: byKey => root.keyNav = byKey
         KeyNavigation.down: poweroffBtn
     }
 
@@ -25,6 +30,8 @@ Column {
         icon: "power_settings_new"
         command: Session.poweroffCommand
         warnIfBusy: true
+        keyNav: root.keyNav
+        onNavigated: byKey => root.keyNav = byKey
         KeyNavigation.up: logoutBtn
         KeyNavigation.down: lockBtn
     }
@@ -49,6 +56,8 @@ Column {
         id: lockBtn
         icon: "lock"
         command: Session.lockCommand
+        keyNav: root.keyNav
+        onNavigated: byKey => root.keyNav = byKey
         KeyNavigation.up: poweroffBtn
         KeyNavigation.down: rebootBtn
     }
@@ -58,6 +67,8 @@ Column {
         icon: "restart_alt"
         command: Session.rebootCommand
         warnIfBusy: true
+        keyNav: root.keyNav
+        onNavigated: byKey => root.keyNav = byKey
         KeyNavigation.up: lockBtn
     }
 }

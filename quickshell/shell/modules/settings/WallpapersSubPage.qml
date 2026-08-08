@@ -38,6 +38,19 @@ ScrollPage {
     readonly property int gridSpacing: 12
     readonly property int tileWidth: Math.floor((root.cappedWidth - root.gridSpacing * (root.columns - 1)) / root.columns)
 
+    // Matching wallpapers
+    readonly property var filtered: Wallpapers.query(searchInput.text)
+
+    // Search visibility
+    property bool searchOpen: false
+
+    onSearchOpenChanged: {
+        if (root.searchOpen)
+            searchInput.forceActiveFocus();
+        else
+            searchInput.text = "";
+    }
+
     // Sub-navigation
     RowLayout {
         Layout.alignment: Qt.AlignHCenter
@@ -47,10 +60,8 @@ ScrollPage {
             live: true
             icon: "search"
             text: "Browse"
-            onClicked: {
-                SettingsState.open = false;
-                LauncherState.openWallpaper();
-            }
+            highlighted: true
+            onClicked: root.searchOpen = !root.searchOpen
         }
 
         PillButton {
@@ -59,6 +70,79 @@ ScrollPage {
             text: "Random"
             highlighted: true
             onClicked: Wallpapers.applyRandom()
+        }
+    }
+
+    // Search field
+    Rectangle {
+        Layout.fillWidth: true
+        visible: root.searchOpen
+        implicitHeight: 44
+        radius: height / 2
+        color: Colors.layer
+        border.width: 1
+        border.color: searchInput.activeFocus ? Colors.primary : Colors.outlineVariant
+
+        Behavior on border.color { CAnim {} }
+
+        MaterialIcon {
+            id: searchIcon
+
+            anchors.left: parent.left
+            anchors.leftMargin: Motion.spacing.xlarge
+            anchors.verticalCenter: parent.verticalCenter
+            text: "search"
+            color: Colors.textMuted
+            font.pixelSize: Motion.fontSize.display
+        }
+
+        StyledText {
+            anchors.left: searchIcon.right
+            anchors.leftMargin: Motion.spacing.large
+            anchors.verticalCenter: parent.verticalCenter
+            visible: searchInput.text.length === 0
+            text: "Search wallpapers"
+            color: Colors.textMuted
+            font.pixelSize: Motion.fontSize.title
+        }
+
+        TextInput {
+            id: searchInput
+
+            anchors.fill: parent
+            anchors.leftMargin: 48
+            anchors.rightMargin: clearAction.width + Motion.spacing.xlarge
+            verticalAlignment: TextInput.AlignVCenter
+            color: Colors.text
+            font.pixelSize: Motion.fontSize.title
+            clip: true
+
+            // Filtering drops hovered tile
+            onTextChanged: root.hoveredPath = ""
+
+            Keys.onEscapePressed: event => {
+                if (searchInput.text.length > 0)
+                    searchInput.text = "";
+                else
+                    root.searchOpen = false;
+                event.accepted = true;
+            }
+        }
+
+        IconAction {
+            id: clearAction
+
+            anchors.right: parent.right
+            anchors.rightMargin: Motion.spacing.large
+            anchors.verticalCenter: parent.verticalCenter
+            iconName: "close"
+            iconColor: Colors.textMuted
+            onTriggered: {
+                if (searchInput.text.length > 0)
+                    searchInput.text = "";
+                else
+                    root.searchOpen = false;
+            }
         }
     }
 
@@ -108,7 +192,7 @@ ScrollPage {
     }
 
     SectionLabel {
-        text: ColorsLoader.previewing ? "Local wallpapers · previewing colours" : `Local wallpapers · ${Wallpapers.list.length}`
+        text: ColorsLoader.previewing ? "Local wallpapers · previewing colours" : `Local wallpapers · ${root.filtered.length}`
     }
 
     // Collection grid
@@ -117,7 +201,7 @@ ScrollPage {
         spacing: root.gridSpacing
 
         Repeater {
-            model: Wallpapers.list
+            model: root.filtered
 
             Item {
                 id: tile
@@ -165,9 +249,11 @@ ScrollPage {
                     }
                 }
 
+                // Selection outline
                 Rectangle {
                     anchors.fill: parent
                     visible: tile.isCurrent || tileHover.containsMouse
+                    radius: Motion.rounding.card
                     color: "transparent"
                     border.width: tile.isCurrent ? 3 : 2
                     border.color: tile.isCurrent ? Colors.primary : Colors.outline
@@ -228,11 +314,11 @@ ScrollPage {
 
     // Empty state
     SettingRow {
-        visible: Wallpapers.list.length === 0
+        visible: root.filtered.length === 0
         first: true
         last: true
         live: true
-        label: "No wallpapers found"
-        subtext: Directories.wallpaperDir
+        label: searchInput.text.length > 0 ? "No wallpapers match" : "No wallpapers found"
+        subtext: searchInput.text.length > 0 ? searchInput.text : Directories.wallpaperDir
     }
 }
