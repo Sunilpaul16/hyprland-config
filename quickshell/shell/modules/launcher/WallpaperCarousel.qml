@@ -7,55 +7,104 @@ Item {
     id: root
 
     required property var results
-    required property int rowHeight
-    required property int panelWidth
-    required property int panelPad
+    required property int availableWidth
 
-    property alias currentIndex: row.currentIndex
-    // Caption height
-    readonly property alias captionHeight: caption.implicitHeight
+    // Tile geometry
+    readonly property int tileWidth: 280
+    readonly property int tileHeight: Math.round(root.tileWidth / 16 * 9)
+    readonly property real restScale: 0.8
+    readonly property int slotWidth: Math.round(root.tileWidth * root.restScale) + Motion.spacing.large * 2
+    readonly property int itemHeight: root.tileHeight + Motion.spacing.tiny + labelMetrics.implicitHeight
+
+    // Odd slot count fits width
+    readonly property int slotCount: {
+        const fits = Math.floor(root.availableWidth / root.slotWidth);
+        const visible = Math.min(fits, root.results.length);
+        if (visible < 1)
+            return 0;
+        if (visible === 2)
+            return 1;
+        return visible % 2 === 0 ? visible - 1 : visible;
+    }
+
+    property alias currentIndex: view.currentIndex
+
+    implicitWidth: root.slotCount * root.slotWidth
+    implicitHeight: root.itemHeight
 
     signal activated(entry: var)
     signal navigate(delta: int)
 
     function increment(): void {
-        row.incrementCurrentIndex();
+        view.incrementCurrentIndex();
     }
 
     function decrement(): void {
-        row.decrementCurrentIndex();
+        view.decrementCurrentIndex();
+    }
+
+    // Label height probe
+    StyledText {
+        id: labelMetrics
+        visible: false
+        text: "Ag"
+        font.pixelSize: Motion.fontSize.body
     }
 
     // Wallpaper carousel
-    ListView {
-        id: row
+    PathView {
+        id: view
 
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: root.rowHeight
+        anchors.fill: parent
 
-        // Slot widths
-        readonly property int itemWidth: 150
-        readonly property int currentItemWidth: 190
-
-        orientation: ListView.Horizontal
-        spacing: Motion.spacing.xlarge
-        // Deliberately unclipped
-        clip: false
-
-        // Pinned centre
-        highlightRangeMode: ListView.StrictlyEnforceRange
-        preferredHighlightBegin: (width - currentItemWidth) / 2
-        preferredHighlightEnd: preferredHighlightBegin
+        // Read by delegates
+        readonly property int tileWidth: root.tileWidth
+        readonly property int tileHeight: root.tileHeight
+        readonly property int slotWidth: root.slotWidth
+        readonly property int itemHeight: root.itemHeight
+        readonly property real restScale: root.restScale
 
         model: root.results
-        onModelChanged: currentIndex = count > 0 ? 0 : -1
+        onModelChanged: if (count > 0) currentIndex = 0
 
-        highlightMoveDuration: Motion.deliberateDuration
+        pathItemCount: Math.max(1, root.slotCount)
+        cacheItemCount: 4
+
+        // Pinned centre
+        snapMode: PathView.SnapToItem
+        highlightRangeMode: PathView.StrictlyEnforceRange
+        preferredHighlightBegin: 0.5
+        preferredHighlightEnd: 0.5
+        highlightMoveDuration: Motion.scaled(Motion.anim.spatial)
 
         delegate: WallpaperItem {
             onActivated: root.activated(modelData)
+        }
+
+        // Straight row, centre on top
+        path: Path {
+            startY: view.height / 2
+
+            PathAttribute {
+                name: "z"
+                value: 0
+            }
+            PathLine {
+                x: view.width / 2
+                relativeY: 0
+            }
+            PathAttribute {
+                name: "z"
+                value: 1
+            }
+            PathLine {
+                x: view.width
+                relativeY: 0
+            }
+            PathAttribute {
+                name: "z"
+                value: 0
+            }
         }
 
         // Wheel cycles selection
@@ -76,26 +125,5 @@ Item {
                 }
             }
         }
-    }
-
-    // Caption tracks thumbnail
-    StyledText {
-        id: caption
-        anchors.top: row.bottom
-        anchors.topMargin: Motion.spacing.tiny
-        text: (row.currentIndex >= 0 && root.results[row.currentIndex]) ? root.results[row.currentIndex].label : ""
-        font.pixelSize: Motion.fontSize.label
-        elide: Text.ElideMiddle
-        // Measured off config
-        width: Math.min(implicitWidth, root.panelWidth - root.panelPad * 2)
-        horizontalAlignment: Text.AlignHCenter
-
-        x: {
-            const item = row.currentItem;
-            const centre = item ? item.x + item.width / 2 - row.contentX : row.width / 2;
-            return Math.max(0, Math.min(row.width - width, centre - width / 2));
-        }
-
-        Behavior on x { Anim {} }
     }
 }

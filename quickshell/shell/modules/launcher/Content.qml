@@ -74,7 +74,6 @@ Item {
 
     // Wallpaper panel width
     readonly property int wallpaperPanelWidth: Config.launcher.wallpaperPanelWidth
-    readonly property int wallpaperRowHeight: 130
     readonly property int appPanelWidth: Config.launcher.panelWidth
     readonly property int listItemHeight: 56
 
@@ -87,7 +86,7 @@ Item {
     implicitWidth: mode === "wallpaper" ? wallpaperPanelWidth : appPanelWidth
     implicitHeight: {
         if (mode === "wallpaper")
-            return chromeHeight + wallpaperRowHeight + 4 + carousel.captionHeight;
+            return chromeHeight + carousel.implicitHeight;
         const cap = mode === "clip" ? maxClipItems : maxListItems;
         const n = Math.max(1, Math.min(cap, currentModeResults.length));
         const itemHeight = mode === "clip" ? clipItemHeight : listItemHeight;
@@ -221,13 +220,14 @@ Item {
             WallpaperCarousel {
                 id: carousel
 
-                anchors.fill: parent
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                width: implicitWidth
+                height: implicitHeight
                 visible: content.mode === "wallpaper"
 
                 results: content.wallpaperResults
-                rowHeight: content.wallpaperRowHeight
-                panelWidth: content.wallpaperPanelWidth
-                panelPad: content.panelPad
+                availableWidth: content.wallpaperPanelWidth - content.panelPad * 2
 
                 onActivated: entry => content.confirmSelection(entry)
                 onNavigate: delta => content.navigateWallpaper(delta)

@@ -8,22 +8,29 @@ Item {
     id: root
 
     required property var modelData
-    required property int index
 
-    readonly property bool isCurrent: ListView.isCurrentItem
-    readonly property var view: ListView.view
+    readonly property var view: PathView.view
+    readonly property bool isCurrent: PathView.isCurrentItem
+    readonly property bool onPath: PathView.onPath
 
-    // Slot grows selected
-    width: root.isCurrent ? root.view.currentItemWidth : root.view.itemWidth
-    height: root.view.height
-    // Selected above neighbours
-    z: root.isCurrent ? 1 : 0
+    // Slot holds shrunken tile
+    implicitWidth: root.view.slotWidth
+    implicitHeight: root.view.itemHeight
 
-    // Edge fade
-    readonly property real overflow: Math.max(root.view.contentX - root.x, (root.x + root.width) - (root.view.contentX + root.view.width))
-    opacity: root.overflow <= 0 ? 1 : Math.max(0, 1 - root.overflow / 12)
+    // Selected draws over neighbours
+    z: PathView.z ?? 0
 
-    Behavior on width { Anim {} }
+    // Scales about its centre
+    scale: 0.5
+    opacity: 0
+
+    Component.onCompleted: {
+        scale = Qt.binding(() => root.isCurrent ? 1 : root.onPath ? root.view.restScale : 0);
+        opacity = Qt.binding(() => root.onPath ? 1 : 0);
+    }
+
+    Behavior on scale { Anim {} }
+    Behavior on opacity { Anim { type: "effects" } }
 
     signal activated
 
@@ -38,72 +45,69 @@ Item {
         }
     }
 
-    // Thumbnail card
+    // Thumbnail
     Rectangle {
-        id: card
+        id: tile
 
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: root.isCurrent ? 16 : 0
+        anchors.top: parent.top
 
-        // Fills slot
-        width: root.width
-        height: root.isCurrent ? 107 : 84
-        radius: Motion.rounding.item
+        width: root.view.tileWidth
+        height: root.view.tileHeight
+        radius: Motion.rounding.nested
         color: Colors.layer
-        border.width: root.isCurrent ? 2 : 0
-        border.color: Colors.primary
 
-        Behavior on height { Anim {} }
-        Behavior on anchors.bottomMargin { Anim {} }
-
-        Rectangle {
-            id: well
-
+        Image {
+            id: thumb
             anchors.fill: parent
-            anchors.margins: root.isCurrent ? 3 : 2
-            radius: Motion.rounding.small
-            color: Colors.panel
-
-            Image {
-                id: thumb
-                anchors.fill: parent
-                fillMode: Image.PreserveAspectCrop
-                asynchronous: true
-                source: "file://" + root.modelData.thumbPath
-                sourceSize.width: 380
-                sourceSize.height: 214
-            }
-
-            // Rounds image corners
-            Corner {
-                anchors { left: parent.left; top: parent.top }
-                size: well.radius
-                color: card.color
-                corner: "topLeft"
-            }
-
-            Corner {
-                anchors { right: parent.right; top: parent.top }
-                size: well.radius
-                color: card.color
-                corner: "topRight"
-            }
-
-            Corner {
-                anchors { left: parent.left; bottom: parent.bottom }
-                size: well.radius
-                color: card.color
-                corner: "bottomLeft"
-            }
-
-            Corner {
-                anchors { right: parent.right; bottom: parent.bottom }
-                size: well.radius
-                color: card.color
-                corner: "bottomRight"
-            }
+            fillMode: Image.PreserveAspectCrop
+            asynchronous: true
+            source: "file://" + root.modelData.thumbPath
+            sourceSize.width: root.view.tileWidth * 2
+            sourceSize.height: root.view.tileHeight * 2
         }
+
+        // Rounds image corners
+        Corner {
+            anchors { left: parent.left; top: parent.top }
+            size: tile.radius
+            color: Colors.panel
+            corner: "topLeft"
+        }
+
+        Corner {
+            anchors { right: parent.right; top: parent.top }
+            size: tile.radius
+            color: Colors.panel
+            corner: "topRight"
+        }
+
+        Corner {
+            anchors { left: parent.left; bottom: parent.bottom }
+            size: tile.radius
+            color: Colors.panel
+            corner: "bottomLeft"
+        }
+
+        Corner {
+            anchors { right: parent.right; bottom: parent.bottom }
+            size: tile.radius
+            color: Colors.panel
+            corner: "bottomRight"
+        }
+    }
+
+    // Name under tile
+    StyledText {
+        anchors.top: tile.bottom
+        anchors.topMargin: Motion.spacing.tiny
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        width: tile.width - Motion.spacing.large * 2
+        horizontalAlignment: Text.AlignHCenter
+        elide: Text.ElideRight
+        text: root.modelData.label
+        font.pixelSize: Motion.fontSize.body
     }
 
     // Activate on tap
