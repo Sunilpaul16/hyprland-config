@@ -55,11 +55,11 @@ Item {
     }
 
     NumberAnimation on phase {
-        running: true
+        running: !Motion.reduced
         paused: !root.animate
         from: 0
         to: 2 * Math.PI
-        duration: root.waveDuration
+        duration: Motion.scaled(root.waveDuration)
         loops: Animation.Infinite
         easing.type: Easing.Linear
     }
