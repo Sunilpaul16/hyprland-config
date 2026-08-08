@@ -238,7 +238,7 @@ Singleton {
                 property bool fuzzy: true  // fuzzy matching
                 property real frequencyWeight: 0.3  // history weight
                 property string searchPrefix: "@"  // field prefix
-                property int panelWidth: 460  // panel width
+                property int panelWidth: 600  // panel width
                 property int wallpaperPanelWidth: 900  // carousel width
             }
 
