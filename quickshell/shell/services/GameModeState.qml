@@ -51,12 +51,19 @@ Singleton {
         const cmds = Object.keys(root.options).map(k => root.luaFor(k, root.options[k]));
         applyProc.command = ["hyprctl", "--batch", cmds.join("; ")];
         applyProc.running = true;
+        root.setWallpaperPaused(true);
     }
 
     // Restore by reload
     function restore(): void {
         applyProc.command = ["hyprctl", "reload"];
         applyProc.running = true;
+        root.setWallpaperPaused(false);
+    }
+
+    // Freeze video wallpaper
+    function setWallpaperPaused(paused: bool): void {
+        WallpaperMpv.command(["set_property", "pause", paused]);
     }
 
     Process {
@@ -76,6 +83,8 @@ Singleton {
                     root.probing = true;
                     root.enabled = (opt.bool === false || opt.int === 0);
                     root.probing = false;
+                    if (root.enabled)
+                        root.setWallpaperPaused(true);
                 } catch (e) {
                     console.error("[GameMode] failed to parse hyprctl getoption:", e);
                 }
@@ -89,6 +98,15 @@ Singleton {
         function onRawEvent(event) {
             if (event.name === "configreloaded" && root.enabled)
                 root.apply();
+        }
+    }
+
+    // Re-assert after mpvpaper restart
+    Connections {
+        target: WallpaperMpv
+        function onSocketConnected(monitor) {
+            if (root.enabled)
+                WallpaperMpv.commandTo(monitor, ["set_property", "pause", true]);
         }
     }
 
