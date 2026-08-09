@@ -301,6 +301,14 @@ Item {
         applyDebounce.restart();
     }
 
+    // Framing nudge
+    function nudgeFraming(delta: int): void {
+        const entry = content.wallpaperResults[carousel.currentIndex];
+        if (!entry)
+            return;
+        WallpaperFraming.setFor(entry.path, WallpaperFraming.offsetFor(entry.path) + delta * 0.02);
+    }
+
     function navigateWallpaper(delta: int): void {
         if (delta > 0)
             carousel.increment();
@@ -506,16 +514,20 @@ Item {
                 Keys.onUpPressed: if (content.mode !== "wallpaper") verticalList.decrementCurrentIndex()
                 Keys.onDownPressed: if (content.mode !== "wallpaper") verticalList.incrementCurrentIndex()
                 Keys.onLeftPressed: event => {
-                    if (content.mode === "wallpaper")
-                        content.navigateWallpaper(-1);
-                    else
+                    if (content.mode !== "wallpaper")
                         event.accepted = false;
+                    else if (event.modifiers & Qt.ShiftModifier)
+                        content.nudgeFraming(-1);
+                    else
+                        content.navigateWallpaper(-1);
                 }
                 Keys.onRightPressed: event => {
-                    if (content.mode === "wallpaper")
-                        content.navigateWallpaper(1);
-                    else
+                    if (content.mode !== "wallpaper")
                         event.accepted = false;
+                    else if (event.modifiers & Qt.ShiftModifier)
+                        content.nudgeFraming(1);
+                    else
+                        content.navigateWallpaper(1);
                 }
             }
 
