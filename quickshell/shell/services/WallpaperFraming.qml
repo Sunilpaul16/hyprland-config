@@ -18,13 +18,13 @@ Singleton {
         if (!path)
             return root.defaultOffset;
         const v = root.offsets[path];
-        return (v === undefined || isNaN(v)) ? root.defaultOffset : v;
+        return (typeof v === "number" && Number.isFinite(v)) ? v : root.defaultOffset;
     }
 
     function setFor(path: string, value: real): void {
         if (!path)
             return;
-        const v = Math.max(0, Math.min(1, value));
+        const v = Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : root.defaultOffset;
         const next = Object.assign({}, root.offsets);
         next[path] = v;
         root.offsets = next;
