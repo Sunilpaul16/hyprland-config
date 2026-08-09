@@ -26,6 +26,7 @@ ShellRoot {
         ColorsLoader.reapplyTheme();
         Updates.backgroundChecking = true;
         NightLightState.scheduling = true;
+        WallpaperFraming.offsetFor(Wallpapers.current);
     }
 
     Bar {}
