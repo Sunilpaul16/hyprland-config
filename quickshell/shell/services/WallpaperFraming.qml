@@ -13,6 +13,7 @@ Singleton {
 
     readonly property real current: root.offsetFor(Wallpapers.current)
     readonly property string runtimeDir: Quickshell.env("XDG_RUNTIME_DIR") || "/tmp"
+    property var sockets: ({})
 
     function offsetFor(path: string): real {
         if (!path)
@@ -37,8 +38,7 @@ Singleton {
         const payload = JSON.stringify({
             command: ["set_property", "video-align-x", value * 2 - 1]
         }) + "\n";
-        for (let i = 0; i < sockets.count; i++) {
-            const s = sockets.objectAt(i);
+        for (const s of Object.values(root.sockets)) {
             if (s && s.connected) {
                 s.write(payload);
                 s.flush();
@@ -72,15 +72,41 @@ Singleton {
         onTriggered: file.setText(JSON.stringify(root.offsets, null, 2))
     }
 
-    // Per-monitor sockets
-    Instantiator {
-        id: sockets
-        model: Quickshell.screens
-        delegate: Socket {
-            required property var modelData
-            path: `${root.runtimeDir}/mpvpaper-${modelData.name}.sock`
+    // Socket factory
+    Component {
+        id: socketComponent
+        Socket {
             connected: true
         }
+    }
+
+    function ensureSockets(): void {
+        const names = Quickshell.screens.map(s => s.name);
+        for (const name of names) {
+            const existing = root.sockets[name];
+            if (existing && existing.connected)
+                continue;
+            if (existing)
+                existing.destroy();
+            root.sockets[name] = socketComponent.createObject(root, {
+                path: `${root.runtimeDir}/mpvpaper-${name}.sock`
+            });
+        }
+        for (const name of Object.keys(root.sockets)) {
+            if (!names.includes(name)) {
+                root.sockets[name].destroy();
+                delete root.sockets[name];
+            }
+        }
+    }
+
+    // Reconnect timer
+    Timer {
+        interval: 1000
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: root.ensureSockets()
     }
 
     IpcHandler {
