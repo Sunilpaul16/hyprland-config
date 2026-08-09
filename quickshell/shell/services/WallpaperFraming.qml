@@ -33,6 +33,12 @@ Singleton {
         root.push(v);
     }
 
+    // Flush pending write
+    function flush(): void {
+        writeDebounce.stop();
+        file.setText(JSON.stringify(root.offsets, null, 2));
+    }
+
     // Live mpv push
     function push(value: real): void {
         const payload = JSON.stringify({
@@ -61,6 +67,7 @@ Singleton {
         path: Directories.wallpaperFramingFile
         watchChanges: true
         printErrors: false
+        blockWrites: true
         onFileChanged: reload()
         onLoaded: root.parse(text())
     }
@@ -72,11 +79,31 @@ Singleton {
         onTriggered: file.setText(JSON.stringify(root.offsets, null, 2))
     }
 
+    // Reconnect backoff
+    readonly property int fastRetries: 5
+    readonly property int maxInterval: 5000
+    property int consecutiveFailures: 0
+
+    function onConnectSuccess(): void {
+        root.consecutiveFailures = 0;
+        reconnectTimer.interval = 1000;
+    }
+
+    function onConnectFailure(): void {
+        root.consecutiveFailures++;
+        if (root.consecutiveFailures > root.fastRetries) {
+            reconnectTimer.interval = Math.min(1000 * Math.pow(2, root.consecutiveFailures - root.fastRetries), root.maxInterval);
+        }
+    }
+
     // Socket factory
     Component {
         id: socketComponent
         Socket {
             connected: true
+            onConnectedChanged: if (connected)
+                root.onConnectSuccess()
+            onError: root.onConnectFailure()
         }
     }
 
@@ -102,6 +129,7 @@ Singleton {
 
     // Reconnect timer
     Timer {
+        id: reconnectTimer
         interval: 1000
         running: true
         repeat: true

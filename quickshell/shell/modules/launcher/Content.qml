@@ -254,14 +254,17 @@ Item {
         if (!entry)
             return;
         content.hasPreviewed = true;
+        WallpaperFraming.flush();
         Quickshell.execDetached([Directories.switchwallScript, "--preview", entry.path]);
     }
 
     function confirmSelection(entry): void {
         applyDebounce.stop();
         content.hasPreviewed = false;
-        if (entry)
+        if (entry) {
+            WallpaperFraming.flush();
             Quickshell.execDetached([Directories.switchwallScript, entry.path]);
+        }
         LauncherState.open = false;
     }
 
@@ -301,7 +304,6 @@ Item {
         applyDebounce.restart();
     }
 
-    // Framing nudge
     function nudgeFraming(delta: int): void {
         const entry = content.wallpaperResults[carousel.currentIndex];
         if (!entry)

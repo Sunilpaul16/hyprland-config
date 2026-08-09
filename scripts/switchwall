@@ -112,7 +112,7 @@ if ! $NOSWITCH && ! $COLORS_PREVIEW && { $FORCE_DISPLAY || [[ "$(cfgbool '.wallp
     # Stored framing
     framing="$(jq -r --arg w "$wallpaper" '.[$w] // 0.5' "$FRAMING_FILE" 2>/dev/null || echo 0.5)"
     [[ "$framing" =~ ^[0-9]+(\.[0-9]+)?$ ]] || framing=0.5
-    alignx="$(awk -v v="$framing" 'BEGIN { printf "%.4f", v * 2 - 1 }')"
+    alignx="$(awk -v v="$framing" 'BEGIN { if (v<0) v=0; if (v>1) v=1; printf "%.4f", v * 2 - 1 }')"
 
     pkill -f -9 mpvpaper >/dev/null 2>&1 || true
     # Own cgroup via uwsm
