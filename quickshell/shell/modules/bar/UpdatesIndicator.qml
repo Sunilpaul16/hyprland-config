@@ -6,7 +6,8 @@ import "../../components"
 Item {
     id: root
 
-    readonly property bool active: Config.updates.showInBar && Updates.total > 0
+    readonly property int barThreshold: 5
+    readonly property bool active: Config.updates.showInBar && Updates.total >= root.barThreshold
 
     // Collapses to zero
     implicitWidth: active ? icon.implicitWidth + count.implicitWidth + 4 : 0
@@ -24,7 +25,7 @@ Item {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
         text: "update"
-        color: hoverArea.containsMouse ? Colors.text : Colors.readable(Colors.tertiary)
+        color: hoverArea.containsMouse ? Colors.text : Colors.readable(Colors.primary)
         font.pixelSize: Motion.fontSize.title
 
         Behavior on color { CAnim {} }
@@ -37,7 +38,7 @@ Item {
         anchors.leftMargin: Motion.spacing.tiny
         anchors.verticalCenter: parent.verticalCenter
         text: Updates.total > 99 ? "99+" : Updates.total
-        color: hoverArea.containsMouse ? Colors.text : Colors.readable(Colors.tertiary)
+        color: hoverArea.containsMouse ? Colors.text : Colors.readable(Colors.primary)
         font.pixelSize: Motion.fontSize.body
 
         Behavior on color { CAnim {} }

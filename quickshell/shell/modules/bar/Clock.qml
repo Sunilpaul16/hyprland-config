@@ -17,7 +17,7 @@ Item {
         StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: Time.timeStr
-            color: Colors.readable(Colors.tertiary)
+            color: Colors.readable(Colors.primary)
             font.pixelSize: Motion.fontSize.large
             font.bold: true
 
@@ -27,7 +27,7 @@ Item {
         StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: "·"
-            color: Colors.readable(Colors.tertiary)
+            color: Colors.readable(Colors.primary)
             font.pixelSize: Motion.fontSize.large
             font.bold: true
 
@@ -37,7 +37,7 @@ Item {
         StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: Time.dateStr
-            color: Colors.readable(Colors.tertiary)
+            color: Colors.readable(Colors.primary)
             font.pixelSize: Motion.fontSize.large
             font.bold: true
 
