@@ -67,6 +67,24 @@ ScrollPage {
 
         SettingRow {
             live: true
+            label: "Framing"
+            subtext: "Which part shows on cropped or rotated screens"
+
+            NumberControl {
+                value: WallpaperFraming.current
+                from: 0
+                to: 1
+                stepSize: 0.01
+                displayScale: 100
+                decimals: 0
+                suffix: "%"
+                labelWidth: 46
+                onMoved: v => WallpaperFraming.setFor(Wallpapers.current, v)
+            }
+        }
+
+        SettingRow {
+            live: true
             label: "Transparency"
             subtext: "Translucent panel backgrounds, blurred by Hyprland"
 
