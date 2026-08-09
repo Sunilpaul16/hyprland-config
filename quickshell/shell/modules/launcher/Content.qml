@@ -274,6 +274,7 @@ Item {
             return;
         content.hasPreviewed = false;
         // Real switch
+        WallpaperFraming.flush();
         Quickshell.execDetached(["bash", "-c", `"${Directories.switchwallScript}" "$(cat "${Directories.currentWallpaperFile}")"`]);
     }
 
