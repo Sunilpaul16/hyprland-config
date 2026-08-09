@@ -11,13 +11,14 @@ VENV_PYTHON="$HOME/.local/state/quickshell/.venv/bin/python3"
 source "$(dirname "$(readlink -f "$0")")/lib/apply-colors.sh"
 
 STATE_FILE="$HOME/.local/state/quickshell/current_wallpaper"
+FRAMING_FILE="$HOME/.local/state/quickshell/wallpaper_framing.json"
 # Palette-only config
 PREVIEW_CONFIG="$HOME/.config/matugen/preview.toml"
 PREVIEW_COLORS="$HOME/.cache/matugen/preview-colors.json"
 
 VALID_SCHEMES="scheme-tonal-spot scheme-vibrant scheme-expressive scheme-content scheme-fidelity scheme-fruit-salad scheme-monochrome scheme-neutral scheme-rainbow"
 
-MPV_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 video-align-x=0.5 video-align-y=0.5 load-scripts=no"
+MPV_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 video-align-y=0 load-scripts=no"
 
 usage() {
     echo "Usage: $(basename "$0") [--preview] [--force-display] [--mode auto|light|dark] [--scheme auto|scheme-*] <path-to-image-or-video>" >&2
@@ -108,13 +109,21 @@ if ! $NOSWITCH && ! $COLORS_PREVIEW && { $FORCE_DISPLAY || [[ "$(cfgbool '.wallp
     mapfile -t MONITORS < <(grep -oP 'hl\.monitor\(\{\s*output\s*=\s*"\K[^"]+' "$HYPR_GENERAL")
     [[ ${#MONITORS[@]} -gt 0 ]] || { echo "switchwall: no monitors found in $HYPR_GENERAL" >&2; exit 1; }
 
+    # Stored framing
+    framing="$(jq -r --arg w "$wallpaper" '.[$w] // 0.5' "$FRAMING_FILE" 2>/dev/null || echo 0.5)"
+    [[ "$framing" =~ ^[0-9]+(\.[0-9]+)?$ ]] || framing=0.5
+    alignx="$(awk -v v="$framing" 'BEGIN { if (v<0) v=0; if (v>1) v=1; printf "%.4f", v * 2 - 1 }')"
+
     pkill -f -9 mpvpaper >/dev/null 2>&1 || true
     # Own cgroup via uwsm
     for mon in "${MONITORS[@]}"; do
+        sock="${XDG_RUNTIME_DIR:-/tmp}/mpvpaper-$mon.sock"
+        rm -f "$sock"
+        opts="$MPV_OPTS video-align-x=$alignx input-ipc-server=$sock"
         if command -v uwsm >/dev/null; then
-            uwsm app -t service -a "mpvpaper-$mon" -- mpvpaper -o "$MPV_OPTS" "$mon" "$wallpaper"
+            uwsm app -t service -a "mpvpaper-$mon" -- mpvpaper -o "$opts" "$mon" "$wallpaper"
         else
-            mpvpaper -o "$MPV_OPTS" "$mon" "$wallpaper" &
+            mpvpaper -o "$opts" "$mon" "$wallpaper" &
         fi
         sleep 0.1
     done

@@ -254,14 +254,17 @@ Item {
         if (!entry)
             return;
         content.hasPreviewed = true;
+        WallpaperFraming.flush();
         Quickshell.execDetached([Directories.switchwallScript, "--preview", entry.path]);
     }
 
     function confirmSelection(entry): void {
         applyDebounce.stop();
         content.hasPreviewed = false;
-        if (entry)
+        if (entry) {
+            WallpaperFraming.flush();
             Quickshell.execDetached([Directories.switchwallScript, entry.path]);
+        }
         LauncherState.open = false;
     }
 
@@ -271,6 +274,7 @@ Item {
             return;
         content.hasPreviewed = false;
         // Real switch
+        WallpaperFraming.flush();
         Quickshell.execDetached(["bash", "-c", `"${Directories.switchwallScript}" "$(cat "${Directories.currentWallpaperFile}")"`]);
     }
 
@@ -299,6 +303,13 @@ Item {
 
     function requestPreview(): void {
         applyDebounce.restart();
+    }
+
+    function nudgeFraming(delta: int): void {
+        const entry = content.wallpaperResults[carousel.currentIndex];
+        if (!entry)
+            return;
+        WallpaperFraming.setFor(entry.path, WallpaperFraming.offsetFor(entry.path) + delta * 0.02);
     }
 
     function navigateWallpaper(delta: int): void {
@@ -506,16 +517,20 @@ Item {
                 Keys.onUpPressed: if (content.mode !== "wallpaper") verticalList.decrementCurrentIndex()
                 Keys.onDownPressed: if (content.mode !== "wallpaper") verticalList.incrementCurrentIndex()
                 Keys.onLeftPressed: event => {
-                    if (content.mode === "wallpaper")
-                        content.navigateWallpaper(-1);
-                    else
+                    if (content.mode !== "wallpaper")
                         event.accepted = false;
+                    else if (event.modifiers & Qt.ShiftModifier)
+                        content.nudgeFraming(-1);
+                    else
+                        content.navigateWallpaper(-1);
                 }
                 Keys.onRightPressed: event => {
-                    if (content.mode === "wallpaper")
-                        content.navigateWallpaper(1);
-                    else
+                    if (content.mode !== "wallpaper")
                         event.accepted = false;
+                    else if (event.modifiers & Qt.ShiftModifier)
+                        content.nudgeFraming(1);
+                    else
+                        content.navigateWallpaper(1);
                 }
             }
 
