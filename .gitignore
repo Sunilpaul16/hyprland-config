@@ -2,7 +2,6 @@
 zsh/.zsh_history
 zsh/.zcompdump*
 zsh/.z
-.claude/settings.json
 # Caches
 __pycache__/
 *.pyc
@@ -15,22 +14,6 @@ __pycache__/
 *.tmp
 *.swp
 *~
-
-# Claude instructions
-CLAUDE.md
-
-# Planning scratch
-INDEX.md
-
-# Investigation log
-offtopicstuff.md
-
-# Plugin scratch
-docs/superpowers/
-.superpowers/
-
-# Reference notes
-references/
 
 # Secrets
 *.env
@@ -57,6 +40,5 @@ kitty/theme.conf
 # Live user config
 quickshell/config.json
 
-review
-temp
+
 gtk-3.0/bookmarks
