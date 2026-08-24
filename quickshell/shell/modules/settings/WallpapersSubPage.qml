@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
+import Quickshell.Widgets
 import "../../services"
 import "../../components"
 
@@ -151,21 +151,13 @@ ScrollPage {
     }
 
     // Large preview
-    Item {
+    ClippingRectangle {
         id: hero
 
         Layout.fillWidth: true
         implicitHeight: Math.round(width * 0.3)
 
-        // OpacityMask rounding
-        layer.enabled: true
-        layer.effect: OpacityMask {
-            maskSource: Rectangle {
-                width: hero.width
-                height: hero.height
-                radius: Motion.rounding.large
-            }
-        }
+        radius: Motion.rounding.large
 
         Rectangle {
             anchors.fill: parent
@@ -203,7 +195,7 @@ ScrollPage {
         Repeater {
             model: root.filtered
 
-            Item {
+            ClippingRectangle {
                 id: tile
 
                 required property var modelData
@@ -212,15 +204,7 @@ ScrollPage {
 
                 width: root.tileWidth
                 height: Math.round(root.tileWidth * 9 / 16)
-
-                layer.enabled: true
-                layer.effect: OpacityMask {
-                    maskSource: Rectangle {
-                        width: tile.width
-                        height: tile.height
-                        radius: Motion.rounding.card
-                    }
-                }
+                radius: Motion.rounding.card
 
                 Rectangle {
                     anchors.fill: parent

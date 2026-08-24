@@ -30,7 +30,8 @@ usage() {
 }
 
 is_video() {
-    case "${1##*.}" in
+    local ext="${1##*.}"
+    case "${ext,,}" in
         mp4|webm|mkv|avi|mov) return 0 ;;
         *) return 1 ;;
     esac
@@ -94,7 +95,7 @@ fi
 
 # Dependency preflight
 if ! $PREVIEW; then
-    for bin in matugen ffmpeg gsettings jq; do
+    for bin in matugen ffmpeg gsettings jq flock; do
         command -v "$bin" >/dev/null || { echo "switchwall: missing required binary: $bin" >&2; exit 1; }
     done
     [[ -x "$VENV_PYTHON" ]] || { echo "switchwall: venv python not found at $VENV_PYTHON" >&2; exit 1; }
@@ -106,7 +107,22 @@ mkdir -p "$CACHE_DIR"
 if ! $NOSWITCH && ! $COLORS_PREVIEW && { $FORCE_DISPLAY || [[ "$(cfgbool '.wallpaper.display' true)" != "false" ]]; }; then
     # Derived here only
     command -v mpvpaper >/dev/null || { echo "switchwall: missing required binary: mpvpaper" >&2; exit 1; }
-    mapfile -t MONITORS < <(grep -oP 'hl\.monitor\(\{\s*output\s*=\s*"\K[^"]+' "$HYPR_GENERAL")
+    command -v flock >/dev/null || { echo "switchwall: missing required binary: flock" >&2; exit 1; }
+    display_token="$$-${RANDOM}-$(date +%s%N)"
+    display_token_file="$CACHE_DIR/wallpaper-display-request"
+    printf '%s' "$display_token" > "$display_token_file.part.$$"
+    mv "$display_token_file.part.$$" "$display_token_file"
+    exec 8>"$CACHE_DIR/wallpaper-display.lock"
+    flock 8
+    if [[ "$(cat "$display_token_file" 2>/dev/null)" != "$display_token" ]]; then
+        echo "switchwall: superseded by a newer wallpaper request"
+        exit 0
+    fi
+
+    mapfile -t MONITORS < <(hyprctl monitors -j 2>/dev/null | jq -r '.[].name')
+    if [[ ${#MONITORS[@]} -eq 0 ]]; then
+        mapfile -t MONITORS < <(grep -oP 'hl\.monitor\(\{\s*output\s*=\s*"\K[^"]+' "$HYPR_GENERAL")
+    fi
     [[ ${#MONITORS[@]} -gt 0 ]] || { echo "switchwall: no monitors found in $HYPR_GENERAL" >&2; exit 1; }
 
     # Stored framing
@@ -210,6 +226,14 @@ if $COLORS_PREVIEW; then
     matugen image "$colorsource" --config "$PREVIEW_CONFIG" \
         --source-color-index 0 --mode "$MODE" --type "$SCHEME" >/dev/null
     echo "switchwall: colours preview written ($wallpaper)"
+    exit 0
+fi
+
+# Matugen, Kitty, GTK, Qt and Hyprland outputs form one generation. Do not let
+# older queued requests overwrite a newer selection. Palette-only hover
+# previews write a separate file and deliberately do not participate.
+if ! begin_latest_theme; then
+    echo "switchwall: theme request superseded"
     exit 0
 fi
 

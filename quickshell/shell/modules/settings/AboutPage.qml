@@ -205,7 +205,7 @@ ScrollPage {
             SelectPill {
                 value: "Restart"
                 icon: "restart_alt"
-                onClicked: Quickshell.execDetached(["bash", "-c", "pkill -x qs; qs -n -c shell"])
+                onClicked: Quickshell.execDetached(["systemctl", "--user", "restart", "quickshell.service"])
             }
         }
     }

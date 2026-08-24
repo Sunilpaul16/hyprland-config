@@ -62,7 +62,7 @@ Rectangle {
                             id: recText
                             anchors.centerIn: parent
                             text: "REC"
-                            color: Colors.background
+                            color: Colors.textOnRecording
                             font.pixelSize: Motion.fontSize.micro
                             font.bold: true
                         }
@@ -94,7 +94,7 @@ Rectangle {
                         id: mainText
                         anchors.centerIn: parent
                         text: Recorder.active ? "Stop" : (Recorder.mode === "full" ? "Full" : "Region")
-                        color: Colors.background
+                        color: Recorder.active ? Colors.textOnRecording : Colors.textOnPrimary
                         font.pixelSize: Motion.fontSize.body
                         font.bold: true
                     }

@@ -33,7 +33,7 @@ case "$1" in
     *)      TARGET="$1" ;;
 esac
 
-for bin in matugen jq gsettings hyprctl; do
+for bin in matugen jq gsettings hyprctl flock; do
     command -v "$bin" >/dev/null || { echo "setscheme: missing required binary: $bin" >&2; exit 1; }
 done
 
@@ -43,6 +43,11 @@ mkdir -p "$CACHE_DIR" "$(dirname "$SOURCE_FILE")"
 if [[ "$TARGET" == dynamic ]]; then
     printf '%s' dynamic > "$SOURCE_FILE"
     exec switchwall --noswitch
+fi
+
+if ! begin_latest_theme; then
+    echo "setscheme: theme request superseded"
+    exit 0
 fi
 
 # Resolve mode
@@ -59,7 +64,7 @@ MODE="$WANT_MODE"
 }
 
 # Role drift guard
-"$HELPER" check || echo "setscheme: colour role lists disagree (see above)" >&2
+"$HELPER" check || { echo "setscheme: refusing to write an inconsistent palette" >&2; exit 1; }
 
 # Validate before writing
 palette="$CACHE_DIR/preset_palette.json"

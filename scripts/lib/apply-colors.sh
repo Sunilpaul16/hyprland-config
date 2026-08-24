@@ -12,6 +12,19 @@ MODE_FILE="$HOME/.local/state/quickshell/color_mode"
 SOURCE_FILE="$HOME/.local/state/quickshell/color_source"
 LUM_FILE="$HOME/.local/state/quickshell/wallpaper_luminance"
 
+# Serialize generated-theme writers. Each caller publishes a token before
+# waiting; once it owns the lock it exits if a newer request superseded it.
+begin_latest_theme() {
+    local token_file="$CACHE_DIR/theme-request"
+    THEME_REQUEST_TOKEN="$$-${RANDOM}-$(date +%s%N)"
+    mkdir -p "$CACHE_DIR"
+    printf '%s' "$THEME_REQUEST_TOKEN" > "$token_file.part.$$"
+    mv "$token_file.part.$$" "$token_file"
+    exec 9>"$CACHE_DIR/theme.lock"
+    flock 9
+    [[ "$(cat "$token_file" 2>/dev/null)" == "$THEME_REQUEST_TOKEN" ]]
+}
+
 # cfg <jq-path> <default>
 cfg() {
     local value=""

@@ -10,9 +10,11 @@ Singleton {
 
     readonly property string wallpaperDir: Directories.wallpaperDir
     readonly property string thumbCacheDir: Directories.wallpaperThumbCache
-    readonly property var videoExtensions: ["mp4", "webm", "mkv"]
+    readonly property var videoExtensions: ["mp4", "webm", "mkv", "avi", "mov"]
 
     property var list: []
+    property var thumbnailQueue: []
+    property bool thumbnailBusy: false
 
     readonly property bool loading: scanProc.running
 
@@ -57,12 +59,6 @@ Singleton {
             Quickshell.execDetached([Directories.switchwallScript, path]);
     }
 
-    // Preview theme only
-    function preview(path: string): void {
-        if (path)
-            Quickshell.execDetached([Directories.switchwallScript, "--preview", path]);
-    }
-
     function applyRandom(): void {
         const entry = root.randomFromCurrentFolder();
         if (entry)
@@ -84,7 +80,8 @@ Singleton {
         command: ["find", root.wallpaperDir, "-maxdepth", "1", "-type", "f", "(",
             "-iname", "*.png", "-o", "-iname", "*.jpg", "-o", "-iname", "*.jpeg",
             "-o", "-iname", "*.webp", "-o", "-iname", "*.mp4", "-o", "-iname", "*.webm",
-            "-o", "-iname", "*.mkv", ")", "-printf", "%f\n"]
+            "-o", "-iname", "*.mkv", "-o", "-iname", "*.avi", "-o", "-iname", "*.mov",
+            ")", "-printf", "%f\n"]
 
         stdout: StdioCollector {
             onStreamFinished: {
@@ -110,7 +107,19 @@ Singleton {
     }
 
     function ensureThumbnail(path: string, thumbPath: string): void {
-        const proc = thumbGenComponent.createObject(root, { path, thumbPath });
+        if (root.thumbnailQueue.some(entry => entry.path === path))
+            return;
+        root.thumbnailQueue = [...root.thumbnailQueue, { path, thumbPath }];
+        root.startNextThumbnail();
+    }
+
+    function startNextThumbnail(): void {
+        if (root.thumbnailBusy || root.thumbnailQueue.length === 0)
+            return;
+        const entry = root.thumbnailQueue[0];
+        root.thumbnailQueue = root.thumbnailQueue.slice(1);
+        root.thumbnailBusy = true;
+        const proc = thumbGenComponent.createObject(root, entry);
         proc.running = true;
     }
 
@@ -128,6 +137,8 @@ Singleton {
             onExited: exitCode => {
                 if (exitCode === 0)
                     root.thumbnailReady(path);
+                root.thumbnailBusy = false;
+                Qt.callLater(root.startNextThumbnail);
                 destroy();
             }
         }

@@ -15,6 +15,7 @@ Singleton {
     readonly property string units: Config.weather.units
     // Unit symbol
     readonly property string unitSymbol: root.units === "fahrenheit" ? "°F" : "°C"
+    readonly property string windUnit: root.units === "fahrenheit" ? "mph" : "km/h"
 
     // Unit is baked into the URL
     onUnitsChanged: root.fetchForecast()
@@ -121,11 +122,24 @@ Singleton {
         });
     }
 
+    function initialiseLocation(): void {
+        const configuredLat = parseFloat(Config.weather.latitude);
+        const configuredLon = parseFloat(Config.weather.longitude);
+        if (!isNaN(configuredLat) && !isNaN(configuredLon)) {
+            root.latitude = configuredLat;
+            root.longitude = configuredLon;
+            root.city = Config.weather.city || "Custom location";
+            root.fetchForecast();
+        } else {
+            root.geolocate();
+        }
+    }
+
     function fetchForecast(): void {
         if (isNaN(root.latitude) || isNaN(root.longitude))
             return;
 
-        const url = "https://api.open-meteo.com/v1/forecast" + "?latitude=" + root.latitude + "&longitude=" + root.longitude + "&current=temperature_2m,weather_code,relative_humidity_2m,apparent_temperature,wind_speed_10m" + "&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset" + "&timezone=auto&forecast_days=7" + (root.units === "fahrenheit" ? "&temperature_unit=fahrenheit" : "");
+        const url = "https://api.open-meteo.com/v1/forecast" + "?latitude=" + root.latitude + "&longitude=" + root.longitude + "&current=temperature_2m,weather_code,relative_humidity_2m,apparent_temperature,wind_speed_10m" + "&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset" + "&timezone=auto&forecast_days=7" + (root.units === "fahrenheit" ? "&temperature_unit=fahrenheit&wind_speed_unit=mph" : "");
 
         Requests.get(url, data => {
             // Independent blocks
@@ -166,7 +180,18 @@ Singleton {
         });
     }
 
-    Component.onCompleted: root.geolocate()
+    Component.onCompleted: {
+        if (Config.ready)
+            root.initialiseLocation();
+    }
+
+    Connections {
+        target: Config
+        function onReadyChanged(): void {
+            if (Config.ready && !root.hasLoadedOnce)
+                root.initialiseLocation();
+        }
+    }
 
     // Hourly refetch
     Timer {

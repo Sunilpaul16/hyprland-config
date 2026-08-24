@@ -47,6 +47,8 @@ Singleton {
     readonly property int fastRetries: 5
     readonly property int maxInterval: 5000
     property int consecutiveFailures: 0
+    readonly property bool allConnected: Quickshell.screens.length > 0
+        && Quickshell.screens.every(s => root.sockets[s.name]?.connected ?? false)
 
     function onConnectSuccess(): void {
         root.consecutiveFailures = 0;
@@ -106,7 +108,7 @@ Singleton {
     // Reconnect timer
     Timer {
         id: reconnectTimer
-        interval: 1000
+        interval: root.allConnected ? 5000 : Math.min(1000 * Math.pow(2, Math.max(0, root.consecutiveFailures - root.fastRetries)), root.maxInterval)
         running: true
         repeat: true
         triggeredOnStart: true

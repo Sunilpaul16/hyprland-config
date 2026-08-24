@@ -124,7 +124,7 @@ Item {
 
                     anchors.centerIn: parent
                     text: "Today"
-                    color: root.onCurrentMonth ? Colors.textMuted : Colors.background
+                    color: root.onCurrentMonth ? Colors.textMuted : Colors.textOnPrimary
                     font.pixelSize: Motion.fontSize.small
                 }
 

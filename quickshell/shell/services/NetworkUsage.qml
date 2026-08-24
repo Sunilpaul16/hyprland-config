@@ -43,6 +43,12 @@ Singleton {
     // Per-interface baseline
     property var _ifaceState: ({})
 
+    function ignoredInterface(name: string): bool {
+        // Tunnel traffic also appears on its physical carrier; counting both
+        // makes VPN traffic look roughly twice as fast.
+        return /^(lo|tun\d*|tap\d*|wg\d*|nordlynx|tailscale\d*|docker\d*|br-|veth|virbr|cni|flannel|zt)/.test(name);
+    }
+
     function formatBytes(bytes: real): var {
         if (!isFinite(bytes) || bytes < 0)
             return { value: 0, unit: "B/s" };
@@ -93,7 +99,7 @@ Singleton {
                 continue;
 
             const iface = parts[0].replace(":", "");
-            if (iface === "lo")
+            if (root.ignoredInterface(iface))
                 continue;
 
             const rx = parseFloat(parts[1]) || 0;

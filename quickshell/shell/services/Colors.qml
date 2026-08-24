@@ -160,4 +160,5 @@ QtObject {
 
     // Recording red
     readonly property color recording: "#e64553"
+    readonly property color textOnRecording: root.contrast(root.text, root.recording) >= root.contrast(root.background, root.recording) ? root.text : root.background
 }

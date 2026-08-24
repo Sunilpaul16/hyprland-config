@@ -31,7 +31,7 @@ Rectangle {
         StyledText {
             anchors.centerIn: parent
             text: sb.glyph.length > 0 ? sb.glyph : sb.label
-            color: sb.toggled ? Colors.background : Colors.text
+            color: sb.toggled ? Colors.textOnPrimary : Colors.text
             font.family: sb.glyph.length > 0 ? Fonts.glyphFamily : Fonts.interfaceFamily
             font.pixelSize: sb.glyph.length > 0 ? Motion.fontSize.subhead : Motion.fontSize.body
         }

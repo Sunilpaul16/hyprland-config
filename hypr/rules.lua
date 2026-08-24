@@ -45,4 +45,7 @@ hl.layer_rule({
 
     blur = true,
     ignore_alpha = 0.2,
+    -- Quickshell owns its panel motion; compositor animation here would move
+    -- and fade the same surface a second time.
+    no_anim = true,
 })

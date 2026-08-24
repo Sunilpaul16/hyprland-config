@@ -36,7 +36,7 @@ Rectangle {
         IconAction {
             iconName: "refresh"
             iconColor: Colors.textMuted
-            onTriggered: Quickshell.execDetached(["bash", "-c", "pkill -x qs; qs -n -c shell"])
+            onTriggered: Quickshell.execDetached(["systemctl", "--user", "restart", "quickshell.service"])
         }
 
         IconAction {

@@ -121,7 +121,7 @@ Item {
             DetailCard {
                 iconName: "air"
                 label: "Wind"
-                value: root.hasCurrent && !isNaN(Weather.windSpeed) ? Math.round(Weather.windSpeed) + " km/h" : "--"
+                value: root.hasCurrent && !isNaN(Weather.windSpeed) ? Math.round(Weather.windSpeed) + " " + Weather.windUnit : "--"
             }
         }
 

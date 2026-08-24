@@ -17,32 +17,14 @@ QtObject {
     // quick — hover/press
     readonly property int quickDuration: root.scaled(110)
     readonly property int quickEasing: Easing.OutCubic
-    readonly property Component quickNumberAnimation: Component {
-        NumberAnimation { duration: root.quickDuration; easing.type: root.quickEasing }
-    }
-    readonly property Component quickColorAnimation: Component {
-        ColorAnimation { duration: root.quickDuration; easing.type: root.quickEasing }
-    }
 
     // smooth — show/hide
     readonly property int smoothDuration: root.scaled(160)
     readonly property int smoothEasing: Easing.OutCubic
-    readonly property Component smoothNumberAnimation: Component {
-        NumberAnimation { duration: root.smoothDuration; easing.type: root.smoothEasing }
-    }
-    readonly property Component smoothColorAnimation: Component {
-        ColorAnimation { duration: root.smoothDuration; easing.type: root.smoothEasing }
-    }
 
     // deliberate — layout/resize
     readonly property int deliberateDuration: root.scaled(200)
     readonly property int deliberateEasing: Easing.OutCubic
-    readonly property Component deliberateNumberAnimation: Component {
-        NumberAnimation { duration: root.deliberateDuration; easing.type: root.deliberateEasing }
-    }
-    readonly property Component deliberateColorAnimation: Component {
-        ColorAnimation { duration: root.deliberateDuration; easing.type: root.deliberateEasing }
-    }
 
     // Shared easing curve
     readonly property list<real> curve: [0.34, 0.80, 0.34, 1.00, 1, 1]

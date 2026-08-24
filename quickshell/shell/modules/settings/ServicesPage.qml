@@ -186,7 +186,7 @@ ScrollPage {
             first: true
             live: true
             label: "Location"
-            subtext: "Geolocated by IP at startup"
+            subtext: Config.weather.latitude && Config.weather.longitude ? "Configured coordinates" : "Geolocated by IP at startup"
 
             ValueLabel {
                 text: Weather.city || "Locating…"

@@ -110,18 +110,6 @@ hl.config({
 })
 
 -- Curves
-hl.curve("expressiveFastSpatial", {
-    type = "bezier",
-    points = {{0.42, 1.67}, {0.21, 0.90}}
-})
-hl.curve("expressiveSlowSpatial", {
-    type = "bezier",
-    points = {{0.39, 1.29}, {0.35, 0.98}}
-})
-hl.curve("expressiveDefaultSpatial", {
-    type = "bezier",
-    points = {{0.38, 1.21}, {0.22, 1.00}}
-})
 hl.curve("emphasizedDecel", {
     type = "bezier",
     points = {{0.05, 0.7}, {0.1, 1}}

@@ -189,6 +189,10 @@ Singleton {
             property JsonObject weather: JsonObject {
                 property string units: "celsius" // "celsius" | "fahrenheit"
                 property int refreshMinutes: 60
+                // Empty coordinates use IP geolocation
+                property string latitude: ""
+                property string longitude: ""
+                property string city: ""
             }
 
             // Appearance

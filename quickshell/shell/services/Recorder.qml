@@ -50,7 +50,7 @@ Singleton {
         // Fast while busy
         readonly property bool watching: root.active || root.starting
 
-        interval: watching ? 1000 : 5000
+        interval: watching ? 1000 : 15000
         running: true
         repeat: true
         onTriggered: {

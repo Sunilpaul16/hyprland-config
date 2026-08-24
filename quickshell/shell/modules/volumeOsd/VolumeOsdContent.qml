@@ -52,6 +52,7 @@ Column {
         property real lastDragValue: value
 
         readonly property int trackWidth: 24
+        readonly property real normalizedValue: Math.max(0, Math.min(1, slider.value / Audio.maxVolume))
 
         signal wheelUp
         signal wheelDown
@@ -103,7 +104,7 @@ Column {
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom
                         radius: parent.radius
-                        height: parent.height * Math.max(0, Math.min(1, slider.value))
+                        height: parent.height * slider.normalizedValue
                         color: slider.muted ? Colors.textMuted : Colors.primary
 
                         Behavior on height { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
@@ -114,7 +115,7 @@ Column {
                 // Handle
                 handle: Rectangle {
                     x: control.leftPadding + control.availableWidth / 2 - width / 2
-                    y: (control.availableHeight - height) * (1 - Math.max(0, Math.min(1, slider.value)))
+                    y: (control.availableHeight - height) * (1 - slider.normalizedValue)
                     width: slider.trackWidth
                     height: slider.trackWidth
                     radius: width / 2

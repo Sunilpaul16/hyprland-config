@@ -7,6 +7,7 @@ Rectangle {
     id: card
 
     required property Notif modelData
+    property bool enterFromRight: true
 
     implicitHeight: content.implicitHeight + 20
     radius: Motion.rounding.card
@@ -21,7 +22,7 @@ Rectangle {
 
     // Slide-in entrance
     property bool entered: false
-    x: card.entered ? 0 : width
+    x: card.entered ? 0 : (card.enterFromRight ? width : -width)
     Component.onCompleted: {
         card.entered = true;
         modelData.lock(card);

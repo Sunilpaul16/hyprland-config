@@ -146,6 +146,7 @@ Scope {
                         id: card
 
                         modelData: wrapper.notif ?? wrapper.modelData
+                        enterFromRight: root.atRight
                         width: stack.width
                         anchors.top: parent.top
                         anchors.topMargin: wrapper.idx === 0 ? 0 : root.cardSpacing
