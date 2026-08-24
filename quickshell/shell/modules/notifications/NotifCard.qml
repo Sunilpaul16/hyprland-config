@@ -133,7 +133,7 @@ Rectangle {
             anchors.top: parent.top
             anchors.leftMargin: Motion.spacing.normal
             visible: card.modelData.appName.length > 0
-            height: visible ? implicitHeight : 0
+            height: visible ? paintedHeight : 0
             text: card.modelData.appName
             color: Colors.textMuted
             font.pixelSize: Motion.fontSize.tiny
