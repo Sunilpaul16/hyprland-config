@@ -8,7 +8,16 @@ fi
 # --------------------------
 # Zsh history settings
 # --------------------------
-HISTFILE="$ZDOTDIR/.zsh_history"
+zsh_state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/zsh"
+zsh_cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+mkdir -p "$zsh_state_dir" "$zsh_cache_dir"
+
+# One-time migration from the old config-local state path.
+if [[ -f "$ZDOTDIR/.zsh_history" && ! -e "$zsh_state_dir/history" ]]; then
+    mv -- "$ZDOTDIR/.zsh_history" "$zsh_state_dir/history"
+fi
+
+HISTFILE="$zsh_state_dir/history"
 HISTSIZE=1000
 SAVEHIST=1000
 
@@ -26,6 +35,7 @@ setopt EXTENDED_HISTORY
 # Oh My Zsh
 # --------------------------
 export ZSH="$HOME/.config/zsh/oh-my-zsh"
+ZSH_COMPDUMP="$zsh_cache_dir/zcompdump-$ZSH_VERSION"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(git)
 source $ZSH/oh-my-zsh.sh

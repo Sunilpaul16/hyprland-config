@@ -142,7 +142,7 @@ Item {
                 target: pageLoader
                 property: "opacity"
                 to: 0
-                duration: Motion.quickDuration
+                duration: Motion.scaled(45)
                 easing.type: Motion.quickEasing
             }
             PropertyAction {
@@ -180,7 +180,7 @@ Item {
                 target: pageLoader
                 property: "opacity"
                 to: 0
-                duration: Motion.quickDuration
+                duration: Motion.scaled(45)
                 easing.type: Motion.quickEasing
             }
             PropertyAction {

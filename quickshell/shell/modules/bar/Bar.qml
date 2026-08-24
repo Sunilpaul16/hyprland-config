@@ -129,7 +129,21 @@ Scope {
                                 implicitWidth: 60
                                 implicitHeight: bar.barContentHeight
 
+                                Rectangle {
+                                    anchors.centerIn: parent
+                                    width: dashboardHandleHover.hovered ? 30 : 22
+                                    height: 4
+                                    radius: height / 2
+                                    color: dashboardHandleHover.hovered ? Colors.primary : Colors.textMuted
+                                    opacity: dashboardHandleHover.hovered ? 0.9 : 0.45
+
+                                    Behavior on width { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                                    Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                                    Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+                                }
+
                                 HoverHandler {
+                                    id: dashboardHandleHover
                                     target: dashboardHoverZone
                                     onHoveredChanged: {
                                         if (hovered) {

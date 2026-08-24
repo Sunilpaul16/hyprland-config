@@ -143,7 +143,7 @@ Item {
             implicitHeight: Math.min(menuColumn.implicitHeight, root.maxVisibleItems * root.itemHeight) + 2 * 2
 
             radius: Motion.rounding.card
-            color: Colors.surface
+            color: Colors.floatingOpaque
             border.width: 1
             border.color: Colors.outlineVariant
 

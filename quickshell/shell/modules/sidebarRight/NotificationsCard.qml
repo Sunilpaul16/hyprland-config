@@ -52,6 +52,8 @@ Rectangle {
 
     radius: Motion.rounding.large
     color: Colors.layer
+    border.width: 1
+    border.color: Colors.outlineVariant
 
     ColumnLayout {
         id: column

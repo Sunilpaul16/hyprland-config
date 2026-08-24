@@ -30,6 +30,7 @@ Scope {
 
                 // Edge stack registration
                 readonly property int cornerSize: Motion.cornerSize
+                readonly property bool portrait: (root.screen?.height ?? 0) > (root.screen?.width ?? 0)
                 readonly property real registeredWidth: backdrop.width
 
                 onActiveChanged: {
@@ -44,7 +45,8 @@ Scope {
                 Rectangle {
                     id: backdrop
                     anchors { top: parent.top; right: parent.right }
-                    width: Math.min(Config.sidebar.width, Math.max(1, parent.width - root.cornerSize))
+                    width: Math.min(root.portrait ? Math.max(Config.sidebar.width, Math.round(parent.width * 0.29)) : Config.sidebar.width,
+                        Math.max(1, parent.width - root.cornerSize))
                     height: parent.height
                     // Square left corners
                     topLeftRadius: 0

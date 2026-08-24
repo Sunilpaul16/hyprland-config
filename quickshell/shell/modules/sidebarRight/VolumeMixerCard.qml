@@ -15,6 +15,8 @@ Rectangle {
 
     radius: Motion.rounding.large
     color: Colors.layer
+    border.width: 1
+    border.color: Colors.outlineVariant
     clip: true
 
     implicitHeight: root.expanded ? Math.min(root.naturalHeight, root.maxHeight) : 0

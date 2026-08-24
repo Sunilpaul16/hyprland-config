@@ -21,6 +21,7 @@ Scope {
 
                 // Visibility state
                 readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
+                property int activeRemovals: 0
 
                 // Layout constants
                 readonly property int cardWidth: 340
@@ -44,7 +45,7 @@ Scope {
                 color: "transparent"
                 exclusiveZone: 0
 
-                visible: true
+                visible: list.count > 0 || root.activeRemovals > 0
 
                 WlrLayershell.layer: WlrLayer.Overlay
                 WlrLayershell.namespace: "quickshell-notifications"
@@ -116,7 +117,10 @@ Scope {
                     implicitWidth: stack.width
                     implicitHeight: card.implicitHeight + (idx === 0 ? 0 : root.cardSpacing)
 
-                    ListView.onRemove: removeAnim.start()
+                    ListView.onRemove: {
+                        root.activeRemovals++;
+                        removeAnim.start();
+                    }
 
                     // Remove animation
                     SequentialAnimation {
@@ -139,6 +143,7 @@ Scope {
                             duration: Motion.deliberateDuration
                             easing.type: Motion.deliberateEasing
                         }
+                        ScriptAction { script: root.activeRemovals = Math.max(0, root.activeRemovals - 1) }
                         PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
                     }
 

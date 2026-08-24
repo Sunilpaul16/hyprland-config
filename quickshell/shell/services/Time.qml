@@ -14,7 +14,6 @@ Singleton {
     readonly property date date: clock.date
     readonly property int hours: clock.hours
     readonly property int minutes: clock.minutes
-    readonly property int seconds: clock.seconds
 
     // Formatted strings
     // "h:mm AP" | "hh:mm"
@@ -34,6 +33,6 @@ Singleton {
     // Underlying system clock
     SystemClock {
         id: clock
-        precision: SystemClock.Seconds
+        precision: SystemClock.Minutes
     }
 }

@@ -15,8 +15,17 @@ ScrollPage {
         id: wallpaperDisplayProc
     }
 
+    Process {
+        id: blurReloadProc
+        command: ["bash", "-lc", "sleep 0.15; hyprctl reload"]
+    }
+
     function applyWallpaperDisplay(on: bool): void {
-        wallpaperDisplayProc.command = on ? ["sh", "-c", "switchwall --preview --force-display \"$(cat \"$HOME/.local/state/quickshell/current_wallpaper\")\""] : ["pkill", "-f", "mpvpaper"];
+        if (!on) {
+            WallpaperMpv.command(["quit"]);
+            return;
+        }
+        wallpaperDisplayProc.command = ["sh", "-c", "switchwall --preview --force-display \"$(cat \"$HOME/.local/state/quickshell/current_wallpaper\")\""];
         wallpaperDisplayProc.running = true;
     }
 
@@ -59,8 +68,8 @@ ScrollPage {
             ToggleSwitch {
                 checked: Config.wallpaper.display
                 onToggled: v => {
-                    Config.wallpaper.display = v;
                     root.applyWallpaperDisplay(v);
+                    Config.wallpaper.display = v;
                 }
             }
         }
@@ -90,7 +99,10 @@ ScrollPage {
 
             ToggleSwitch {
                 checked: Config.appearance.transparency
-                onToggled: v => Config.appearance.transparency = v
+                onToggled: v => {
+                    Config.appearance.transparency = v;
+                    blurReloadProc.running = true;
+                }
             }
         }
 
@@ -328,4 +340,3 @@ ScrollPage {
         }
     }
 }
-

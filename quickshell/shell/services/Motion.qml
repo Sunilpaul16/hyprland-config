@@ -26,7 +26,7 @@ QtObject {
     readonly property int deliberateDuration: root.scaled(200)
     readonly property int deliberateEasing: Easing.OutCubic
 
-    // Shared easing curve
+    // Qt's BezierSpline format is x1,y1,x2,y2 followed by the 1,1 endpoint.
     readonly property list<real> curve: [0.34, 0.80, 0.34, 1.00, 1, 1]
 
     // Motion durations

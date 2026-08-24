@@ -32,7 +32,7 @@ Loader {
         Rectangle {
             anchors.fill: parent
             radius: Motion.rounding.small
-            color: Colors.surface
+            color: Colors.floatingOpaque
             border.width: 1
             border.color: Colors.outline
 

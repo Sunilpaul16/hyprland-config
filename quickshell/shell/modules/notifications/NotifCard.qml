@@ -132,7 +132,7 @@ Rectangle {
             anchors.rightMargin: content.actionsReserve
             anchors.top: parent.top
             anchors.leftMargin: Motion.spacing.normal
-            visible: card.modelData.expanded && card.modelData.appName.length > 0
+            visible: card.modelData.appName.length > 0
             height: visible ? implicitHeight : 0
             text: card.modelData.appName
             color: Colors.textMuted

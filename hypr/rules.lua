@@ -2,6 +2,16 @@
 ---- WINDOWS AND WORKSPACES ----
 --------------------------------
 
+local function shell_transparency_enabled()
+    local home = os.getenv("HOME")
+    if not home then return false end
+    local file = io.open(home .. "/.config/quickshell/config.json", "r")
+    if not file then return false end
+    local contents = file:read("*a")
+    file:close()
+    return contents:match('"transparency"%s*:%s*true') ~= nil
+end
+
 hl.window_rule({
     name  = "suppress-maximize-events",
     match = { class = ".*" },
@@ -43,7 +53,8 @@ hl.layer_rule({
     name  = "blur-quickshell",
     match = { namespace = "^quickshell-.*$" },
 
-    blur = true,
+    -- Avoid compositor blur work when every shell surface is opaque.
+    blur = shell_transparency_enabled(),
     ignore_alpha = 0.2,
     -- Quickshell owns its panel motion; compositor animation here would move
     -- and fade the same surface a second time.

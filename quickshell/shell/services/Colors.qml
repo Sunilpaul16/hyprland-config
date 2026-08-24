@@ -109,6 +109,7 @@ QtObject {
 
     // Card fill for free-floating popups
     readonly property color layerOpaque: root.elevate(background, surface, root.elevationFloor, 1)
+    readonly property color floatingOpaque: root.layerOpaque
 
     property color background: "#0f1417"
     Behavior on background { ColorAnimation { duration: Motion.deliberateDuration; easing.type: Motion.deliberateEasing } }

@@ -12,7 +12,7 @@ Rectangle {
     implicitHeight: content.implicitHeight + 20
     radius: Motion.rounding.card
     // Floats over arbitrary windows
-    color: Colors.layerOpaque
+    color: Colors.floatingOpaque
     border.width: modelData.critical ? 1 : 0
     border.color: Colors.error
 
@@ -95,6 +95,15 @@ Rectangle {
             anchors.leftMargin: Motion.spacing.normal
             spacing: Motion.spacing.micro
 
+            StyledText {
+                width: parent.width
+                visible: card.modelData.appName.length > 0
+                text: card.modelData.appName
+                color: Colors.textMuted
+                font.pixelSize: Motion.fontSize.tiny
+                elide: Text.ElideRight
+            }
+
             Row {
                 width: parent.width
                 spacing: Motion.spacing.small
@@ -106,13 +115,20 @@ Rectangle {
                     font.pixelSize: Motion.fontSize.label
                     font.bold: true
                     elide: Text.ElideRight
-                    width: parent.width - appNameText.implicitWidth - parent.spacing
+                    width: parent.width - sepText.implicitWidth - timeText.implicitWidth - parent.spacing * 2
                 }
 
                 StyledText {
-                    id: appNameText
-                    visible: card.modelData.appName.length > 0
-                    text: card.modelData.appName
+                    id: sepText
+                    visible: card.modelData.summary.length > 0
+                    text: "·"
+                    color: Colors.textMuted
+                    font.pixelSize: Motion.fontSize.body
+                }
+
+                StyledText {
+                    id: timeText
+                    text: card.modelData.timeStr
                     color: Colors.textMuted
                     font.pixelSize: Motion.fontSize.small
                 }

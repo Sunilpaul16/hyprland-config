@@ -9,7 +9,19 @@ Singleton {
     id: root
 
     readonly property string runtimeDir: Quickshell.env("XDG_RUNTIME_DIR") || "/tmp"
+    readonly property bool enabled: Config.wallpaper.display
     property var sockets: ({})
+
+    onEnabledChanged: {
+        if (root.enabled)
+            root.ensureSockets();
+        else {
+            for (const socket of Object.values(root.sockets))
+                socket.destroy();
+            root.sockets = ({});
+            root.retryStates = ({});
+        }
+    }
 
     signal socketConnected(string monitor)
 
@@ -88,6 +100,8 @@ Singleton {
     }
 
     function ensureSockets(): void {
+        if (!root.enabled)
+            return;
         const names = Quickshell.screens.map(s => s.name);
         const created = [];
         for (const name of names) {
@@ -122,7 +136,7 @@ Singleton {
     Timer {
         id: reconnectTimer
         interval: root.allConnected ? 5000 : 1000
-        running: true
+        running: root.enabled
         repeat: true
         triggeredOnStart: true
         onTriggered: root.ensureSockets()

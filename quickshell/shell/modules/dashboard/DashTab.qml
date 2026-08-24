@@ -10,6 +10,8 @@ import "../../services"
 Item {
     id: root
 
+    property bool portrait: false
+
     implicitWidth: grid.implicitWidth
     implicitHeight: grid.implicitHeight
 
@@ -17,7 +19,7 @@ Item {
         id: grid
 
         anchors.fill: parent
-        columns: 6
+        columns: root.portrait ? 4 : 6
         rowSpacing: Motion.spacing.large
         columnSpacing: Motion.spacing.large
 
@@ -32,15 +34,15 @@ Item {
 
         // Content-sized
         DateTimeCard {
-            Layout.row: 1
+            Layout.row: root.portrait ? 2 : 1
             Layout.column: 0
             Layout.fillHeight: true
         }
 
         // User span
         UserCard {
-            Layout.row: 0
-            Layout.column: 2
+            Layout.row: root.portrait ? 1 : 0
+            Layout.column: root.portrait ? 0 : 2
             Layout.columnSpan: 3
             Layout.preferredWidth: Config.dashboard.user.width
             Layout.fillHeight: true
@@ -48,7 +50,7 @@ Item {
 
         // Calendar span
         CalendarCard {
-            Layout.row: 1
+            Layout.row: root.portrait ? 2 : 1
             Layout.column: 1
             Layout.columnSpan: 3
             Layout.fillWidth: true
@@ -58,7 +60,7 @@ Item {
 
         ResourcesCard {
             Layout.row: 1
-            Layout.column: 4
+            Layout.column: root.portrait ? 3 : 4
             Layout.preferredWidth: implicitWidth
             Layout.fillHeight: true
         }
@@ -66,8 +68,9 @@ Item {
         // Media spans rows
         MediaCard {
             Layout.row: 0
-            Layout.column: 5
-            Layout.rowSpan: 2
+            Layout.column: root.portrait ? 2 : 5
+            Layout.columnSpan: root.portrait ? 2 : 1
+            Layout.rowSpan: root.portrait ? 1 : 2
             Layout.preferredWidth: Config.dashboard.media.cardWidth
             Layout.fillHeight: true
         }

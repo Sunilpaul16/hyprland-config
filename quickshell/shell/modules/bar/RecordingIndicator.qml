@@ -30,8 +30,8 @@ Item {
                 running: Recorder.active && !Motion.reduced
                 loops: Animation.Infinite
                 onRunningChanged: if (!running) dot.opacity = 1
-                NumberAnimation { from: 1; to: 0.3; duration: Motion.scaled(700); easing.type: Easing.InOutQuad }
-                NumberAnimation { from: 0.3; to: 1; duration: Motion.scaled(700); easing.type: Easing.InOutQuad }
+                NumberAnimation { from: 1; to: 0.25; duration: Motion.scaled(600); easing.type: Easing.InQuad }
+                NumberAnimation { from: 0.25; to: 1; duration: Motion.scaled(1000); easing.type: Easing.OutQuad }
             }
         }
 
