@@ -14,8 +14,8 @@ Singleton {
         scanProc.running = true;
     }
 
-    function deleteEntry(path: string): void {
-        const proc = deleteComponent.createObject(root, { path });
+    function trashEntry(path: string): void {
+        const proc = trashComponent.createObject(root, { path });
         proc.running = true;
     }
 
@@ -46,15 +46,17 @@ Singleton {
         }
     }
 
-    // Delete-recording process factory
+    // Move recordings to the desktop trash so an accidental deletion is recoverable.
     Component {
-        id: deleteComponent
+        id: trashComponent
 
         Process {
             property string path
-            command: ["rm", "-f", path]
-            onExited: {
+            command: ["gio", "trash", path]
+            onExited: exitCode => {
                 root.refresh();
+                if (exitCode !== 0)
+                    Quickshell.execDetached(["notify-send", "Recording was not removed", "Could not move the recording to Trash"]);
                 destroy();
             }
         }

@@ -44,7 +44,7 @@ Scope {
                 Rectangle {
                     id: backdrop
                     anchors { top: parent.top; right: parent.right }
-                    width: Config.sidebar.width
+                    width: Math.min(Config.sidebar.width, Math.max(1, parent.width - root.cornerSize))
                     height: parent.height
                     // Square left corners
                     topLeftRadius: 0

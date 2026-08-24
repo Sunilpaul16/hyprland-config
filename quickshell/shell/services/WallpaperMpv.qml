@@ -46,20 +46,28 @@ Singleton {
     // Reconnect backoff
     readonly property int fastRetries: 5
     readonly property int maxInterval: 5000
-    property int consecutiveFailures: 0
+    property var retryStates: ({})
     readonly property bool allConnected: Quickshell.screens.length > 0
         && Quickshell.screens.every(s => root.sockets[s.name]?.connected ?? false)
 
-    function onConnectSuccess(): void {
-        root.consecutiveFailures = 0;
-        reconnectTimer.interval = 1000;
+    function retryState(monitor: string): var {
+        return root.retryStates[monitor] ?? { failures: 0, nextAttempt: 0 };
     }
 
-    function onConnectFailure(): void {
-        root.consecutiveFailures++;
-        if (root.consecutiveFailures > root.fastRetries) {
-            reconnectTimer.interval = Math.min(1000 * Math.pow(2, root.consecutiveFailures - root.fastRetries), root.maxInterval);
-        }
+    function setRetryState(monitor: string, failures: int): void {
+        const delay = failures <= root.fastRetries ? 1000
+            : Math.min(1000 * Math.pow(2, failures - root.fastRetries), root.maxInterval);
+        const next = Object.assign({}, root.retryStates);
+        next[monitor] = { failures, nextAttempt: Date.now() + delay };
+        root.retryStates = next;
+    }
+
+    function onConnectSuccess(monitor: string): void {
+        root.setRetryState(monitor, 0);
+    }
+
+    function onConnectFailure(monitor: string): void {
+        root.setRetryState(monitor, root.retryState(monitor).failures + 1);
     }
 
     // Socket factory
@@ -71,11 +79,11 @@ Singleton {
             connected: true
             onConnectedChanged: {
                 if (connected) {
-                    root.onConnectSuccess();
+                    root.onConnectSuccess(monitor);
                     root.announce(this);
                 }
             }
-            onError: root.onConnectFailure()
+            onError: root.onConnectFailure(monitor)
         }
     }
 
@@ -85,6 +93,8 @@ Singleton {
         for (const name of names) {
             const existing = root.sockets[name];
             if (existing && existing.connected)
+                continue;
+            if (Date.now() < root.retryState(name).nextAttempt)
                 continue;
             if (existing)
                 existing.destroy();
@@ -98,6 +108,9 @@ Singleton {
             if (!names.includes(name)) {
                 root.sockets[name].destroy();
                 delete root.sockets[name];
+                const next = Object.assign({}, root.retryStates);
+                delete next[name];
+                root.retryStates = next;
             }
         }
         // Catch synchronous connects
@@ -108,7 +121,7 @@ Singleton {
     // Reconnect timer
     Timer {
         id: reconnectTimer
-        interval: root.allConnected ? 5000 : Math.min(1000 * Math.pow(2, Math.max(0, root.consecutiveFailures - root.fastRetries)), root.maxInterval)
+        interval: root.allConnected ? 5000 : 1000
         running: true
         repeat: true
         triggeredOnStart: true

@@ -255,7 +255,8 @@ Item {
             return;
         content.hasPreviewed = true;
         WallpaperFraming.flush();
-        Quickshell.execDetached([Directories.switchwallScript, "--preview", entry.path]);
+        WallpaperMpv.command(["loadfile", entry.path, "replace"]);
+        WallpaperMpv.command(["set_property", "video-align-x", WallpaperFraming.offsetFor(entry.path) * 2 - 1]);
     }
 
     function confirmSelection(entry): void {
@@ -273,9 +274,11 @@ Item {
         if (!content.hasPreviewed)
             return;
         content.hasPreviewed = false;
-        // Real switch
         WallpaperFraming.flush();
-        Quickshell.execDetached(["bash", "-c", `"${Directories.switchwallScript}" "$(cat "${Directories.currentWallpaperFile}")"`]);
+        if (Wallpapers.current) {
+            WallpaperMpv.command(["loadfile", Wallpapers.current, "replace"]);
+            WallpaperMpv.command(["set_property", "video-align-x", WallpaperFraming.current * 2 - 1]);
+        }
     }
 
     // Activate selection
@@ -589,4 +592,3 @@ Item {
         corner: "bottomLeft"
     }
 }
-

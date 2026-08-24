@@ -16,10 +16,12 @@ Singleton {
     // Unit symbol
     readonly property string unitSymbol: root.units === "fahrenheit" ? "°F" : "°C"
     readonly property string windUnit: root.units === "fahrenheit" ? "mph" : "km/h"
+    readonly property bool enabled: Config.dashboard.tabs.showDashboard || Config.dashboard.tabs.showWeather
 
     // Unit is baked into the URL
-    onUnitsChanged: root.fetchForecast()
-    property bool loading: true
+    onUnitsChanged: if (root.enabled) root.fetchForecast()
+    onEnabledChanged: if (root.enabled && !root.hasLoadedOnce) root.initialiseLocation()
+    property bool loading: false
     property bool hasError: false
     // First load flag
     property bool hasLoadedOnce: false
@@ -102,6 +104,8 @@ Singleton {
     }
 
     function geolocate(): void {
+        if (!root.enabled)
+            return;
         root.loading = true;
         Requests.get("https://ipinfo.io/json", data => {
             const loc = data.loc; // "lat,lon"
@@ -123,6 +127,8 @@ Singleton {
     }
 
     function initialiseLocation(): void {
+        if (!root.enabled)
+            return;
         const configuredLat = parseFloat(Config.weather.latitude);
         const configuredLon = parseFloat(Config.weather.longitude);
         if (!isNaN(configuredLat) && !isNaN(configuredLon)) {
@@ -136,7 +142,7 @@ Singleton {
     }
 
     function fetchForecast(): void {
-        if (isNaN(root.latitude) || isNaN(root.longitude))
+        if (!root.enabled || isNaN(root.latitude) || isNaN(root.longitude))
             return;
 
         const url = "https://api.open-meteo.com/v1/forecast" + "?latitude=" + root.latitude + "&longitude=" + root.longitude + "&current=temperature_2m,weather_code,relative_humidity_2m,apparent_temperature,wind_speed_10m" + "&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset" + "&timezone=auto&forecast_days=7" + (root.units === "fahrenheit" ? "&temperature_unit=fahrenheit&wind_speed_unit=mph" : "");
@@ -181,14 +187,14 @@ Singleton {
     }
 
     Component.onCompleted: {
-        if (Config.ready)
+        if (Config.ready && root.enabled)
             root.initialiseLocation();
     }
 
     Connections {
         target: Config
         function onReadyChanged(): void {
-            if (Config.ready && !root.hasLoadedOnce)
+            if (Config.ready && root.enabled && !root.hasLoadedOnce)
                 root.initialiseLocation();
         }
     }
@@ -196,7 +202,7 @@ Singleton {
     // Hourly refetch
     Timer {
         interval: Math.max(5, Config.weather.refreshMinutes) * 60000
-        running: true
+        running: root.enabled
         repeat: true
         onTriggered: {
             if (isNaN(root.latitude) || isNaN(root.longitude))

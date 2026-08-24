@@ -7,8 +7,10 @@ PageBase {
     id: root
 
     default property alias stack: column.data
+    readonly property alias viewport: flickable
 
     content: Flickable {
+        id: flickable
         anchors.fill: parent
         contentWidth: width
         contentHeight: column.implicitHeight + 24

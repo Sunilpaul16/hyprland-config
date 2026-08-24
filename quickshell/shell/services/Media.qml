@@ -97,6 +97,7 @@ Singleton {
     readonly property string artCacheDir: Directories.mediaArtCache
     readonly property string artCacheFile: artCacheDir + "/" + Qt.md5(artUrl) + ".jpg"
     property bool artDownloaded: false
+    property int artRequestGeneration: 0
 
     readonly property string artSource: {
         if (artUrl.length === 0)
@@ -105,23 +106,34 @@ Singleton {
     }
 
     onArtUrlChanged: {
+        root.artRequestGeneration++;
         root.artDownloaded = false;
         if (!root.artIsRemote || root.artUrl.length === 0)
             return;
-        artDownloader.pendingUrl = root.artUrl;
-        artDownloader.pendingDest = root.artCacheFile;
-        artDownloader.running = true;
+        const proc = artDownloaderComponent.createObject(root, {
+            requestedUrl: root.artUrl,
+            requestedDest: root.artCacheFile,
+            generation: root.artRequestGeneration
+        });
+        proc.running = true;
     }
 
-    // Download remote art
-    Process {
-        id: artDownloader
-        property string pendingUrl: ""
-        property string pendingDest: ""
-        // Pinned escaped command
-        command: ["bash", "-c", `mkdir -p "$(dirname '${StringUtils.shellSingleQuoteEscape(pendingDest)}')" && { [ -f '${StringUtils.shellSingleQuoteEscape(pendingDest)}' ] || curl -4 -sSL '${StringUtils.shellSingleQuoteEscape(pendingUrl)}' -o '${StringUtils.shellSingleQuoteEscape(pendingDest)}'; }`]
-        onExited: exitCode => {
-            root.artDownloaded = (exitCode === 0);
+    Component {
+        id: artDownloaderComponent
+
+        Process {
+            required property string requestedUrl
+            required property string requestedDest
+            required property int generation
+
+            // Each request owns its immutable URL and destination. Older
+            // downloads may fill their cache, but cannot update current art.
+            command: ["bash", "-c", `mkdir -p "$(dirname '${StringUtils.shellSingleQuoteEscape(requestedDest)}')" && { [ -f '${StringUtils.shellSingleQuoteEscape(requestedDest)}' ] || curl -4 -fsSL '${StringUtils.shellSingleQuoteEscape(requestedUrl)}' -o '${StringUtils.shellSingleQuoteEscape(requestedDest)}.part.${generation}'; } && { [ -f '${StringUtils.shellSingleQuoteEscape(requestedDest)}' ] || mv '${StringUtils.shellSingleQuoteEscape(requestedDest)}.part.${generation}' '${StringUtils.shellSingleQuoteEscape(requestedDest)}'; }; status=$?; if [ "$status" -ne 0 ]; then rm -f '${StringUtils.shellSingleQuoteEscape(requestedDest)}.part.${generation}'; fi; exit "$status"`]
+            onExited: exitCode => {
+                if (generation === root.artRequestGeneration && requestedUrl === root.artUrl)
+                    root.artDownloaded = exitCode === 0;
+                destroy();
+            }
         }
     }
 

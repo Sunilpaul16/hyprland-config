@@ -38,8 +38,8 @@ Scope {
 
                 // Shared fit scale
                 readonly property real fitScale: Math.min(1, (screenW * 0.9) / targetWidth, (screenH * 0.9) / targetHeight)
-                readonly property real panelWidth: Math.max(700, Math.round(targetWidth * fitScale))
-                readonly property real panelHeight: Math.max(460, Math.round(targetHeight * fitScale))
+                readonly property real panelWidth: Math.max(1, Math.round(Math.min(targetWidth * fitScale, screenW * 0.9)))
+                readonly property real panelHeight: Math.max(1, Math.round(Math.min(targetHeight * fitScale, screenH * 0.9)))
 
                 // Panel
                 Rectangle {

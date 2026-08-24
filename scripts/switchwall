@@ -37,6 +37,33 @@ is_video() {
     esac
 }
 
+stop_owned_mpvpaper() {
+    local runtime_prefix="${XDG_RUNTIME_DIR:-/tmp}/mpvpaper-"
+    local pid cmdline
+    local -a owned=()
+
+    while read -r pid; do
+        [[ -r "/proc/$pid/cmdline" ]] || continue
+        cmdline="$(tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null || true)"
+        [[ "$cmdline" == *"input-ipc-server=$runtime_prefix"* ]] || continue
+        owned+=("$pid")
+    done < <(pgrep -x mpvpaper 2>/dev/null || true)
+
+    [[ ${#owned[@]} -gt 0 ]] || return 0
+    kill -TERM "${owned[@]}" 2>/dev/null || true
+    for _ in {1..20}; do
+        local -a alive=()
+        for pid in "${owned[@]}"; do
+            kill -0 "$pid" 2>/dev/null && alive+=("$pid")
+        done
+        [[ ${#alive[@]} -eq 0 ]] && return 0
+        owned=("${alive[@]}")
+        sleep 0.05
+    done
+    # Escalate only the instances identified by this configuration's socket path.
+    kill -KILL "${owned[@]}" 2>/dev/null || true
+}
+
 # Parse args
 PREVIEW=false
 COLORS_PREVIEW=false
@@ -130,7 +157,7 @@ if ! $NOSWITCH && ! $COLORS_PREVIEW && { $FORCE_DISPLAY || [[ "$(cfgbool '.wallp
     [[ "$framing" =~ ^[0-9]+(\.[0-9]+)?$ ]] || framing=0.5
     alignx="$(awk -v v="$framing" 'BEGIN { if (v<0) v=0; if (v>1) v=1; printf "%.4f", v * 2 - 1 }')"
 
-    pkill -f -9 mpvpaper >/dev/null 2>&1 || true
+    stop_owned_mpvpaper
     # Own cgroup via uwsm
     for mon in "${MONITORS[@]}"; do
         sock="${XDG_RUNTIME_DIR:-/tmp}/mpvpaper-$mon.sock"

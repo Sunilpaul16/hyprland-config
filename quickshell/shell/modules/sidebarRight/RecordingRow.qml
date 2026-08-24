@@ -16,7 +16,7 @@ RowLayout {
 
     StyledText {
         Layout.fillWidth: true
-        text: root.confirmingDelete ? "Delete this recording?" : Recordings.displayName(root.modelData)
+        text: root.confirmingDelete ? "Move this recording to Trash?" : Recordings.displayName(root.modelData)
         color: root.confirmingDelete ? Colors.error : Colors.textMuted
         font.pixelSize: Motion.fontSize.body
         elide: Text.ElideRight
@@ -53,7 +53,7 @@ RowLayout {
             iconName: "check"
             iconColor: Colors.error
             onTriggered: {
-                Recordings.deleteEntry(root.modelData.path);
+                Recordings.trashEntry(root.modelData.path);
                 root.confirmingDelete = false;
             }
         }
