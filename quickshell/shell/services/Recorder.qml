@@ -8,6 +8,7 @@ Singleton {
     id: root
 
     readonly property string recordBin: Directories.recordScript
+    readonly property string stateFile: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/quickshell-recorder.state"
 
     property bool active: false
     property real startedAt: 0
@@ -61,22 +62,25 @@ Singleton {
         }
     }
 
-    // Poll for wf-recorder
+    // Poll only the recorder instance launched by this shell.
     Process {
         id: pollProc
-        command: ["bash", "-c", "pgrep -x wf-recorder >/dev/null && echo rec || { pgrep -x slurp >/dev/null && echo sel || echo idle; }"]
+        command: ["bash", "-c", "read -r pid started < \"$1\" 2>/dev/null || { echo idle; exit; }; test -r \"/proc/$pid/comm\" && test \"$(cat \"/proc/$pid/comm\")\" = wf-recorder && printf 'rec %s\\n' \"$started\" || echo idle", "recorder-state", root.stateFile]
 
         stdout: StdioCollector {
             onStreamFinished: {
                 const state = text.trim();
-                const nowActive = state === "rec";
-                if (nowActive && !root.active)
-                    root.startedAt = Date.now();
+                const fields = state.split(/\s+/);
+                const nowActive = fields[0] === "rec";
+                if (nowActive && !root.active) {
+                    const persistedStart = Number(fields[1]) * 1000;
+                    root.startedAt = Number.isFinite(persistedStart) && persistedStart > 0 ? persistedStart : Date.now();
+                }
                 root.active = nowActive;
                 if (!nowActive)
                     root.elapsedSeconds = 0;
                 // Hold while selecting or still spawning
-                root.starting = !nowActive && (state === "sel" || (Date.now() - root.startRequestedAt) < 2000);
+                root.starting = !nowActive && (Date.now() - root.startRequestedAt) < 2000;
             }
         }
     }

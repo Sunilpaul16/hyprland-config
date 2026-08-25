@@ -26,8 +26,10 @@ Rectangle {
     radius: height / 2
 
     color: hover.containsMouse ? Colors.secondaryContainer : Colors.background
+    scale: hover.pressed ? 0.96 : 1
 
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+    Behavior on scale { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
     RowLayout {
         id: layout

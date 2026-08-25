@@ -14,6 +14,9 @@ ScrollPage {
     // Hover previews palette
     property string hoveredPath: ""
 
+    // Pick up wallpapers added while Quickshell has been running.
+    Component.onCompleted: Wallpapers.refresh()
+
     onHoveredPathChanged: {
         if (root.hoveredPath)
             previewTimer.restart();

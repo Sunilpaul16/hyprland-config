@@ -50,7 +50,6 @@ Scope {
                 }
                 readonly property bool widthFixed: Config.dashboard.panel.widthMode === "fixed"
                 readonly property bool heightFixed: Config.dashboard.panel.heightMode === "fixed"
-                readonly property bool portrait: (root.screen?.height ?? 0) > (root.screen?.width ?? 0)
                 // Resting position
                 readonly property int cornerSize: Motion.cornerSize
 
@@ -181,7 +180,7 @@ Scope {
                 // Tab pages
                 Component {
                     id: dashboardTabComponent
-                    DashTab { portrait: root.portrait }
+                    DashTab {}
                 }
 
                 Component {

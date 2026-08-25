@@ -18,10 +18,12 @@ Rectangle {
     implicitWidth: layout.implicitWidth + 26 * 2
     implicitHeight: 44
     radius: height / 2
+    opacity: root.enabled ? 1 : 0.45
 
     color: root.highlighted || hover.containsMouse ? Colors.secondaryContainer : Colors.layer
 
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+    Behavior on opacity { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
     scale: hover.pressed ? 0.96 : 1
 

@@ -72,7 +72,12 @@ Singleton {
         onPressed: root.applyRandom()
     }
 
-    Component.onCompleted: scanProc.running = true
+    function refresh(): void {
+        if (!scanProc.running)
+            scanProc.running = true;
+    }
+
+    Component.onCompleted: root.refresh()
 
     // Scan wallpaper directory
     Process {
@@ -102,6 +107,8 @@ Singleton {
                     if (w.isVideo)
                         root.ensureThumbnail(w.path, w.thumbPath);
                 }
+                thumbPruneProc.keepPaths = root.list.filter(w => w.isVideo).map(w => w.thumbPath).join("\n");
+                thumbPruneProc.running = true;
             }
         }
     }
@@ -131,7 +138,7 @@ Singleton {
             property string path
             property string thumbPath
 
-            command: ["sh", "-c", "mkdir -p \"$(dirname \"$THUMB\")\" && { test -f \"$THUMB\" || ffmpeg -y -ss 00:00:01 -i \"$SRC\" -frames:v 1 -vf scale=480:-1 \"$THUMB\"; }"]
+            command: ["sh", "-c", "mkdir -p \"$(dirname \"$THUMB\")\" && { test -f \"$THUMB\" && test \"$THUMB\" -nt \"$SRC\" || ffmpeg -y -ss 00:00:01 -i \"$SRC\" -frames:v 1 -vf scale=480:-1 \"$THUMB\"; }"]
             environment: ({ SRC: path, THUMB: thumbPath })
 
             onExited: exitCode => {
@@ -142,5 +149,12 @@ Singleton {
                 destroy();
             }
         }
+    }
+
+    Process {
+        id: thumbPruneProc
+        property string keepPaths: ""
+        command: ["sh", "-c", "test -d \"$CACHE\" || exit 0; find \"$CACHE\" -maxdepth 1 -type f -name '*.png' | while IFS= read -r file; do printf '%s\\n' \"$KEEP\" | grep -Fqx -- \"$file\" || rm -f -- \"$file\"; done"]
+        environment: ({ CACHE: root.thumbCacheDir, KEEP: keepPaths })
     }
 }

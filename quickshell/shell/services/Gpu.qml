@@ -29,7 +29,9 @@ Singleton {
     property real _temperature: 0
 
     function parseNvidiaSmi(text: string): void {
-        const parts = (text || "").trim().split(",");
+        // Use one complete record. Multi-GPU output contains one CSV row per GPU.
+        const firstRow = (text || "").split("\n").map(line => line.trim()).find(line => line.length > 0) ?? "";
+        const parts = firstRow.split(",");
         if (parts.length < 3) {
             root._available = false;
             return;

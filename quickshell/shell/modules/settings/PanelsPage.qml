@@ -111,6 +111,17 @@ ScrollPage {
 
         SettingRow {
             live: true
+            label: "Show notification indicator"
+            subtext: "Show the unread notification bell in the bar"
+
+            ToggleSwitch {
+                checked: Config.bar.showNotificationIndicator
+                onToggled: v => Config.bar.showNotificationIndicator = v
+            }
+        }
+
+        SettingRow {
+            live: true
             label: "Show active window title"
 
             ToggleSwitch {

@@ -17,24 +17,24 @@ Item {
     // Page registry
     readonly property var pageModel: [
         // Appearance
-        { key: "wallpaperStyle", label: "Wallpaper & style", icon: "palette", description: "Wallpaper, fonts, colours", category: "appearance", component: wallpaperStylePage },
+        { key: "wallpaperStyle", label: "Wallpaper & style", icon: "palette", description: "Wallpaper, fonts, colours", keywords: "theme transparency opacity blur palette scheme qt terminal", category: "appearance", component: wallpaperStylePage },
 
         // Shell
-        { key: "panels", label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", category: "shell", component: panelsPage },
-        { key: "overlay", label: "Overlay widgets", icon: "widgets", description: "Crosshair, notes, floating image", category: "shell", component: overlayPage },
-        { key: "services", label: "Services", icon: "build", description: "Poll intervals, notifications", category: "shell", component: servicesPage },
+        { key: "panels", label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", keywords: "bar animation motion tabs tray clock osd", category: "shell", component: panelsPage },
+        { key: "overlay", label: "Overlay widgets", icon: "widgets", description: "Crosshair, notes, floating image", keywords: "aim reticle picture", category: "shell", component: overlayPage },
+        { key: "services", label: "Services", icon: "build", description: "Poll intervals, notifications", keywords: "weather recorder night light polling toast", category: "shell", component: servicesPage },
 
         // System
-        { key: "audio", label: "Audio", icon: "volume_up", description: "App volumes, sound devices", category: "system", component: audioPage },
-        { key: "updates", label: "Updates", icon: "update", description: "System updates", category: "system", component: updatesPage },
+        { key: "audio", label: "Audio", icon: "volume_up", description: "App volumes, sound devices", keywords: "speaker microphone mute boost osd sink source", category: "system", component: audioPage },
+        { key: "updates", label: "Updates", icon: "update", description: "System updates", keywords: "aur yay packages upgrade notifications", category: "system", component: updatesPage },
 
         // Connectivity
-        { key: "idlePower", label: "Idle & power", icon: "bedtime", description: "Lock, displays, suspend", category: "connectivity", component: idlePowerPage },
-        { key: "network", label: "Network", icon: "lan", description: "Ethernet, VPN, usage", category: "connectivity", component: networkPage },
-        { key: "connectedDevices", label: "Connected devices", icon: "devices_other", description: "Bluetooth, pairing", category: "connectivity", component: connectedDevicesPage },
+        { key: "idlePower", label: "Idle & power", icon: "bedtime", description: "Lock, displays, suspend", keywords: "sleep dpms timeout inhibit awake", category: "connectivity", component: idlePowerPage },
+        { key: "network", label: "Network", icon: "lan", description: "Ethernet, VPN, usage", keywords: "nordvpn throughput download upload connection", category: "connectivity", component: networkPage },
+        { key: "connectedDevices", label: "Connected devices", icon: "devices_other", description: "Bluetooth, pairing", keywords: "scan discoverable connect", category: "connectivity", component: connectedDevicesPage },
 
         // About
-        { key: "about", label: "About", icon: "info", description: "System information, credits", category: "about", component: aboutPage }
+        { key: "about", label: "About", icon: "info", description: "System information, credits", keywords: "hardware processor memory gpu kernel restart shell github", category: "about", component: aboutPage }
     ]
 
     // Sub-page registry

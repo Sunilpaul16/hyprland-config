@@ -27,7 +27,7 @@ Item {
     function valueAt(px: real): real {
         const ratio = Math.max(0, Math.min(1, (px - root.handleWidth / 2) / root.travel));
         const raw = root.from + ratio * root.span;
-        return root.stepSize > 0 ? Math.round(raw / root.stepSize) * root.stepSize : raw;
+        return root.stepSize > 0 ? root.from + Math.round((raw - root.from) / root.stepSize) * root.stepSize : raw;
     }
 
     // Filled track

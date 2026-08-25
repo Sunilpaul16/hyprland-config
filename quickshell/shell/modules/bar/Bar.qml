@@ -64,6 +64,26 @@ Scope {
                     anchors { top: parent.top; left: parent.left; right: parent.right }
                     height: bar.slidAway ? bar.revealHeight : bar.barContentHeight
 
+                    // The bar is part of the persistent focus grab so its controls
+                    // remain clickable. Still treat a bar tap as outside an already
+                    // open sidebar, without consuming the control's own click.
+                    TapHandler {
+                        id: sidebarDismissTap
+
+                        property bool sidebarWasOpen: false
+
+                        acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
+                        gesturePolicy: TapHandler.ReleaseWithinBounds
+                        onPressedChanged: {
+                            if (pressed)
+                                sidebarDismissTap.sidebarWasOpen = SidebarRightState.open;
+                        }
+                        onTapped: {
+                            if (sidebarDismissTap.sidebarWasOpen)
+                                SidebarRightState.open = false;
+                        }
+                    }
+
                     HoverHandler {
                         id: revealHover
                         onHoveredChanged: {
@@ -216,16 +236,6 @@ Scope {
                             SectionPill {
                                 Layout.alignment: Qt.AlignVCenter
                                 horizontalPadding: 8
-                                visible: notifIndicator.active
-
-                                NotifIndicator {
-                                    id: notifIndicator
-                                }
-                            }
-
-                            SectionPill {
-                                Layout.alignment: Qt.AlignVCenter
-                                horizontalPadding: 8
                                 visible: updatesIndicator.active
 
                                 UpdatesIndicator {
@@ -233,13 +243,25 @@ Scope {
                                 }
                             }
 
-                            // Tray
+                            // Notifications and tray share one utility pill so
+                            // adjacent icons keep the same visual spacing.
                             SectionPill {
                                 Layout.alignment: Qt.AlignVCenter
-                                visible: Config.bar.showTray && tray.hasItems
+                                visible: (Config.bar.showNotificationIndicator && notifIndicator.active)
+                                    || (Config.bar.showTray && tray.hasItems)
 
-                                Tray {
-                                    id: tray
+                                Row {
+                                    spacing: Motion.spacing.micro
+
+                                    NotifIndicator {
+                                        id: notifIndicator
+                                        visible: Config.bar.showNotificationIndicator && active
+                                    }
+
+                                    Tray {
+                                        id: tray
+                                        visible: Config.bar.showTray && hasItems
+                                    }
                                 }
                             }
 

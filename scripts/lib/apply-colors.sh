@@ -25,6 +25,10 @@ begin_latest_theme() {
     [[ "$(cat "$token_file" 2>/dev/null)" == "$THEME_REQUEST_TOKEN" ]]
 }
 
+theme_is_latest() {
+    [[ "$(cat "$CACHE_DIR/theme-request" 2>/dev/null)" == "$THEME_REQUEST_TOKEN" ]]
+}
+
 # cfg <jq-path> <default>
 cfg() {
     local value=""
@@ -53,14 +57,18 @@ wall_cache() {
 # apply_kitty_from_scss <scss-path>
 apply_kitty_from_scss() {
     local scss="$1"
-    cp "$COLORGEN_DIR/terminal/kitty-theme.conf" "$KITTY_THEME_OUT"
-    local name value hexval
-    while IFS=: read -r name value; do
-        [[ -z "$name" ]] && continue
-        hexval="$(echo "$value" | tr -d ' ;')"
-        hexval="${hexval#\#}"
-        sed -i "s/${name} #/${hexval}/g" "$KITTY_THEME_OUT"
-    done < "$scss"
+    awk '
+        NR == FNR {
+            if (match($0, /^\$([^:]+):[[:space:]]*#([[:xdigit:]]+);/, parts))
+                color[parts[1]] = parts[2]
+            next
+        }
+        {
+            for (name in color)
+                gsub("#\\$" name " #", color[name])
+            print
+        }
+    ' "$scss" "$COLORGEN_DIR/terminal/kitty-theme.conf" > "$KITTY_THEME_OUT"
 
     # Window transparency
     local opacity

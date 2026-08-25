@@ -17,20 +17,26 @@ case "$MODE" in
     *) usage ;;
 esac
 
-# Dependency preflight
-for bin in wf-recorder pactl notify-send; do
-    command -v "$bin" >/dev/null || { echo "record: missing required binary: $bin" >&2; exit 1; }
-done
-if [[ "$MODE" == region ]] && ! command -v slurp >/dev/null; then
-    echo "record: region mode requires slurp, which isn't installed" >&2
-    exit 1
-fi
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp}"
+STATE_FILE="$RUNTIME_DIR/quickshell-recorder.state"
 
-is_recording() { pgrep -x wf-recorder >/dev/null; }
+owned_pid() {
+    local pid=""
+    [[ -r "$STATE_FILE" ]] && IFS=' ' read -r pid _ < "$STATE_FILE"
+    [[ "$pid" =~ ^[0-9]+$ ]] || return 1
+    [[ -r "/proc/$pid/comm" ]] || return 1
+    [[ "$(< "/proc/$pid/comm")" == wf-recorder ]] || return 1
+    printf '%s' "$pid"
+}
+
+is_recording() { owned_pid >/dev/null; }
 
 stop_recording() {
-    pkill -INT -x wf-recorder
-    notify-send -a record "Recording stopped" || true
+    local pid
+    pid="$(owned_pid)" || return 0
+    kill -INT "$pid"
+    rm -f "$STATE_FILE"
+    command -v notify-send >/dev/null && notify-send -a record "Recording stopped" || true
 }
 
 # Stop mode / toggle-off
@@ -42,6 +48,22 @@ fi
 if is_recording; then
     stop_recording
     exit 0
+fi
+
+# Dependency preflight for starting a new recording
+for bin in wf-recorder notify-send; do
+    command -v "$bin" >/dev/null || { echo "record: missing required binary: $bin" >&2; exit 1; }
+done
+if [[ "$MODE" == region ]]; then
+    command -v slurp >/dev/null || { echo "record: region mode requires slurp, which isn't installed" >&2; exit 1; }
+else
+    for bin in hyprctl jq; do
+        command -v "$bin" >/dev/null || { echo "record: full mode requires $bin, which isn't installed" >&2; exit 1; }
+    done
+fi
+if $SOUND && ! command -v pactl >/dev/null; then
+    echo "record: --sound requires pactl, which isn't installed" >&2
+    exit 1
 fi
 
 # Build wf-recorder args
@@ -57,6 +79,7 @@ if [[ "$MODE" == region ]]; then
     args+=(-g "$region")
 else
     mon="$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')"
+    [[ -n "$mon" ]] || { echo "record: couldn't determine the focused monitor" >&2; exit 1; }
     args+=(-o "$mon")
 fi
 
@@ -67,5 +90,7 @@ fi
 
 # Launch
 wf-recorder "${args[@]}" >"$SAVE_DIR/.wf-recorder.log" 2>&1 &
+recorder_pid=$!
+printf '%s %s\n' "$recorder_pid" "$(date +%s)" > "$STATE_FILE"
 disown
 notify-send -a record "Recording started" "$OUTFILE" || true

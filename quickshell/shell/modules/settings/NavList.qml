@@ -35,7 +35,8 @@ Item {
         const out = [];
         for (let i = 0; i < root.pageModel.length; i++) {
             const p = root.pageModel[i];
-            if (q === "" || p.label.toLowerCase().includes(q) || p.description.toLowerCase().includes(q))
+            const haystack = `${p.label} ${p.description} ${p.key} ${p.category} ${p.keywords ?? ""}`.toLowerCase();
+            if (q === "" || haystack.includes(q))
                 out.push({ page: p, idx: i });
         }
         return out;
@@ -92,12 +93,27 @@ Item {
             // Focus on open
             focus: root.panelActive
 
+            Keys.onReturnPressed: {
+                if (root.filteredPages.length === 0)
+                    return;
+                SettingsState.currentPageIdx = root.filteredPages[0].idx;
+                searchInput.text = "";
+            }
+            Keys.onEnterPressed: event => {
+                if (root.filteredPages.length === 0)
+                    return;
+                SettingsState.currentPageIdx = root.filteredPages[0].idx;
+                searchInput.text = "";
+                event.accepted = true;
+            }
             Keys.onEscapePressed: {
-        if (SettingsState.subPage)
-            SettingsState.closeSubPage();
-        else
-            SettingsState.open = false;
-    }
+                if (searchInput.text.length > 0)
+                    searchInput.text = "";
+                else if (SettingsState.subPage)
+                    SettingsState.closeSubPage();
+                else
+                    SettingsState.open = false;
+            }
         }
     }
 

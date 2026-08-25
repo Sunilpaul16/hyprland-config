@@ -59,6 +59,7 @@ ScrollPage {
         }
 
         SettingRow {
+            last: true
             live: true
             label: "Suspend after"
 
@@ -92,6 +93,7 @@ ScrollPage {
         }
 
         SettingRow {
+            last: true
             live: true
             label: "Keep awake"
             subtext: "The sidebar toggle holds a Wayland inhibitor, which suspends all of the above"

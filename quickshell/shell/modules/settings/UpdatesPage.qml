@@ -160,7 +160,7 @@ ScrollPage {
                 live: true
                 icon: "download"
                 text: "Update now"
-                // Always enabled
+                enabled: Updates.total > 0 && !Updates.checking
                 onClicked: Updates.runUpgrade()
             }
         }

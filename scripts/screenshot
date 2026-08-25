@@ -18,9 +18,16 @@ case "$MODE" in
 esac
 
 # Dependency preflight
-for bin in grim slurp wl-copy jq notify-send xdg-open; do
+for bin in grim wl-copy notify-send; do
     command -v "$bin" >/dev/null || { echo "screenshot: missing required binary: $bin" >&2; exit 1; }
 done
+if [[ "$MODE" == region ]]; then
+    command -v slurp >/dev/null || { echo "screenshot: region mode requires slurp, which isn't installed" >&2; exit 1; }
+else
+    for bin in hyprctl jq; do
+        command -v "$bin" >/dev/null || { echo "screenshot: full mode requires $bin, which isn't installed" >&2; exit 1; }
+    done
+fi
 if $EDIT && ! command -v swappy >/dev/null; then
     echo "screenshot: --edit requires swappy, which isn't installed" >&2
     exit 1
@@ -34,6 +41,7 @@ if [[ "$MODE" == region ]]; then
     [[ -z "$region" ]] && exit 0
 else
     mon="$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')"
+    [[ -n "$mon" ]] || { echo "screenshot: couldn't determine the focused monitor" >&2; exit 1; }
 fi
 
 mkdir -p "$SAVE_DIR"
@@ -53,7 +61,9 @@ notify_and_open() {
     local title="$1" file="$2"
     (
         action="$(notify-send -a screenshot -i "$file" -A "default=Open" "$title" "$file")" || true
-        [[ "$action" == "default" ]] && xdg-open "$file"
+        if [[ "$action" == "default" ]] && command -v xdg-open >/dev/null; then
+            xdg-open "$file"
+        fi
     ) &
     disown
 }

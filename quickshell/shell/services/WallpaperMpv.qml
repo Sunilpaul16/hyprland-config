@@ -104,29 +104,32 @@ Singleton {
             return;
         const names = Quickshell.screens.map(s => s.name);
         const created = [];
+        const nextSockets = Object.assign({}, root.sockets);
         for (const name of names) {
-            const existing = root.sockets[name];
+            const existing = nextSockets[name];
             if (existing && existing.connected)
                 continue;
             if (Date.now() < root.retryState(name).nextAttempt)
                 continue;
             if (existing)
                 existing.destroy();
-            root.sockets[name] = socketComponent.createObject(root, {
+            nextSockets[name] = socketComponent.createObject(root, {
                 monitor: name,
                 path: `${root.runtimeDir}/mpvpaper-${name}.sock`
             });
             created.push(name);
         }
-        for (const name of Object.keys(root.sockets)) {
+        for (const name of Object.keys(nextSockets)) {
             if (!names.includes(name)) {
-                root.sockets[name].destroy();
-                delete root.sockets[name];
+                nextSockets[name].destroy();
+                delete nextSockets[name];
                 const next = Object.assign({}, root.retryStates);
                 delete next[name];
                 root.retryStates = next;
             }
         }
+        // Reassign so bindings such as allConnected observe membership changes.
+        root.sockets = nextSockets;
         // Catch synchronous connects
         for (const name of created)
             root.announce(root.sockets[name]);

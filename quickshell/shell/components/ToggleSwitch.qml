@@ -16,8 +16,10 @@ Rectangle {
     color: root.checked ? Colors.primary : Colors.layer
     border.width: root.checked ? 0 : 2
     border.color: Colors.outline
+    scale: toggleArea.pressed ? 0.96 : 1
 
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+    Behavior on scale { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
     // Thumb
     Rectangle {
@@ -43,6 +45,7 @@ Rectangle {
     }
 
     MouseArea {
+        id: toggleArea
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
         onClicked: root.toggled(!root.checked)

@@ -20,7 +20,9 @@ Scope {
                 screen: panelLoader.modelData
 
                 // Visibility state
-                readonly property bool isFocusedScreen: Hyprland.monitorFor(root.screen) === Hyprland.focusedMonitor
+                // Hyprland may recreate its monitor wrapper objects on reload;
+                // compare their stable names rather than object identity.
+                readonly property bool isFocusedScreen: root.screen.name === ScreenOwner.focusedName
                 property int activeRemovals: 0
 
                 // Layout constants
@@ -85,9 +87,7 @@ Scope {
                         // Newest nearest edge
                         verticalLayoutDirection: root.atTop ? ListView.TopToBottom : ListView.BottomToTop
 
-                        model: ScriptModel {
-                            values: root.isFocusedScreen ? Notifs.popups.filter(n => !n.closed) : []
-                        }
+                        model: root.isFocusedScreen ? Notifs.popups : []
 
                         delegate: Wrapper {}
 

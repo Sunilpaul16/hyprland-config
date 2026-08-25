@@ -19,9 +19,7 @@ Scope {
                 // Rounding radius
                 readonly property int roundingSize: 14
                 // Hot zone size
-                readonly property int hotZoneSize: 24
-                // Debug aid
-                readonly property bool visualize: false
+                readonly property int hotZoneSize: 27
 
                 component CornerWindow: PanelWindow {
                     id: cornerWindow
@@ -64,12 +62,6 @@ Scope {
 
                         sourceComponent: MouseArea {
                             onPressed: SidebarRightState.toggle()
-
-                            Rectangle {
-                                anchors.fill: parent
-                                color: Colors.primary
-                                visible: root.visualize
-                            }
                         }
                     }
                 }

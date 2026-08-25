@@ -96,6 +96,7 @@ Singleton {
             property JsonObject bar: JsonObject {
                 property int height: 40  // bar height (px)
                 property bool showTray: true        // system tray pill
+                property bool showNotificationIndicator: true // unread bell in the bar
                 property bool showWindowTitle: true // active-window pill
                 // Hidden tray ids
                 property string trayHidden: "nm-applet,blueman"

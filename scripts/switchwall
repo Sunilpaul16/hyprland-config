@@ -87,21 +87,21 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Persisted mode override
+# Requested mode override. Persist it only after the matching theme succeeds.
 if [[ -n "$SET_MODE" ]]; then
     case "$SET_MODE" in
         auto|light|dark) ;;
         *) echo "switchwall: --mode must be auto, light or dark (got: $SET_MODE)" >&2; exit 1 ;;
     esac
-    mkdir -p "$(dirname "$MODE_FILE")"
-    printf '%s' "$SET_MODE" > "$MODE_FILE"
     if [[ $# -eq 0 ]] && ! $PREVIEW; then
         NOSWITCH=true
     fi
 fi
 
 COLOR_MODE=auto
-if [[ -s "$MODE_FILE" ]]; then
+if [[ -n "$SET_MODE" ]]; then
+    COLOR_MODE="$SET_MODE"
+elif [[ -s "$MODE_FILE" ]]; then
     COLOR_MODE="$(cat "$MODE_FILE")"
 fi
 
@@ -210,6 +210,10 @@ fi
 COLOR_SOURCE=dynamic
 [[ -s "$SOURCE_FILE" ]] && COLOR_SOURCE="$(cat "$SOURCE_FILE")"
 if [[ "$COLOR_SOURCE" != dynamic ]] && ! $COLORS_PREVIEW; then
+    if [[ -n "$SET_MODE" ]]; then
+        export QUICKSHELL_REQUESTED_MODE="$SET_MODE"
+        exec "$(dirname "$(readlink -f "$0")")/setscheme" "$COLOR_SOURCE"
+    fi
     echo "switchwall: wallpaper set; colours held by preset $COLOR_SOURCE"
     exit 0
 fi
@@ -297,6 +301,15 @@ scss="$CACHE_DIR/material_colors.scss"
 apply_kitty_from_scss "$scss"
 
 # 5. Reload
+if ! theme_is_latest; then
+    echo "switchwall: theme request superseded before reload"
+    exit 0
+fi
 reload_all
+
+if [[ -n "$SET_MODE" ]]; then
+    mkdir -p "$(dirname "$MODE_FILE")"
+    printf '%s' "$SET_MODE" > "$MODE_FILE"
+fi
 
 echo "switchwall: done ($wallpaper)"

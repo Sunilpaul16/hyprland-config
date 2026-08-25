@@ -53,7 +53,8 @@ fi
 # Resolve mode
 STORED_MODE=""
 [[ -s "$MODE_FILE" ]] && STORED_MODE="$(cat "$MODE_FILE")"
-WANT_MODE="${STORED_MODE:-dark}"
+REQUESTED_MODE="${QUICKSHELL_REQUESTED_MODE:-}"
+WANT_MODE="${REQUESTED_MODE:-${STORED_MODE:-dark}}"
 [[ "$WANT_MODE" == auto ]] && WANT_MODE=dark
 
 AVAILABLE="$("$HELPER" modes "$TARGET")" || { echo "setscheme: unknown preset '$TARGET'" >&2; exit 1; }
@@ -82,10 +83,19 @@ apply_kitty_from_scss "$scss"
 apply_gsettings "$MODE"
 apply_qt "$MODE"
 
-# Keep auto for dynamic
-[[ "$STORED_MODE" == auto ]] || printf '%s' "$MODE" > "$MODE_FILE"
 printf '%s' "$TARGET" > "$SOURCE_FILE"
 
+if ! theme_is_latest; then
+    echo "setscheme: theme request superseded before reload"
+    exit 0
+fi
 reload_all
+
+# Preserve an explicit automatic preference; otherwise store the applied mode.
+if [[ -n "$REQUESTED_MODE" ]]; then
+    printf '%s' "$REQUESTED_MODE" > "$MODE_FILE"
+elif [[ "$STORED_MODE" != auto ]]; then
+    printf '%s' "$MODE" > "$MODE_FILE"
+fi
 
 echo "setscheme: done ($TARGET $MODE)"

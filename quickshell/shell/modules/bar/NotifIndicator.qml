@@ -8,9 +8,10 @@ Item {
 
     readonly property bool active: DndState.enabled || Notifs.unread > 0
 
-    // Extra count width
-    implicitWidth: active ? icon.implicitWidth + 7 : 0
-    implicitHeight: icon.implicitHeight
+    // Match the tray icon hit box. The badge overlays this slot instead of
+    // widening it and pushing the bell away from adjacent tray icons.
+    implicitWidth: active ? 26 : 0
+    implicitHeight: 26
     visible: implicitWidth > 0
     clip: true
 
@@ -20,8 +21,7 @@ Item {
 
     StyledText {
         id: icon
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.centerIn: parent
         // Escapes, not literals
         text: DndState.enabled ? "\uf1f6" : "\uf0f3" // bell-slash / bell
         font.family: Fonts.glyphFamily
