@@ -17,6 +17,9 @@ Singleton {
     property alias screenRecorderCardEnabled: adapter.screenRecorderCardEnabled
     property alias keepAwakeCardEnabled: adapter.keepAwakeCardEnabled
     property alias dndEnabled: adapter.dndEnabled
+    property alias gameModeEnabled: adapter.gameModeEnabled
+    property alias gameModeDndWasEnabled: adapter.gameModeDndWasEnabled
+    property alias gameModeIdleInhibitWasEnabled: adapter.gameModeIdleInhibitWasEnabled
     // Quick toggle layout
     property alias quickToggleLayout: adapter.quickToggleLayout
     // Last announced count
@@ -50,6 +53,9 @@ Singleton {
             property bool screenRecorderCardEnabled: false
             property bool keepAwakeCardEnabled: false
             property bool dndEnabled: false
+            property bool gameModeEnabled: false
+            property bool gameModeDndWasEnabled: false
+            property bool gameModeIdleInhibitWasEnabled: false
             property list<var> quickToggleLayout: []
             property int lastNotifiedUpdateTotal: 0
             property string lastHyprlandInstanceSignature: ""
@@ -65,6 +71,9 @@ Singleton {
         repeat: false
         onTriggered: {
             root.isNewHyprlandInstance = (adapter.lastHyprlandInstanceSignature !== root.currentInstanceSignature);
+            // Game mode is session-scoped; do not resurrect it after a new login.
+            if (root.isNewHyprlandInstance)
+                adapter.gameModeEnabled = false;
             adapter.lastHyprlandInstanceSignature = root.currentInstanceSignature;
         }
     }

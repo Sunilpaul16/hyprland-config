@@ -8,11 +8,9 @@ import Quickshell.Hyprland
 Singleton {
     id: root
 
-    // Read from Hyprland
-    property bool enabled: false
-
-    // Probe guard
-    property bool probing: false
+    // Restored across a Quickshell restart, but never carried into a new login.
+    property bool enabled: !Persistent.isNewHyprlandInstance && Persistent.gameModeEnabled
+    property real activeSince: 0
 
     readonly property var options: ({
         "animations:enabled": 0,
@@ -26,18 +24,33 @@ Singleton {
     })
 
     function toggle(): void {
-        root.enabled = !root.enabled;
+        root.setEnabled(!root.enabled, true);
     }
 
-    onEnabledChanged: {
-        // Silent during probe
-        if (root.probing)
+    function setEnabled(on: bool, announce: bool): void {
+        if (root.enabled === on)
             return;
-        if (root.enabled)
+
+        if (on) {
+            // Remember companion-toggle state so disabling game mode is lossless.
+            Persistent.gameModeDndWasEnabled = DndState.enabled;
+            Persistent.gameModeIdleInhibitWasEnabled = IdleInhibitState.enabled;
+            root.enabled = true;
+            root.activeSince = Date.now();
             root.apply();
-        else
+            DndState.enabled = true;
+            IdleInhibitState.enabled = true;
+        } else {
+            root.enabled = false;
+            root.activeSince = 0;
             root.restore();
-        Notifs.toast(root.enabled ? "Game mode on" : "Game mode off", root.enabled ? "Animations, blur, shadows and gaps stripped" : "Hyprland settings restored", "sports_esports");
+            DndState.enabled = Persistent.gameModeDndWasEnabled;
+            IdleInhibitState.enabled = Persistent.gameModeIdleInhibitWasEnabled;
+        }
+
+        Persistent.gameModeEnabled = root.enabled;
+        if (announce)
+            Notifs.toast(root.enabled ? "Game mode on" : "Game mode off", root.enabled ? "Visual effects paused, notifications muted and idle inhibited" : "Desktop and notification settings restored", "sports_esports");
     }
 
     // Key to Lua eval
@@ -70,25 +83,23 @@ Singleton {
         id: applyProc
     }
 
-    // Adopt current state
-    Process {
-        id: probeProc
-        running: true
-        command: ["hyprctl", "getoption", "animations:enabled", "-j"]
+    function applyRestoredState(): void {
+        if (root.enabled && root.activeSince === 0) {
+            root.activeSince = Date.now();
+            root.apply();
+            DndState.enabled = true;
+            IdleInhibitState.enabled = true;
+        }
+    }
 
-        stdout: StdioCollector {
-            onStreamFinished: {
-                try {
-                    const opt = JSON.parse(text);
-                    root.probing = true;
-                    root.enabled = (opt.bool === false || opt.int === 0);
-                    root.probing = false;
-                    if (root.enabled)
-                        root.setWallpaperPaused(true);
-                } catch (e) {
-                    console.error("[GameMode] failed to parse hyprctl getoption:", e);
-                }
-            }
+    // Re-apply state restored after a Quickshell restart. Persistent state may
+    // finish loading either before or after this singleton is constructed.
+    Component.onCompleted: root.applyRestoredState()
+
+    Connections {
+        target: Persistent
+        function onIsNewHyprlandInstanceChanged(): void {
+            root.applyRestoredState();
         }
     }
 
@@ -119,15 +130,19 @@ Singleton {
         }
 
         function enable(): void {
-            root.enabled = true;
+            root.setEnabled(true, true);
         }
 
         function disable(): void {
-            root.enabled = false;
+            root.setEnabled(false, true);
         }
 
         function isEnabled(): bool {
             return root.enabled;
+        }
+
+        function status(): string {
+            return `enabled=${root.enabled} activeSince=${Math.round(root.activeSince)} dnd=${DndState.enabled} idleInhibit=${IdleInhibitState.enabled}`;
         }
     }
 }
