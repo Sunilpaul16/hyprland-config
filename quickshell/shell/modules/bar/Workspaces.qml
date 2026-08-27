@@ -11,6 +11,37 @@ Item {
     readonly property var monitor: Hyprland.monitorFor(root.screen)
 
     readonly property var allWorkspaces: Hyprland.workspaces.values
+    readonly property var allToplevels: Hyprland.toplevels.values
+    property int toplevelRevision: 0
+
+    // Hyprland announces windows before their class/workspace metadata is
+    // always ready. Debounce relevant events, then refresh Quickshell's cache.
+    Connections {
+        target: Hyprland
+
+        function onRawEvent(event) {
+            if (["openwindow", "closewindow", "movewindow", "windowtitlev2"].includes(event.name))
+                refreshDelay.restart();
+        }
+    }
+
+    Timer {
+        id: refreshDelay
+        interval: 250
+        onTriggered: {
+            Hyprland.refreshToplevels();
+            refreshSettle.restart();
+        }
+    }
+
+    // refreshToplevels is asynchronous; rebuild after its reply is applied.
+    Timer {
+        id: refreshSettle
+        interval: 75
+        onTriggered: {
+            root.toplevelRevision++;
+        }
+    }
 
     readonly property int minSlots: 4
 
@@ -36,7 +67,9 @@ Item {
             return [];
         const seen = new Set();
         const glyphs = [];
-        for (const tl of ws.toplevels.values) {
+        for (const tl of root.allToplevels) {
+            if (tl.workspace?.id !== ws.id)
+                continue;
             const wmClass = tl.lastIpcObject?.class ?? "";
             if (!wmClass)
                 continue;
@@ -57,13 +90,14 @@ Item {
 
     // Slot layout
     readonly property var slotLayout: {
+        root.toplevelRevision;
         let x = 0;
         const layout = [];
         for (const ws of root.displaySlots) {
             const glyphs = root.appGlyphs(ws);
             const shownIcons = glyphs.slice(0, root.maxIconsPerSlot);
             const extra = Math.max(0, glyphs.length - root.maxIconsPerSlot);
-            const occupied = !ws.isPlaceholder && ws.toplevels.values.length > 0;
+            const occupied = !ws.isPlaceholder && root.allToplevels.some(tl => tl.workspace?.id === ws.id);
 
             let width = root.pillSize;
             if (shownIcons.length > 0 || extra > 0) {
@@ -154,9 +188,11 @@ Item {
                         implicitHeight: root.iconSize
 
                         MaterialIcon {
-                            anchors.centerIn: parent
+                            anchors.fill: parent
                             text: parent.modelData
                             font.pixelSize: root.iconSize
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
                             color: slot.isActive ? Colors.textOnPrimary : Colors.textMuted
 
                             Behavior on color { CAnim {} }

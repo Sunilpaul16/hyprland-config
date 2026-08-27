@@ -129,14 +129,17 @@ Scope {
                         }
 
                         // Center widgets
-                        RowLayout {
+                        Item {
                             id: centerRow
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
-                            spacing: Motion.spacing.normal
+                            width: dashboardHoverZone.implicitWidth
+                            height: bar.barContentHeight
 
                             SectionPill {
-                                Layout.alignment: Qt.AlignVCenter
+                                anchors.right: dashboardHoverZone.left
+                                anchors.rightMargin: Motion.spacing.normal
+                                anchors.verticalCenter: parent.verticalCenter
                                 visible: Media.hasPlayer
 
                                 MediaButton {}
@@ -145,7 +148,7 @@ Scope {
                             // Dashboard hover zone
                             Item {
                                 id: dashboardHoverZone
-                                Layout.alignment: Qt.AlignVCenter
+                                anchors.centerIn: parent
                                 implicitWidth: 60
                                 implicitHeight: bar.barContentHeight
 
@@ -179,7 +182,9 @@ Scope {
                             // Workspaces pill
                             MouseArea {
                                 id: workspaceScrollZone
-                                Layout.alignment: Qt.AlignVCenter
+                                anchors.left: dashboardHoverZone.right
+                                anchors.leftMargin: Motion.spacing.normal
+                                anchors.verticalCenter: parent.verticalCenter
                                 implicitWidth: workspacesPill.implicitWidth
                                 implicitHeight: workspacesPill.implicitHeight
 
@@ -212,7 +217,7 @@ Scope {
                             reveal: workspaceScrollZone.containsMouse
                             icon: "swap_horiz"
                             anchors.left: centerRow.right
-                            anchors.leftMargin: Motion.spacing.small
+                            anchors.leftMargin: Motion.spacing.normal + workspaceScrollZone.width + Motion.spacing.small
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
@@ -247,6 +252,7 @@ Scope {
                             // adjacent icons keep the same visual spacing.
                             SectionPill {
                                 Layout.alignment: Qt.AlignVCenter
+                                horizontalPadding: Motion.spacing.normal
                                 visible: (Config.bar.showNotificationIndicator && notifIndicator.active)
                                     || (Config.bar.showTray && tray.hasItems)
 
@@ -267,6 +273,7 @@ Scope {
 
                             Clock {
                                 Layout.alignment: Qt.AlignVCenter
+                                Layout.leftMargin: -rightRow.spacing
                             }
 
                         }
@@ -276,7 +283,7 @@ Scope {
                             id: volumeScrollZone
                             anchors {
                                 left: centerRow.right
-                                leftMargin: Motion.spacing.large
+                                leftMargin: Motion.spacing.normal + workspaceScrollZone.width + Motion.spacing.large
                                 right: rightRow.left
                                 rightMargin: Motion.spacing.normal
                                 top: parent.top

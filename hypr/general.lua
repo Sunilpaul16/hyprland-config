@@ -23,6 +23,10 @@ hl.config({
         follow_mouse = 1,
         off_window_axis_events = 2,
     },
+
+    cursor = {
+        default_monitor = "DP-3",
+    },
 })
 
 -----------------------

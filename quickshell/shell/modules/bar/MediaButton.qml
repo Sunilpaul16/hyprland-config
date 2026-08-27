@@ -16,14 +16,19 @@ Item {
     Row {
         id: row
         anchors.verticalCenter: parent.verticalCenter
-        spacing: Motion.spacing.small
+        spacing: Motion.spacing.normal
 
         StyledText {
             id: playPauseIcon
             anchors.verticalCenter: parent.verticalCenter
-            text: Media.isPlaying ? "\u{23F8}" : "\u{25B6}" // pause / play
+            width: 18
+            height: 18
+            text: Media.isPlaying ? "\uf04c" : "\uf04b"
             color: (hoverArea.containsMouse || playPauseHover.containsMouse) ? Colors.text : Colors.textMuted
-            font.pixelSize: Motion.fontSize.body
+            font.family: "JetBrainsMono Nerd Font"
+            font.pixelSize: Motion.fontSize.label
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
 
             Behavior on color { CAnim {} }
 

@@ -11,9 +11,10 @@ Singleton {
 
     readonly property var lockCommand: ["bash", "-c", "hyprlock || loginctl lock-session \"${XDG_SESSION_ID:-}\""]
 
-    // systemctl only
-    readonly property var poweroffCommand: ["systemctl", "poweroff"]
-    readonly property var rebootCommand: ["systemctl", "reboot"]
+    // Let applications (especially browsers) save clean exit state before the
+    // session disappears, then perform the requested system action.
+    readonly property var poweroffCommand: ["bash", "-c", "command -v hyprshutdown >/dev/null 2>&1 && exec hyprshutdown --post-cmd 'systemctl poweroff' || systemctl poweroff"]
+    readonly property var rebootCommand: ["bash", "-c", "command -v hyprshutdown >/dev/null 2>&1 && exec hyprshutdown --post-cmd 'systemctl reboot' || systemctl reboot"]
     // systemctl only
     readonly property var suspendCommand: ["systemctl", "suspend"]
 

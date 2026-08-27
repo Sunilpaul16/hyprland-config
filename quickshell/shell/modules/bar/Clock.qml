@@ -18,8 +18,8 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text: Time.timeStr
             color: Colors.readable(Colors.primary)
-            font.pixelSize: Motion.fontSize.large
-            font.bold: true
+            font.pixelSize: Motion.fontSize.label
+            font.weight: Font.Medium
 
             Behavior on color { CAnim {} }
         }
@@ -28,8 +28,8 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text: "·"
             color: Colors.readable(Colors.primary)
-            font.pixelSize: Motion.fontSize.large
-            font.bold: true
+            font.pixelSize: Motion.fontSize.label
+            font.weight: Font.Medium
 
             Behavior on color { CAnim {} }
         }
@@ -38,8 +38,8 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text: Time.dateStr
             color: Colors.readable(Colors.primary)
-            font.pixelSize: Motion.fontSize.large
-            font.bold: true
+            font.pixelSize: Motion.fontSize.label
+            font.weight: Font.Medium
 
             Behavior on color { CAnim {} }
         }
