@@ -1,0 +1,13 @@
+xkb_keymap {
+    xkb_keycodes { include "evdev+aliases(qwerty)" };
+    xkb_types { include "complete" };
+    xkb_compat { include "complete" };
+    xkb_symbols {
+        include "pc+gb+inet(evdev)"
+
+        // Keep Left Win on Mod4/Super, but give Right Win its own modifier.
+        replace key <RWIN> { [ Hyper_R ] };
+        modifier_map Mod3 { Hyper_R };
+    };
+    xkb_geometry { include "pc(pc105)" };
+};

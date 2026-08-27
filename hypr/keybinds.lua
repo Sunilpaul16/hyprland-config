@@ -78,6 +78,10 @@ hl.bind(v.kbMediaNext,  hl.dsp.exec_cmd("playerctl next"),       { locked = true
 hl.bind(v.kbMediaPause, hl.dsp.exec_cmd("playerctl play-pause"), { locked = true, description = "Media: play/pause" })
 hl.bind(v.kbMediaPlay,  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true, description = "Media: play/pause" })
 hl.bind(v.kbMediaPrev,  hl.dsp.exec_cmd("playerctl previous"),   { locked = true, description = "Media: previous track" })
+hl.bind(v.kbMediaSeekBack,    hl.dsp.exec_cmd("playerctl position 10-"), { locked = true, description = "Media: rewind 10 seconds" })
+hl.bind(v.kbMediaSeekForward, hl.dsp.exec_cmd("playerctl position 10+"), { locked = true, description = "Media: forward 10 seconds" })
+hl.bind(v.kbMediaVolumeUp,    hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true, description = "Media: volume up" })
+hl.bind(v.kbMediaVolumeDown,  hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true, repeating = true, description = "Media: volume down" })
 
 --# Zoom
 local function zoomfunction(value)
@@ -92,4 +96,3 @@ local function zoomfunction(value)
 end
 hl.bind(v.kbZoomOut, function() zoomfunction(-0.3) end, { repeating = true, description = "Screen: zoom out" })
 hl.bind(v.kbZoomIn, function() zoomfunction(0.3) end, { repeating = true, description = "Screen: zoom in" })
-

@@ -16,6 +16,7 @@ hl.workspace_rule({ workspace = "1", monitor = "DP-3", default = true })
 hl.config({
     input = {
         kb_layout  = "gb",
+        kb_file = os.getenv("HOME") .. "/hyprland-config/hypr/right-win-media.xkb",
         numlock_by_default = true,
         repeat_delay = 250,
         repeat_rate = 35,

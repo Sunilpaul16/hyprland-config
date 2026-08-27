@@ -77,6 +77,10 @@ M.kbMediaNext       = "XF86AudioNext"
 M.kbMediaPause      = "XF86AudioPause"
 M.kbMediaPlay       = "XF86AudioPlay"
 M.kbMediaPrev       = "XF86AudioPrev"
+M.kbMediaSeekBack   = "MOD3 + left"
+M.kbMediaSeekForward = "MOD3 + right"
+M.kbMediaVolumeUp   = "MOD3 + up"
+M.kbMediaVolumeDown = "MOD3 + down"
 
 -- Screen
 M.kbZoomOut = "SUPER + Minus"
