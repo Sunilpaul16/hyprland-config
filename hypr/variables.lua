@@ -81,6 +81,8 @@ M.kbMediaSeekBack   = "MOD3 + left"
 M.kbMediaSeekForward = "MOD3 + right"
 M.kbMediaVolumeUp   = "MOD3 + up"
 M.kbMediaVolumeDown = "MOD3 + down"
+M.kbMediaSpeedUp    = "MOD3 + period"
+M.kbMediaSpeedDown  = "MOD3 + comma"
 
 -- Screen
 M.kbZoomOut = "SUPER + Minus"

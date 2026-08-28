@@ -82,6 +82,8 @@ hl.bind(v.kbMediaSeekBack,    hl.dsp.exec_cmd("playerctl position 10-"), { locke
 hl.bind(v.kbMediaSeekForward, hl.dsp.exec_cmd("playerctl position 10+"), { locked = true, description = "Media: forward 10 seconds" })
 hl.bind(v.kbMediaVolumeUp,    hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true, description = "Media: volume up" })
 hl.bind(v.kbMediaVolumeDown,  hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true, repeating = true, description = "Media: volume down" })
+hl.bind(v.kbMediaSpeedUp,   hl.dsp.send_shortcut({ mods = "SHIFT", key = "period", window = "class:google-chrome" }), { description = "Media: increase video speed" })
+hl.bind(v.kbMediaSpeedDown, hl.dsp.send_shortcut({ mods = "SHIFT", key = "comma", window = "class:google-chrome" }), { description = "Media: decrease video speed" })
 
 --# Zoom
 local function zoomfunction(value)
