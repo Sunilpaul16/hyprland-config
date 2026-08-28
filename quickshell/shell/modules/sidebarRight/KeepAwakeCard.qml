@@ -62,7 +62,7 @@ Rectangle {
         ToggleSwitch {
             Layout.alignment: Qt.AlignVCenter
             checked: IdleInhibitState.enabled
-            onToggled: IdleInhibitState.toggle()
+            onToggled: v => IdleInhibitState.setEnabled(v)
         }
     }
 }

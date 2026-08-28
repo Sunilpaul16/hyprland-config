@@ -96,10 +96,11 @@ ScrollPage {
             last: true
             live: true
             label: "Keep awake"
-            subtext: "The sidebar toggle holds a Wayland inhibitor, which suspends all of the above"
+            subtext: "Prevent automatic locking, display blanking and suspension"
 
-            ValueLabel {
-                text: IdleInhibitState.enabled ? "On" : "Off"
+            ToggleSwitch {
+                checked: IdleInhibitState.enabled
+                onToggled: v => IdleInhibitState.setEnabled(v)
             }
         }
     }

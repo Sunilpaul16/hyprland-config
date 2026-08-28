@@ -15,7 +15,7 @@ Scope {
 
     // Lock
     IdleMonitor {
-        enabled: Config.idle.lockTimeout > 0 && !root.mediaBlocks
+        enabled: Config.idle.lockTimeout > 0 && !root.mediaBlocks && !IdleInhibitState.enabled
         timeout: Config.idle.lockTimeout
         onIsIdleChanged: {
             if (isIdle)
@@ -25,14 +25,14 @@ Scope {
 
     // Displays off
     IdleMonitor {
-        enabled: Config.idle.dpmsTimeout > 0 && !root.mediaBlocks
+        enabled: Config.idle.dpmsTimeout > 0 && !root.mediaBlocks && !IdleInhibitState.enabled
         timeout: Config.idle.dpmsTimeout
         onIsIdleChanged: Hyprland.dispatch(`hl.dsp.dpms({ action = "${isIdle ? "disable" : "enable"}" })`)
     }
 
     // Suspend
     IdleMonitor {
-        enabled: Config.idle.suspendTimeout > 0 && !root.mediaBlocks
+        enabled: Config.idle.suspendTimeout > 0 && !root.mediaBlocks && !IdleInhibitState.enabled
         timeout: Config.idle.suspendTimeout
         onIsIdleChanged: {
             if (isIdle)
