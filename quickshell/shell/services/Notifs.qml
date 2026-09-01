@@ -12,29 +12,26 @@ Singleton {
     id: root
 
     property list<Notif> list: []
-    readonly property list<Notif> popups: list.filter(n => n.popup && !n.closed)
-
-    // Newest per app
-    property var latestTimeForApp: ({})
+    property list<Notif> popups: []
+    property var groupsByAppName: ({})
+    property var appNameList: []
 
     onListChanged: {
-        for (const n of root.list) {
-            if (!n.closed && (!root.latestTimeForApp[n.appName] || n.time > root.latestTimeForApp[n.appName]))
-                root.latestTimeForApp[n.appName] = n.time;
-        }
-        for (const appName of Object.keys(root.latestTimeForApp)) {
-            if (!root.list.some(n => n.appName === appName && !n.closed))
-                delete root.latestTimeForApp[appName];
-        }
-        root.expandedApps = root.expandedApps.filter(appName => root.list.some(n => n.appName === appName && !n.closed));
+        root.scheduleRefresh();
         writeTimer.restart();
     }
 
-    // Per-app groups
-    readonly property var groupsByAppName: {
+    // Coalesce changes to mutable notification objects. Keeping these as live
+    // bindings can reevaluate them while close() is also replacing root.list.
+    function scheduleRefresh(): void {
+        refreshTimer.restart();
+    }
+
+    function refreshDerived(): void {
+        root.popups = root.list.filter(n => n.popup && !n.closed);
+
         const groups = {};
         for (const n of root.list) {
-            // Skip transients
             if (n.closed || n.isTransient)
                 continue;
             if (!groups[n.appName])
@@ -45,12 +42,19 @@ Singleton {
             g.image = g.notifs.find(n => n.image.length > 0)?.image ?? "";
             g.appIcon = g.notifs.find(n => n.appIcon.length > 0)?.appIcon ?? "";
             g.urgency = g.notifs.some(n => n.urgency === NotificationUrgency.Critical) ? NotificationUrgency.Critical : (g.notifs.some(n => n.urgency === NotificationUrgency.Normal) ? NotificationUrgency.Normal : NotificationUrgency.Low);
-            g.time = root.latestTimeForApp[g.appName] ?? g.notifs[0].time;
+            g.time = g.notifs.reduce((latest, n) => n.time > latest ? n.time : latest, g.notifs[0].time);
         }
-        return groups;
+        root.groupsByAppName = groups;
+        root.appNameList = Object.keys(groups).sort((a, b) => groups[b].time - groups[a].time);
+        root.expandedApps = root.expandedApps.filter(appName => groups[appName] !== undefined);
     }
 
-    readonly property var appNameList: Object.keys(root.groupsByAppName).sort((a, b) => root.groupsByAppName[b].time - root.groupsByAppName[a].time)
+    Timer {
+        id: refreshTimer
+        interval: 0
+        repeat: false
+        onTriggered: root.refreshDerived()
+    }
 
     // Expanded app groups
     property list<string> expandedApps: []

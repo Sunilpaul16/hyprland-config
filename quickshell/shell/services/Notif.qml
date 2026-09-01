@@ -18,6 +18,15 @@ QtObject {
 
     property bool hovered
 
+    onPopupChanged: Notifs.scheduleRefresh()
+    onClosedChanged: Notifs.scheduleRefresh()
+    onTimeChanged: Notifs.scheduleRefresh()
+    onAppIconChanged: Notifs.scheduleRefresh()
+    onAppNameChanged: Notifs.scheduleRefresh()
+    onImageChanged: Notifs.scheduleRefresh()
+    onUrgencyChanged: Notifs.scheduleRefresh()
+    onIsTransientChanged: Notifs.scheduleRefresh()
+
     property var locks: new Set()
 
     property date time: new Date()

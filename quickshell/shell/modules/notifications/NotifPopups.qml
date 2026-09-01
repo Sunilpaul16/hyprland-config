@@ -22,7 +22,7 @@ Scope {
                 // Visibility state
                 // Hyprland may recreate its monitor wrapper objects on reload;
                 // compare their stable names rather than object identity.
-                readonly property bool isFocusedScreen: root.screen.name === ScreenOwner.focusedName
+                readonly property bool isFocusedScreen: panelLoader.modelData.name === ScreenOwner.focusedName
                 property int activeRemovals: 0
 
                 // Layout constants
