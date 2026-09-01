@@ -75,7 +75,7 @@ def relative_luminance (image) -> float:
     def linear (c: float) -> float:
         c /= 255
         return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
-    pixels = list(image.getdata())
+    pixels = list(image.get_flattened_data())
     total = sum(0.2126 * linear(p[0]) + 0.7152 * linear(p[1]) + 0.0722 * linear(p[2])
                 for p in pixels)
     return total / len(pixels)
@@ -107,7 +107,7 @@ if args.path is not None:
         lum_image = image.convert('RGB')
     luminance = relative_luminance(lum_image)
 
-    colors = QuantizeCelebi(list(image.getdata()), 128)
+    colors = QuantizeCelebi(list(image.get_flattened_data()), 128)
     argb = Score.score(colors)[0]
 
     # Detect the Google Blue swap

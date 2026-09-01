@@ -65,7 +65,7 @@ apply_kitty_from_scss() {
         }
         {
             for (name in color)
-                gsub("#\\$" name " #", color[name])
+                gsub("#\\$" name " #", "#" color[name])
             print
         }
     ' "$scss" "$COLORGEN_DIR/terminal/kitty-theme.conf" > "$KITTY_THEME_OUT"
@@ -88,7 +88,9 @@ apply_gsettings() {
     else
         gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
     fi
-    nautilus -q || true
+    if pgrep -x nautilus >/dev/null; then
+        nautilus -q || true
+    fi
 }
 
 # apply_qt <light|dark>
