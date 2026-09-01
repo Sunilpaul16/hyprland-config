@@ -96,8 +96,12 @@ Item {
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             onClicked: {
-                root.entry.triggered();
-                TrayMenuState.close();
+                if (root.entry.hasChildren) {
+                    TrayMenuState.openSubmenu(root.entry);
+                } else {
+                    root.entry.triggered();
+                    TrayMenuState.close();
+                }
             }
         }
     }
