@@ -18,7 +18,7 @@ PREVIEW_COLORS="$HOME/.cache/matugen/preview-colors.json"
 
 VALID_SCHEMES="scheme-tonal-spot scheme-vibrant scheme-expressive scheme-content scheme-fidelity scheme-fruit-salad scheme-monochrome scheme-neutral scheme-rainbow"
 
-MPV_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 video-align-y=0 load-scripts=no"
+MPV_OPTS="quiet no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 video-align-y=0 load-scripts=no"
 
 usage() {
     echo "Usage: $(basename "$0") [--preview] [--force-display] [--mode auto|light|dark] [--scheme auto|scheme-*] <path-to-image-or-video>" >&2
