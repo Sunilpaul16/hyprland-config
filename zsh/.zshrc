@@ -40,6 +40,9 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(git)
 source $ZSH/oh-my-zsh.sh
 
+# Fuzzy command history (Ctrl+R).
+[[ -r "$ZDOTDIR/fuzzy-history.zsh" ]] && source "$ZDOTDIR/fuzzy-history.zsh"
+
 # --------------------------
 # Powerlevel10k config
 # --------------------------
