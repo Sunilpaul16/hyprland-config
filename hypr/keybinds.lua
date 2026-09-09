@@ -8,7 +8,6 @@ local v = require("variables")
 
 hl.bind(v.kbTerminal, hl.dsp.exec_cmd(v.terminal), { description = "App: terminal" })
 hl.bind(v.kbCloseWindow, hl.dsp.window.close(), { description = "Window: close" })
-hl.bind(v.kbExit, hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"), { description = "System: exit hyprland" })
 hl.bind(v.kbFileManager, hl.dsp.exec_cmd(v.fileManager), { description = "App: file manager" })
 hl.bind(v.kbToggleWindowFloating, hl.dsp.window.float({ action = "toggle" }), { description = "Window: toggle floating" })
 hl.bind(v.kbTogglePseudotile, hl.dsp.window.pseudo(), { description = "Window: toggle pseudotile" })

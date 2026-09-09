@@ -15,7 +15,10 @@ Item {
     }
 
     // Column packing
-    readonly property int columnCount: Math.max(2, Math.ceil(Binds.categories.length / 3))
+    readonly property int cardWidth: 312
+    readonly property int maxBalancedColumns: Math.ceil(Binds.categories.length / 3)
+    readonly property int fittingColumns: Math.floor((((root.screen?.width ?? 1280) * 0.9) - 56 + root.cardSpacing) / (root.cardWidth + root.cardSpacing))
+    readonly property int columnCount: Math.max(2, Math.min(root.maxBalancedColumns, root.fittingColumns))
     readonly property var columns: {
         const cats = [...Binds.categories].sort((a, b) => root.estimatedHeight(b) - root.estimatedHeight(a));
         const cols = Array.from({ length: root.columnCount }, () => []);

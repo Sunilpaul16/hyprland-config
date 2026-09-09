@@ -54,7 +54,6 @@ M.kbWorkspaceNext          = "SUPER + mouse_down"
 M.kbWorkspacePrev          = "SUPER + mouse_up"
 
 -- System
-M.kbExit  = "SUPER + M"
 M.kbLock  = "SUPER + L"
 M.kbRestartShell = "SUPER + CTRL + R"
 M.kbReloadHyprland = "SUPER + CTRL + ALT + R"

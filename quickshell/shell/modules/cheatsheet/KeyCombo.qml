@@ -16,6 +16,8 @@ Row {
         "Slash": "/",
         "Minus": "-",
         "Equal": "=",
+        "period": ".",
+        "comma": ",",
         "Print": "PrtSc",
         "left": "←",
         "right": "→",
@@ -42,6 +44,7 @@ Row {
         if (modmask & (1 << 6)) names.push("Super");
         if (modmask & (1 << 0)) names.push("Shift");
         if (modmask & (1 << 3)) names.push("Alt");
+        if (modmask & (1 << 5)) names.push("Right Win");
         return names;
     }
 
