@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import "services"
 import "modules/bar"
+import "modules/actionPalette"
 import "modules/dashboard"
 import "modules/launcher"
 import "modules/cheatsheet"
@@ -30,6 +31,7 @@ ShellRoot {
     }
 
     Bar {}
+    ActionPalette {}
     Launcher {}
     Cheatsheet {}
     VolumeOsd {}

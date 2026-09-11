@@ -8,6 +8,7 @@ Singleton {
     id: root
 
     readonly property var list: [
+        { name: "actions", label: "Action palette", description: "Focus timers, activity scenes and desktop controls", icon: "⚡", execute: () => ActionPaletteState.show() },
         { name: "wallpaper", label: "Wallpaper", description: "Change the current wallpaper", icon: "\u{1F5BC}\u{FE0F}" },
         { name: "clip", label: "Clipboard", description: "Browse clipboard history", icon: "\u{1F4CB}" },
         { name: "scheme", label: "Scheme", description: "Switch to a static colour palette", icon: "\u{1F3A8}" },
