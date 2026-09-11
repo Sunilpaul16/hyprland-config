@@ -17,6 +17,7 @@ Singleton {
     readonly property string unitSymbol: root.units === "fahrenheit" ? "°F" : "°C"
     readonly property string windUnit: root.units === "fahrenheit" ? "mph" : "km/h"
     readonly property bool enabled: Config.dashboard.tabs.showDashboard || Config.dashboard.tabs.showWeather
+        || (Config.ambient.enabled && (Config.ambient.useSunTimes || Config.ambient.weatherReactive))
 
     // Unit is baked into the URL
     onUnitsChanged: if (root.enabled) root.fetchForecast()
@@ -38,6 +39,8 @@ Singleton {
     // Formatted sun times
     readonly property string sunrise: _sunriseIso.length > 0 ? Qt.formatDateTime(new Date(_sunriseIso), Time.clockFormat) : "--:--"
     readonly property string sunset: _sunsetIso.length > 0 ? Qt.formatDateTime(new Date(_sunsetIso), Time.clockFormat) : "--:--"
+    readonly property string sunriseIso: _sunriseIso
+    readonly property string sunsetIso: _sunsetIso
 
     property real _currentTemp: NaN
     property int _weatherCode: -1

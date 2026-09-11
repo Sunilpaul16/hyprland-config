@@ -5,6 +5,7 @@ import Quickshell
 import "services"
 import "modules/bar"
 import "modules/actionPalette"
+import "modules/ambient"
 import "modules/dashboard"
 import "modules/launcher"
 import "modules/cheatsheet"
@@ -31,6 +32,7 @@ ShellRoot {
     }
 
     Bar {}
+    AmbientBackdrop {}
     ActionPalette {}
     Launcher {}
     Cheatsheet {}

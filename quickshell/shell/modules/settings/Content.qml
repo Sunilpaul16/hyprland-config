@@ -18,6 +18,7 @@ Item {
     readonly property var pageModel: [
         // Appearance
         { key: "wallpaperStyle", label: "Wallpaper & style", icon: "palette", description: "Wallpaper, fonts, colours", keywords: "theme transparency opacity blur palette scheme qt terminal", category: "appearance", component: wallpaperStylePage },
+        { key: "ambient", label: "Ambient desktop", icon: "landscape", description: "Time, weather and wallpaper atmosphere", keywords: "sunrise sunset dawn dusk night tint weather battery focus", category: "appearance", component: ambientPage },
 
         // Shell
         { key: "panels", label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", keywords: "bar animation motion tabs tray clock osd", category: "shell", component: panelsPage },
@@ -257,6 +258,12 @@ Item {
         id: wallpaperStylePage
 
         WallpaperStylePage {}
+    }
+
+    Component {
+        id: ambientPage
+
+        AmbientPage {}
     }
 
     Component {

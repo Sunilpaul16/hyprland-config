@@ -29,6 +29,7 @@ Singleton {
             { id: "dnd", label: DndState.enabled ? "Disable Do Not Disturb" : "Enable Do Not Disturb", description: "Toggle notification popups", icon: DndState.enabled ? "notifications_active" : "do_not_disturb_on", execute: () => DndState.toggle() },
             { id: "awake", label: IdleInhibitState.enabled ? "Allow idle" : "Keep awake", description: "Toggle display and suspend inhibition", icon: IdleInhibitState.enabled ? "bedtime" : "coffee", execute: () => IdleInhibitState.toggle() },
             { id: "game", label: GameModeState.enabled ? "Disable game mode" : "Enable game mode", description: "Toggle low-overhead desktop effects", icon: "sports_esports", execute: () => GameModeState.toggle() },
+            { id: "ambient", label: Config.ambient.enabled ? "Disable ambient mode" : "Enable ambient mode", description: "Time and weather wallpaper atmosphere", icon: "landscape", execute: () => AmbientState.toggle() },
             { id: "overview", label: "Open workspace overview", description: "See windows grouped by workspace", icon: "view_carousel", execute: () => OverviewState.toggle() },
             { id: "dashboard", label: "Open dashboard", description: "Media, weather and system performance", icon: "dashboard", execute: () => DashboardState.show() },
             { id: "settings", label: "Open settings", description: "Configure the shell", icon: "settings", execute: () => SettingsState.toggle() }

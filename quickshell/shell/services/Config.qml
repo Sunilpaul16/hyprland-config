@@ -29,6 +29,7 @@ Singleton {
     property alias apps: adapter.apps
     property alias idle: adapter.idle
     property alias overlay: adapter.overlay
+    property alias ambient: adapter.ambient
 
     // Load gate
     property bool ready: false
@@ -150,6 +151,15 @@ Singleton {
                     property bool centerDot: true
                     property int dotSize: 2
                 }
+            }
+
+            property JsonObject ambient: JsonObject {
+                property bool enabled: true
+                property string mode: "auto" // auto | dawn | day | dusk | night
+                property real intensity: 0.65
+                property bool useSunTimes: true
+                property bool weatherReactive: true
+                property bool reduceOnBattery: true
             }
 
             property JsonObject notifications: JsonObject {
