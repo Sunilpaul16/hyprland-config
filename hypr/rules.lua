@@ -13,13 +13,6 @@ local function shell_transparency_enabled()
 end
 
 hl.window_rule({
-    name  = "suppress-maximize-events",
-    match = { class = ".*" },
-
-    suppress_event = "maximize",
-})
-
-hl.window_rule({
     name  = "float-blueman-manager",
     match = { class = "blueman-manager" },
 
