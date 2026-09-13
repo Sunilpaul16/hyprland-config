@@ -38,3 +38,9 @@ output_path = '~/.config/qt6ct/colors/matugen.conf'
 [templates.qt5ct]
 input_path = '~/.config/matugen/templates/qt/colors.conf'
 output_path = '~/.config/qt5ct/colors/matugen.conf'
+
+# Local Vencord theme. Vencord watches enabled theme files, so wallpaper and
+# preset changes are reflected without fetching CSS from the network.
+[templates.discord]
+input_path = '~/.config/matugen/templates/discord/matugen.theme.css'
+output_path = '~/.config/Vencord/themes/matugen.theme.css'
