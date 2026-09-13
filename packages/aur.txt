@@ -1,0 +1,10 @@
+# Install these with an AUR helper. The bootstrap script uses yay.
+google-chrome
+illogical-impulse-bibata-modern-classic-bin
+mpvpaper
+nordvpn-bin
+ttf-material-symbols-variable-git
+visual-studio-code-bin
+
+# GPU drivers are deliberately not listed: install the package appropriate for
+# the machine. The current NVIDIA setup uses nvidia-580xx-utils.

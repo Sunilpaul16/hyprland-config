@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+
+set -uo pipefail
+
+ROOT="$(dirname "$(dirname "$(readlink -f "$0")")")"
+failures=0
+warnings=0
+
+ok() { printf 'ok      %s\n' "$1"; }
+fail() { printf 'FAIL    %s\n' "$1" >&2; failures=$((failures + 1)); }
+warn() { printf 'warning %s\n' "$1" >&2; warnings=$((warnings + 1)); }
+
+check_command() {
+    if command -v "$1" >/dev/null 2>&1; then
+        ok "command: $1"
+    else
+        warn "optional validation command is unavailable: $1"
+    fi
+}
+
+cd "$ROOT" || exit 1
+
+shell_files=(
+    scripts/ocr
+    scripts/record
+    scripts/screenshot
+    scripts/setscheme
+    scripts/switchwall
+    scripts/lib/apply-colors.sh
+    hypr/hyprlock/check-capslock.sh
+)
+
+for file in "${shell_files[@]}"; do
+    if bash -n "$file"; then
+        ok "bash syntax: $file"
+    else
+        fail "bash syntax: $file"
+    fi
+done
+
+if command -v zsh >/dev/null 2>&1; then
+    if zsh -n .zshenv zsh/.zshrc zsh/.p10k.zsh zsh/fuzzy-history.zsh; then
+        ok "zsh syntax"
+    else
+        fail "zsh syntax"
+    fi
+else
+    warn "zsh is unavailable; skipped Zsh syntax checks"
+fi
+
+if python3 -c 'import ast, pathlib, sys; [ast.parse(pathlib.Path(p).read_text(), filename=p) for p in sys.argv[1:]]' \
+    scripts/lib/preset-palette.py matugen/colorgen/generate_colors_material.py; then
+    ok "python syntax"
+else
+    fail "python syntax"
+fi
+
+for file in fastfetch/config.jsonc; do
+    if python3 -m json.tool "$file" >/dev/null; then
+        ok "json syntax: $file"
+    else
+        fail "json syntax: $file"
+    fi
+done
+
+if [[ -f quickshell/config.json ]]; then
+    if python3 -m json.tool quickshell/config.json >/dev/null; then
+        ok "json syntax: quickshell/config.json"
+    else
+        fail "json syntax: quickshell/config.json"
+    fi
+else
+    warn "quickshell/config.json does not exist yet; it will be created at runtime"
+fi
+
+if scripts/lib/preset-palette.py check; then
+    ok "theme role consistency"
+else
+    fail "theme role consistency"
+fi
+
+if command -v qmllint >/dev/null 2>&1; then
+    if qmllint -I quickshell/shell quickshell/shell/shell.qml; then
+        ok "QML entry point"
+    else
+        fail "QML entry point"
+    fi
+else
+    warn "qmllint is unavailable; skipped QML validation"
+fi
+
+if command -v shellcheck >/dev/null 2>&1; then
+    if shellcheck -x "${shell_files[@]}"; then
+        ok "ShellCheck"
+    else
+        fail "ShellCheck"
+    fi
+else
+    warn "shellcheck is unavailable; skipped static shell analysis"
+fi
+
+if git diff --check; then
+    ok "git whitespace"
+else
+    fail "git whitespace"
+fi
+
+printf '\n%d failure(s), %d warning(s)\n' "$failures" "$warnings"
+(( failures == 0 ))

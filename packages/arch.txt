@@ -1,0 +1,59 @@
+# Compositor and session
+hyprland
+hypridle
+hyprlock
+hyprshutdown
+hyprsunset
+quickshell
+uwsm
+xdg-desktop-portal-hyprland
+
+# Desktop applications and services
+blueman
+gnome-keyring
+kitty
+nautilus
+network-manager-applet
+networkmanager
+nm-connection-editor
+playerctl
+wireplumber
+
+# Capture, clipboard, wallpaper, and theming
+cliphist
+ffmpeg
+grim
+libnotify
+libpulse
+matugen
+slurp
+swappy
+tesseract
+tesseract-data-eng
+wl-clipboard
+wf-recorder
+
+# Shell service helpers
+curl
+glib2
+jq
+lm_sensors
+pacman-contrib
+pciutils
+python
+util-linux
+
+# Terminal tools
+btop
+fastfetch
+fzf
+yazi
+zsh
+
+# Qt and visual assets
+noto-fonts
+otf-atkinsonhyperlegiblemono-nerd
+papirus-icon-theme
+qt5ct
+qt6ct
+ttf-jetbrains-mono-nerd

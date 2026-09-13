@@ -30,7 +30,9 @@ QtObject {
     readonly property string notifImageCache: home + "/.cache/quickshell-notif-images"
     readonly property string videosDir: home + "/Videos"
     readonly property string faceIcon: home + "/.face"
-    readonly property string repoRoot: home + "/hyprland-config"
+    // shellDir is <repo>/quickshell/shell, including when ~/.config/quickshell
+    // is a symlink. Keep assets and helpers independent of the clone location.
+    readonly property string repoRoot: Quickshell.shellDir + "/../.."
     readonly property string presetHelper: repoRoot + "/scripts/lib/preset-palette.py"
     readonly property string bongocatGif: repoRoot + "/assets/bongocat.gif"
     readonly property string dinoImage: repoRoot + "/assets/dino.png"
