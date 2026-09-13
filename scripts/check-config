@@ -21,6 +21,8 @@ check_command() {
 cd "$ROOT" || exit 1
 
 shell_files=(
+    install.sh
+    setup.sh
     scripts/ocr
     scripts/record
     scripts/screenshot

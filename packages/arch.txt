@@ -34,7 +34,9 @@ wl-clipboard
 wf-recorder
 
 # Shell service helpers
+base-devel
 curl
+git
 glib2
 jq
 lm_sensors

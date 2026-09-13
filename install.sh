@@ -24,6 +24,8 @@ Usage: ./install.sh [options]
 
 Existing destinations are moved under ~/.local/state/hyprland-config/backups/
 before links are created. Nothing is silently overwritten.
+
+For a guided installation, run ./setup.sh instead.
 EOF
 }
 
@@ -117,6 +119,7 @@ install_links() {
         'zsh/.zshrc|.config/zsh/.zshrc'
         'zsh/fuzzy-history.zsh|.config/zsh/fuzzy-history.zsh'
         'scripts/check-config|.local/bin/check-hypr-config'
+        'setup.sh|.local/bin/hypr-setup'
         'scripts/ocr|.local/bin/ocr'
         'scripts/record|.local/bin/record'
         'scripts/screenshot|.local/bin/screenshot'
@@ -131,6 +134,20 @@ install_links() {
     done
 
     mkdir -p "$HOME/wallpaper" "$HOME/Pictures/Screenshots" "$HOME/Videos"
+
+    # Keep first login usable before a wallpaper has generated live colours.
+    if [[ ! -e "$HOME/.config/hypr/hyprlock/colors.conf" ]]; then
+        install -Dm644 "$ROOT/defaults/hyprlock-colors.conf" "$HOME/.config/hypr/hyprlock/colors.conf"
+        printf 'seeded  %s\n' "$HOME/.config/hypr/hyprlock/colors.conf"
+    fi
+    if [[ ! -e "$HOME/.config/hypr/colors.lua" ]]; then
+        install -Dm644 "$ROOT/defaults/hypr-colors.lua" "$HOME/.config/hypr/colors.lua"
+        printf 'seeded  %s\n' "$HOME/.config/hypr/colors.lua"
+    fi
+    if [[ ! -e "$HOME/.config/kitty/theme.conf" ]]; then
+        install -Dm644 "$ROOT/defaults/kitty-theme.conf" "$HOME/.config/kitty/theme.conf"
+        printf 'seeded  %s\n' "$HOME/.config/kitty/theme.conf"
+    fi
     if command -v systemctl >/dev/null 2>&1 && systemctl --user show-environment >/dev/null 2>&1; then
         systemctl --user daemon-reload
     else
