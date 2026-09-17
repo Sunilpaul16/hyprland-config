@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+readonly THEME_DIR="/usr/share/sddm/themes/hyprlands-video-themes"
+readonly DEST_DIR="$THEME_DIR/Backgrounds/User"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly REPO_DIR="$(dirname "$SCRIPT_DIR")"
+readonly THEME_SOURCE="$REPO_DIR/sddm/hyprlands-video-themes/Main.qml"
+readonly WALLPAPER_DIR="${1:-}"
+
+if [[ $EUID -ne 0 ]]; then
+    echo "Usage: sudo $0 <wallpaper-directory>" >&2
+    exit 1
+fi
+
+if [[ -z "$WALLPAPER_DIR" || ! -d "$WALLPAPER_DIR" ]]; then
+    echo "install-sddm-wallpapers: wallpaper directory does not exist: ${WALLPAPER_DIR:-<missing>}" >&2
+    exit 1
+fi
+
+if [[ ! -d "$THEME_DIR" || ! -f "$THEME_SOURCE" ]]; then
+    echo "install-sddm-wallpapers: SDDM theme or managed Main.qml is missing" >&2
+    exit 1
+fi
+
+install -d -m 0755 "$DEST_DIR"
+
+count=0
+while IFS= read -r -d '' wallpaper; do
+    install -m 0644 "$wallpaper" "$DEST_DIR/${wallpaper##*/}"
+    ((count += 1))
+done < <(find "$WALLPAPER_DIR" -maxdepth 1 -type f -iname '*.mp4' -print0 | sort -z)
+
+if ((count == 0)); then
+    echo "install-sddm-wallpapers: no MP4 wallpapers found in $WALLPAPER_DIR" >&2
+    exit 1
+fi
+
+install -m 0644 "$THEME_SOURCE" "$THEME_DIR/Main.qml"
+echo "Installed $count SDDM wallpapers and random-background theme logic."
