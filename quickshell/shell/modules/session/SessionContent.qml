@@ -44,7 +44,7 @@ Column {
 
         AnimatedImage {
             anchors.centerIn: parent
-            source: Qt.resolvedUrl(Directories.bongocatGif)
+            source: "file://" + Directories.bongocatGif
             playing: parent.visible
             fillMode: Image.PreserveAspectFit
             width: 64

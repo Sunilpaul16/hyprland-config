@@ -23,6 +23,7 @@ wireplumber
 cliphist
 ffmpeg
 grim
+hyprpicker
 libnotify
 libpulse
 matugen

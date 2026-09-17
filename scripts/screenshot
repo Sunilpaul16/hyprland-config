@@ -10,6 +10,8 @@ usage() {
 # Parse args
 MODE="${1:-}"
 EDIT=false
+FREEZE_PID=""
+TEMP_DIR=""
 [[ "${2:-}" == "--edit" ]] && EDIT=true
 
 case "$MODE" in
@@ -22,7 +24,9 @@ for bin in grim wl-copy notify-send; do
     command -v "$bin" >/dev/null || { echo "screenshot: missing required binary: $bin" >&2; exit 1; }
 done
 if [[ "$MODE" == region ]]; then
-    command -v slurp >/dev/null || { echo "screenshot: region mode requires slurp, which isn't installed" >&2; exit 1; }
+    for bin in slurp hyprpicker; do
+        command -v "$bin" >/dev/null || { echo "screenshot: region mode requires $bin, which isn't installed" >&2; exit 1; }
+    done
 else
     for bin in hyprctl jq; do
         command -v "$bin" >/dev/null || { echo "screenshot: full mode requires $bin, which isn't installed" >&2; exit 1; }
@@ -35,8 +39,30 @@ fi
 
 SAVE_DIR="$HOME/Pictures/Screenshots"
 
+# Frozen selection
+stop_freeze() {
+    [[ -n "$FREEZE_PID" ]] || return 0
+    kill "$FREEZE_PID" 2>/dev/null || true
+    wait "$FREEZE_PID" 2>/dev/null || true
+    FREEZE_PID=""
+}
+
+cleanup() {
+    stop_freeze
+    if [[ -n "$TEMP_DIR" && -d "$TEMP_DIR" ]]; then
+        rm -f -- "$TEMP_DIR/capture.png"
+        rmdir -- "$TEMP_DIR" 2>/dev/null || true
+    fi
+}
+trap cleanup EXIT
+trap 'exit 130' HUP INT TERM
+
 # Region selection
 if [[ "$MODE" == region ]]; then
+    # Snapshot before slurp takes focus and dismisses shell overlays.
+    hyprpicker -r -z -q &
+    FREEZE_PID=$!
+    sleep 0.2
     region="$(slurp)" || exit 0   # Esc pressed -> silent no-op, no file, no notification
     [[ -z "$region" ]] && exit 0
 else
@@ -70,12 +96,20 @@ notify_and_open() {
 
 # Capture + save/edit
 if $EDIT; then
-    capture - | swappy -f - -o "$OUTFILE"
+    TEMP_DIR="$(mktemp -d --tmpdir screenshot-region.XXXXXX)"
+    frozen_capture="$TEMP_DIR/capture.png"
+    capture "$frozen_capture"
+    stop_freeze
+    swappy -f "$frozen_capture" -o "$OUTFILE"
+    rm -f -- "$frozen_capture"
+    rmdir -- "$TEMP_DIR"
+    TEMP_DIR=""
     [[ -s "$OUTFILE" ]] || exit 0   # closed swappy without saving -> nothing to copy/notify
     wl-copy < "$OUTFILE"
     notify_and_open "Screenshot saved (edited)" "$OUTFILE"
 else
     capture "$OUTFILE"
+    stop_freeze
     wl-copy < "$OUTFILE"
     notify_and_open "Screenshot saved" "$OUTFILE"
 fi

@@ -53,12 +53,10 @@ Item {
         anchors.right: parent.right
         anchors.top: parent.top
         height: root.searchHeight
-        radius: height / 2
-        color: Colors.layer
-        border.width: 1
-        border.color: searchInput.activeFocus ? Colors.primary : Colors.outlineVariant
+        radius: Motion.rounding.card
+        color: searchInput.activeFocus ? Colors.tint(Colors.layer, Colors.primary, 0.10) : Colors.layer
 
-        Behavior on border.color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
+        Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
         MaterialIcon {
             id: searchIcon
@@ -66,8 +64,10 @@ Item {
             anchors.leftMargin: Motion.spacing.xlarge
             anchors.verticalCenter: parent.verticalCenter
             text: "search"
-            color: Colors.textMuted
+            color: searchInput.activeFocus ? Colors.primary : Colors.textMuted
             font.pixelSize: Motion.fontSize.display
+
+            Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
         }
 
         StyledText {

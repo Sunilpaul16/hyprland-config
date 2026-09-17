@@ -189,7 +189,7 @@ Item {
             visible: Config.dashboard.media.gifEnabled
             source: "file://" + root.gifPath
             speed: Config.dashboard.media.gifSpeed
-            playing: Media.isPlaying
+            playing: Config.dashboard.media.gifEnabled
             fillMode: Image.PreserveAspectFit
             asynchronous: true
         }
