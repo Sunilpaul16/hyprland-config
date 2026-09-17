@@ -271,6 +271,7 @@ Singleton {
                 // Preview debounce
                 property int previewDelay: 300
                 property bool display: true  // enable mpvpaper
+                property bool randomOnLogin: true  // pick a different wallpaper each session
             }
 
             // Dashboard card sizing

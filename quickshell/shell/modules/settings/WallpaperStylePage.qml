@@ -85,6 +85,17 @@ ScrollPage {
         }
 
         SettingRow {
+            live: true
+            label: "Random on login"
+            subtext: "Choose a different local wallpaper when Hyprland starts"
+
+            ToggleSwitch {
+                checked: Config.wallpaper.randomOnLogin
+                onToggled: v => Config.wallpaper.randomOnLogin = v
+            }
+        }
+
+        SettingRow {
             last: true
             live: true
             label: "Framing"

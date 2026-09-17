@@ -13,5 +13,8 @@ hl.on("hyprland.start", function()
     -- Quickshell unit
     hl.exec_cmd([[bash -c 'uwsm finalize; systemctl --user import-environment QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME; systemctl --user start quickshell.service']])
 
-    hl.exec_cmd([[bash -c 'f="$HOME/.local/state/quickshell/current_wallpaper"; [ -s "$f" ] && exec "$HOME/.local/bin/switchwall" --preview "$(cat "$f")"']])
+    -- Exactly once per login: shuffle or restore according to the wallpaper
+    -- setting. This intentionally does not live in Quickshell, whose service
+    -- may restart several times during one session.
+    hl.exec_cmd([[bash -c 'exec "$HOME/.local/bin/switchwall" --login']])
 end)

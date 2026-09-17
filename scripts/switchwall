@@ -22,6 +22,8 @@ MPV_OPTS="quiet no-audio loop hwdec=auto scale=bilinear interpolation=no video-s
 
 usage() {
     echo "Usage: $(basename "$0") [--preview] [--force-display] [--mode auto|light|dark] [--scheme auto|scheme-*] <path-to-image-or-video>" >&2
+    echo "       $(basename "$0") --random      (pick a different local wallpaper)" >&2
+    echo "       $(basename "$0") --login       (shuffle or restore according to settings)" >&2
     echo "       $(basename "$0") --noswitch" >&2
     echo "       $(basename "$0") --colors-preview <path>   (palette only, changes nothing)" >&2
     echo "       $(basename "$0") --mode auto|light|dark   (re-themes the current wallpaper)" >&2
@@ -70,6 +72,8 @@ COLORS_PREVIEW=false
 NOSWITCH=false
 FORCE_DISPLAY=false
 REFRESH=false
+RANDOM_PICK=false
+LOGIN=false
 SET_MODE=""
 SET_SCHEME=""
 while [[ $# -gt 0 ]]; do
@@ -78,6 +82,8 @@ while [[ $# -gt 0 ]]; do
         --colors-preview) COLORS_PREVIEW=true; shift ;;
         --force-display) FORCE_DISPLAY=true; shift ;;
         --noswitch) NOSWITCH=true; shift ;;
+        --random) RANDOM_PICK=true; shift ;;
+        --login) LOGIN=true; shift ;;
         --refresh)  REFRESH=true; NOSWITCH=true; shift ;;
         --mode)     [[ -n "${2:-}" ]] || usage; SET_MODE="$2"; shift 2 ;;
         --scheme)   [[ -n "${2:-}" ]] || usage; SET_SCHEME="$2"; shift 2 ;;
@@ -86,6 +92,36 @@ while [[ $# -gt 0 ]]; do
         *)          break ;;
     esac
 done
+
+if $LOGIN; then
+    [[ $# -eq 0 ]] || usage
+    if $PREVIEW || $COLORS_PREVIEW || $NOSWITCH || $REFRESH || $RANDOM_PICK || \
+        [[ -n "$SET_MODE" || -n "$SET_SCHEME" ]]; then
+        usage
+    fi
+
+    random_on_login=true
+    if [[ -s "$CONFIG_FILE" ]]; then
+        random_on_login="$(jq -r '.wallpaper.randomOnLogin // true' "$CONFIG_FILE" 2>/dev/null || echo true)"
+    fi
+
+    if [[ "$random_on_login" == true ]]; then
+        RANDOM_PICK=true
+    else
+        [[ -s "$STATE_FILE" ]] || exit 0
+        wallpaper="$(cat "$STATE_FILE")"
+        [[ -f "$wallpaper" ]] || exit 0
+        PREVIEW=true
+    fi
+fi
+
+if $RANDOM_PICK && ! $LOGIN; then
+    [[ $# -eq 0 ]] || usage
+    if $PREVIEW || $COLORS_PREVIEW || $NOSWITCH || $REFRESH || \
+        [[ -n "$SET_MODE" || -n "$SET_SCHEME" ]]; then
+        usage
+    fi
+fi
 
 # Requested mode override. Persist it only after the matching theme succeeds.
 if [[ -n "$SET_MODE" ]]; then
@@ -105,7 +141,35 @@ elif [[ -s "$MODE_FILE" ]]; then
     COLOR_MODE="$(cat "$MODE_FILE")"
 fi
 
-if $COLORS_PREVIEW; then
+if $RANDOM_PICK; then
+    wallpaper_dir="$HOME/wallpaper"
+    candidates=()
+    while IFS= read -r -d '' candidate; do
+        candidates+=("$candidate")
+    done < <(find "$wallpaper_dir" -maxdepth 1 -type f \
+        \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \
+        -o -iname '*.mp4' -o -iname '*.webm' -o -iname '*.mkv' -o -iname '*.avi' \
+        -o -iname '*.mov' \) -print0 | sort -z)
+
+    [[ ${#candidates[@]} -gt 0 ]] || {
+        echo "switchwall: no wallpapers found in $wallpaper_dir" >&2
+        exit 0
+    }
+
+    if [[ ${#candidates[@]} -gt 1 && -s "$STATE_FILE" ]]; then
+        current="$(cat "$STATE_FILE")"
+        alternatives=()
+        for candidate in "${candidates[@]}"; do
+            [[ "$candidate" == "$current" ]] || alternatives+=("$candidate")
+        done
+        [[ ${#alternatives[@]} -eq 0 ]] || candidates=("${alternatives[@]}")
+    fi
+
+    wallpaper="${candidates[RANDOM % ${#candidates[@]}]}"
+    echo "switchwall: randomly selected ${wallpaper##*/}"
+elif $LOGIN; then
+    : # Restore path was resolved above when login shuffling is disabled.
+elif $COLORS_PREVIEW; then
     [[ $# -eq 1 ]] || usage
     wallpaper="$1"
     [[ -f "$wallpaper" ]] || { echo "switchwall: no such file: $wallpaper" >&2; exit 1; }

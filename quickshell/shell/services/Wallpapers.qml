@@ -49,10 +49,6 @@ Singleton {
         onFileChanged: reload()
     }
 
-    function randomFromCurrentFolder(): var {
-        return root.list.length > 0 ? root.list[Math.floor(Math.random() * root.list.length)] : null;
-    }
-
     // Apply wallpaper
     function apply(path: string): void {
         if (path)
@@ -60,9 +56,7 @@ Singleton {
     }
 
     function applyRandom(): void {
-        const entry = root.randomFromCurrentFolder();
-        if (entry)
-            root.apply(entry.path);
+        Quickshell.execDetached([Directories.switchwallScript, "--random"]);
     }
 
     // Random wallpaper shortcut
