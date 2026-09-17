@@ -8,7 +8,14 @@ import "../../components"
 ScrollPage {
     id: root
 
-    title: "Wallpaper & style"
+    property string sectionKey: "all"
+    property string pageTitle: "Appearance"
+
+    title: root.pageTitle
+
+    function shows(key: string): bool {
+        return root.sectionKey === "all" || root.sectionKey === key;
+    }
 
     // Apply display toggle
     Process {
@@ -32,13 +39,16 @@ ScrollPage {
     WallpaperPreviewHeader {
         Layout.fillWidth: true
         cappedWidth: root.cappedWidth
+        visible: root.shows("wallpaper")
     }
 
     SectionLabel {
+        visible: root.shows("wallpaper")
         text: "Wallpaper"
     }
 
     SettingGroup {
+        visible: root.shows("wallpaper")
         SettingRow {
             first: true
             live: true
@@ -75,6 +85,7 @@ ScrollPage {
         }
 
         SettingRow {
+            last: true
             live: true
             label: "Framing"
             subtext: "Which part shows on cropped or rotated screens"
@@ -92,7 +103,19 @@ ScrollPage {
             }
         }
 
+    }
+    // No dark boolean
+
+    SectionLabel {
+        visible: root.shows("style")
+        text: "Surfaces"
+    }
+
+    SettingGroup {
+        visible: root.shows("style")
+
         SettingRow {
+            first: true
             live: true
             label: "Transparency"
             subtext: "Translucent panel backgrounds, blurred by Hyprland"
@@ -127,7 +150,6 @@ ScrollPage {
 
         SettingRow {
             live: true
-            // Run end
             last: !Config.appearance.transparency
             label: "Bar pill opacity"
             subtext: "The pills on the top bar; 0% hides them entirely"
@@ -165,13 +187,14 @@ ScrollPage {
             }
         }
     }
-    // No dark boolean
 
     SectionLabel {
+        visible: root.shows("style")
         text: "Colours"
     }
 
     SettingGroup {
+        visible: root.shows("style")
         SettingRow {
             first: true
             live: true
@@ -281,18 +304,22 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("style")
         text: "Palette"
     }
 
     ColourSwatches {
         Layout.fillWidth: true
+        visible: root.shows("style")
     }
 
     TerminalColoursSection {
         Layout.fillWidth: true
+        visible: root.shows("style")
     }
 
     SettingRow {
+        visible: root.shows("style")
         live: true
         first: true
         last: true
@@ -309,10 +336,12 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("style")
         text: "Fonts"
     }
 
     SettingGroup {
+        visible: root.shows("style")
         // Curated shortlist
         SettingRow {
             first: true

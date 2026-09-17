@@ -14,28 +14,23 @@ Item {
     // Natural height
     readonly property int naturalHeight: navList.naturalHeight + root.pad * 2
 
-    // Page registry
+    // Selected section within grouped destinations
+    property int appearanceSection: 0
+    property int desktopSection: 0
+    property int devicesSection: 0
+    property int powerSection: 0
+    property int systemSection: 0
+
+    // Primary destinations
     readonly property var pageModel: [
-        // Appearance
-        { key: "wallpaperStyle", label: "Wallpaper & style", icon: "palette", description: "Wallpaper, fonts, colours", keywords: "theme transparency opacity blur palette scheme qt terminal", category: "appearance", component: wallpaperStylePage },
-        { key: "ambient", label: "Ambient desktop", icon: "landscape", description: "Time, weather and wallpaper atmosphere", keywords: "sunrise sunset dawn dusk night tint weather battery focus", category: "appearance", component: ambientPage },
-
-        // Shell
-        { key: "panels", label: "Panels", icon: "dock_to_bottom", description: "Dashboard, taskbar, launcher, sidebar", keywords: "bar animation motion tabs tray clock osd", category: "shell", component: panelsPage },
-        { key: "overlay", label: "Overlay widgets", icon: "widgets", description: "Crosshair, notes, floating image", keywords: "aim reticle picture", category: "shell", component: overlayPage },
-        { key: "services", label: "Services", icon: "build", description: "Poll intervals, notifications", keywords: "weather recorder night light polling toast", category: "shell", component: servicesPage },
-
-        // System
-        { key: "audio", label: "Audio", icon: "volume_up", description: "App volumes, sound devices", keywords: "speaker microphone mute boost osd sink source", category: "system", component: audioPage },
-        { key: "updates", label: "Updates", icon: "update", description: "System updates", keywords: "aur yay packages upgrade notifications", category: "system", component: updatesPage },
-
-        // Connectivity
-        { key: "idlePower", label: "Idle & power", icon: "bedtime", description: "Lock, displays, suspend", keywords: "sleep dpms timeout inhibit awake", category: "connectivity", component: idlePowerPage },
-        { key: "network", label: "Network", icon: "lan", description: "Ethernet, VPN, usage", keywords: "nordvpn throughput download upload connection", category: "connectivity", component: networkPage },
-        { key: "connectedDevices", label: "Connected devices", icon: "devices_other", description: "Bluetooth, pairing", keywords: "scan discoverable connect", category: "connectivity", component: connectedDevicesPage },
-
-        // About
-        { key: "about", label: "About", icon: "info", description: "System information, credits", keywords: "hardware processor memory gpu kernel restart shell github", category: "about", component: aboutPage }
+        { key: "appearance", label: "Appearance", icon: "palette", description: "Wallpaper, colours and ambience", keywords: "wallpaper font theme transparency palette weather", category: "personal", component: appearancePage },
+        { key: "desktop", label: "Desktop & panels", icon: "dashboard", description: "Bar, dashboard, launcher and overlays", keywords: "sidebar behaviour motion tray crosshair", category: "desktop", component: desktopPage },
+        { key: "notifications", label: "Notifications", icon: "notifications", description: "Popups, history and do-not-disturb", keywords: "toast dnd position restart", category: "desktop", component: notificationsPage },
+        { key: "devices", label: "Audio & devices", icon: "devices_other", description: "Sound, microphone and Bluetooth", keywords: "speaker volume input output pairing scan", category: "hardware", component: devicesPage },
+        { key: "network", label: "Network", icon: "lan", description: "Ethernet, VPN and usage", keywords: "nordvpn throughput download upload connection", category: "hardware", component: networkPage },
+        { key: "power", label: "Power & display", icon: "bedtime", description: "Idle, keep awake and night light", keywords: "lock dpms suspend inhibit temperature schedule", category: "hardware", component: powerPage },
+        { key: "system", label: "System", icon: "settings", description: "Updates, recording and background activity", keywords: "packages recorder polling cpu gpu storage", category: "system", component: systemPage },
+        { key: "about", label: "About", icon: "info", description: "System information and credits", keywords: "hardware processor memory gpu kernel restart shell github", category: "system", component: aboutPage }
     ]
 
     // Sub-page registry
@@ -46,14 +41,43 @@ Item {
         "quickToggles": quickTogglesSubPage
     })
 
-    // Resolve deep link
+    readonly property var deepLinks: ({
+        wallpaperStyle: { page: "appearance", section: 0 },
+        ambient: { page: "appearance", section: 2 },
+        panels: { page: "desktop", section: 0 },
+        overlay: { page: "desktop", section: 4 },
+        services: { page: "system", section: 2 },
+        audio: { page: "devices", section: 0 },
+        connectedDevices: { page: "devices", section: 1 },
+        updates: { page: "system", section: 0 },
+        idlePower: { page: "power", section: 0 }
+    })
+
+    function selectSection(page: string, section: int): void {
+        if (page === "appearance")
+            root.appearanceSection = section;
+        else if (page === "desktop")
+            root.desktopSection = section;
+        else if (page === "devices")
+            root.devicesSection = section;
+        else if (page === "power")
+            root.powerSection = section;
+        else if (page === "system")
+            root.systemSection = section;
+    }
+
+    // Resolve old and new deep links
     function resolvePendingPage(): void {
         if (!SettingsState.pendingPage)
             return;
-        const idx = root.pageModel.findIndex(p => p.key === SettingsState.pendingPage);
+        const pending = SettingsState.pendingPage;
+        const route = root.deepLinks[pending] ?? { page: pending, section: 0 };
+        const idx = root.pageModel.findIndex(p => p.key === route.page);
         SettingsState.pendingPage = "";
-        if (idx >= 0)
+        if (idx >= 0) {
+            root.selectSection(route.page, route.section);
             SettingsState.currentPageIdx = idx;
+        }
     }
 
     Component.onCompleted: root.resolvePendingPage()
@@ -253,17 +277,61 @@ Item {
         QuickTogglesSubPage {}
     }
 
-    // Pages
+    // Grouped pages
     Component {
-        id: wallpaperStylePage
+        id: appearancePage
 
-        WallpaperStylePage {}
+        CategoryPage {
+            title: "Appearance"
+            currentSection: root.appearanceSection
+            onSectionSelected: index => root.appearanceSection = index
+            sections: [
+                { label: "Wallpaper", icon: "wallpaper", component: appearanceWallpaperPage },
+                { label: "Colours & style", icon: "palette", component: appearanceStylePage },
+                { label: "Ambient desktop", icon: "landscape", component: ambientPage }
+            ]
+        }
     }
 
     Component {
-        id: ambientPage
+        id: desktopPage
 
-        AmbientPage {}
+        CategoryPage {
+            title: "Desktop & panels"
+            currentSection: root.desktopSection
+            onSectionSelected: index => root.desktopSection = index
+            sections: [
+                { label: "Top bar", icon: "dock_to_bottom", component: topBarPage },
+                { label: "Dashboard", icon: "dashboard", component: dashboardPage },
+                { label: "Launcher", icon: "search", component: launcherPage },
+                { label: "Sidebar", icon: "view_sidebar", component: sidebarPage },
+                { label: "Overlays", icon: "widgets", component: overlayPage },
+                { label: "Behaviour", icon: "animation", component: behaviourPage }
+            ]
+        }
+    }
+
+    Component {
+        id: notificationsPage
+
+        ServicesPage {
+            sectionKey: "notifications"
+            pageTitle: "Notifications"
+        }
+    }
+
+    Component {
+        id: devicesPage
+
+        CategoryPage {
+            title: "Audio & devices"
+            currentSection: root.devicesSection
+            onSectionSelected: index => root.devicesSection = index
+            sections: [
+                { label: "Audio", icon: "volume_up", component: audioPage },
+                { label: "Bluetooth", icon: "bluetooth", component: connectedDevicesPage }
+            ]
+        }
     }
 
     Component {
@@ -273,33 +341,82 @@ Item {
     }
 
     Component {
-        id: connectedDevicesPage
+        id: powerPage
 
-        ConnectedDevicesPage {}
+        CategoryPage {
+            title: "Power & display"
+            currentSection: root.powerSection
+            onSectionSelected: index => root.powerSection = index
+            sections: [
+                { label: "Idle & power", icon: "bedtime", component: idlePowerPage },
+                { label: "Night light", icon: "dark_mode", component: nightLightPage }
+            ]
+        }
     }
 
     Component {
-        id: audioPage
+        id: systemPage
 
-        AudioPage {}
+        CategoryPage {
+            title: "System"
+            currentSection: root.systemSection
+            onSectionSelected: index => root.systemSection = index
+            sections: [
+                { label: "Updates", icon: "update", component: updatesPage },
+                { label: "Screen recording", icon: "screen_record", component: recordingPage },
+                { label: "Background activity", icon: "sync", component: pollingPage }
+            ]
+        }
+    }
+
+    // Appearance sections
+    Component {
+        id: appearanceWallpaperPage
+
+        WallpaperStylePage {
+            sectionKey: "wallpaper"
+            pageTitle: "Wallpaper"
+        }
     }
 
     Component {
-        id: updatesPage
+        id: appearanceStylePage
 
-        UpdatesPage {}
+        WallpaperStylePage {
+            sectionKey: "style"
+            pageTitle: "Colours & style"
+        }
     }
 
     Component {
-        id: idlePowerPage
+        id: ambientPage
 
-        IdlePowerPage {}
+        AmbientPage {}
+    }
+
+    // Desktop sections
+    Component {
+        id: topBarPage
+
+        PanelsPage { sectionKey: "bar" }
     }
 
     Component {
-        id: panelsPage
+        id: dashboardPage
 
-        PanelsPage {}
+        PanelsPage { sectionKey: "dashboard" }
+    }
+
+    Component {
+        id: launcherPage
+
+        PanelsPage { sectionKey: "launcher" }
+    }
+
+    Component {
+        id: sidebarPage
+
+        PanelsPage { sectionKey: "sidebar" }
     }
 
     Component {
@@ -309,9 +426,63 @@ Item {
     }
 
     Component {
-        id: servicesPage
+        id: behaviourPage
 
-        ServicesPage {}
+        PanelsPage { sectionKey: "behaviour" }
+    }
+
+    // Device sections
+    Component {
+        id: audioPage
+
+        AudioPage {}
+    }
+
+    Component {
+        id: connectedDevicesPage
+
+        ConnectedDevicesPage {}
+    }
+
+    // Power sections
+    Component {
+        id: idlePowerPage
+
+        IdlePowerPage {}
+    }
+
+    Component {
+        id: nightLightPage
+
+        ServicesPage {
+            sectionKey: "power"
+            pageTitle: "Night light"
+        }
+    }
+
+    // System sections
+    Component {
+        id: updatesPage
+
+        UpdatesPage {}
+    }
+
+    Component {
+        id: recordingPage
+
+        ServicesPage {
+            sectionKey: "recorder"
+            pageTitle: "Screen recording"
+        }
+    }
+
+    Component {
+        id: pollingPage
+
+        ServicesPage {
+            sectionKey: "polling"
+            pageTitle: "Background activity"
+        }
     }
 
     Component {

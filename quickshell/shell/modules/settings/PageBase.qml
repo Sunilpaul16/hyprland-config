@@ -9,6 +9,8 @@ Item {
     property string title
     // Sub-page back arrow
     property bool isSubPage: false
+    // Category pages provide their own shared header.
+    property bool showHeader: true
     // Capped content width
     readonly property int cappedWidth: Math.min(Config.settings.maxContentWidth, body.width)
     // Space below the header
@@ -21,7 +23,7 @@ Item {
 
         anchors.left: parent.left
         anchors.verticalCenter: header.verticalCenter
-        visible: root.isSubPage
+        visible: root.showHeader && root.isSubPage
         implicitWidth: 32
         implicitHeight: 32
         radius: width / 2
@@ -37,6 +39,7 @@ Item {
         anchors.leftMargin: root.isSubPage ? 12 : 0
         anchors.right: parent.right
         anchors.top: parent.top
+        visible: root.showHeader
         text: root.title
         font.pixelSize: 26
         elide: Text.ElideRight
@@ -47,8 +50,8 @@ Item {
 
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.top: header.bottom
+        anchors.top: root.showHeader ? header.bottom : parent.top
         anchors.bottom: parent.bottom
-        anchors.topMargin: 20
+        anchors.topMargin: root.showHeader ? 20 : 0
     }
 }

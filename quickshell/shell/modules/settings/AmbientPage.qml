@@ -146,4 +146,45 @@ ScrollPage {
             ValueLabel { text: AmbientState.statusLabel }
         }
     }
+
+    SectionLabel { text: "Weather" }
+
+    SettingGroup {
+        SettingRow {
+            first: true
+            live: true
+            label: "Location"
+            subtext: Config.weather.latitude && Config.weather.longitude ? "Configured coordinates" : "Geolocated by IP at startup"
+
+            ValueLabel {
+                text: Weather.city || "Locating…"
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Units"
+
+            SelectPill {
+                options: [{ value: "celsius", label: "Celsius" }, { value: "fahrenheit", label: "Fahrenheit" }]
+                current: Config.weather.units
+                onSelected: v => Config.weather.units = v
+            }
+        }
+
+        SettingRow {
+            last: true
+            live: true
+            label: "Refresh interval"
+
+            NumberControl {
+                value: Config.weather.refreshMinutes
+                from: 5
+                to: 240
+                stepSize: 5
+                suffix: " min"
+                onMoved: v => Config.weather.refreshMinutes = Math.round(v)
+            }
+        }
+    }
 }

@@ -5,7 +5,14 @@ import "../../components"
 ScrollPage {
     id: root
 
-    title: "Services"
+    property string sectionKey: "all"
+    property string pageTitle: "Services"
+
+    title: root.pageTitle
+
+    function shows(key: string): bool {
+        return root.sectionKey === "all" || root.sectionKey === key;
+    }
 
     // Format hour
     function formatHour(hour: int): string {
@@ -19,10 +26,12 @@ ScrollPage {
     }
 
     SectionLabel {
-        text: "Notifications"
+        visible: root.shows("notifications")
+        text: "Popups & history"
     }
 
     SettingGroup {
+        visible: root.shows("notifications")
         SettingRow {
             first: true
             live: true
@@ -80,10 +89,45 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("notifications")
+        text: "Shell integration"
+    }
+
+    SettingGroup {
+        visible: root.shows("notifications")
+
+        SettingRow {
+            first: true
+            live: true
+            label: "Show notification indicator"
+            subtext: "Show the unread notification bell in the top bar"
+
+            ToggleSwitch {
+                checked: Config.bar.showNotificationIndicator
+                onToggled: v => Config.bar.showNotificationIndicator = v
+            }
+        }
+
+        SettingRow {
+            last: true
+            live: true
+            label: "Empty history image"
+            subtext: "Shown in the sidebar when there are no notifications"
+
+            ValueLabel {
+                // Read-only
+                text: Config.sidebar.noNotifsImage || "assets/dino.png"
+            }
+        }
+    }
+
+    SectionLabel {
+        visible: root.shows("polling")
         text: "Polling"
     }
 
     SettingGroup {
+        visible: root.shows("polling")
         SettingRow {
             first: true
             live: true
@@ -178,10 +222,12 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("weather")
         text: "Weather"
     }
 
     SettingGroup {
+        visible: root.shows("weather")
         SettingRow {
             first: true
             live: true
@@ -221,10 +267,12 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("recorder")
         text: "Screen recorder"
     }
 
     SettingGroup {
+        visible: root.shows("recorder")
         SettingRow {
             first: true
             live: true
@@ -261,10 +309,12 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("power")
         text: "Idle & night light"
     }
 
     SettingGroup {
+        visible: root.shows("power")
         SettingRow {
             first: true
             live: true

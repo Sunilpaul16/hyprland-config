@@ -6,7 +6,14 @@ import "../../components"
 ScrollPage {
     id: root
 
-    title: "Panels"
+    property string sectionKey: "all"
+    property string pageTitle: "Desktop & panels"
+
+    title: root.pageTitle
+
+    function shows(key: string): bool {
+        return root.sectionKey === "all" || root.sectionKey === key;
+    }
 
     readonly property int visibleTabCount: (Config.dashboard.tabs.showDashboard ? 1 : 0)
         + (Config.dashboard.tabs.showMedia ? 1 : 0)
@@ -33,10 +40,12 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("behaviour")
         text: "Motion"
     }
 
     SettingGroup {
+        visible: root.shows("behaviour")
         SettingRow {
             first: true
             live: true
@@ -68,10 +77,12 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("bar")
         text: "Bar"
     }
 
     SettingGroup {
+        visible: root.shows("bar")
         SettingRow {
             first: true
             live: true
@@ -106,17 +117,6 @@ ScrollPage {
             ToggleSwitch {
                 checked: Config.bar.showTray
                 onToggled: v => Config.bar.showTray = v
-            }
-        }
-
-        SettingRow {
-            live: true
-            label: "Show notification indicator"
-            subtext: "Show the unread notification bell in the bar"
-
-            ToggleSwitch {
-                checked: Config.bar.showNotificationIndicator
-                onToggled: v => Config.bar.showNotificationIndicator = v
             }
         }
 
@@ -167,10 +167,12 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("bar")
         text: "Bar scrolling"
     }
 
     SettingGroup {
+        visible: root.shows("bar")
         SettingRow {
             first: true
             live: true
@@ -225,10 +227,12 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("dashboard")
         text: "Dashboard"
     }
 
     SettingGroup {
+        visible: root.shows("dashboard")
         SettingRow {
             first: true
             live: true
@@ -302,10 +306,12 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("dashboard")
         text: "Dashboard tabs"
     }
 
     SettingGroup {
+        visible: root.shows("dashboard")
         SettingRow {
             first: true
             live: true
@@ -354,10 +360,12 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("launcher")
         text: "Launcher"
     }
 
     SettingGroup {
+        visible: root.shows("launcher")
         SettingRow {
             first: true
             live: true
@@ -445,10 +453,12 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("sidebar")
         text: "Sidebar"
     }
 
     SettingGroup {
+        visible: root.shows("sidebar")
         SettingRow {
             first: true
             live: true
@@ -477,17 +487,6 @@ ScrollPage {
         }
 
         SettingRow {
-            live: true
-            label: "Notifications watermark"
-            subtext: "Shown when the sidebar has no notifications"
-
-            ValueLabel {
-                // Read-only
-                text: Config.sidebar.noNotifsImage || "assets/dino.png"
-            }
-        }
-
-        SettingRow {
             last: true
             live: true
             label: "Close when settings opens"
@@ -500,11 +499,13 @@ ScrollPage {
     }
 
     SectionLabel {
+        visible: root.shows("behaviour")
         text: "Overview & session"
     }
 
     // No live-thumbnail toggle
     SettingGroup {
+        visible: root.shows("behaviour")
         SettingRow {
             first: true
             last: true
