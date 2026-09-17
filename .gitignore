@@ -35,6 +35,7 @@ hypr/colors.lua
 hypr/hyprlock/colors.conf
 gtk-3.0/gtk.css
 gtk-4.0/gtk.css
+themes/MatugenPortal/gtk-3.0/palette.css
 kitty/theme.conf
 
 # Live user config

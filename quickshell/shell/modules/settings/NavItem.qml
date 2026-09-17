@@ -12,6 +12,8 @@ Rectangle {
     required property bool runStart
     required property bool runEnd
 
+    signal activated
+
     readonly property bool current: SettingsState.currentPageIdx === root.pageIndex
 
     // Run-end radii
@@ -94,6 +96,6 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: SettingsState.currentPageIdx = root.pageIndex
+        onClicked: root.activated()
     }
 }

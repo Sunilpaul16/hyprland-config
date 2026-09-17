@@ -41,6 +41,20 @@ hl.window_rule({
     float = true,
 })
 
+-- Match the Quickshell settings card (340 + 800 + 72 by 681), independent
+-- of the browser/Discord tile and of monitor rotation.
+hl.window_rule({
+    name  = "portal-file-chooser",
+    match = {
+        class = "^xdg-desktop-portal-gtk$",
+        title = "^(Open|Save|Select|Choose).*(File|Folder|Location).*$",
+    },
+
+    float  = true,
+    size   = "1212 681",
+    center = true,
+})
+
 -- Shell layer blur
 hl.layer_rule({
     name  = "blur-quickshell",

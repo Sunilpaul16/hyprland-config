@@ -83,11 +83,22 @@ apply_kitty_from_scss() {
 
 # apply_gsettings <light|dark>
 apply_gsettings() {
+    local portal_theme portal_env
     if [[ "$1" == light ]]; then
         gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
+        portal_theme='MatugenPortal'
     else
         gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+        portal_theme='MatugenPortal:dark'
     fi
+
+    # Keep the GTK 3 base-theme override local to the portal. Setting the
+    # global gtk-theme also recolours unrelated GTK 3 apps such as gThumb.
+    portal_env="$HOME/.local/state/quickshell/gtk-portal.env"
+    mkdir -p "$(dirname "$portal_env")"
+    printf 'GTK_THEME=%s\n' "$portal_theme" > "$portal_env.part.$$"
+    mv "$portal_env.part.$$" "$portal_env"
+
     if pgrep -x nautilus >/dev/null; then
         nautilus -q || true
     fi
@@ -136,4 +147,7 @@ qt_set() {
 reload_all() {
     hyprctl reload >/dev/null
     pkill -SIGUSR1 -x kitty >/dev/null 2>&1 || true
+    # The GTK portal is persistent and otherwise keeps the old theme/CSS for
+    # future file dialogs until the next login.
+    systemctl --user try-restart xdg-desktop-portal-gtk.service >/dev/null 2>&1 || true
 }

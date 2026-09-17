@@ -23,13 +23,49 @@ Item {
 
     // Primary destinations
     readonly property var pageModel: [
-        { key: "appearance", label: "Appearance", icon: "palette", description: "Wallpaper, colours and ambience", keywords: "wallpaper font theme transparency palette weather", category: "personal", component: appearancePage },
-        { key: "desktop", label: "Desktop & panels", icon: "dashboard", description: "Bar, dashboard, launcher and overlays", keywords: "sidebar behaviour motion tray crosshair", category: "desktop", component: desktopPage },
+        {
+            key: "appearance", label: "Appearance", icon: "palette", description: "Wallpaper, colours and ambience", keywords: "personalise theme", category: "personal", component: appearancePage,
+            searchSections: [
+                { label: "Wallpaper", icon: "wallpaper", keywords: "current folder display framing crop preview carousel" },
+                { label: "Colours & style", icon: "palette", keywords: "colors colour theme scheme palette font transparency opacity surfaces" },
+                { label: "Ambient desktop", icon: "landscape", keywords: "weather location units sunrise sunset battery tint atmosphere" }
+            ]
+        },
+        {
+            key: "desktop", label: "Desktop & panels", icon: "dashboard", description: "Bar, dashboard, launcher and overlays", keywords: "shell interface", category: "desktop", component: desktopPage,
+            searchSections: [
+                { label: "Top bar", icon: "dock_to_bottom", keywords: "clock tray auto hide workspace scroll active window height" },
+                { label: "Dashboard", icon: "dashboard", keywords: "tabs media performance weather bongocat animation panel size" },
+                { label: "Launcher", icon: "search", keywords: "apps commands fuzzy matching results clipboard history" },
+                { label: "Sidebar", icon: "view_sidebar", keywords: "width quick toggles close settings" },
+                { label: "Overlays", icon: "widgets", keywords: "crosshair floating image gaming darken screen" },
+                { label: "Behaviour", icon: "animation", keywords: "behavior motion animation reduce session auto close overview" }
+            ]
+        },
         { key: "notifications", label: "Notifications", icon: "notifications", description: "Popups, history and do-not-disturb", keywords: "toast dnd position restart", category: "desktop", component: notificationsPage },
-        { key: "devices", label: "Audio & devices", icon: "devices_other", description: "Sound, microphone and Bluetooth", keywords: "speaker volume input output pairing scan", category: "hardware", component: devicesPage },
+        {
+            key: "devices", label: "Audio & devices", icon: "devices_other", description: "Sound, microphone and Bluetooth", keywords: "hardware", category: "hardware", component: devicesPage,
+            searchSections: [
+                { label: "Audio", icon: "volume_up", keywords: "sound speaker volume microphone input output mute osd media" },
+                { label: "Bluetooth", icon: "bluetooth", keywords: "device devices pair paired pairing scan discoverable connected" }
+            ]
+        },
         { key: "network", label: "Network", icon: "lan", description: "Ethernet, VPN and usage", keywords: "nordvpn throughput download upload connection", category: "hardware", component: networkPage },
-        { key: "power", label: "Power & display", icon: "bedtime", description: "Idle, keep awake and night light", keywords: "lock dpms suspend inhibit temperature schedule", category: "hardware", component: powerPage },
-        { key: "system", label: "System", icon: "settings", description: "Updates, recording and background activity", keywords: "packages recorder polling cpu gpu storage", category: "system", component: systemPage },
+        {
+            key: "power", label: "Power & display", icon: "bedtime", description: "Idle, keep awake and night light", keywords: "display lifecycle", category: "hardware", component: powerPage,
+            searchSections: [
+                { label: "Idle & power", icon: "bedtime", keywords: "lock screen dpms suspend keep awake media inhibitor timeout" },
+                { label: "Night light", icon: "dark_mode", keywords: "temperature schedule sunset sunrise hyprsunset" }
+            ]
+        },
+        {
+            key: "system", label: "System", icon: "settings", description: "Updates, recording and background activity", keywords: "maintenance advanced", category: "system", component: systemPage,
+            searchSections: [
+                { label: "Updates", icon: "update", keywords: "packages aur repositories upgrade terminal check" },
+                { label: "Screen recording", icon: "screen_record", keywords: "recorder capture video audio full region save" },
+                { label: "Background activity", icon: "sync", keywords: "polling cpu gpu storage uptime network weather refresh interval" }
+            ]
+        },
         { key: "about", label: "About", icon: "info", description: "System information and credits", keywords: "hardware processor memory gpu kernel restart shell github", category: "system", component: aboutPage }
     ]
 
@@ -100,6 +136,12 @@ Item {
 
         pageModel: root.pageModel
         panelActive: root.panelActive
+        onResultSelected: (pageIndex, pageKey, sectionIndex) => {
+            SettingsState.closeSubPage();
+            if (sectionIndex >= 0)
+                root.selectSection(pageKey, sectionIndex);
+            SettingsState.currentPageIdx = pageIndex;
+        }
     }
 
     // Page area

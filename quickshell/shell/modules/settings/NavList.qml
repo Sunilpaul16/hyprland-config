@@ -10,6 +10,8 @@ Item {
     required property var pageModel
     property bool panelActive: false
 
+    signal resultSelected(int pageIndex, string pageKey, int sectionIndex)
+
     readonly property int searchHeight: 46
     readonly property int listTopMargin: 14
     readonly property int rowSpacing: 3
@@ -35,11 +37,43 @@ Item {
         const out = [];
         for (let i = 0; i < root.pageModel.length; i++) {
             const p = root.pageModel[i];
-            const haystack = `${p.label} ${p.description} ${p.key} ${p.category} ${p.keywords ?? ""}`.toLowerCase();
-            if (q === "" || haystack.includes(q))
-                out.push({ page: p, idx: i });
+            if (q === "") {
+                out.push({ page: p, idx: i, section: -1 });
+                continue;
+            }
+
+            let foundSection = false;
+            const sections = p.searchSections ?? [];
+            for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
+                const section = sections[sectionIndex];
+                const sectionHaystack = `${section.label} ${section.description ?? ""} ${section.keywords ?? ""}`.toLowerCase();
+                if (!sectionHaystack.includes(q))
+                    continue;
+
+                foundSection = true;
+                out.push({
+                    page: {
+                        key: p.key,
+                        label: section.label,
+                        icon: section.icon ?? p.icon,
+                        description: p.label,
+                        category: p.category
+                    },
+                    idx: i,
+                    section: sectionIndex
+                });
+            }
+
+            const pageHaystack = `${p.label} ${p.description} ${p.key} ${p.category} ${p.keywords ?? ""}`.toLowerCase();
+            if (!foundSection && pageHaystack.includes(q))
+                out.push({ page: p, idx: i, section: -1 });
         }
         return out;
+    }
+
+    function activateResult(result: var): void {
+        root.resultSelected(result.idx, result.page.key, result.section);
+        searchInput.text = "";
     }
 
     // Clear on close
@@ -96,14 +130,12 @@ Item {
             Keys.onReturnPressed: {
                 if (root.filteredPages.length === 0)
                     return;
-                SettingsState.currentPageIdx = root.filteredPages[0].idx;
-                searchInput.text = "";
+                root.activateResult(root.filteredPages[0]);
             }
             Keys.onEnterPressed: event => {
                 if (root.filteredPages.length === 0)
                     return;
-                SettingsState.currentPageIdx = root.filteredPages[0].idx;
-                searchInput.text = "";
+                root.activateResult(root.filteredPages[0]);
                 event.accepted = true;
             }
             Keys.onEscapePressed: {
@@ -154,6 +186,7 @@ Item {
                     pageIndex: modelData.idx
                     runStart: index === 0 || root.filteredPages[index - 1].page.category !== modelData.page.category
                     runEnd: index === root.filteredPages.length - 1 || root.filteredPages[index + 1].page.category !== modelData.page.category
+                    onActivated: root.activateResult(modelData)
                 }
             }
         }
