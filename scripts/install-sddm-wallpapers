@@ -6,6 +6,7 @@ readonly DEST_DIR="$THEME_DIR/Backgrounds/User"
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_DIR="$(dirname "$SCRIPT_DIR")"
 readonly THEME_SOURCE="$REPO_DIR/sddm/hyprlands-video-themes/Main.qml"
+readonly THEME_CONFIG_SOURCE="$REPO_DIR/sddm/hyprlands-video-themes/Themes/digital_shadows.conf"
 readonly WALLPAPER_DIR="${1:-}"
 
 if [[ $EUID -ne 0 ]]; then
@@ -18,8 +19,8 @@ if [[ -z "$WALLPAPER_DIR" || ! -d "$WALLPAPER_DIR" ]]; then
     exit 1
 fi
 
-if [[ ! -d "$THEME_DIR" || ! -f "$THEME_SOURCE" ]]; then
-    echo "install-sddm-wallpapers: SDDM theme or managed Main.qml is missing" >&2
+if [[ ! -d "$THEME_DIR" || ! -f "$THEME_SOURCE" || ! -f "$THEME_CONFIG_SOURCE" ]]; then
+    echo "install-sddm-wallpapers: SDDM theme or managed theme files are missing" >&2
     exit 1
 fi
 
@@ -37,4 +38,5 @@ if ((count == 0)); then
 fi
 
 install -m 0644 "$THEME_SOURCE" "$THEME_DIR/Main.qml"
+install -m 0644 "$THEME_CONFIG_SOURCE" "$THEME_DIR/Themes/digital_shadows.conf"
 echo "Installed $count SDDM wallpapers and random-background theme logic."

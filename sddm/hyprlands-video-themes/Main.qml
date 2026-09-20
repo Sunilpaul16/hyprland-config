@@ -38,6 +38,11 @@ Pane {
     focus: true
 
     property bool randomBackgroundStarted: false
+    readonly property real formEffectWidth: {
+        if (typeof config.FormEffectWidth === "undefined" || config.FormEffectWidth === "")
+            return 1.0
+        return Math.max(0.1, Math.min(1.0, Number(config.FormEffectWidth)))
+    }
 
     function startRandomBackground() {
         if (randomBackgroundStarted || backgroundFiles.status !== FolderListModel.Ready)
@@ -202,7 +207,7 @@ Pane {
         ShaderEffectSource {
             id: blurMask
             height: parent.height
-            width:  form.width
+            width:  form.width * root.formEffectWidth
             anchors.centerIn: form
             sourceItem: backgroundImage
             sourceRect: Qt.rect(x, y, width, height)
@@ -214,7 +219,7 @@ Pane {
             height: parent.height
             width:  (config.FullBlur == "true" && config.PartialBlur == "false" && config.FormPosition != "center")
                     ? parent.width - formBackground.width
-                    : config.FullBlur == "true" ? parent.width : form.width
+                    : config.FullBlur == "true" ? parent.width : form.width * root.formEffectWidth
             anchors.centerIn: config.FullBlur == "true" ? backgroundImage : form
             source: config.FullBlur == "true" ? backgroundImage : blurMask
             radius: config.Blur == "" ? 48 : Math.min(config.Blur * 24, 64)
@@ -224,12 +229,15 @@ Pane {
         // ── FORM GLASS BACKGROUND ──────────────────────────────────
         Rectangle {
             id: formBackground
-            anchors.fill: form
+            height: form.height
+            width: form.width * root.formEffectWidth
             anchors.centerIn: form
             z: 3
             color:   config.FormBackgroundColor
             visible: config.HaveFormBackground == "true"
-            opacity: config.PartialBlur == "true" ? 0.25 : 0.88
+            opacity: typeof config.FormBackgroundOpacity !== "undefined" && config.FormBackgroundOpacity !== ""
+                     ? Number(config.FormBackgroundOpacity)
+                     : config.PartialBlur == "true" ? 0.25 : 0.88
             radius:  config.RoundCorners || 18
 
             // inner highlight rim
@@ -243,6 +251,7 @@ Pane {
             height: parent.height
             width:  parent.width / 2.5
             anchors.left:             config.FormPosition == "left"   ? parent.left             : undefined
+            anchors.leftMargin:       config.FormPosition == "left"   ? -width * (1 - root.formEffectWidth) / 2 : 0
             anchors.horizontalCenter: config.FormPosition == "center" ? parent.horizontalCenter : undefined
             anchors.right:            config.FormPosition == "right"  ? parent.right            : undefined
             z: 4
