@@ -35,6 +35,15 @@ Singleton {
             Bluetooth.defaultAdapter.discovering = value;
     }
 
+    // Discovery shares radio airtime with audio. Bound every scan so a
+    // persistent settings page cannot leave it running during playback.
+    property Timer discoveryTimeout: Timer {
+        interval: 30000
+        running: root.discovering
+        repeat: false
+        onTriggered: root.setDiscovering(false)
+    }
+
     function setDiscoverable(value: bool): void {
         if (Bluetooth.defaultAdapter)
             Bluetooth.defaultAdapter.discoverable = value;

@@ -26,8 +26,18 @@ Item {
 
     property bool menuOpen: false
 
-    implicitWidth: pill.implicitWidth
+    implicitWidth: Math.min(root.maxPillWidth,
+        labelMetrics.advanceWidth + 16 * 2 + 24)
     implicitHeight: pill.implicitHeight
+    Layout.fillWidth: true
+    Layout.minimumWidth: 0
+    Layout.maximumWidth: root.maxPillWidth
+
+    TextMetrics {
+        id: labelMetrics
+        font: label.font
+        text: root.displayText
+    }
 
     function close(): void {
         root.menuOpen = false;
@@ -48,7 +58,7 @@ Item {
         id: pill
 
         // Sized from layout
-        implicitWidth: pillLayout.implicitWidth + 16 * 2
+        width: root.width
         implicitHeight: 34
         radius: height / 2
 
@@ -59,14 +69,16 @@ Item {
         RowLayout {
             id: pillLayout
 
-            anchors.centerIn: parent
+            anchors.fill: parent
+            anchors.leftMargin: 16
+            anchors.rightMargin: 16
             spacing: Motion.spacing.small
 
             StyledText {
                 id: label
 
-                // Constant ceiling
-                Layout.maximumWidth: root.maxPillWidth - 16 * 2 - 24
+                Layout.fillWidth: true
+                Layout.minimumWidth: 0
                 text: root.displayText
                 font.pixelSize: Motion.fontSize.subhead
                 elide: Text.ElideRight
@@ -139,7 +151,9 @@ Item {
             }
             y: menu.flipped ? menu.aboveY : menu.belowY
 
-            implicitWidth: Math.max(pill.width, menuColumn.implicitWidth + 2 * 2)
+            implicitWidth: Math.min(
+                Math.max(pill.width, menuColumn.implicitWidth + 2 * 2),
+                Math.max(1, menuLayer.width - 12))
             implicitHeight: Math.min(menuColumn.implicitHeight, root.maxVisibleItems * root.itemHeight) + 2 * 2
 
             radius: Motion.rounding.card

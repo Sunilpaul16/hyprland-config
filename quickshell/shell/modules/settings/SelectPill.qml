@@ -14,6 +14,7 @@ Rectangle {
     // [{ value: "auto", label: "Auto" }, ...]
     property var options: []
     property string current: ""
+    property int maxPillWidth: 330
 
     readonly property int currentIndex: root.options.findIndex(o => o.value === root.current)
     readonly property string displayText: root.options.length === 0 ? root.value : (root.options[root.currentIndex]?.label ?? root.current)
@@ -21,8 +22,13 @@ Rectangle {
     signal clicked
     signal selected(string v)
 
-    implicitWidth: layout.implicitWidth + 16 * 2
+    implicitWidth: Math.min(root.maxPillWidth,
+        labelMetrics.advanceWidth + glyph.implicitWidth
+            + Motion.spacing.small + 16 * 2)
     implicitHeight: 34
+    Layout.fillWidth: true
+    Layout.minimumWidth: 0
+    Layout.maximumWidth: root.maxPillWidth
     radius: height / 2
 
     color: hover.containsMouse ? Colors.secondaryContainer : Colors.background
@@ -31,18 +37,31 @@ Rectangle {
     Behavior on color { ColorAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
     Behavior on scale { NumberAnimation { duration: Motion.quickDuration; easing.type: Motion.quickEasing } }
 
+    TextMetrics {
+        id: labelMetrics
+        font: label.font
+        text: root.displayText
+    }
+
     RowLayout {
         id: layout
 
-        anchors.centerIn: parent
+        anchors.fill: parent
+        anchors.leftMargin: 16
+        anchors.rightMargin: 16
         spacing: Motion.spacing.small
 
         StyledText {
+            id: label
+            Layout.fillWidth: true
+            Layout.minimumWidth: 0
             text: root.displayText
             font.pixelSize: Motion.fontSize.subhead
+            elide: Text.ElideRight
         }
 
         MaterialIcon {
+            id: glyph
             text: root.icon
             color: Colors.outline
             font.pixelSize: Motion.fontSize.header

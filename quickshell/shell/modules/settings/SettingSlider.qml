@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import "../../services"
 
 // M3 slider
@@ -15,13 +16,16 @@ Item {
 
     implicitWidth: 170
     implicitHeight: 26
+    Layout.fillWidth: true
+    Layout.minimumWidth: 80
+    Layout.preferredWidth: 170
 
     readonly property real trackHeight: 6
     readonly property real handleWidth: 4
     readonly property real span: root.to - root.from
     // Clamped position
     readonly property real position: root.span === 0 ? 0 : Math.max(0, Math.min(1, (root.value - root.from) / root.span))
-    readonly property real travel: root.width - root.handleWidth - 8
+    readonly property real travel: Math.max(1, root.width - root.handleWidth - 8)
     readonly property real fillWidth: Math.round(root.travel * root.position)
 
     function valueAt(px: real): real {

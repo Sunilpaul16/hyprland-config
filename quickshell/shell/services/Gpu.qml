@@ -24,6 +24,7 @@ Singleton {
     readonly property real temperature: _temperature
 
     property bool _available: false
+    property bool _backendAvailable: false
     property string _name: ""
     property real _percentage: 0
     property real _temperature: 0
@@ -50,6 +51,24 @@ Singleton {
         root._temperature = temp;
     }
 
+    // Check once; unsupported machines never start the polling timer.
+    Process {
+        running: true
+        command: ["sh", "-c", `
+            command -v nvidia-smi >/dev/null 2>&1 || exit 1
+            for device in /sys/bus/pci/devices/*; do
+                IFS= read -r vendor < "$device/vendor" || continue
+                [ "$vendor" = "0x10de" ] || continue
+                IFS= read -r class < "$device/class" || continue
+                case "$class" in
+                    0x03*) exec nvidia-smi -L >/dev/null 2>&1 ;;
+                esac
+            done
+            exit 1
+        `]
+        onExited: exitCode => root._backendAvailable = exitCode === 0
+    }
+
     Process {
         id: nvidiaProc
         command: ["nvidia-smi", "--query-gpu=name,utilization.gpu,temperature.gpu", "--format=csv,noheader,nounits"]
@@ -64,7 +83,7 @@ Singleton {
 
     Timer {
         interval: Config.polling.gpu
-        running: root.refCount > 0
+        running: root._backendAvailable && root.refCount > 0
         repeat: true
         triggeredOnStart: true
         onTriggered: nvidiaProc.running = true

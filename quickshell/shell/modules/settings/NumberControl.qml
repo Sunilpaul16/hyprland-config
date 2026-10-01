@@ -16,15 +16,20 @@ RowLayout {
     property real displayScale: 1
     // Readout override
     property string displayText: ""
-    // Fixed label width
+    // Readout width ceiling; callers can still override it.
     property int labelWidth: 78
 
     signal moved(real v)
 
     spacing: Motion.spacing.large
+    Layout.fillWidth: true
+    Layout.minimumWidth: 0
 
     ValueLabel {
-        Layout.preferredWidth: root.labelWidth
+        Layout.minimumWidth: 0
+        Layout.maximumWidth: root.labelWidth
+        Layout.preferredWidth: Math.min(root.labelWidth,
+            Math.max(48, implicitWidth))
         horizontalAlignment: Text.AlignRight
         text: root.displayText.length > 0
             ? root.displayText

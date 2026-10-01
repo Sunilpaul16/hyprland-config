@@ -31,15 +31,21 @@ Scope {
                 readonly property real screenW: root.screen?.width ?? 1280
                 readonly property real screenH: root.screen?.height ?? 800
 
-                // Chrome width
-                readonly property int chromeWidth: 18 * 4
-                readonly property real targetWidth: Config.settings.navWidth + Config.settings.maxContentWidth + chromeWidth
-                readonly property real targetHeight: Math.min(content.naturalHeight, screenH * Config.settings.heightMult)
+                // Allocate navigation before calculating the preferred width.
+                readonly property real availableWidth: screenW * 0.9
+                readonly property int navigationWidth: Math.min(
+                    Config.settings.navWidth,
+                    availableWidth < 900 ? 200
+                        : availableWidth < 1200 ? 240
+                        : Config.settings.navWidth)
 
-                // Shared fit scale
-                readonly property real fitScale: Math.min(1, (screenW * 0.9) / targetWidth, (screenH * 0.9) / targetHeight)
-                readonly property real panelWidth: Math.max(1, Math.round(Math.min(targetWidth * fitScale, screenW * 0.9)))
-                readonly property real panelHeight: Math.max(1, Math.round(Math.min(targetHeight * fitScale, screenH * 0.9)))
+                readonly property int chromeWidth: 18 * 4
+                readonly property real panelWidth: Math.max(1, Math.round(
+                    Math.min(navigationWidth + Config.settings.maxContentWidth
+                        + chromeWidth, availableWidth)))
+                readonly property real panelHeight: Math.max(1, Math.round(
+                    Math.min(content.naturalHeight,
+                        screenH * Config.settings.heightMult, screenH * 0.9)))
 
                 // Panel
                 Rectangle {
@@ -66,6 +72,7 @@ Scope {
 
                         anchors.fill: parent
                         panelActive: root.active
+                        navigationWidth: root.navigationWidth
                     }
                 }
             }

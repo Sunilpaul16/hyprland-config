@@ -7,9 +7,11 @@ Item {
     id: root
 
     property bool panelActive: false
+    property int navigationWidth: Config.settings.navWidth
 
     readonly property int pad: 18
-    readonly property int navWidth: Math.min(Config.settings.navWidth, Math.round(width * 0.4))
+    readonly property int navWidth: Math.min(
+        root.navigationWidth, Math.round(width * 0.4))
 
     // Natural height
     readonly property int naturalHeight: navList.naturalHeight + root.pad * 2
