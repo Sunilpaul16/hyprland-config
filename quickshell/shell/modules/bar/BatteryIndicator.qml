@@ -10,7 +10,7 @@ Item {
     implicitWidth: visible ? row.implicitWidth : 0
     implicitHeight: row.implicitHeight
     readonly property color statusColor: BatteryState.low ? Colors.error
-        : BatteryState.pluggedIn ? Colors.readable(Colors.primary) : Colors.text
+        : Colors.readable(Colors.primary)
 
     Row {
         id: row
@@ -47,7 +47,19 @@ Item {
     PopupToolTip {
         hoverTarget: root
         shown: hover.containsMouse
-        text: (BatteryState.pluggedIn ? "Plugged in · " : "")
-            + BatteryState.stateLabel + " · " + BatteryState.percentageText
+        text: {
+            if (!BatteryState.onBattery)
+                return "Plugged in · " + BatteryState.stateLabel;
+            const seconds = BatteryState.device.timeToEmpty;
+            if (!Number.isFinite(seconds) || seconds <= 0)
+                return "Battery time estimate unavailable";
+            const minutes = Math.max(1, Math.round(seconds / 60));
+            const hours = Math.floor(minutes / 60);
+            const remainder = minutes % 60;
+            const duration = hours > 0
+                ? hours + "h" + (remainder > 0 ? " " + remainder + "m" : "")
+                : minutes + "m";
+            return "About " + duration + " remaining";
+        }
     }
 }
