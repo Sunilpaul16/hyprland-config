@@ -276,6 +276,10 @@ Scope {
                                 Layout.leftMargin: -rightRow.spacing
                             }
 
+                            BatteryIndicator {
+                                Layout.alignment: Qt.AlignVCenter
+                            }
+
                         }
 
                         // Volume scroll zone

@@ -25,6 +25,7 @@ import "modules/volumeOsd"
 ShellRoot {
     Component.onCompleted: {
         // Wake lazy singletons
+        BatteryState.start();
         ColorsLoader.reapplyTheme();
         Updates.backgroundChecking = true;
         NightLightState.scheduling = true;

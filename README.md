@@ -5,23 +5,24 @@ Quickshell, Matugen, Kitty, and Zsh. It includes a bar, launcher, notification
 daemon, dashboard, workspace overview, lock/idle handling, wallpaper theming,
 screen capture, recording, clipboard history, and session controls.
 
-The checked-in defaults describe a two-monitor NVIDIA desktop. Review the
-machine-specific settings before using them elsewhere.
+This `laptop` branch uses the eDP-1 display at 2560x1600, 60 Hz and scale 1.25.
+Monitor, workspace and keyboard settings are tracked in `hypr/general.lua`;
+touchpad settings and native gestures are tracked in `hypr/touchpad.lua`.
 
 ## Fresh-install checklist
 
 - [ ] Boot Arch Linux with a regular user that has `sudo` access.
 - [ ] Get networking online and install `git`, `base-devel`, and `yay`.
 - [ ] Install the GPU driver appropriate for the machine.
-- [ ] Clone this repository over HTTPS or SSH.
+- [ ] Clone the `laptop` branch over HTTPS or SSH.
 - [ ] Run `./setup.sh` and complete the guided steps.
-- [ ] Review the detected monitor layout and keyboard layout.
+- [ ] Review the tracked monitor, keyboard and touchpad settings.
 - [ ] Put at least one image or video in `~/wallpaper`.
 - [ ] Select the Hyprland/UWSM session, then choose the initial wallpaper.
 - [ ] Run `./setup.sh --status`; resolve anything still marked `[ ]` or `[!]`.
 
 Private runtime data is not part of this checklist. Shell history, notification
-history, notes, app usage, current wallpaper state, and the machine profile stay
+history, notes, app usage, current wallpaper state stay
 under `~/.local/state` and are not committed.
 
 ## Guided setup
@@ -29,15 +30,15 @@ under `~/.local/state` and are not committed.
 Clone the repository anywhere under your home directory and start the wizard:
 
 ```bash
-git clone https://github.com/Sunilpaul16/hyprland-config.git
+git clone --branch laptop https://github.com/Sunilpaul16/hyprland-config.git
 cd hyprland-config
 ./setup.sh
 ```
 
 The wizard is resumable: it detects completed steps and only offers missing
 ones. It can install declared packages, create links, seed first-login themes,
-create the Python environment, clone Oh My Zsh and Powerlevel10k, write an
-untracked monitor/keyboard profile, enable NetworkManager and Bluetooth, change
+create the Python environment, clone Oh My Zsh and Powerlevel10k,
+enable NetworkManager and Bluetooth, change
 the login shell, select a wallpaper when Hyprland is running, and validate the
 result.
 
@@ -47,9 +48,9 @@ At any point, display the non-mutating checklist with:
 ./setup.sh --status
 ```
 
-The hardware profile is written to
-`~/.local/state/hyprland-config/machine.lua`. It overrides the repository's
-DP-2/DP-3 fallback without changing tracked files.
+Laptop hardware settings are owned by this repository. The wizard does not
+create outside monitor/keyboard overrides, and this branch does not load
+`~/.local/state/hyprland-config/machine.lua`.
 
 ## Non-interactive install
 
@@ -96,8 +97,8 @@ sudo systemctl enable --now NetworkManager bluetooth
 
 ## Personalise
 
-- Monitor names, positions, workspaces, keyboard layout: rerun the wizard after
-  moving or removing `~/.local/state/hyprland-config/machine.lua`
+- Monitor names, positions, scale, workspaces, keyboard layout: `hypr/general.lua`
+- Touchpad settings and gestures: `hypr/touchpad.lua`
 - Programs and key bindings: `hypr/variables.lua`
 - Window rules: `hypr/rules.lua`
 - Shell behaviour and appearance: `quickshell/config.json` or `Super+I`

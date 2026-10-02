@@ -82,6 +82,24 @@ Singleton {
         root.list = [wrapper, ...root.list];
     }
 
+    // Battery warnings use the existing UI, even with the sidebar/DND open.
+    // Critical warnings stay until dismissed; ordinary warnings use the toast timer.
+    function batteryWarning(summary: string, body: string, critical: bool): void {
+        const wrapper = notifComp.createObject(root, {
+            popup: true,
+            isTransient: !critical,
+            appName: "Battery",
+            summary: summary,
+            body: body,
+            materialIcon: "battery_alert",
+            urgency: critical ? NotificationUrgency.Critical : NotificationUrgency.Normal,
+            expireTimeout: critical ? 0 : -1
+        });
+        root.list = [wrapper, ...root.list];
+        if (!SidebarRightState.open && critical)
+            root.unread++;
+    }
+
     function clearAll(): void {
         for (const n of root.list.slice())
             n.close();
