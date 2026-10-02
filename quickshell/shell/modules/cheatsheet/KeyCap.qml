@@ -19,7 +19,7 @@ Rectangle {
         id: text
         anchors.centerIn: parent
         text: root.label
-        font.pixelSize: Motion.fontSize.small
+        font.pixelSize: Motion.fontSize.small + 2
         font.bold: true
     }//
 }

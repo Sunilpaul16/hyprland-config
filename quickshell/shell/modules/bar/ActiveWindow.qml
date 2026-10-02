@@ -48,7 +48,7 @@ Item {
             width: Math.min(implicitWidth, root.maxTitleWidth)
             text: root.title
             color: root.isGloballyActive ? Colors.readable(Colors.primary) : Colors.textMuted
-            font.pixelSize: Motion.fontSize.label
+            font.pixelSize: Motion.fontSize.label + 2
             elide: Text.ElideRight
 
             Behavior on color { CAnim {} }

@@ -49,7 +49,7 @@ Item {
             width: Math.min(implicitWidth, root.maxTitleWidth)
             text: Media.artist.length > 0 ? `${Media.title} · ${Media.artist}` : Media.title
             color: hoverArea.containsMouse ? Colors.text : Colors.textMuted
-            font.pixelSize: Motion.fontSize.label
+            font.pixelSize: Motion.fontSize.label + 2
             elide: Text.ElideRight
 
             Behavior on color { CAnim {} }

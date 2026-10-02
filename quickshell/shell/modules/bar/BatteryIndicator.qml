@@ -33,7 +33,7 @@ Item {
         StyledText {
             anchors.verticalCenter: parent.verticalCenter
             text: BatteryState.percentageText
-            font.pixelSize: Motion.fontSize.label
+            font.pixelSize: Motion.fontSize.label + 2
             font.weight: Font.Medium
             color: root.statusColor
         }

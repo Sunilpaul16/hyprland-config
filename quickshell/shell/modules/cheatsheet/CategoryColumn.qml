@@ -44,18 +44,19 @@ Rectangle {
 
         // Category header
         Row {
+            anchors.horizontalCenter: parent.horizontalCenter
             spacing: Motion.spacing.normal
 
             MaterialIcon {
                 text: root.categoryIcon
                 color: Colors.primary
-                font.pixelSize: Motion.fontSize.large
+                font.pixelSize: Motion.fontSize.large + 2
                 anchors.verticalCenter: parent.verticalCenter
             }
 
             StyledText {
                 text: root.categoryName
-                font.pixelSize: Motion.fontSize.subhead
+                font.pixelSize: Motion.fontSize.subhead + 2
                 font.bold: true
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -94,8 +95,10 @@ Rectangle {
 
                     StyledText {
                         text: modelData.label
-                        color: Colors.textMuted
-                        font.pixelSize: Motion.fontSize.body
+                        color: Colors.text
+                        font.pixelSize: Motion.fontSize.body + 2
+                        font.bold: true
+                        font.capitalization: Font.Capitalize
                         Layout.preferredWidth: root.columnWidth - bindRows.comboWidth - Motion.spacing.large
                         wrapMode: Text.Wrap
                         Layout.alignment: Qt.AlignVCenter

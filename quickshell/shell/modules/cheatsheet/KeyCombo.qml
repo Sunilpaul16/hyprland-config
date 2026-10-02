@@ -63,7 +63,7 @@ Row {
             Item {
                 implicitWidth: plus.implicitWidth
                 implicitHeight: Math.max(20, plus.implicitHeight + 8)
-                StyledText { id: plus; anchors.centerIn: parent; text: "+"; color: Colors.textMuted; font.pixelSize: Motion.fontSize.small }
+                StyledText { id: plus; anchors.centerIn: parent; text: "+"; color: Colors.textMuted; font.pixelSize: Motion.fontSize.small + 2 }
             }
         }
     }
