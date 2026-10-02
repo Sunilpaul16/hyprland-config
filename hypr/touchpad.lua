@@ -1,6 +1,10 @@
 -- Laptop touchpad: native Hyprland/libinput support, no gesture daemon.
 -- Two-finger pinch is left to applications (e.g. browser zoom).
 hl.config({
+    gestures = {
+        -- Include empty workspaces when swiping left/right.
+        workspace_swipe_use_r = true,
+    },
     input = {
         touchpad = {
             natural_scroll = true,
