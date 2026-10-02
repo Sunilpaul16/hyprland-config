@@ -2,21 +2,9 @@
 ---- MONITORS ----
 ------------------
 
-local machine_path = (os.getenv("XDG_STATE_HOME") or (os.getenv("HOME") .. "/.local/state")) .. "/hyprland-config/machine.lua"
-local machine_file = io.open(machine_path, "r")
-local has_machine_config = machine_file ~= nil
-if machine_file then machine_file:close() end
-
--- Personal fallback used until the setup wizard writes an untracked machine
--- profile. Keeping the override in XDG state lets a fresh machine differ
--- without making the Git worktree dirty.
-if not has_machine_config then
-    hl.monitor({ output = "DP-3", mode = "2560x1440@144Hz", position = "0x0", scale = 1 })
-    hl.monitor({ output = "DP-2", mode = "2560x1440@144Hz", position = "2560x-560", scale = 1, transform = 3 })
-
-    hl.workspace_rule({ workspace = "2", monitor = "DP-2" })
-    hl.workspace_rule({ workspace = "1", monitor = "DP-3", default = true })
-end
+-- Laptop-branch hardware settings: tracked here instead of XDG state overrides.
+hl.monitor({ output = "eDP-1", mode = "2560x1600@60", position = "0x0", scale = 1.25 })
+hl.workspace_rule({ workspace = "1", monitor = "eDP-1", default = true })
 
 
 ---------------
@@ -35,7 +23,7 @@ hl.config({
     },
 
     cursor = {
-        default_monitor = "DP-3",
+        default_monitor = "eDP-1",
     },
 })
 
