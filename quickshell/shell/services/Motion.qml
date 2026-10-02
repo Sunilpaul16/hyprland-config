@@ -55,19 +55,23 @@ QtObject {
     // Concave fillet at a panel joint
     readonly property int cornerSize: 14
 
+    // Convert the system point size to logical pixels; compositor scaling applies separately.
+    readonly property real textScale: Config.appearance.shellFollowSystemFont
+        ? Math.max(8, Math.min(20, Config.appearance.fontSize)) / 9 : 1
+
     // Font size ladder
     readonly property QtObject fontSize: QtObject {
-        readonly property int micro: 9  // badge counts
-        readonly property int tiny: 10  // dense secondary meta
-        readonly property int small: 11  // captions, muted labels
-        readonly property int body: 12  // default body text
-        readonly property int label: 13  // list-item titles
-        readonly property int subhead: 14  // section labels
-        readonly property int title: 15  // card titles
-        readonly property int large: 16  // panel, page titles
-        readonly property int header: 18  // prominent headers
-        readonly property int display: 20  // dashboard figures
-        readonly property int xlarge: 22  // largest text
+        readonly property int micro: Math.round(9 * root.textScale)  // badge counts
+        readonly property int tiny: Math.round(10 * root.textScale)  // dense secondary meta
+        readonly property int small: Math.round(11 * root.textScale)  // captions, muted labels
+        readonly property int body: Math.round(12 * root.textScale)  // default body text
+        readonly property int label: Math.round(13 * root.textScale)  // list-item titles
+        readonly property int subhead: Math.round(14 * root.textScale)  // section labels
+        readonly property int title: Math.round(15 * root.textScale)  // card titles
+        readonly property int large: Math.round(16 * root.textScale)  // panel, page titles
+        readonly property int header: Math.round(18 * root.textScale)  // prominent headers
+        readonly property int display: Math.round(20 * root.textScale)  // dashboard figures
+        readonly property int xlarge: Math.round(22 * root.textScale)  // largest text
     }
 
     // Gap ladder

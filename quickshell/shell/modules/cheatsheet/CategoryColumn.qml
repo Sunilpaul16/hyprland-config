@@ -10,7 +10,7 @@ Rectangle {
     required property string categoryName
     readonly property var rows: Binds.rowsFor(categoryName)
 
-    property int columnWidth: 280
+    property int columnWidth: Math.round(280 * Motion.textScale)
     property int padding: 16
 
     // Category icons

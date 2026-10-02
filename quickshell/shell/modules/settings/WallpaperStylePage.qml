@@ -358,11 +358,47 @@ ScrollPage {
             first: true
             live: true
             label: "Interface font"
+            subtext: "Desktop applications; shell text when enabled below"
 
             SelectMenu {
                 options: Fonts.interfaceOptions
-                current: Fonts.interfaceFamily
+                current: Fonts.desktopInterfaceFamily
                 onSelected: v => Config.appearance.fontInterface = v
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Font size"
+            subtext: "Desktop font size in points; display scaling applies separately"
+            NumberControl {
+                value: Config.appearance.fontSize
+                from: 8
+                to: 20
+                stepSize: 1
+                suffix: " pt"
+                onMoved: v => Config.appearance.fontSize = Math.round(v)
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Monospace font"
+            subtext: "Fixed-width text in desktop applications"
+            SelectMenu {
+                options: Fonts.monospaceOptions
+                current: Fonts.monospaceFamily
+                onSelected: v => Config.appearance.fontMonospace = v
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Use system font in shell"
+            subtext: "Off restores Noto Sans and the original bar, panel and cheat sheet text sizes"
+            ToggleSwitch {
+                checked: Config.appearance.shellFollowSystemFont
+                onToggled: v => Config.appearance.shellFollowSystemFont = v
             }
         }
 
@@ -371,6 +407,7 @@ ScrollPage {
             last: true
             live: true
             label: "Glyph font"
+            subtext: "Shell symbols and icons"
 
             SelectMenu {
                 options: Fonts.glyphOptions

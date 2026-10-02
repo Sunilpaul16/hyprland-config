@@ -213,7 +213,10 @@ Singleton {
                 property real layerOpacity: 0.55  // layer opacity
                 property real pillOpacity: 0.55   // bar pill opacity
                 // Fonts
-                property string fontInterface: "Noto Sans"  // shell text
+                property string fontInterface: "Adwaita Sans"  // desktop and shell text
+                property int fontSize: 11  // system font size (points)
+                property bool shellFollowSystemFont: true
+                property string fontMonospace: "Adwaita Mono"
                 property string fontGlyph: "JetBrainsMono Nerd Font"  // icon glyphs
             }
 

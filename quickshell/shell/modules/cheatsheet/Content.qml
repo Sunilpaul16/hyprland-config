@@ -11,14 +11,14 @@ Item {
 
     // Height estimate
     function estimatedHeight(category) {
-        return 58 + Binds.rowsFor(category).length * 26;
+        return (58 + Binds.rowsFor(category).length * 26) * Motion.textScale;
     }
 
     // Column packing
-    readonly property int cardWidth: 312
+    readonly property int cardWidth: Math.round(280 * Motion.textScale) + 32
     readonly property int maxBalancedColumns: Math.ceil(Binds.categories.length / 3)
     readonly property int fittingColumns: Math.floor((((root.screen?.width ?? 1280) * 0.9) - 56 + root.cardSpacing) / (root.cardWidth + root.cardSpacing))
-    readonly property int columnCount: Math.max(2, Math.min(root.maxBalancedColumns, root.fittingColumns))
+    readonly property int columnCount: Math.max(1, Math.min(root.maxBalancedColumns, root.fittingColumns))
     readonly property var columns: {
         const cats = [...Binds.categories].sort((a, b) => root.estimatedHeight(b) - root.estimatedHeight(a));
         const cols = Array.from({ length: root.columnCount }, () => []);

@@ -9,7 +9,7 @@ Rectangle {
     required property string label
 
     implicitWidth: Math.max(text.implicitWidth + 14, height)
-    implicitHeight: 20
+    implicitHeight: Math.max(20, text.implicitHeight + 8)
     radius: Motion.rounding.small
     color: Colors.layer
     border.width: 1
