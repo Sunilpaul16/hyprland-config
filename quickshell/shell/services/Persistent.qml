@@ -57,6 +57,7 @@ Singleton {
             property bool gameModeDndWasEnabled: false
             property bool gameModeIdleInhibitWasEnabled: false
             property list<var> quickToggleLayout: []
+            property bool wifiQuickToggleAdded: false
             property int lastNotifiedUpdateTotal: 0
             property string lastHyprlandInstanceSignature: ""
             property var overlayWidgets: ({})
@@ -70,6 +71,12 @@ Singleton {
         interval: 100
         repeat: false
         onTriggered: {
+            // Add Wi-Fi once to existing layouts; users can still hide it afterwards.
+            if (!adapter.wifiQuickToggleAdded) {
+                if (adapter.quickToggleLayout.length > 0 && !adapter.quickToggleLayout.some(entry => entry.type === "wifi"))
+                    adapter.quickToggleLayout = [{ type: "wifi", size: "small" }].concat(adapter.quickToggleLayout);
+                adapter.wifiQuickToggleAdded = true;
+            }
             root.isNewHyprlandInstance = (adapter.lastHyprlandInstanceSignature !== root.currentInstanceSignature);
             // Game mode is session-scoped; do not resurrect it after a new login.
             if (root.isNewHyprlandInstance)

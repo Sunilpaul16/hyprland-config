@@ -22,7 +22,7 @@ Scope {
 
                 onDismissed: SidebarRightState.open = false
                 onEscapePressed: {
-                    if (SidebarDialogState.openDialog !== "" || SidebarDialogState.mixerOpen)
+                    if (SidebarDialogState.bluetoothOpen || SidebarDialogState.mixerOpen || SidebarDialogState.wifiOpen)
                         SidebarDialogState.close();
                     else
                         SidebarRightState.open = false;
@@ -81,7 +81,6 @@ Scope {
                 // Slide-in wrapper
                 Item {
                     anchors.fill: backdrop
-                    visible: SidebarDialogState.openDialog === ""
 
                     opacity: root.showProgress
                     transform: Translate { x: (1 - root.showProgress) * backdrop.width }
@@ -95,6 +94,8 @@ Scope {
 
                         SystemHeaderCard { Layout.fillWidth: true }
                         QuickTogglesCard { Layout.fillWidth: true }
+                        WifiCard { Layout.fillWidth: true }
+                        BluetoothCard { Layout.fillWidth: true }
                         VolumeMixerCard { Layout.fillWidth: true }
                         KeepAwakeCard { Layout.fillWidth: true; visible: KeepAwakeCardState.enabled }
                         ScreenRecorderCard { Layout.fillWidth: true; visible: ScreenRecorderCardState.enabled }
@@ -123,12 +124,6 @@ Scope {
                     }
                 }
 
-                // Toggle dialogs
-                ToggleDialog {
-                    anchors.fill: backdrop
-                    shown: SidebarDialogState.openDialog === "bluetooth"
-                    sourceComponent: BluetoothDialog {}
-                }
             }
         }
     }

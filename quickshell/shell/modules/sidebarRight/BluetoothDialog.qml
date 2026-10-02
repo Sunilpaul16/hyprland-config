@@ -7,8 +7,8 @@ import "../../components"
 Rectangle {
     id: root
 
-    radius: Motion.rounding.drawer
-    color: Colors.panel
+    radius: Motion.rounding.large
+    color: Colors.layer
 
     Component.onCompleted: BluetoothStatus.setDiscovering(true)
     Component.onDestruction: BluetoothStatus.setDiscovering(false)
@@ -31,7 +31,7 @@ Rectangle {
 
             IconAction {
                 iconName: "close"
-                onTriggered: SidebarDialogState.close()
+                onTriggered: SidebarDialogState.bluetoothOpen = false
             }
         }
 

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services"
+import "../../components"
 
 // Network page
 ScrollPage {
@@ -13,12 +14,14 @@ ScrollPage {
         NetworkUsage.ref();
         Vpn.ref();
         EthernetStatus.ref();
+        WifiStatus.ref();
     }
 
     Component.onDestruction: {
         NetworkUsage.unref();
         Vpn.unref();
         EthernetStatus.unref();
+        WifiStatus.unref();
     }
 
     function speedLabel(bytes: real): string {
@@ -29,6 +32,75 @@ ScrollPage {
     function totalLabel(bytes: real): string {
         const f = NetworkUsage.formatBytesTotal(bytes);
         return `${f.value.toFixed(f.value < 10 ? 1 : 0)} ${f.unit}`;
+    }
+
+    SectionLabel {
+        text: "Wi-Fi"
+    }
+
+    SettingGroup {
+        SettingRow {
+            first: true
+            live: true
+            label: "Wi-Fi"
+            subtext: WifiStatus.error
+
+            ToggleSwitch {
+                checked: WifiStatus.enabled
+                enabled: WifiStatus.available && !WifiStatus.busy
+                opacity: enabled ? 1 : 0.5
+                onToggled: value => WifiStatus.setEnabled(value)
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Status"
+
+            ValueLabel {
+                text: WifiStatus.statusLabel
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Network"
+
+            ValueLabel {
+                text: WifiStatus.ssid || "—"
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Signal"
+
+            ValueLabel {
+                text: WifiStatus.signal >= 0 ? `${WifiStatus.signal}%` : "—"
+            }
+        }
+
+        SettingRow {
+            live: true
+            label: "Interface"
+
+            ValueLabel {
+                text: WifiStatus.interfaceName || "—"
+            }
+        }
+
+        SettingRow {
+            last: true
+            live: true
+            label: "Connection editor"
+            subtext: "Opens nm-connection-editor"
+
+            SelectPill {
+                value: "Open"
+                icon: "open_in_new"
+                onClicked: WifiStatus.openSettings()
+            }
+        }
     }
 
     SectionLabel {

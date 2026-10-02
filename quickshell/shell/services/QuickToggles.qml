@@ -8,6 +8,7 @@ Singleton {
 
     // Toggle catalog
     readonly property var catalog: [
+        { id: "wifi", name: "Wi-Fi", icon: "wifi" },
         { id: "ethernet", name: "Ethernet", icon: "lan" },
         { id: "bluetooth", name: "Bluetooth", icon: "bluetooth" },
         { id: "volume", name: "Volume", icon: "volume_up" },

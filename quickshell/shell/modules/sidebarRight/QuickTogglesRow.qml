@@ -10,8 +10,39 @@ ColumnLayout {
 
     spacing: Motion.spacing.large
 
+    property bool pollingNetwork: false
+
+    function syncNetworkPolling(): void {
+        if (root.pollingNetwork === SidebarRightState.open) return;
+        root.pollingNetwork = SidebarRightState.open;
+        if (root.pollingNetwork) {
+            EthernetStatus.ref();
+            WifiStatus.ref();
+        } else {
+            EthernetStatus.unref();
+            WifiStatus.unref();
+        }
+    }
+
+    Component.onCompleted: root.syncNetworkPolling()
+    Component.onDestruction: {
+        if (root.pollingNetwork) {
+            EthernetStatus.unref();
+            WifiStatus.unref();
+        }
+    }
+
     // Toggle models
     readonly property list<QuickToggleModel> toggleModels: [
+        QuickToggleModel {
+            toggleId: "wifi"
+            name: QuickToggles.nameFor("wifi")
+            icon: WifiStatus.enabled ? "wifi" : "wifi_off"
+            toggled: WifiStatus.enabled
+            available: WifiStatus.available && !WifiStatus.busy
+            mainAction: () => WifiStatus.setEnabled(!WifiStatus.enabled)
+            altAction: () => SidebarDialogState.toggleWifi()
+        },
         QuickToggleModel {
             toggleId: "ethernet"
             name: QuickToggles.nameFor("ethernet")
@@ -27,7 +58,7 @@ ColumnLayout {
             toggled: BluetoothStatus.enabled
             available: BluetoothStatus.available
             mainAction: () => BluetoothStatus.toggle()
-            altAction: () => SidebarDialogState.openBluetooth()
+            altAction: () => SidebarDialogState.toggleBluetooth()
         },
         QuickToggleModel {
             toggleId: "volume"
@@ -91,10 +122,7 @@ ColumnLayout {
         target: SidebarRightState
 
         function onOpenChanged(): void {
-            if (SidebarRightState.open)
-                EthernetStatus.ref();
-            else
-                EthernetStatus.unref();
+            root.syncNetworkPolling();
         }
     }
 
