@@ -116,15 +116,19 @@ install_links() {
         'quickshell|.config/quickshell'
         'themes/MatugenPortal|.local/share/themes/MatugenPortal'
         'systemd/quickshell.service|.config/systemd/user/quickshell.service'
+        'systemd/power-history.service|.config/systemd/user/power-history.service'
+        'systemd/power-history.timer|.config/systemd/user/power-history.timer'
         'systemd/xdg-desktop-portal-gtk.service.d|.config/systemd/user/xdg-desktop-portal-gtk.service.d'
         'zsh/.p10k.zsh|.config/zsh/.p10k.zsh'
         'zsh/.zshrc|.config/zsh/.zshrc'
         'zsh/fuzzy-history.zsh|.config/zsh/fuzzy-history.zsh'
         'scripts/check-config|.local/bin/check-hypr-config'
         'setup.sh|.local/bin/hypr-setup'
+        'scripts/brightness|.local/bin/brightness'
         'scripts/ocr|.local/bin/ocr'
         'scripts/record|.local/bin/record'
         'scripts/screenshot|.local/bin/screenshot'
+        'scripts/power-history.py|.local/bin/power-history.py'
         'scripts/setscheme|.local/bin/setscheme'
         'scripts/switchwall|.local/bin/switchwall'
     )
@@ -152,6 +156,7 @@ install_links() {
     fi
     if command -v systemctl >/dev/null 2>&1 && systemctl --user show-environment >/dev/null 2>&1; then
         systemctl --user daemon-reload
+        systemctl --user enable --now power-history.timer
     else
         printf 'deferred systemctl --user daemon-reload (no user manager available)\n'
     fi

@@ -34,6 +34,9 @@ hl.bind(v.kbOverlay, hl.dsp.exec_cmd("qs -c shell ipc call overlay toggle"), { d
 
 
 -- Screenshots
+-- Lenovo screenshot key sends SUPER + SHIFT + S without Fn.
+hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd(v.home .. "/.local/bin/screenshot full"), { description = "Screenshot: Lenovo key fullscreen" })
+hl.bind("SUPER + CTRL + SHIFT + S", hl.dsp.exec_cmd(v.home .. "/.local/bin/screenshot region"), { description = "Screenshot: Ctrl + Lenovo key region" })
 hl.bind(v.kbScreenshotFull, hl.dsp.exec_cmd(v.home .. "/.local/bin/screenshot full"), { description = "Screenshot: fullscreen" })
 hl.bind(v.kbScreenshotRegion, hl.dsp.exec_cmd(v.home .. "/.local/bin/screenshot region"), { description = "Screenshot: region" })
 hl.bind(v.kbScreenshotRegionEdit, hl.dsp.exec_cmd(v.home .. "/.local/bin/screenshot region --edit"), { description = "Screenshot: region + edit" })
@@ -56,6 +59,9 @@ for i = 1, 10 do
 end
 
 -- Scratchpad
+-- Copilot emits Shift + Win + F23; Right Win uses Mod3 in our keymap.
+hl.bind("MOD3 + SHIFT + F23", hl.dsp.workspace.toggle_special("magic"), { description = "Workspace: Copilot toggle scratchpad" })
+hl.bind("SUPER + SHIFT + F23", hl.dsp.workspace.toggle_special("magic"), { description = "Workspace: Copilot toggle scratchpad" })
 hl.bind(v.kbSpecialWs,             hl.dsp.workspace.toggle_special("magic"), { description = "Workspace: toggle scratchpad" })
 hl.bind(v.kbMoveWinToScratchpad,   hl.dsp.window.move({ workspace = "special:magic" }), { description = "Workspace: move window to scratchpad" })
 
@@ -66,6 +72,9 @@ hl.bind(v.kbWorkspacePrev, hl.dsp.focus({ workspace = "e-1" }), { description = 
 -- Mouse move/resize
 hl.bind(v.kbMoveWindow,   hl.dsp.window.drag(),   { mouse = true, description = "Window: drag with mouse" })
 hl.bind(v.kbResizeWindow, hl.dsp.window.resize(), { mouse = true, description = "Window: resize with mouse" })
+
+hl.bind(v.kbBrightnessUp,   hl.dsp.exec_cmd(v.home .. "/.local/bin/brightness up"),   { locked = true, repeating = true, description = "Screen: brightness up" })
+hl.bind(v.kbBrightnessDown, hl.dsp.exec_cmd(v.home .. "/.local/bin/brightness down"), { locked = true, repeating = true, description = "Screen: brightness down" })
 
 hl.bind(v.kbVolumeUp,       hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true, description = "Media: volume up" })
 hl.bind(v.kbVolumeDown,     hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true, description = "Media: volume down" })

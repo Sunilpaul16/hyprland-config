@@ -74,6 +74,10 @@ Singleton {
             root.closeSubPage();
         }
 
+        function openPage(key: string): void {
+            root.openPage(key);
+        }
+
         // Page switching
         function page(idx: int): void {
             root.currentPageIdx = idx;

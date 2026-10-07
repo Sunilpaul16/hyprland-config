@@ -49,7 +49,7 @@ M.kbResizeWindow          = "SUPER + mouse:273"
 M.kbGoToWs                = "SUPER"       -- + <N> in keybinds.lua's loop
 M.kbMoveWinToWs            = "SUPER + SHIFT" -- + <N> in keybinds.lua's loop
 M.kbSpecialWs              = "SUPER + S"
-M.kbMoveWinToScratchpad    = "SUPER + SHIFT + S"
+M.kbMoveWinToScratchpad    = "SUPER + ALT + S"
 M.kbWorkspaceNext          = "SUPER + mouse_down"
 M.kbWorkspacePrev          = "SUPER + mouse_up"
 
@@ -62,12 +62,14 @@ M.kbOcrRegion             = "SUPER + SHIFT + O"
 
 -- Screenshots / recording
 M.kbScreenshotFull        = "Print"
-M.kbScreenshotRegion      = "SUPER + Print"
+M.kbScreenshotRegion      = "SHIFT + Print"
 M.kbScreenshotRegionEdit  = "SUPER + SHIFT + Print"
 M.kbRecordRegion          = "SUPER + ALT + R"
 M.kbRecordFull            = "SUPER + ALT + SHIFT + R"
 
 -- Media / hardware keys
+M.kbBrightnessUp    = "XF86MonBrightnessUp"
+M.kbBrightnessDown  = "XF86MonBrightnessDown"
 M.kbVolumeUp        = "XF86AudioRaiseVolume"
 M.kbVolumeDown      = "XF86AudioLowerVolume"
 M.kbMute            = "XF86AudioMute"

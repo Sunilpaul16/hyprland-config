@@ -54,10 +54,11 @@ Item {
         },
         { key: "network", label: "Network", icon: "lan", description: "Ethernet, VPN and usage", keywords: "nordvpn throughput download upload connection", category: "hardware", component: networkPage },
         {
-            key: "power", label: "Power & display", icon: "bedtime", description: "Idle, keep awake and night light", keywords: "display lifecycle", category: "hardware", component: powerPage,
+            key: "power", label: "Power & display", icon: "bedtime", description: "Power mode, battery history and night light", keywords: "display lifecycle battery performance balanced saver", category: "hardware", component: powerPage,
             searchSections: [
-                { label: "Idle & power", icon: "bedtime", keywords: "lock screen dpms suspend keep awake media inhibitor timeout" },
-                { label: "Night light", icon: "dark_mode", keywords: "temperature schedule sunset sunrise hyprsunset" }
+                { label: "Idle & power", icon: "bedtime", keywords: "power mode profile battery saver balanced performance lock screen dpms suspend keep awake media inhibitor timeout" },
+                { label: "Night light", icon: "dark_mode", keywords: "temperature schedule sunset sunrise hyprsunset" },
+                { label: "Power history", icon: "battery_std", keywords: "battery drain watts energy consumption chart chrome apps activity cpu history" }
             ]
         },
         {
@@ -88,7 +89,8 @@ Item {
         audio: { page: "devices", section: 0 },
         connectedDevices: { page: "devices", section: 1 },
         updates: { page: "system", section: 0 },
-        idlePower: { page: "power", section: 0 }
+        idlePower: { page: "power", section: 0 },
+        powerHistory: { page: "power", section: 2 }
     })
 
     function selectSection(page: string, section: int): void {
@@ -393,7 +395,8 @@ Item {
             onSectionSelected: index => root.powerSection = index
             sections: [
                 { label: "Idle & power", icon: "bedtime", component: idlePowerPage },
-                { label: "Night light", icon: "dark_mode", component: nightLightPage }
+                { label: "Night light", icon: "dark_mode", component: nightLightPage },
+                { label: "Power history", icon: "battery_std", component: powerHistoryPage }
             ]
         }
     }
@@ -502,6 +505,11 @@ Item {
             sectionKey: "power"
             pageTitle: "Night light"
         }
+    }
+
+    Component {
+        id: powerHistoryPage
+        PowerHistoryPage {}
     }
 
     // System sections

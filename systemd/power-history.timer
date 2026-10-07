@@ -1,0 +1,10 @@
+[Unit]
+Description=Record power history every 30 seconds
+
+[Timer]
+OnStartupSec=5s
+OnUnitActiveSec=30s
+AccuracySec=3s
+
+[Install]
+WantedBy=timers.target

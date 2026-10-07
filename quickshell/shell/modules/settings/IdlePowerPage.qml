@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell.Services.UPower
 import "../../services"
 import "../../components"
 
@@ -7,6 +8,63 @@ ScrollPage {
     id: root
 
     title: "Idle & power"
+
+    readonly property var powerModeOptions: {
+        const modes = [
+            { value: "power-saver", label: "Power saver", profile: PowerProfile.PowerSaver },
+            { value: "balanced", label: "Balanced", profile: PowerProfile.Balanced }
+        ];
+        if (PowerProfiles.hasPerformanceProfile)
+            modes.push({ value: "performance", label: "Performance", profile: PowerProfile.Performance });
+        return modes;
+    }
+    readonly property string currentPowerMode: root.powerModeOptions.find(
+        mode => mode.profile === PowerProfiles.profile)?.value ?? "";
+    readonly property string powerModeDescription: {
+        let description;
+        switch (PowerProfiles.profile) {
+        case PowerProfile.PowerSaver:
+            description = "Reduce power use for longer battery life";
+            break;
+        case PowerProfile.Performance:
+            description = "Prioritise speed with higher power use and fan noise";
+            break;
+        default:
+            description = "Balance performance and battery life";
+        }
+        if (PowerProfiles.degradationReason === PerformanceDegradationReason.HighTemperature)
+            description += ". Performance is limited by high temperature";
+        else if (PowerProfiles.degradationReason === PerformanceDegradationReason.LapDetected)
+            description += ". Performance is limited while the laptop is on your lap";
+        return description;
+    }
+
+    function setPowerMode(value: string): void {
+        const mode = root.powerModeOptions.find(option => option.value === value);
+        if (mode)
+            PowerProfiles.profile = mode.profile;
+    }
+
+    SectionLabel {
+        text: "Power mode"
+    }
+
+    SettingGroup {
+        SettingRow {
+            first: true
+            last: true
+            live: true
+            label: "Power mode"
+            subtext: root.powerModeDescription
+
+            SelectMenu {
+                objectName: "powerModeSelector"
+                options: root.powerModeOptions
+                current: root.currentPowerMode
+                onSelected: value => root.setPowerMode(value)
+            }
+        }
+    }
 
     // Format timeout
     function formatTimeout(mins: int): string {
