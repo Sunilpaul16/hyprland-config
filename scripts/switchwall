@@ -271,6 +271,12 @@ if is_video "$wallpaper"; then
     fi
 fi
 
+# Hyprlock uses the selected image, or a still frame for video wallpapers.
+# Keep this independent of palette selection and leave colour previews alone.
+if ! $COLORS_PREVIEW; then
+    ln -sfn "$(realpath "$colorsource")" "$HOME/.local/state/quickshell/lockscreen-wallpaper"
+fi
+
 COLOR_SOURCE=dynamic
 [[ -s "$SOURCE_FILE" ]] && COLOR_SOURCE="$(cat "$SOURCE_FILE")"
 if [[ "$COLOR_SOURCE" != dynamic ]] && ! $COLORS_PREVIEW; then
