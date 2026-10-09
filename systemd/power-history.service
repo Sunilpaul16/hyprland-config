@@ -1,8 +1,0 @@
-[Unit]
-Description=Record battery and application CPU history
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/python3 %h/.local/bin/power-history.py sample
-UMask=0077
-Nice=10

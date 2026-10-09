@@ -1,142 +1,103 @@
-# Hyprland configuration
+# Caelestia laptop setup
 
-Personal Arch Linux desktop configuration built around Hyprland's Lua config,
-Quickshell, Matugen, Kitty, and Zsh. It includes a bar, launcher, notification
-daemon, dashboard, workspace overview, lock/idle handling, wallpaper theming,
-screen capture, recording, clipboard history, and session controls.
+Current Arch Linux laptop configuration, saved on the `laptop-caelestia` branch.
+This branch replaces the previous custom shell with Caelestia while keeping
+personal Kitty, Zsh, keyboard shortcuts and touchpad gestures.
 
-This `laptop` branch uses the eDP-1 display at 2560x1600, 60 Hz and scale 1.25.
-Monitor, workspace and keyboard settings are tracked in `hypr/general.lua`;
-touchpad settings and native gestures are tracked in `hypr/touchpad.lua`.
+## Included
 
-## Fresh-install checklist
+- Hyprland Lua configuration: eDP-1, 2560×1600 at 60 Hz, scale 1.25, GB keyboard.
+- Caelestia shell 2.5.0 with local QML customizations and its upstream license.
+- App names in the bar; populated special workspaces labelled as scratchpads.
+- Manual Wi-Fi scan buttons; routine network updates use cached results.
+- Custom cheatsheet with key badges, category icons and system window styling.
+- Kitty, Zsh, Powerlevel10k configuration and fuzzy history search.
+- Animated wallpapers through mpvpaper, with frame thumbnails and dynamic colours.
+- Game mode stops the wallpaper process and displays its still frame; leaving
+  game mode resumes the selected video.
+- Autostart overrides hiding duplicate Blueman and NetworkManager tray applets.
 
-- [ ] Boot Arch Linux with a regular user that has `sudo` access.
-- [ ] Get networking online and install `git`, `base-devel`, and `yay`.
-- [ ] Install the GPU driver appropriate for the machine.
-- [ ] Clone the `laptop` branch over HTTPS or SSH.
-- [ ] Run `./setup.sh` and complete the guided steps.
-- [ ] Review the tracked monitor, keyboard and touchpad settings.
-- [ ] Put at least one image or video in `~/wallpaper`.
-- [ ] Select the Hyprland/UWSM session, then choose the initial wallpaper.
-- [ ] Run `./setup.sh --status`; resolve anything still marked `[ ]` or `[!]`.
+The vendored shell is the installed 2.5.0 configuration with our edits. Compiled
+Caelestia plugins and Quickshell are supplied by system packages, not this repo.
+The separate development clone was at commit
+`5f1c59c0665aad66e94710f67e4bebaeb65c35f4` when this snapshot was taken.
 
-Private runtime data is not part of this checklist. Shell history, notification
-history, notes, app usage, current wallpaper state stay
-under `~/.local/state` and are not committed.
+## Restore
 
-## Guided setup
+This targets the same laptop. Review monitor names and screen settings in
+`caelestia/hypr-user.lua` and the output in `caelestia/animated-wallpaper.py` when
+using another machine. Hyprland must support the Lua configuration API.
 
-Clone the repository anywhere under your home directory and start the wizard:
+1. Install Arch Linux, networking, Git, `base-devel`, and an AUR helper.
+2. Install Hyprland, `caelestia-shell`, `caelestia-cli` and their dependencies.
+   This setup uses `quickshell-git`; it conflicts with the stable `quickshell`
+   package. The exact installed package versions are recorded under `packages/`.
+3. Install `kitty`, `zsh`, `fzf`, `yazi`, `ffmpeg`, `mpvpaper`, `wl-clipboard`,
+   `cliphist`, `grim`, `slurp`, `libnotify`, `nautilus`, `brightnessctl`,
+   `networkmanager`, `bluez`, `bluez-utils`, `pipewire`, `wireplumber`,
+   `pipewire-pulse`, `power-profiles-daemon`, `hypridle`, `hyprlock`,
+   `xdg-desktop-portal-hyprland`, `xdg-desktop-portal-gtk`, `gnome-keyring`,
+   `polkit-gnome`, `gammastep`, `geoclue`, `ttf-jetbrains-mono-nerd`,
+   `ttf-rubik-vf` and Material Symbols fonts. Personal app shortcuts also expect
+   `google-chrome-stable` and `code`.
+4. Clone and restore the files:
 
-```bash
-git clone --branch laptop https://github.com/Sunilpaul16/hyprland-config.git
-cd hyprland-config
-./setup.sh
-```
+   ```sh
+   git clone --branch laptop-caelestia https://github.com/Sunilpaul16/hyprland-config.git
+   cd hyprland-config
+   python3 install.py
+   ```
 
-The wizard is resumable: it detects completed steps and only offers missing
-ones. It can install declared packages, create links, seed first-login themes,
-create the Python environment, clone Oh My Zsh and Powerlevel10k,
-enable NetworkManager and Bluetooth, change
-the login shell, select a wallpaper when Hyprland is running, and validate the
-result.
+   The installer saves replaced configuration in a timestamped directory under
+   `~/.local/state/caelestia-config-backups/`. It installs files, not packages,
+   and does not enable system services or change your login shell.
 
-At any point, display the non-mutating checklist with:
+5. Install Oh My Zsh and Powerlevel10k if missing:
 
-```bash
-./setup.sh --status
-```
+   ```sh
+   git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.config/zsh/oh-my-zsh
+   git clone https://github.com/romkatv/powerlevel10k.git ~/.config/zsh/oh-my-zsh/custom/themes/powerlevel10k
+   chsh -s /usr/bin/zsh
+   ```
 
-Laptop hardware settings are owned by this repository. The wizard does not
-create outside monitor/keyboard overrides, and this branch does not load
-`~/.local/state/hyprland-config/machine.lua`.
+6. Enable NetworkManager, Bluetooth and power-profiles-daemon as appropriate.
+   Log into Hyprland using UWSM so user services receive the Wayland environment.
+7. Put your own videos or images in `~/Pictures/Wallpapers`, then run:
 
-## Non-interactive install
+   ```sh
+   caelestia scheme set -n dynamic
+   python3 ~/.config/caelestia/animated-wallpaper.py random
+   ```
 
-The lower-level installer remains available for scripted or selective setup:
+   Video frames are generated once and cached. New files appear when opening the
+   wallpaper picker or choosing a random wallpaper. The original videos remain
+   in your Pictures folder. The selected wallpaper restores on the next login.
 
-```bash
-./install.sh --help
-./install.sh --check
-```
+## Main shortcuts
 
-On Arch Linux, a complete setup is:
+| Shortcut | Action |
+|---|---|
+| Super + / | Cheatsheet |
+| Super + I | Settings |
+| Super + T | Wallpaper picker |
+| Super + Shift + T | Random wallpaper |
+| Super + B | Toggle bar |
+| Copilot | Toggle scratchpad |
+| AltGr + Copilot | Move app into/out of scratchpad |
+| Three fingers left/right | Sequential workspaces, including empty ones |
+| Three fingers up/down | Scratchpad |
+| Four fingers up/down | Enter/leave fullscreen |
+| Four fingers left/right | Cycle populated scratchpads |
 
-```bash
-./install.sh --packages
-./install.sh --link --python
-./install.sh --check
-```
+All bindings are in `caelestia/my-shortcuts.lua`; the cheatsheet intentionally
+shows a smaller selection. Scroll factor is 0.8.
 
-`--packages` uses `pacman` for [repository packages](packages/arch.txt) and
-`yay` for [AUR packages](packages/aur.txt). Install an appropriate GPU driver
-separately; the package list deliberately does not guess the machine's GPU.
+## Excluded
 
-`--link` creates individual links under `~/.config`, `~/.local/bin`, and the Zsh
-locations. Existing destinations are moved to timestamped directories under
-`~/.local/state/hyprland-config/backups`; they are never silently overwritten.
-It also creates the wallpaper, screenshot, and recording directories. Neutral
-Kitty, Hyprland, and Hyprlock colours are seeded if live Matugen output does not
-exist, keeping the first login usable before a wallpaper is selected.
+No wallpaper videos, profile photo, credentials, browser data, shell history,
+notifications, screenshots or runtime state are included. Hibernate is not
+configured. Package inventories document this machine; they are not an
+instruction to install every listed application.
 
-`--python` creates `~/.local/state/quickshell/.venv` from
-[requirements.txt](requirements.txt). The wallpaper colour pipeline expects
-that exact environment.
-
-After linking, select the Hyprland/UWSM session. Hyprland starts `hypridle` and
-the `quickshell.service` user unit from `hypr/execs.lua`; the service is
-intentionally not enabled independently.
-
-NetworkManager and Bluetooth are system services rather than dotfiles. Enable
-the ones used on the machine separately, for example:
-
-```bash
-sudo systemctl enable --now NetworkManager bluetooth
-```
-
-## Personalise
-
-- Monitor names, positions, scale, workspaces, keyboard layout: `hypr/general.lua`
-- Touchpad settings and gestures: `hypr/touchpad.lua`
-- Programs and key bindings: `hypr/variables.lua`
-- Window rules: `hypr/rules.lua`
-- Shell behaviour and appearance: `quickshell/config.json` or `Super+I`
-- Wallpapers: `~/wallpaper`
-
-`quickshell/config.json` and Matugen's generated outputs are ignored because
-they are live per-user state. The templates that produce them remain tracked.
-The Matugen configuration also writes a local Vencord theme when Vencord is
-installed; Vencord itself is not installed by the bootstrap script.
-
-The weather service uses configured coordinates when present. With empty
-coordinates it requests IP-based location from `ipinfo.io`, then fetches the
-forecast from Open-Meteo. Media cover art may also be downloaded by the shell.
-
-## Validation
-
-Run:
-
-```bash
-./scripts/check-config
-```
-
-This checks Bash, Zsh, Python, JSON, theme-role consistency, QML when `qmllint`
-is available, ShellCheck when installed, and whitespace errors.
-
-## Hyprland notes
-
-Tearing has its master switch enabled, but Hyprland also requires an
-`immediate = true` window rule for each game that should tear. No broad rule is
-included because applying experimental tearing to the wrong client can cause
-graphics problems.
-
-Hyprland's optional compositor permission enforcement is not enabled. If it is
-enabled, add explicit screencopy rules for the trusted capture tools,
-Quickshell, and `xdg-desktop-portal-hyprland`, then restart Hyprland; permission
-rules are intentionally not reloadable.
-
-## Credits and licensing
-
-The preset colour corpus has its own provenance and licensing notes in
-`matugen/schemes/`. No repository-wide licence has been selected yet.
+After restoring, verify startup, locking, suspend/resume, brightness and game
+mode on the target machine. Restoring on a fresh system has not been tested.

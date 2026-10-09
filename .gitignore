@@ -1,45 +1,16 @@
-# zsh state
-zsh/.zsh_history
-zsh/.zcompdump*
-zsh/.z
-# Caches
 __pycache__/
 *.pyc
-*.pyo
-.cache/
 *.qmlc
 *.jsc
-
-# Scratch files
+.cache/
 *.tmp
 *.swp
 *~
-
-# Secrets
-*.env
-.env*
-*token*
-*secret*
-*apikey*
-*api_key*
+.env
+.env.*
 *.pem
 *.key
-id_rsa*
-id_ed25519*
-*.p12
-*.pfx
 zsh/oh-my-zsh/
-
-# Matugen output
-hypr/colors.lua
-hypr/hyprlock/colors.conf
-gtk-3.0/gtk.css
-gtk-4.0/gtk.css
-themes/MatugenPortal/gtk-3.0/palette.css
-kitty/theme.conf
-
-# Live user config
-quickshell/config.json
-
-
-gtk-3.0/bookmarks
+zsh/.zsh_history
+quickshell/caelestia-cheatsheet/data.json
+hypr/scheme/current.lua

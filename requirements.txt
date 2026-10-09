@@ -1,2 +1,0 @@
-Pillow==12.3.0
-materialyoucolor==3.0.2

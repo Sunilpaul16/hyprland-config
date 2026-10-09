@@ -1,0 +1,55 @@
+{
+    "appearance": {
+        "transparency": {
+            "enabled": false
+        }
+    },
+    "background": {
+        "wallpaperEnabled": true
+    },
+    "bar": {
+        "activeWindow": {
+            "compact": false,
+            "inverted": false
+        },
+        "clock": {
+            "background": false,
+            "showDate": true,
+            "showSeconds": false
+        },
+        "persistent": true,
+        "showOnHover": false,
+        "workspaces": {
+            "activeTrail": true,
+            "maxWindowIcons": 4,
+            "occupiedBg": false,
+            "showWindowsOnSpecialWorkspaces": false,
+            "shown": 4
+        }
+    },
+    "dashboard": {
+        "dragThreshold": 35,
+        "showClockSeconds": false,
+        "showOnHover": true,
+        "showWeather": false
+    },
+    "general": {
+        "apps": {
+            "explorer": [
+                "dolphin"
+            ],
+            "terminal": [
+                "kitty"
+            ]
+        }
+    },
+    "launcher": {
+        "actionPrefix": "/",
+        "maxShown": 5
+    },
+    "services": {
+        "audioIncrement": 0.1,
+        "clockFormat": "TwelveHour",
+        "visualiserBars": 60
+    }
+}

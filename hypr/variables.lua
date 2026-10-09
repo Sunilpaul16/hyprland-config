@@ -1,92 +1,151 @@
----------------------
----- MY PROGRAMS ----
----------------------
+local scheme = require("scheme.current")
 
-local M = {}
+return {
+    ------------------
+    ---- HYPRLAND ----
+    ------------------
 
-M.terminal    = "kitty"
-M.fileManager = "nautilus"
-M.browser    = "google-chrome-stable"
-M.codeEditor      = "code"
+    -- Apps
+    terminal                   = "foot",
+    browser                    = "firefox",
+    editor                     = "codium",
+    fileExplorer               = "thunar",
+    audioSettings              = "pwvucontrol",
 
-M.home = os.getenv("HOME")
+    -- Touchpad
+    touchpadDisableTyping      = true,
+    touchpadScrollFactor       = 0.3,
+    gestureFingers             = 3,
+    workspaceSwipeFingers      = 4,
+    gestureFingersMore         = 4,
 
----------------------
----- KEYBINDINGS ----
----------------------
+    -- Blur
+    blurEnabled                = true,
+    blurSpecialWs              = false,
+    blurPopups                 = true,
+    blurInputMethods           = true,
+    blurSize                   = 8,
+    blurPasses                 = 2,
+    blurXray                   = false,
 
--- Apps / launcher
-M.kbTerminal          = "SUPER + Grave"
-M.kbFileManager       = "SUPER + E"
-M.kbBrowser           = "SUPER + W"
-M.kbCodeEditor        = "SUPER + C"
-M.kbLauncher          = "SUPER + Space" -- quickshell app launcher
-M.kbClipboardHistory  = "SUPER + V"
-M.kbWallpaperPicker   = "SUPER + T"
-M.kbRandomWallpaper   = "SUPER + SHIFT + T"
-M.kbCheatsheet        = "SUPER + Slash"
-M.kbOverview          = "SUPER + Tab" -- quickshell workspace overview
-M.kbDashboard         = "SUPER + D" -- quickshell dashboard
-M.kbSettings          = "SUPER + I" -- quickshell settings panel
-M.kbToggleBar         = "SUPER + B" -- quickshell bar visibility
-M.kbOverlay           = "SUPER + O" -- quickshell widget overlay
+    -- Shadow
+    shadowEnabled              = true,
+    shadowRange                = 15,
+    shadowRenderPower          = 4,
+    shadowColour               = "rgba(" .. scheme.inversePrimary .. "10)",
 
--- Window actions
-M.kbCloseWindow           = "SUPER + Q"
-M.kbToggleWindowFloating  = "SUPER + ALT + Space"
-M.kbTogglePseudotile      = "SUPER + ALT + P"
-M.kbToggleSplit           = "SUPER + J"
-M.kbToggleFullscreen      = "SUPER + F"
-M.kbTogglePin             = "SUPER + P"
-M.kbFocusLeft             = "SUPER + left"
-M.kbFocusRight            = "SUPER + right"
-M.kbFocusUp               = "SUPER + up"
-M.kbFocusDown             = "SUPER + down"
-M.kbMoveWindow            = "SUPER + mouse:272"
-M.kbResizeWindow          = "SUPER + mouse:273"
+    -- Gaps
+    workspaceGaps              = 20,
+    windowGapsIn               = 5,
+    windowGapsOut              = 10,
+    singleWindowGapsOut        = 20,
 
--- Workspaces
-M.kbGoToWs                = "SUPER"       -- + <N> in keybinds.lua's loop
-M.kbMoveWinToWs            = "SUPER + SHIFT" -- + <N> in keybinds.lua's loop
-M.kbSpecialWs              = "SUPER + S"
-M.kbMoveWinToScratchpad    = "SUPER + ALT + S"
-M.kbWorkspaceNext          = "SUPER + mouse_down"
-M.kbWorkspacePrev          = "SUPER + mouse_up"
+    -- Window styling
+    windowOpacity              = 0.95,
+    windowRounding             = 15,
+    windowRoundingPower        = 2,
+    windowBorderSize           = 1,
+    activeWindowBorderColour   = "rgba(" .. scheme.primary .. "e6)",
+    inactiveWindowBorderColour = "rgba(" .. scheme.onSurfaceVariant .. "11)",
 
--- System
-M.kbLock  = "SUPER + L"
-M.kbRestartShell = "SUPER + CTRL + R"
-M.kbReloadHyprland = "SUPER + CTRL + ALT + R"
+    -- Misc
+    volumeStep                 = 10,
+    volumeMax                  = 100,
+    cursorTheme                = "sweet-cursors",
+    cursorSize                 = 24,
+    sleepGestureCmd            = "systemctl suspend-then-hibernate",
 
-M.kbOcrRegion             = "SUPER + SHIFT + O"
+    ------------------
+    ---- KEYBINDS ----
+    ------------------
 
--- Screenshots / recording
-M.kbScreenshotFull        = "Print"
-M.kbScreenshotRegion      = "SHIFT + Print"
-M.kbScreenshotRegionEdit  = "SUPER + SHIFT + Print"
-M.kbRecordRegion          = "SUPER + ALT + R"
-M.kbRecordFull            = "SUPER + ALT + SHIFT + R"
+    -- Modifier only, the actual binds will be mod + 0-9. These should be strings and not arrays.
+    kbGoToWs                   = "SUPER",
+    kbGoToWsGroup              = "CTRL + SUPER",
+    kbMoveWinToWs              = "SUPER + ALT",
+    kbMoveWinToWsGroup         = "CTRL + SUPER + ALT",
 
--- Media / hardware keys
-M.kbBrightnessUp    = "XF86MonBrightnessUp"
-M.kbBrightnessDown  = "XF86MonBrightnessDown"
-M.kbVolumeUp        = "XF86AudioRaiseVolume"
-M.kbVolumeDown      = "XF86AudioLowerVolume"
-M.kbMute            = "XF86AudioMute"
-M.kbMicMute         = "XF86AudioMicMute"
-M.kbMediaNext       = "XF86AudioNext"
-M.kbMediaPause      = "XF86AudioPause"
-M.kbMediaPlay       = "XF86AudioPlay"
-M.kbMediaPrev       = "XF86AudioPrev"
-M.kbMediaSeekBack   = "MOD3 + left"
-M.kbMediaSeekForward = "MOD3 + right"
-M.kbMediaVolumeUp   = "MOD3 + up"
-M.kbMediaVolumeDown = "MOD3 + down"
-M.kbMediaSpeedUp    = "MOD3 + period"
-M.kbMediaSpeedDown  = "MOD3 + comma"
+    -- All the following binds can be either an array of binds to bind multiple keys, or a single string.
 
--- Screen
-M.kbZoomOut = "SUPER + Minus"
-M.kbZoomIn  = "SUPER + Equal"
+    -- Workspaces
+    kbMoveWinToWsSpecial       = { "SUPER + ALT + S", "CTRL + SUPER + SHIFT + Up" },
+    kbMoveWinFromWsSpecial     = "CTRL + SUPER + SHIFT + Down",
+    kbMoveWinToWsNext          = { "SUPER + ALT + mouse_down", "SUPER + ALT + Page_Down", "CTRL + SUPER + SHIFT + Right" },
+    kbMoveWinToWsPrev          = { "SUPER + ALT + mouse_up", "SUPER + ALT + Page_Up", "CTRL + SUPER + SHIFT + Left" },
+    kbNextWs                   = { "SUPER + mouse_down", "CTRL + SUPER + Right", "SUPER + Page_Down" },
+    kbPrevWs                   = { "SUPER + mouse_up", "CTRL + SUPER + Left", "SUPER + Page_Up" },
+    kbNextWsGroup              = "CTRL + SUPER + mouse_down",
+    kbPrevWsGroup              = "CTRL + SUPER + mouse_up",
 
-return M
+    -- Window Group
+    kbWindowCycleNext          = "ALT + TAB",
+    kbWindowCyclePrev          = "SHIFT + ALT + TAB",
+    kbWindowGroupCycleNext     = "CTRL + ALT + TAB",
+    kbWindowGroupCyclePrev     = "CTRL + SHIFT + ALT + TAB",
+    kbUngroup                  = "SUPER + U",
+    kbToggleGroup              = "SUPER + Comma",
+    kbGroupLockActive          = "SUPER + SHIFT + Comma",
+
+    -- Window Actions
+    kbWindowDecreaseWidth      = { "SUPER + Minus", "SUPER + ALT + Left" },
+    kbWindowIncreaseWidth      = { "SUPER + Equal", "SUPER + ALT + Right" },
+    kbWindowDecreaseHeight     = { "SUPER + SHIFT + Minus", "SUPER + ALT + Up" },
+    kbWindowIncreaseHeight     = { "SUPER + SHIFT + Equal", "SUPER + ALT + Down" },
+
+    kbMoveWindow               = "SUPER + Z",
+    kbResizeWindow             = "SUPER + X",
+    kbCenterWindow             = "CTRL + SUPER + Backslash",
+    kbNormalizeWindow          = "CTRL + SUPER + ALT + Backslash",
+    kbWindowPip                = "SUPER + ALT + Backslash",
+    kbPinWindow                = "SUPER + P",
+    kbWindowFullscreen         = "SUPER + F",
+    kbWindowBorderedFullscreen = "SUPER + ALT + F",
+    kbToggleWindowFloating     = "SUPER + ALT + Space",
+    kbCloseWindow              = "SUPER + Q",
+
+    -- Special workspaces toggles
+    kbSpecialWs                = "SUPER + S",
+    kbSystemMonitorWs          = "CTRL + SHIFT + Escape",
+    kbMusicWs                  = "SUPER + M",
+    kbCommunicationWs          = "SUPER + D",
+    kbTodoWs                   = "SUPER + R",
+
+    -- Apps
+    kbTerminal                 = "SUPER + T",
+    kbBrowser                  = "SUPER + W",
+    kbEditor                   = "SUPER + C",
+    kbFileExplorer             = "SUPER + E",
+    kbAudioSettings            = "CTRL + ALT + V",
+
+    -- Utilities
+    kbScreenshot               = "Print",
+    kbScreenshotFreeze         = "SUPER + SHIFT + S",
+    kbScreenshotRegion         = "SUPER + SHIFT + ALT + S",
+    kbRecord                   = "CTRL + ALT + R",
+    kbRecordSound              = "SUPER + ALT + R",
+    kbRecordRegion             = "SUPER + SHIFT + ALT + R",
+    kbColorPicker              = "SUPER + SHIFT + C",
+
+    -- Media
+    kbMediaToggle              = "CTRL + SUPER + Space",
+    kbMediaNext                = "CTRL + SUPER + Equal",
+    kbMediaPrev                = "CTRL + SUPER + Minus",
+    kbMediaStop                = "CTRL + SUPER + Backspace",
+    kbVolumeMute               = "SUPER + SHIFT + M",
+
+    -- Misc
+    kbLauncher                 = "SUPER + SUPER_L",
+    kbSession                  = "CTRL + ALT + Delete",
+    kbShowSidebar              = "SUPER + N",
+    kbClearNotifs              = "CTRL + ALT + C",
+    kbShowPanels               = "SUPER + K",
+    kbLock                     = "SUPER + L",
+    kbRestoreLock              = "SUPER + ALT + L",
+    kbSleep                    = "SUPER + SHIFT + L",
+
+    -- Clipboard and emoji picker
+    kbClipboard                = "SUPER + V",
+    kbClipboardDel             = "SUPER + ALT + V",
+    kbClipboardPasteLatest     = "CTRL + SHIFT + ALT + V",
+    kbEmoji                    = "SUPER + Period",
+}
