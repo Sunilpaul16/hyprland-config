@@ -22,12 +22,7 @@ Item {
         const special = Hypr.focusedMonitor?.lastIpcObject.specialWorkspace?.name ?? "";
         if (special) {
             const name = special.replace(/^special:/, "");
-            const scratchpads = Hypr.workspaces.values
-                .filter(w => w.name.startsWith("special:") && w.lastIpcObject.windows > 0)
-                .sort((a, b) => {
-                    const rank = n => n === "special:magic" ? 0 : n === "special:special" ? 1 : 2;
-                    return rank(a.name) - rank(b.name) || a.name.localeCompare(b.name);
-                });
+            const scratchpads = Hypr.populatedSpecialWorkspaces;
             const index = scratchpads.findIndex(w => w.name === special);
             const label = scratchpads.length > 1 && index >= 0 ? "Scratchpad " + (index + 1) : "Scratchpad";
             return label + " · " + appName;

@@ -1,6 +1,6 @@
 # Laptop shortcut cheatsheet
 
-Super + / toggles the graphical cheatsheet. Press Esc or click outside to close. This Markdown file is also available as a reference.
+Super + / toggles the graphical cheatsheet. Press Esc or use the close button to close. This Markdown file is also available as a reference.
 
 Super = Windows key. Brightness uses the physical keys.
 
@@ -52,7 +52,7 @@ Super = Windows key. Brightness uses the physical keys.
 - Four fingers up: enter fullscreen.
 - Four fingers down: leave fullscreen.
 - Four fingers left/right: next/previous populated scratchpad.
-- Bar highlight: lavender = normal workspace, pink = active scratchpad (current theme).
+- Bar highlight uses the theme primary colour for normal workspaces and tertiary colour for scratchpads.
 - Natural scrolling, scroll factor 0.8, disable while typing.
 
 ## Kitty

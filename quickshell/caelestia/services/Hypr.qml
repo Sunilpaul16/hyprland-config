@@ -13,6 +13,13 @@ Singleton {
 
     readonly property var toplevels: Hyprland.toplevels
     readonly property var workspaces: Hyprland.workspaces
+    readonly property var populatedSpecialWorkspaces: workspaces.values
+        .filter(w => w.name.startsWith("special:") && w.lastIpcObject.windows > 0)
+        .sort((a, b) => {
+            const rank = n => n === "special:magic" ? 0 : n === "special:special" ? 1 : 2;
+            return rank(a.name) - rank(b.name) || a.name.localeCompare(b.name);
+        })
+
     readonly property var monitors: Hyprland.monitors
     readonly property bool usingLua: Hyprland.usingLua
 
@@ -53,7 +60,7 @@ Singleton {
     }
 
     function cycleSpecialWorkspace(direction: string): void {
-        const openSpecials = workspaces.values.filter(w => w.name.startsWith("special:") && w.lastIpcObject.windows > 0);
+        const openSpecials = root.populatedSpecialWorkspaces;
 
         if (openSpecials.length === 0)
             return;
@@ -202,7 +209,7 @@ Singleton {
         }
 
         function listSpecialWorkspaces(): string {
-            return root.workspaces.values.filter(w => w.name.startsWith("special:") && w.lastIpcObject.windows > 0).map(w => w.name).join("\n");
+            return root.populatedSpecialWorkspaces.map(w => w.name).join("\n");
         }
 
         target: "hypr"

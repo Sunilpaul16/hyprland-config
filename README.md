@@ -13,8 +13,10 @@ personal Kitty, Zsh, keyboard shortcuts and touchpad gestures.
 - Custom cheatsheet with key badges, category icons and system window styling.
 - Kitty, Zsh, Powerlevel10k configuration and fuzzy history search.
 - Animated wallpapers through mpvpaper, with frame thumbnails and dynamic colours.
-- Game mode stops the wallpaper process and displays its still frame; leaving
-  game mode resumes the selected video.
+- Display wallpaper enabled: show the still image and stop video playback.
+  Disabled: play the selected video, unless game mode is enabled.
+- Game mode stops playback and shows a still image; leaving game mode restores
+  playback only when Display wallpaper remains disabled.
 - Autostart overrides hiding duplicate Blueman and NetworkManager tray applets.
 
 The vendored shell is the installed 2.5.0 configuration with our edits. Compiled
@@ -101,3 +103,20 @@ instruction to install every listed application.
 
 After restoring, verify startup, locking, suspend/resume, brightness and game
 mode on the target machine. Restoring on a fresh system has not been tested.
+
+## Regression checks
+
+```sh
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+lua tests/test_shortcuts.lua "$PWD/caelestia"
+node tests/test_bar_and_scratchpads.js
+```
+
+Python checks isolate state in temporary directories and mock service commands.
+The Lua checks exercise callbacks without sending keys to the live desktop.
+See `TEST-REPORT.md` for live checks and remaining physical-device checks.
+
+`python3 tests/live_wallpaper.py` exercises the running desktop: it temporarily
+changes Display wallpaper and game mode, restarts the shell, and restores those
+preferences in a `finally` block. Run it only while logged into this Hyprland
+session and after saving work in settings dialogs.

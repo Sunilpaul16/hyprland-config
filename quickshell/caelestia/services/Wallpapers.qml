@@ -17,6 +17,16 @@ Searcher {
 
     readonly property string pickerDir: Quickshell.env("HOME") + "/.cache/caelestia/video-picker"
 
+    readonly property bool videoPlaybackEnabled: GameMode.initialized && !GlobalConfig.forScreen("eDP-1").background.wallpaperEnabled && !GameMode.enabled
+    onVideoPlaybackEnabledChanged: playbackSync.restart()
+    Component.onCompleted: playbackSync.restart()
+
+    Timer {
+        id: playbackSync
+        interval: 200
+        onTriggered: Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/animated-wallpaper.py", "playback-sync"])
+    }
+
     property bool showPreview: false
     readonly property string current: showPreview ? previewPath : actualCurrent
     property string previewPath
@@ -69,6 +79,8 @@ Searcher {
         })
 
     IpcHandler {
+        function shouldAnimate(): bool { return root.videoPlaybackEnabled; }
+
         function get(): string {
             return root.actualCurrent;
         }

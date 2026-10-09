@@ -27,27 +27,38 @@ def write_json(path, value):
     temp.write_text(json.dumps(value, indent=2) + '\n')
     temp.replace(path)
 
+def preview_for(source):
+    stat = source.stat()
+    digest = hashlib.sha256(f'{source}:{stat.st_size}:{stat.st_mtime_ns}'.encode()).hexdigest()[:12]
+    try:
+        parent = CACHE / source.relative_to(ROOT).parent
+    except ValueError:
+        parent = CACHE.parent / 'video-external-previews'
+    thumb = parent / f'{source.stem} [{digest}].jpg'
+    thumb.parent.mkdir(parents=True, exist_ok=True)
+    if not thumb.exists():
+        try:
+            seek = []
+            if source.suffix.lower() in VIDEOS:
+                probe = run('ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=nw=1:nk=1', str(source), capture_output=True, text=True, timeout=20)
+                seek = ['-ss', str(min(3.0, max(0.0, float(probe.stdout.strip()) / 2)))]
+            run('ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', *seek, '-i', str(source), '-frames:v', '1', '-vf', 'scale=1920:-2', str(thumb), timeout=60)
+        except (subprocess.SubprocessError, ValueError):
+            thumb.unlink(missing_ok=True)
+            raise
+    return thumb
+
 def sync():
     CACHE.mkdir(parents=True, exist_ok=True)
     mapping = {}
     for source in sorted(ROOT.rglob('*')):
         if not source.is_file() or source.suffix.lower() not in VIDEOS | IMAGES:
             continue
-        stat = source.stat()
-        digest = hashlib.sha256(f'{source}:{stat.st_size}:{stat.st_mtime_ns}'.encode()).hexdigest()[:12]
-        thumb = CACHE / source.relative_to(ROOT).parent / f'{source.stem} [{digest}].jpg'
-        thumb.parent.mkdir(parents=True, exist_ok=True)
-        if not thumb.exists():
-            try:
-                seek = []
-                if source.suffix.lower() in VIDEOS:
-                    probe = run('ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=nw=1:nk=1', str(source), capture_output=True, text=True, timeout=20)
-                    seek = ['-ss', str(min(3.0, max(0.0, float(probe.stdout.strip()) / 2)))]
-                run('ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', *seek, '-i', str(source), '-frames:v', '1', '-vf', 'scale=1920:-2', str(thumb), timeout=60)
-            except (subprocess.SubprocessError, ValueError) as error:
-                thumb.unlink(missing_ok=True)
-                print(f'Cannot create preview for {source.name}: {error}', file=sys.stderr)
-                continue
+        try:
+            thumb = preview_for(source)
+        except (subprocess.SubprocessError, ValueError) as error:
+            print(f'Cannot create preview for {source.name}: {error}', file=sys.stderr)
+            continue
         mapping[str(thumb)] = str(source)
     for thumb in CACHE.rglob('*.jpg'):
         if str(thumb) not in mapping:
@@ -55,24 +66,40 @@ def sync():
     write_json(CACHE / 'index.json', mapping)
     return mapping
 
+def static_wallpaper():
+    config = HOME / '.config/caelestia/shell.json'
+    data = json.loads(config.read_text()) if config.exists() else {}
+    enabled = data.get('background', {}).get('wallpaperEnabled', True)
+    monitor = HOME / '.config/caelestia/monitors/eDP-1/shell.json'
+    if monitor.exists():
+        enabled = json.loads(monitor.read_text()).get('background', {}).get('wallpaperEnabled', enabled)
+    return enabled
+
+def video_allowed():
+    return not GAME_MODE.exists() and not static_wallpaper()
+
 def select(path):
-    mapping = json.loads((CACHE / 'index.json').read_text())
+    index = CACHE / 'index.json'
+    mapping = json.loads(index.read_text()) if index.exists() else {}
     preview = str(Path(path).resolve())
     source = Path(mapping.get(preview, preview))
     if not source.is_file():
         raise ValueError(f'Wallpaper does not exist: {source}')
     if source.suffix.lower() in VIDEOS and preview not in mapping:
-        mapping = sync()
-        preview = next(key for key, value in mapping.items() if value == str(source))
+        preview = str(preview_for(source))
     run('caelestia', 'wallpaper', '-f', preview)
     write_json(STATE, {'source': str(source), 'preview': preview})
-    if not GAME_MODE.exists():
+    if video_allowed():
         run('systemctl', '--user', 'restart', SERVICE)
+    else:
+        run('systemctl', '--user', 'stop', SERVICE)
 
 def main():
     action = sys.argv[1]
     if action == 'play':
-        if GAME_MODE.exists():
+        if not video_allowed():
+            return
+        if not STATE.exists():
             return
         state = json.loads(STATE.read_text())
         source = Path(state['source'])
@@ -90,8 +117,14 @@ def main():
             run('systemctl', '--user', 'stop', SERVICE)
         elif action == 'game-off':
             GAME_MODE.unlink(missing_ok=True)
-            if STATE.exists():
+            if STATE.exists() and video_allowed():
                 run('systemctl', '--user', 'start', SERVICE)
+        elif action == 'playback-sync':
+            allowed = subprocess.check_output(['qs', '-c', 'caelestia', 'ipc', 'call', 'wallpaper', 'shouldAnimate'], text=True).strip().lower() in ('true', '1')
+            if allowed and STATE.exists():
+                run('systemctl', '--user', 'start', SERVICE)
+            else:
+                run('systemctl', '--user', 'stop', SERVICE)
         elif action == 'sync':
             print(f'{len(sync())} wallpaper previews ready')
         elif action == 'picker':
@@ -108,7 +141,7 @@ def main():
             select(random.choice(choices))
         elif action == 'restore':
             sync()
-            if STATE.exists() and not GAME_MODE.exists():
+            if STATE.exists() and video_allowed():
                 run('systemctl', '--user', 'restart', SERVICE)
         else:
             raise ValueError(f'Unknown action: {action}')

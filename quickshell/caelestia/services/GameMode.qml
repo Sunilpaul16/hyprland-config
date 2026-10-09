@@ -12,6 +12,7 @@ Singleton {
     id: root
 
     property alias enabled: props.enabled
+    property bool initialized: false
 
     function setDynamicConfs(): void {
         Hypr.extras.applyOptions({
@@ -30,9 +31,25 @@ Singleton {
         Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/animated-wallpaper.py", "game-sync"]);
     }
 
-    Component.onCompleted: updateWallpaper()
+    // Restore the session flag before scheduling playback or changing Hyprland.
+    FileView {
+        path: Quickshell.env("XDG_RUNTIME_DIR") + "/caelestia-wallpaper-game-mode"
+        printErrors: false
+        onLoaded: {
+            props.enabled = true;
+            root.initialized = true;
+            root.setDynamicConfs();
+            root.updateWallpaper();
+        }
+        onLoadFailed: {
+            root.initialized = true;
+            root.updateWallpaper();
+        }
+    }
 
     onEnabledChanged: {
+        if (!initialized)
+            return;
         updateWallpaper();
         if (enabled) {
             setDynamicConfs();
@@ -48,7 +65,7 @@ Singleton {
     PersistentProperties {
         id: props
 
-        property bool enabled: Hypr.options["animations:enabled"] === 0 // qmllint disable missing-property
+        property bool enabled: false
 
         reloadableId: "gameMode"
     }
