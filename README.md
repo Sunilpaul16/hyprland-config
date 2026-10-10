@@ -19,6 +19,7 @@ personal Kitty, Zsh, keyboard shortcuts and touchpad gestures.
   Disabled: play the selected video, unless game mode is enabled.
 - Game mode stops playback and shows a still image; leaving game mode restores
   playback only when Display wallpaper remains disabled.
+- Night light: Hyprsunset at 5200K from 19:00–07:00, with one on/off switch in Settings → Services.
 - Autostart overrides hiding duplicate Blueman and NetworkManager tray applets.
 
 The vendored shell is the installed 2.5.0 configuration with our edits. Compiled
@@ -41,7 +42,7 @@ using another machine. Hyprland must support the Lua configuration API.
    `networkmanager`, `bluez`, `bluez-utils`, `pipewire`, `wireplumber`,
    `pipewire-pulse`, `power-profiles-daemon`, `hypridle`, `hyprlock`,
    `xdg-desktop-portal-hyprland`, `xdg-desktop-portal-gtk`, `gnome-keyring`,
-   `polkit-gnome`, `gammastep`, `geoclue`, `ttf-jetbrains-mono-nerd`,
+   `polkit-gnome`, `hyprsunset`, `geoclue`, `ttf-jetbrains-mono-nerd`,
    `ttf-rubik-vf`, `noto-fonts-cjk` and Material Symbols fonts. Personal app shortcuts also expect
    `google-chrome-stable` and `code`.
 4. Clone and restore the files:
