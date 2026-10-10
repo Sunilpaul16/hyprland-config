@@ -72,6 +72,15 @@ Region {
         width: panel.width * (1 - root.panels.popoutsWrapper.offsetScale)
     }
 
+    // Keep the entire corner target interactive even when the sidebar is hidden.
+    Region {
+        x: root.win.width - 20
+        y: 0
+        width: 20
+        height: 20
+        intersection: Intersection.Subtract
+    }
+
     component R: Region {
         required property Item panel
 

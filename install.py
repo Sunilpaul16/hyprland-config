@@ -34,6 +34,8 @@ def main():
     # Preserve any existing third-party Zsh installation and unrelated autostarts.
     for source in (repo / 'zsh').iterdir():
         replace_file(source, home / '.config/zsh' / source.name)
+    for source in (repo / 'fontconfig/conf.d').iterdir():
+        replace_file(source, home / '.config/fontconfig/conf.d' / source.name)
     replace_file(repo / '.zshenv', home / '.zshenv')
     for source in (repo / 'autostart').iterdir():
         replace_file(source, home / '.config/autostart' / source.name)

@@ -310,6 +310,18 @@ StyledWindow {
         }
     }
 
+    // Top-right click target for the sidebar.
+    MouseArea {
+        anchors.top: parent.top
+        anchors.right: parent.right
+        width: 20
+        height: 20
+        z: 1000
+        enabled: !root.hasFullscreen
+        acceptedButtons: Qt.LeftButton
+        onClicked: root.screenState.sidebar = !root.screenState.sidebar
+    }
+
     ShellState.ComponentRef {
         screen: root.screen
         slot: "rootWindow"

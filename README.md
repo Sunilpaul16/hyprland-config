@@ -8,6 +8,8 @@ personal Kitty, Zsh, keyboard shortcuts and touchpad gestures.
 
 - Hyprland Lua configuration: eDP-1, 2560×1600 at 60 Hz, scale 1.25, GB keyboard.
 - Caelestia shell 2.5.0 with local QML customizations and its upstream license.
+- Invisible 20 × 20 top-right click target toggles the sidebar; replaces sidebar drag/hover triggers.
+- Japanese and simplified/traditional Chinese font fallback using Noto CJK fonts.
 - App names in the bar; populated special workspaces labelled as scratchpads.
 - Manual Wi-Fi scan buttons; routine network updates use cached results.
 - Custom cheatsheet with key badges, category icons and system window styling.
@@ -40,7 +42,7 @@ using another machine. Hyprland must support the Lua configuration API.
    `pipewire-pulse`, `power-profiles-daemon`, `hypridle`, `hyprlock`,
    `xdg-desktop-portal-hyprland`, `xdg-desktop-portal-gtk`, `gnome-keyring`,
    `polkit-gnome`, `gammastep`, `geoclue`, `ttf-jetbrains-mono-nerd`,
-   `ttf-rubik-vf` and Material Symbols fonts. Personal app shortcuts also expect
+   `ttf-rubik-vf`, `noto-fonts-cjk` and Material Symbols fonts. Personal app shortcuts also expect
    `google-chrome-stable` and `code`.
 4. Clone and restore the files:
 
