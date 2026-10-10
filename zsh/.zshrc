@@ -64,3 +64,6 @@ function y() {
 # --------------------------
 setopt PROMPT_SP
 export PATH="$HOME/.local/bin:$PATH"
+
+# Complete folder and file names regardless of capitalization.
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'

@@ -21,6 +21,12 @@ personal Kitty, Zsh, keyboard shortcuts and touchpad gestures.
   playback only when Display wallpaper remains disabled.
 - Night light: Hyprsunset at 5200K from 19:00–07:00, with one on/off switch in Settings → Services.
 - Autostart overrides hiding duplicate Blueman and NetworkManager tray applets.
+- GTK file pickers use the dark `adw-gtk-theme` with Caelestia-generated colours.
+- Fullscreen and region screenshots automatically save to `~/Pictures/Screenshots`
+  and copy to the clipboard. Region captures save before Swappy opens; editor
+  saves update the same file.
+- Two-finger sideways swipes in Files navigate folder history: right goes back,
+  left goes forward, after lifting fingers. InputActions handles these gestures.
 
 The vendored shell is the installed 2.5.0 configuration with our edits. Compiled
 Caelestia plugins and Quickshell are supplied by system packages, not this repo.
@@ -43,7 +49,7 @@ using another machine. Hyprland must support the Lua configuration API.
    `pipewire-pulse`, `power-profiles-daemon`, `hypridle`, `hyprlock`,
    `xdg-desktop-portal-hyprland`, `xdg-desktop-portal-gtk`, `gnome-keyring`,
    `polkit-gnome`, `hyprsunset`, `geoclue`, `ttf-jetbrains-mono-nerd`,
-   `ttf-rubik-vf`, `noto-fonts-cjk` and Material Symbols fonts. Personal app shortcuts also expect
+   `ttf-rubik-vf`, `noto-fonts-cjk`, `adw-gtk-theme` and Material Symbols fonts. Personal app shortcuts also expect
    `google-chrome-stable` and `code`.
 4. Clone and restore the files:
 
@@ -96,6 +102,44 @@ using another machine. Hyprland must support the Lua configuration API.
 
 All bindings are in `caelestia/my-shortcuts.lua`; the cheatsheet intentionally
 shows a smaller selection. Scroll factor is 0.8.
+
+## Files touchpad gestures
+
+`inputactions/config.yaml` restricts two-finger horizontal swipes to
+`org.gnome.Nautilus` with no keyboard modifiers held. The threshold is 70;
+increase it for a longer swipe or decrease it for a shorter one. Other apps
+and the existing three- and four-finger gestures keep their normal behavior.
+
+The plugin is installed per user under `~/.local/share/inputactions/hyprland/`.
+Its loader compares the running Hyprland ABI against the build metadata and
+skips loading if Hyprland has changed. Compiled binaries are not included here.
+The current build was tested with Hyprland 0.56.2 and InputActions source commit
+`78f97531e8d86d32aafbaa7fa0b7fc205829271f`.
+
+After restoring the configuration, build the plugin while logged into Hyprland:
+
+```sh
+python3 scripts/build-files-gestures.py
+python3 ~/.config/caelestia/load-files-gestures.py
+```
+
+Build prerequisites include `base-devel`, `cmake`, `git`, `curl`, `libarchive`,
+`pkgconf`, `qt6-declarative`, `libevdev`, and the installed Hyprland headers and
+development dependencies. The build script downloads `extra-cmake-modules` and
+`yaml-cpp` from the configured Arch repositories, verifies their package hashes,
+and unpacks them temporarily without a system-wide installation. It fetches the
+pinned upstream InputActions source and builds against the running compositor.
+After a Hyprland upgrade, rebuilding may require updating the InputActions pin
+if the upstream compositor API has changed.
+
+To disable immediately (and before rebuilding a loaded plugin):
+
+```sh
+hyprctl plugin unload "$(python3 -c 'import json,pathlib; print(json.loads((pathlib.Path.home()/".local/share/inputactions/hyprland/build.json").read_text())["plugin"])')"
+```
+
+To disable across logins, remove the `load-files-gestures.py` startup command
+from `caelestia/hypr-user.lua`. Configuration changes reload automatically.
 
 ## Excluded
 

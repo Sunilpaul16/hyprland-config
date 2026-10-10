@@ -29,6 +29,9 @@ def main():
 
     for name in ('hypr', 'caelestia', 'kitty'):
         replace_dir(repo / name, home / '.config' / name)
+    for name in ('gtk-3.0', 'gtk-4.0'):
+        replace_file(repo / name / 'settings.ini', home / '.config' / name / 'settings.ini')
+    replace_file(repo / 'inputactions/config.yaml', home / '.config/inputactions/config.yaml')
     for name in ('caelestia', 'caelestia-cheatsheet'):
         replace_dir(repo / 'quickshell' / name, home / '.config/quickshell' / name)
     # Preserve any existing third-party Zsh installation and unrelated autostarts.
@@ -40,6 +43,7 @@ def main():
     for source in (repo / 'autostart').iterdir():
         replace_file(source, home / '.config/autostart' / source.name)
     replace_file(repo / 'systemd/user/caelestia-wallpaper.service', home / '.config/systemd/user/caelestia-wallpaper.service')
+    replace_file(repo / 'systemd/user/xdg-desktop-portal-gtk.service.d/appearance.conf', home / '.config/systemd/user/xdg-desktop-portal-gtk.service.d/appearance.conf')
     subprocess.run(['python3', str(home / '.config/quickshell/caelestia-cheatsheet/refresh.py')], check=True)
     subprocess.run(['systemctl', '--user', 'daemon-reload'], check=True)
     print(f'Configuration restored. Backups: {backup}')

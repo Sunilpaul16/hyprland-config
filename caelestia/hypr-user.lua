@@ -12,7 +12,16 @@ require("my-shortcuts")
 
 require("my-gestures")
 
+-- Keep file dialogs compact on the laptop's scaled display.
+hl.window_rule({
+    match = { title = "((Select|Open)( a)? (File|Folder)(s)?|Save As)" },
+    float = true,
+    size = { 1000, 700 },
+    center = true,
+})
+
 -- Restore the selected animated wallpaper at login.
 hl.on("hyprland.start", function()
     hl.exec_cmd("python3 ~/.config/caelestia/animated-wallpaper.py restore")
+    hl.exec_cmd("python3 ~/.config/caelestia/load-files-gestures.py")
 end)

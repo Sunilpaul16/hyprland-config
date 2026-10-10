@@ -30,7 +30,7 @@ hl.bind(v.kbToggleBar, hl.dsp.exec_cmd("python3 ~/.config/caelestia/toggle-bar.p
 
 
 -- Screenshots
-hl.bind(v.kbScreenshotFull, hl.dsp.exec_cmd("caelestia screenshot"), { description = "Screenshot: fullscreen" })
+hl.bind(v.kbScreenshotFull, hl.dsp.exec_cmd("python3 ~/.config/caelestia/screenshot-save.py"), { description = "Screenshot: fullscreen" })
 hl.bind(v.kbScreenshotRegion, hl.dsp.exec_cmd("caelestia screenshot -r"), { description = "Screenshot: region" })
 
 -- Screen recording
@@ -95,7 +95,7 @@ hl.bind(v.kbZoomIn, function() zoomfunction(0.3) end, { repeating = true, descri
 hl.bind("SUPER + Slash", hl.dsp.exec_cmd("sh ~/.config/quickshell/caelestia-cheatsheet/toggle"), { description = "Help: shortcut cheatsheet" })
 
 
-hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd("caelestia screenshot"), { description = "Screenshot: Lenovo key fullscreen" })
+hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd("python3 ~/.config/caelestia/screenshot-save.py"), { description = "Screenshot: Lenovo key fullscreen" })
 
 hl.bind("SUPER + CTRL + SHIFT + S", hl.dsp.exec_cmd("caelestia screenshot -r"), { description = "Screenshot: Lenovo key region" })
 
