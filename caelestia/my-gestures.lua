@@ -9,11 +9,11 @@ hl.config({ gestures = {
     workspace_swipe_use_r = true,
 } })
 hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
-hl.gesture({ fingers = 3, direction = "up", action = "special", workspace_name = "magic" })
+hl.gesture({ fingers = 3, direction = "up", action = function()
+    hl.exec_cmd("qs -c caelestia ipc call hypr openLastSpecialWorkspace")
+end })
 hl.gesture({ fingers = 3, direction = "down", action = function()
-    local active = hl.get_active_special_workspace()
-    local name = active and active.name:gsub("^special:", "") or "magic"
-    hl.dispatch(hl.dsp.workspace.toggle_special(name))
+    hl.exec_cmd("qs -c caelestia ipc call hypr toggleLastSpecialWorkspace")
 end })
 hl.gesture({ fingers = 4, direction = "up", action = function()
     hl.dispatch(hl.dsp.window.fullscreen({ mode = "fullscreen", action = "set" }))
@@ -22,7 +22,7 @@ hl.gesture({ fingers = 4, direction = "down", action = function()
     hl.dispatch(hl.dsp.window.fullscreen({ mode = "fullscreen", action = "unset" }))
 end })
 
--- Cycle populated scratchpads using Caelestia's native workspace controller.
+-- Step through scratchpads, creating empty ones via Caelestia's controller.
 hl.gesture({ fingers = 4, direction = "left", action = function()
     hl.exec_cmd("qs -c caelestia ipc call hypr cycleSpecialWorkspace next")
 end })

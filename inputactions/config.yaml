@@ -1,6 +1,13 @@
-# Back/forward history navigation in GNOME Files, matching browser gestures.
+# Media playback and back/forward history navigation in GNOME Files.
 touchpad:
   gestures:
+    # Tap with four fingers; toggle once after lifting them.
+    - type: tap
+      fingers: 4
+      actions:
+        - on: end
+          command: playerctl play-pause
+
     - type: swipe
       fingers: 2
       direction: right

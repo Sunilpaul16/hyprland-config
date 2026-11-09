@@ -22,6 +22,9 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("/usr/lib/geoclue-2.0/demos/agent")
     hl.exec_cmd("systemctl --user start hyprsunset.service")
 
+    -- Bluetooth pairing agent (also used by the previous dotfiles)
+    hl.exec_cmd("blueman-applet")
+
     -- Forward bluetooth media commands to MPRIS
     hl.exec_cmd("mpris-proxy")
 

@@ -25,18 +25,25 @@
             "occupiedBg": false,
             "showWindowsOnSpecialWorkspaces": false,
             "shown": 4
+        },
+        "tray": {
+            "hiddenIcons": [
+                "blueman"
+            ]
         }
     },
     "dashboard": {
         "dragThreshold": 35,
         "showClockSeconds": false,
-        "showOnHover": true,
+        "showMedia": true,
+        "showOnHover": false,
         "showWeather": false
     },
     "general": {
         "apps": {
             "explorer": [
-                "dolphin"
+                "nautilus",
+                "--new-window"
             ],
             "terminal": [
                 "kitty"
@@ -50,6 +57,13 @@
     "services": {
         "audioIncrement": 0.1,
         "clockFormat": "TwelveHour",
-        "visualiserBars": 60
+        "visualiserBars": 60,
+        "weatherUnits": "Celsius"
+    },
+    "utilities": {
+        "toasts": {
+            "capsLockChanged": false,
+            "kbLayoutChanged": false
+        }
     }
 }

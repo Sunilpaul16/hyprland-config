@@ -51,8 +51,8 @@ for i = 1, 10 do
 end
 
 -- Scratchpad
-hl.bind("SUPER + SHIFT + F23", hl.dsp.workspace.toggle_special("magic"), { description = "Workspace: Copilot toggle scratchpad" })
-hl.bind(v.kbSpecialWs,             hl.dsp.workspace.toggle_special("magic"), { description = "Workspace: toggle scratchpad" })
+hl.bind("SUPER + SHIFT + F23", hl.dsp.exec_cmd("qs -c caelestia ipc call hypr toggleLastSpecialWorkspace"), { description = "Workspace: Copilot toggle scratchpad" })
+hl.bind(v.kbSpecialWs,             hl.dsp.exec_cmd("qs -c caelestia ipc call hypr toggleLastSpecialWorkspace"), { description = "Workspace: toggle scratchpad" })
 hl.bind(v.kbMoveWinToScratchpad,   hl.dsp.window.move({ workspace = "special:magic" }), { description = "Workspace: move window to scratchpad" })
 
 -- Scroll workspaces

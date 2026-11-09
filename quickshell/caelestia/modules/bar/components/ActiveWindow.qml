@@ -21,9 +21,8 @@ Item {
                                  : Tr.trCtx("Desktop", "shown when no window is focused");
         const special = Hypr.focusedMonitor?.lastIpcObject.specialWorkspace?.name ?? "";
         if (special) {
-            const name = special.replace(/^special:/, "");
-            const scratchpads = Hypr.populatedSpecialWorkspaces;
-            const index = scratchpads.findIndex(w => w.name === special);
+            const scratchpads = Hypr.scratchpadNames;
+            const index = scratchpads.indexOf(special);
             const label = scratchpads.length > 1 && index >= 0 ? "Scratchpad " + (index + 1) : "Scratchpad";
             return label + " · " + appName;
         }

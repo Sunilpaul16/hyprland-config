@@ -20,8 +20,11 @@ hl.window_rule({
     center = true,
 })
 
+
 -- Restore the selected animated wallpaper at login.
 hl.on("hyprland.start", function()
     hl.exec_cmd("python3 ~/.config/caelestia/animated-wallpaper.py restore")
     hl.exec_cmd("python3 ~/.config/caelestia/load-files-gestures.py")
 end)
+
+hl.device({ name = "elan06fa:00-04f3:3293-touchpad", sensitivity = 0.7 })

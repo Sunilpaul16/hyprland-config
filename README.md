@@ -40,10 +40,12 @@ wallpapers and compiled plugins are not bundled.
 - Case-insensitive Zsh file/folder completion and a `y` command that returns the
   shell to the directory selected in Yazi.
 - Animated wallpapers through mpvpaper, with frame thumbnails and dynamic colours.
-- Display wallpaper enabled: show the still image and stop video playback.
+- Use static wallpaper enabled: show the still image and stop video playback.
   Disabled: play the selected video, unless game mode is enabled.
 - Game mode stops playback and shows a still image; leaving game mode restores
-  playback only when Display wallpaper remains disabled.
+  playback only when Use static wallpaper remains disabled.
+- Wallpaper & style keeps the saved image/frame preview and wallpaper picker
+  available in both static and video modes.
 - Night light: Hyprsunset at 5200K from 19:00–07:00, with one on/off switch in Settings → Services.
   Manual toggles last until the next scheduled profile change.
 - Autostart overrides hiding duplicate Blueman and NetworkManager tray applets.
@@ -202,10 +204,10 @@ a complete operating-system image.
 | Super + Ctrl + R | Restart Caelestia |
 | Super + Ctrl + Alt + R | Reload Hyprland configuration |
 | Three fingers left/right | Sequential workspaces, including empty ones |
-| Three fingers up | Toggle the main scratchpad |
-| Three fingers down | Toggle the active scratchpad, or the main one if none is active |
+| Three fingers up | Reopen the last-used scratchpad |
+| Three fingers down | Hide the active scratchpad, or reopen the last-used one |
 | Four fingers up/down | Enter/leave fullscreen |
-| Four fingers left/right | Next/previous populated scratchpad |
+| Four fingers left/right | Next/previous scratchpad, including empty ones; swipe left to create the next |
 | Two fingers right/left in Files | Back/forward history; requires InputActions |
 
 Personal keyboard bindings are loaded from `caelestia/my-shortcuts.lua`, with
@@ -214,12 +216,37 @@ gestures are in `caelestia/my-gestures.lua`. The cheatsheet intentionally shows 
 smaller selection, omitting media and recording groups. Touchpad scroll factor
 is 0.8.
 
+Scratchpads retain their normal overlay appearance. Four-finger swipes can
+open empty scratchpads, with their order remembered during the shell session.
+The bar shows the scratchpad number and `Desktop` when it has no focused app.
+Three fingers up, Super+S and Copilot return to the last-used scratchpad.
+Four-finger left/right uses a directional horizontal slide; opening and closing
+retain the normal vertical scratchpad animation.
+
 In Kitty, Ctrl+C copies selected text or interrupts the command, Ctrl+V pastes,
 Ctrl+F searches the terminal, Ctrl+plus/minus changes font size and Ctrl+0 resets
 it. In Zsh, Ctrl+R searches command history with fzf; `y` opens Yazi and changes
 the shell's working directory to the directory selected on exit.
 
 ## Files touchpad gestures
+
+InputActions also handles a four-finger tap to pause/resume media with
+`playerctl play-pause`. Quickly touch and lift all four fingers; it runs once
+per tap. The existing four-finger swipes remain available.
+
+Tap recognition requires the libevdev backend and touchpad device access.
+Install the included touchpad-only udev rule as an administrator, then reload
+the plugin (or log out and back in):
+
+```sh
+sudo install -m 644 inputactions/71-inputactions-touchpad.rules /etc/udev/rules.d/
+sudo udevadm control --reload-rules
+sudo udevadm trigger --subsystem-match=input --action=change
+```
+
+This grants the active local user's applications access to touchpad event
+devices. It does not grant access to keyboard devices. Three-finger taps also
+require tap-to-click to be enabled.
 
 `inputactions/config.yaml` restricts two-finger horizontal swipes to
 `org.gnome.Nautilus` with no keyboard modifiers held. The threshold is 70;

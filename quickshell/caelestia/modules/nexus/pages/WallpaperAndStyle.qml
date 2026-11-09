@@ -41,7 +41,7 @@ PageBase {
 
             Loader {
                 anchors.centerIn: parent
-                opacity: Config.background.wallpaperEnabled ? 0 : 1
+                opacity: Wallpapers.current ? 0 : 1
                 active: opacity > 0
 
                 sourceComponent: ColumnLayout {
@@ -56,7 +56,7 @@ PageBase {
 
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
-                        text: Tr.tr("Wallpaper disabled")
+                        text: Tr.tr("No wallpaper selected")
                         color: Colours.palette.m3onSurfaceVariant
                         font: Tokens.font.body.large
                     }
@@ -71,7 +71,7 @@ PageBase {
 
             Item {
                 anchors.fill: parent
-                opacity: Config.background.wallpaperEnabled ? 1 : 0
+                opacity: Wallpapers.current ? 1 : 0
 
                 Behavior on opacity {
                     Anim {
@@ -154,7 +154,6 @@ PageBase {
                 type: IconTextButton.Tonal
                 horizontalPadding: Tokens.padding.extraLarge
                 verticalPadding: Tokens.padding.medium
-                disabled: !Config.background.wallpaperEnabled
                 onClicked: root.nState.openSubPage(1) // Wallpaper page
             }
 
@@ -173,7 +172,8 @@ PageBase {
 
         ToggleRow {
             first: true
-            text: Tr.tr("Display wallpaper")
+            text: Tr.tr("Use static wallpaper")
+            subtext: Tr.tr("On: still image. Off: video wallpaper.")
             checked: Config.background.wallpaperEnabled
             onToggled: GlobalConfig.background.wallpaperEnabled = checked
         }

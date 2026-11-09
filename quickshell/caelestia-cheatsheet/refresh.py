@@ -15,7 +15,8 @@ for line in (base/'my-shortcuts.lua').read_text().splitlines():
     groups.setdefault(category,[]).append({'key':key,'label':label.strip()})
 groups.setdefault('Workspace',[]).append({'key':'AltGr + Copilot','label':'Move to/from scratchpad'})
 groups.setdefault('Workspace',[]).extend([{'key':'Super + 1–0','label':'Switch workspace 1–10'},{'key':'Super + Shift + 1–0','label':'Move window to workspace'}])
-groups['Touchpad']=[{'key':'3 fingers ← / →','label':'Switch workspace'},{'key':'3 fingers ↑','label':'Open scratchpad'},{'key':'3 fingers ↓','label':'Toggle special workspace'},{'key':'4 fingers ↑ / ↓','label':'Enter / leave fullscreen'},{'key':'4 fingers ← / →','label':'Next / previous scratchpad'},{'key':'Scroll factor','label':'0.8 · natural scrolling'}]
+groups['Touchpad']=[{'key':'3 fingers ← / →','label':'Switch workspace'},{'key':'3 fingers ↑','label':'Reopen last scratchpad'},{'key':'3 fingers ↓','label':'Toggle special workspace'},{'key':'4 fingers ↑ / ↓','label':'Enter / leave fullscreen'},{'key':'4 fingers ← / →','label':'Next / previous scratchpad (including empty)'},{'key':'Scroll factor','label':'0.8 · natural scrolling'}]
+groups['Touchpad'].append({'key':'4 fingers tap','label':'Pause / resume media'})
 groups['Kitty']=[{'key':'Ctrl + = / −','label':'Increase / decrease font'},{'key':'Ctrl + 0','label':'Reset font size'},{'key':'Ctrl + C / V','label':'Copy or interrupt / paste'},{'key':'Ctrl + F','label':'Search terminal'}]
 # Active means configured; it is not a hardware or application test.
 for rows in groups.values():

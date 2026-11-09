@@ -47,11 +47,12 @@ Super = Windows key. Brightness uses the physical keys.
 ## Touchpad
 
 - Three fingers horizontally: switch workspace.
-- Three fingers up: open the magic scratchpad (same as Super + S).
-- Three fingers down: toggle the active special workspace, or magic scratchpad.
+- Three fingers up: reopen the last-used scratchpad.
+- Three fingers down: hide the active scratchpad or reopen the last-used one.
 - Four fingers up: enter fullscreen.
 - Four fingers down: leave fullscreen.
-- Four fingers left/right: next/previous populated scratchpad.
+- Four fingers left/right: next/previous scratchpad, including empty ones; swipe left to create the next.
+- Four-finger tap: pause/resume media.
 - Bar highlight uses the theme primary colour for normal workspaces and tertiary colour for scratchpads.
 - Natural scrolling, scroll factor 0.8, disable while typing.
 
@@ -116,4 +117,4 @@ Super + Shift + S: fullscreen screenshot. Super + Ctrl + Shift + S: region scree
 
 
 
-Copilot: toggle magic scratchpad. AltGr + Copilot: move the focused app into magic, or back to the normal workspace when it is in a scratchpad.
+Copilot: toggle the last-used scratchpad. AltGr + Copilot: move the focused app into magic, or back to the normal workspace when it is in a scratchpad.
