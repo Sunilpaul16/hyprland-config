@@ -1,0 +1,38 @@
+diff --git a/modules/nexus/Nexus.qml b/modules/nexus/Nexus.qml
+--- a/modules/nexus/Nexus.qml
++++ b/modules/nexus/Nexus.qml
+@@ -1,6 +1,7 @@
+ pragma ComponentBehavior: Bound
+ 
+ import QtQuick
++import qs.custom as Custom
+ import Caelestia.Blobs
+ import Caelestia.Config
+ import qs.components
+@@ -19,6 +20,11 @@
+     property color blobColour: Colours.tPalette.m3surfaceContainerLow
+ 
+     signal close
++
++    Custom.SettingsEscape {
++        enabled: root.visible
++        onCloseRequested: root.close()
++    }
+ 
+     implicitWidth: Math.round(implicitHeight * Tokens.sizes.nexus.ratio)
+     implicitHeight: Math.round(nState.screen.height * Tokens.sizes.nexus.heightMult)
+diff --git a/custom/SettingsEscape.qml b/custom/SettingsEscape.qml
+new file mode 100644
+--- /dev/null
++++ b/custom/SettingsEscape.qml
+@@ -0,0 +1,10 @@
++import QtQuick
++
++Shortcut {
++    signal closeRequested
++
++    sequence: "Escape"
++    context: Qt.WindowShortcut
++    autoRepeat: false
++    onActivated: closeRequested()
++}

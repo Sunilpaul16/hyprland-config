@@ -1,0 +1,355 @@
+diff --git a/modules/Shortcuts.qml b/modules/Shortcuts.qml
+--- a/modules/Shortcuts.qml
++++ b/modules/Shortcuts.qml
+@@ -1,4 +1,5 @@
+ import QtQuick
++import qs.custom as Custom
+ import Quickshell
+ import Quickshell.Io
+ import Caelestia
+@@ -108,6 +109,8 @@
+         }
+     }
+ 
++    Custom.WallpaperLauncher {}
++
+     IpcHandler {
+         function toggle(drawer: string): void {
+             if (list().split("\n").includes(drawer)) {
+diff --git a/modules/background/Background.qml b/modules/background/Background.qml
+--- a/modules/background/Background.qml
++++ b/modules/background/Background.qml
+@@ -19,8 +19,8 @@
+         screen: modelData
+         name: "background"
+         WlrLayershell.exclusionMode: ExclusionMode.Ignore
+-        WlrLayershell.layer: contentItem.Config.background.wallpaperEnabled ? WlrLayer.Background : WlrLayer.Bottom
+-        color: contentItem.Config.background.wallpaperEnabled ? "black" : "transparent"
++        WlrLayershell.layer: (contentItem.Config.background.wallpaperEnabled || GameMode.enabled) ? WlrLayer.Background : WlrLayer.Bottom
++        color: (contentItem.Config.background.wallpaperEnabled || GameMode.enabled) ? "black" : "transparent"
+         surfaceFormat.opaque: false
+ 
+         anchors.top: true
+@@ -45,7 +45,7 @@
+                 asynchronous: true
+ 
+                 anchors.fill: parent
+-                active: Config.background.wallpaperEnabled
++                active: Config.background.wallpaperEnabled || GameMode.enabled
+ 
+                 sourceComponent: Wallpaper {}
+             }
+diff --git a/modules/launcher/items/WallpaperItem.qml b/modules/launcher/items/WallpaperItem.qml
+--- a/modules/launcher/items/WallpaperItem.qml
++++ b/modules/launcher/items/WallpaperItem.qml
+@@ -86,7 +86,7 @@
+         horizontalAlignment: Text.AlignHCenter
+         elide: Text.ElideRight
+         renderType: Text.QtRendering
+-        text: root.modelData.relativePath
++        text: root.modelData.relativePath.replace(/ \[[0-9a-f]{12}\]\.jpg$/, "")
+         font: Tokens.font.label.medium
+     }
+ 
+diff --git a/modules/nexus/pages/WallpaperAndStyle.qml b/modules/nexus/pages/WallpaperAndStyle.qml
+--- a/modules/nexus/pages/WallpaperAndStyle.qml
++++ b/modules/nexus/pages/WallpaperAndStyle.qml
+@@ -41,7 +41,7 @@
+ 
+             Loader {
+                 anchors.centerIn: parent
+-                opacity: Config.background.wallpaperEnabled ? 0 : 1
++                opacity: Wallpapers.current ? 0 : 1
+                 active: opacity > 0
+ 
+                 sourceComponent: ColumnLayout {
+@@ -56,7 +56,7 @@
+ 
+                     StyledText {
+                         Layout.alignment: Qt.AlignHCenter
+-                        text: Tr.tr("Wallpaper disabled")
++                        text: Tr.tr("No wallpaper selected")
+                         color: Colours.palette.m3onSurfaceVariant
+                         font: Tokens.font.body.large
+                     }
+@@ -71,7 +71,7 @@
+ 
+             Item {
+                 anchors.fill: parent
+-                opacity: Config.background.wallpaperEnabled ? 1 : 0
++                opacity: Wallpapers.current ? 1 : 0
+ 
+                 Behavior on opacity {
+                     Anim {
+@@ -154,7 +154,6 @@
+                 type: IconTextButton.Tonal
+                 horizontalPadding: Tokens.padding.extraLarge
+                 verticalPadding: Tokens.padding.medium
+-                disabled: !Config.background.wallpaperEnabled
+                 onClicked: root.nState.openSubPage(1) // Wallpaper page
+             }
+ 
+@@ -173,7 +172,8 @@
+ 
+         ToggleRow {
+             first: true
+-            text: Tr.tr("Display wallpaper")
++            text: Tr.tr("Use static wallpaper")
++            subtext: Tr.tr("On: still image. Off: video wallpaper.")
+             checked: Config.background.wallpaperEnabled
+             onToggled: GlobalConfig.background.wallpaperEnabled = checked
+         }
+diff --git a/modules/nexus/pages/wallandstyle/WallpaperCategory.qml b/modules/nexus/pages/wallandstyle/WallpaperCategory.qml
+--- a/modules/nexus/pages/wallandstyle/WallpaperCategory.qml
++++ b/modules/nexus/pages/wallandstyle/WallpaperCategory.qml
+@@ -41,7 +41,7 @@
+                 enabled: modelData
+ 
+                 source: String(modelData?.path ?? "")
+-                text: modelData?.name ?? ""
++                text: (modelData?.name ?? "").replace(/ \[[0-9a-f]{12}\]\.jpg$/, "")
+                 onClicked: {
+                     Wallpapers.setWallpaper(modelData.path);
+                     root.nState.closeSubPage();
+diff --git a/modules/nexus/pages/wallandstyle/WallpaperSelect.qml b/modules/nexus/pages/wallandstyle/WallpaperSelect.qml
+--- a/modules/nexus/pages/wallandstyle/WallpaperSelect.qml
++++ b/modules/nexus/pages/wallandstyle/WallpaperSelect.qml
+@@ -101,7 +101,7 @@
+ 
+                 model: {
+                     const walls = Wallpapers.list;
+-                    const baseDir = Paths.wallsdir;
++                    const baseDir = Wallpapers.pickerDir;
+                     const categories = {};
+                     const list = [];
+                     for (const w of walls) {
+@@ -132,14 +132,14 @@
+                         if (!modelData)
+                             return "";
+ 
+-                        if (modelData.parentDir !== Paths.wallsdir) {
++                        if (modelData.parentDir !== Wallpapers.pickerDir) {
+                             const category = Wallpapers.getCategoryFor(modelData);
+                             return category.slice(0, 1).toUpperCase() + category.slice(1);
+                         }
+-                        return modelData.name;
++                        return modelData.name.replace(/ \[[0-9a-f]{12}\]\.jpg$/, "");
+                     }
+                     onClicked: {
+-                        if (modelData.parentDir !== Paths.wallsdir) {
++                        if (modelData.parentDir !== Wallpapers.pickerDir) {
+                             root.nState.selectedWallpaperCategory = Wallpapers.getCategoryFor(modelData);
+                             root.nState.openSubPage(2); // Category page
+                         } else {
+diff --git a/services/GameMode.qml b/services/GameMode.qml
+--- a/services/GameMode.qml
++++ b/services/GameMode.qml
+@@ -1,6 +1,7 @@
+ pragma Singleton
+ 
+ import QtQuick
++import qs.custom as Custom
+ import Quickshell
+ import Quickshell.Io
+ import Caelestia
+@@ -12,6 +13,7 @@
+     id: root
+ 
+     property alias enabled: props.enabled
++    readonly property bool initialized: wallpaperState.initialized
+ 
+     function setDynamicConfs(): void {
+         Hypr.extras.applyOptions({
+@@ -26,7 +28,15 @@
+         });
+     }
+ 
++    Custom.WallpaperGameMode {
++        id: wallpaperState
++        gameMode: root
++    }
++
+     onEnabledChanged: {
++        if (!initialized)
++            return;
++        wallpaperState.sync();
+         if (enabled) {
+             setDynamicConfs();
+             if (GlobalConfig.utilities.toasts.gameModeChanged)
+@@ -41,7 +51,7 @@
+     PersistentProperties {
+         id: props
+ 
+-        property bool enabled: Hypr.options["animations:enabled"] === 0 // qmllint disable missing-property
++        property bool enabled: false
+ 
+         reloadableId: "gameMode"
+     }
+diff --git a/services/Wallpapers.qml b/services/Wallpapers.qml
+--- a/services/Wallpapers.qml
++++ b/services/Wallpapers.qml
+@@ -1,6 +1,7 @@
+ pragma Singleton
+ 
+ import QtQuick
++import qs.custom as Custom
+ import Quickshell
+ import Quickshell.Io
+ import Caelestia.Config
+@@ -15,6 +16,14 @@
+     readonly property list<string> smartArg: GlobalConfig.services.smartScheme ? [] : ["--no-smart"]
+     readonly property string fallback: Quickshell.shellPath("assets/wallpaper.webp")
+ 
++    readonly property string pickerDir: bridge.pickerDir
++    readonly property bool videoPlaybackEnabled: bridge.videoPlaybackEnabled
++
++    Custom.WallpaperBridge {
++        id: bridge
++        gameMode: GameMode
++    }
++
+     property bool showPreview: false
+     readonly property string current: showPreview ? previewPath : actualCurrent
+     property string previewPath
+@@ -23,19 +32,19 @@
+     property bool pendingPreviewClear
+ 
+     function getCategoryFor(w: FileSystemEntry): string {
+-        let category = w.parentDir.slice(Paths.wallsdir.length + 1);
++        let category = w.parentDir.slice(root.pickerDir.length + 1);
+         if (category.includes("/"))
+             category = category.slice(0, category.indexOf("/"));
+         return category;
+     }
+ 
+     function setRandom(): void {
+-        Quickshell.execDetached(["caelestia", "wallpaper", "-r", ...smartArg]);
++        bridge.setRandom();
+     }
+ 
+     function setWallpaper(path: string): void {
+         actualCurrent = path;
+-        Quickshell.execDetached(["caelestia", "wallpaper", "-f", path, ...smartArg]);
++        bridge.setWallpaper(path);
+     }
+ 
+     function preview(path: string): void {
+@@ -67,6 +76,8 @@
+         })
+ 
+     IpcHandler {
++        function shouldAnimate(): bool { return root.videoPlaybackEnabled; }
++
+         function get(): string {
+             return root.actualCurrent;
+         }
+@@ -107,7 +118,7 @@
+         id: wallpapers
+ 
+         recursive: true
+-        path: Paths.wallsdir
++        path: root.pickerDir
+         filter: FileSystemModel.Images
+     }
+ 
+diff --git a/custom/WallpaperBridge.qml b/custom/WallpaperBridge.qml
+new file mode 100644
+--- /dev/null
++++ b/custom/WallpaperBridge.qml
+@@ -0,0 +1,29 @@
++import QtQuick
++import Quickshell
++import Caelestia.Config
++
++Scope {
++    id: root
++
++    required property var gameMode
++
++    readonly property string pickerDir: Quickshell.env("HOME") + "/.cache/caelestia/video-picker"
++
++    readonly property bool videoPlaybackEnabled: gameMode.initialized && !GlobalConfig.forScreen("eDP-1").background.wallpaperEnabled && !gameMode.enabled
++    onVideoPlaybackEnabledChanged: playbackSync.restart()
++    Component.onCompleted: playbackSync.restart()
++
++    Timer {
++        id: playbackSync
++        interval: 200
++        onTriggered: Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/animated-wallpaper.py", "playback-sync"])
++    }
++
++    function setRandom(): void {
++        Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/animated-wallpaper.py", "random"]);
++    }
++
++    function setWallpaper(path: string): void {
++        Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/animated-wallpaper.py", "set", path]);
++    }
++}
+diff --git a/custom/WallpaperGameMode.qml b/custom/WallpaperGameMode.qml
+new file mode 100644
+--- /dev/null
++++ b/custom/WallpaperGameMode.qml
+@@ -0,0 +1,30 @@
++import QtQuick
++import Quickshell
++import Quickshell.Io
++
++Scope {
++    id: root
++
++    required property var gameMode
++    property bool initialized: false
++
++    function sync(): void {
++        Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/animated-wallpaper.py", "game-sync"]);
++    }
++
++    // Restore the session flag before scheduling playback or changing Hyprland.
++    FileView {
++        path: Quickshell.env("XDG_RUNTIME_DIR") + "/caelestia-wallpaper-game-mode"
++        printErrors: false
++        onLoaded: {
++            root.gameMode.enabled = true;
++            root.initialized = true;
++            root.gameMode.setDynamicConfs();
++            root.sync();
++        }
++        onLoadFailed: {
++            root.initialized = true;
++            root.sync();
++        }
++    }
++}
+diff --git a/custom/WallpaperLauncher.qml b/custom/WallpaperLauncher.qml
+new file mode 100644
+--- /dev/null
++++ b/custom/WallpaperLauncher.qml
+@@ -0,0 +1,27 @@
++import QtQuick
++import Quickshell
++import Quickshell.Io
++import Caelestia.Config
++import qs.services
++
++Scope {
++    IpcHandler {
++        target: "launcher"
++
++        function wallpaper(): void {
++            const state = ShellState.forActive();
++            const components = ShellState.componentsForActive();
++            if (!state || !components)
++                return;
++            state.launcher = true;
++            Qt.callLater(() => {
++                const search = components.find("launcherSearch");
++                if (search) {
++                    search.text = `${GlobalConfig.launcher.actionPrefix}wallpaper `;
++                    search.forceActiveFocus();
++                }
++            });
++        }
++    }
++
++}

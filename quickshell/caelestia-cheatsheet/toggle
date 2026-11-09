@@ -1,6 +1,1 @@
-#!/usr/bin/env sh
-set -eu
-python3 "$HOME/.config/quickshell/caelestia-cheatsheet/refresh.py"
-if ! qs -c caelestia-cheatsheet ipc call cheatsheet toggle >/dev/null 2>&1; then
-    qs -c caelestia-cheatsheet -n -d
-fi
+../../customisations/standalone/quickshell/caelestia-cheatsheet/toggle

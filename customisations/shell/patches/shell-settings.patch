@@ -1,0 +1,12 @@
+diff --git a/shell.qml b/shell.qml
+--- a/shell.qml
++++ b/shell.qml
+@@ -16,7 +16,7 @@
+ ShellRoot {
+     id: root
+ 
+-    settings.watchFiles: true
++    settings.watchFiles: false
+ 
+     Binding {
+         target: ShellState

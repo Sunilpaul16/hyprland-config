@@ -1,9 +1,1 @@
-[Unit]
-Description=Animated wallpaper for Caelestia
-PartOf=graphical-session.target
-After=graphical-session.target
-
-[Service]
-ExecStart=/usr/bin/python3 %h/.config/caelestia/animated-wallpaper.py play
-Restart=on-failure
-RestartSec=5
+../../customisations/standalone/systemd/user/caelestia-wallpaper.service

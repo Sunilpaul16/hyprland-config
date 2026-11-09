@@ -58,6 +58,14 @@ wallpapers and compiled plugins are not bundled.
 
 The vendored shell is the installed 2.5.0 configuration with our edits. Compiled
 Caelestia plugins and Quickshell are supplied by system packages, not this repo.
+Standalone personal files live in [`customisations/standalone/`](customisations/standalone/README.md).
+Their original repository paths are relative links; the installer follows them
+and installs regular files at the existing configuration paths.
+Custom QML/JavaScript components and their upstream integration hooks live in
+[`customisations/shell/`](customisations/shell/README.md), linked into the shell
+snapshot. The remaining upstream edits are grouped into feature patches, with
+baseline copies and a script to check future updates for conflicts. See the
+[customisation guide](customisations/README.md) before changing or updating them.
 The separate development clone was at commit
 `5f1c59c0665aad66e94710f67e4bebaeb65c35f4` when this snapshot was taken.
 

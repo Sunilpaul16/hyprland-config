@@ -1,0 +1,266 @@
+diff --git a/modules/bar/components/ActiveWindow.qml b/modules/bar/components/ActiveWindow.qml
+--- a/modules/bar/components/ActiveWindow.qml
++++ b/modules/bar/components/ActiveWindow.qml
+@@ -1,6 +1,8 @@
+ pragma ComponentBehavior: Bound
+ 
+ import QtQuick
++import "../../../custom/AppLabel.js" as AppLabel
++import Quickshell
+ import Caelestia.Config
+ import Caelestia.I18n
+ import qs.components
+@@ -14,18 +16,7 @@
+     required property Brightness.Monitor monitor
+     property color colour: Colours.palette.m3primary
+ 
+-    readonly property string windowTitle: {
+-        const title = Hypr.activeToplevel?.title;
+-        if (!title)
+-            return Tr.trCtx("Desktop", "shown when no window is focused");
+-        if (Config.bar.activeWindow.compact) {
+-            // " - " (standard hyphen), " — " (em dash), " – " (en dash)
+-            const parts = title.split(/\s+[\-\u2013\u2014]\s+/);
+-            if (parts.length > 1)
+-                return parts[parts.length - 1].trim();
+-        }
+-        return title;
+-    }
++    readonly property string windowTitle: AppLabel.title(Hypr, DesktopEntries, Tr)
+ 
+     readonly property int maxHeight: {
+         const otherModules = bar.children.filter(c => c.entryId && c.item !== this && c.entryId !== "spacer");
+diff --git a/services/Hypr.qml b/services/Hypr.qml
+--- a/services/Hypr.qml
++++ b/services/Hypr.qml
+@@ -1,6 +1,7 @@
+ pragma Singleton
+ 
+ import QtQuick
++import qs.custom as Custom
+ import Quickshell
+ import Quickshell.Hyprland
+ import Quickshell.Io
+@@ -13,13 +14,12 @@
+ 
+     readonly property var toplevels: Hyprland.toplevels
+     readonly property var workspaces: Hyprland.workspaces
++    readonly property var populatedSpecialWorkspaces: scratchpads.populatedSpecialWorkspaces
++
+     readonly property var monitors: Hyprland.monitors
+     readonly property bool usingLua: Hyprland.usingLua
+ 
+-    readonly property HyprlandToplevel activeToplevel: {
+-        const t = Hyprland.activeToplevel;
+-        return t?.workspace?.name.startsWith("special:") || Hyprland.focusedWorkspace?.toplevels.values.length > 0 ? t : null;
+-    }
++    readonly property HyprlandToplevel activeToplevel: scratchpads.activeToplevel
+     readonly property HyprlandWorkspace focusedWorkspace: Hyprland.focusedWorkspace
+     readonly property HyprlandMonitor focusedMonitor: Hyprland.focusedMonitor
+     readonly property int activeWsId: focusedWorkspace?.id ?? 1
+@@ -36,7 +36,8 @@
+     readonly property alias options: extras.options
+     readonly property alias devices: extras.devices
+ 
+-    property string lastSpecialWorkspace: ""
++    property alias lastSpecialWorkspace: scratchpads.lastSpecialWorkspace
++    readonly property var scratchpadNames: scratchpads.scratchpadNames
+ 
+     signal configReloaded
+ 
+@@ -52,37 +53,21 @@
+         dispatch(usingLua ? `hl.dsp.workspace.toggle_special("${name}")` : `togglespecialworkspace ${name}`);
+     }
+ 
++    Custom.Scratchpads {
++        id: scratchpads
++        backend: root
++    }
++
++    function openLastSpecialWorkspace(): void {
++        scratchpads.openLastSpecialWorkspace();
++    }
++
++    function toggleLastSpecialWorkspace(): void {
++        scratchpads.toggleLastSpecialWorkspace();
++    }
++
+     function cycleSpecialWorkspace(direction: string): void {
+-        const openSpecials = workspaces.values.filter(w => w.name.startsWith("special:") && w.lastIpcObject.windows > 0);
+-
+-        if (openSpecials.length === 0)
+-            return;
+-
+-        const activeSpecial = focusedMonitor.lastIpcObject.specialWorkspace.name ?? "";
+-
+-        if (!activeSpecial) {
+-            if (lastSpecialWorkspace) {
+-                const workspace = workspaces.values.find(w => w.name === lastSpecialWorkspace);
+-                if (workspace && workspace.lastIpcObject.windows > 0) {
+-                    focusWorkspace(lastSpecialWorkspace);
+-                    return;
+-                }
+-            }
+-            focusWorkspace(openSpecials[0].name);
+-            return;
+-        }
+-
+-        const currentIndex = openSpecials.findIndex(w => w.name === activeSpecial);
+-        let nextIndex = 0;
+-
+-        if (currentIndex !== -1) {
+-            if (direction === "next")
+-                nextIndex = (currentIndex + 1) % openSpecials.length;
+-            else
+-                nextIndex = (currentIndex - 1 + openSpecials.length) % openSpecials.length;
+-        }
+-
+-        focusWorkspace(openSpecials[nextIndex].name);
++        scratchpads.cycleSpecialWorkspace(direction);
+     }
+ 
+     function monitorNames(): list<string> {
+@@ -193,6 +178,14 @@
+     }
+ 
+     IpcHandler {
++        function openLastSpecialWorkspace(): void {
++            root.openLastSpecialWorkspace();
++        }
++
++        function toggleLastSpecialWorkspace(): void {
++            root.toggleLastSpecialWorkspace();
++        }
++
+         function refreshDevices(): void {
+             extras.refreshDevices();
+         }
+@@ -202,7 +195,7 @@
+         }
+ 
+         function listSpecialWorkspaces(): string {
+-            return root.workspaces.values.filter(w => w.name.startsWith("special:") && w.lastIpcObject.windows > 0).map(w => w.name).join("\n");
++            return root.populatedSpecialWorkspaces.map(w => w.name).join("\n");
+         }
+ 
+         target: "hypr"
+diff --git a/custom/AppLabel.js b/custom/AppLabel.js
+new file mode 100644
+--- /dev/null
++++ b/custom/AppLabel.js
+@@ -0,0 +1,13 @@
++function title(Hypr, DesktopEntries, Tr) {
++    const appClass = Hypr.activeToplevel?.lastIpcObject.class ?? "";
++    const appName = appClass ? (DesktopEntries.heuristicLookup(appClass)?.name || appClass)
++                             : Tr.trCtx("Desktop", "shown when no window is focused");
++    const special = Hypr.focusedMonitor?.lastIpcObject.specialWorkspace?.name ?? "";
++    if (special) {
++        const scratchpads = Hypr.scratchpadNames;
++        const index = scratchpads.indexOf(special);
++        const label = scratchpads.length > 1 && index >= 0 ? "Scratchpad " + (index + 1) : "Scratchpad";
++        return label + " · " + appName;
++    }
++    return appName;
++}
+diff --git a/custom/Scratchpads.qml b/custom/Scratchpads.qml
+new file mode 100644
+--- /dev/null
++++ b/custom/Scratchpads.qml
+@@ -0,0 +1,97 @@
++import QtQuick
++import Quickshell
++import Quickshell.Hyprland
++
++Scope {
++    id: root
++
++    required property var backend
++    readonly property var workspaces: backend.workspaces
++    readonly property var focusedMonitor: backend.focusedMonitor
++
++    readonly property var populatedSpecialWorkspaces: workspaces.values
++        .filter(w => w.name.startsWith("special:") && w.lastIpcObject.windows > 0)
++        .sort((a, b) => {
++            const rank = n => n === "special:magic" ? 0 : n === "special:special" ? 1 : 2;
++            return rank(a.name) - rank(b.name) || a.name.localeCompare(b.name);
++        })
++
++    readonly property HyprlandToplevel activeToplevel: {
++        const t = Hyprland.activeToplevel;
++        const special = focusedMonitor?.lastIpcObject.specialWorkspace?.name ?? "";
++        if (special)
++            return t?.workspace?.name === special ? t : null;
++        return Hyprland.focusedWorkspace?.toplevels.values.length > 0 ? t : null;
++    }
++    property string lastSpecialWorkspace: ""
++    // Keep empty scratchpads reachable even after Hyprland removes their objects.
++    property var scratchpadHistory: ["special:magic", "special:special"]
++    readonly property var scratchpadNames: [...new Set([
++        ...scratchpadHistory,
++        ...populatedSpecialWorkspaces.map(w => w.name)
++    ])]
++
++    function runSpecialAction(name: string, direction: string, toggle: bool): void {
++        lastSpecialWorkspace = name;
++        restoreSpecialAnimation.stop();
++        const switching = direction === "next" || direction === "previous";
++        const style = switching ? (direction === "next" ? "slide right" : "slide left") : "slidefadevert 15%";
++        const speed = switching ? 5 : 4;
++        const curve = switching ? "standard" : "specialWorkSwitch";
++        const animation = `hl.animation({ leaf = "specialWorkspace", enabled = true, speed = ${speed}, bezier = "${curve}", style = "${style}" })`;
++        const action = toggle
++            ? `hl.dsp.workspace.toggle_special(${JSON.stringify(name.replace(/^special:/, ""))})`
++            : `hl.dsp.focus({ workspace = ${JSON.stringify(name)} })`;
++        // Apply the animation and dispatch together so the transition uses the new style.
++        Quickshell.execDetached(["hyprctl", "eval", animation + "; hl.dispatch(" + action + ")"]);
++        if (switching)
++            restoreSpecialAnimation.restart();
++    }
++
++    function openLastSpecialWorkspace(): void {
++        const active = focusedMonitor?.lastIpcObject.specialWorkspace?.name ?? "";
++        if (!active)
++            root.runSpecialAction(lastSpecialWorkspace || "special:magic", "", false);
++    }
++
++    function toggleLastSpecialWorkspace(): void {
++        const active = focusedMonitor?.lastIpcObject.specialWorkspace?.name ?? "";
++        root.runSpecialAction(active || lastSpecialWorkspace || "special:magic", "", true);
++    }
++
++    Timer {
++        id: restoreSpecialAnimation
++        interval: 550
++        onTriggered: Quickshell.execDetached(["hyprctl", "eval",
++            'hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 4, bezier = "specialWorkSwitch", style = "slidefadevert 15%" })'])
++    }
++
++    function cycleSpecialWorkspace(direction: string): void {
++        const names = root.scratchpadNames.slice();
++        const activeSpecial = focusedMonitor?.lastIpcObject.specialWorkspace?.name ?? "";
++
++        if (!activeSpecial) {
++            root.scratchpadHistory = names;
++            root.runSpecialAction(names.includes(lastSpecialWorkspace) ? lastSpecialWorkspace : names[0], "", false);
++            return;
++        }
++
++        if (!names.includes(activeSpecial))
++            names.push(activeSpecial);
++
++        const currentIndex = names.indexOf(activeSpecial);
++        const nextIndex = direction === "next" ? currentIndex + 1 : Math.max(0, currentIndex - 1);
++        if (nextIndex === names.length) {
++            let number = names.length + 1;
++            while (names.includes(`special:scratchpad${number}`))
++                number++;
++            names.push(`special:scratchpad${number}`);
++        }
++
++        root.scratchpadHistory = names;
++        // Focusing the already open special workspace would toggle it closed.
++        if (names[nextIndex] !== activeSpecial)
++            root.runSpecialAction(names[nextIndex], direction, false);
++    }
++
++}

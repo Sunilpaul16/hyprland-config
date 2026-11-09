@@ -1,0 +1,27 @@
+{
+  "files": [
+    "caelestia/animated-wallpaper.py",
+    "caelestia/load-files-gestures.py",
+    "caelestia/screenshot-save.py",
+    "caelestia/toggle-bar.py",
+    "caelestia/hypr-user.lua",
+    "caelestia/hypr-vars.lua",
+    "caelestia/my-gestures.lua",
+    "caelestia/my-shortcut-vars.lua",
+    "caelestia/my-shortcuts.lua",
+    "quickshell/caelestia/services/NightLight.qml",
+    "quickshell/caelestia-cheatsheet/Anim.qml",
+    "quickshell/caelestia-cheatsheet/shell.qml",
+    "quickshell/caelestia-cheatsheet/refresh.py",
+    "quickshell/caelestia-cheatsheet/toggle",
+    "systemd/user/caelestia-wallpaper.service",
+    "inputactions/config.yaml",
+    "inputactions/71-inputactions-touchpad.rules",
+    "hypr/hyprsunset.conf",
+    "caelestia/shell.json",
+    "caelestia/monitors/eDP-1/shell.json"
+  ],
+  "manual_install": [
+    "inputactions/71-inputactions-touchpad.rules"
+  ]
+}

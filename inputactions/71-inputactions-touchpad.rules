@@ -1,2 +1,1 @@
-# Required by InputActions' libevdev backend for tap recognition.
-SUBSYSTEM=="input", KERNEL=="event*", ENV{ID_INPUT_TOUCHPAD}=="1", TAG+="uaccess"
+../customisations/standalone/inputactions/71-inputactions-touchpad.rules

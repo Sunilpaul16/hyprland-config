@@ -1,0 +1,129 @@
+diff --git a/modules/ServiceLoader.qml b/modules/ServiceLoader.qml
+--- a/modules/ServiceLoader.qml
++++ b/modules/ServiceLoader.qml
+@@ -7,6 +7,7 @@
+     Component.onCompleted: {
+         // Force certain singletons to load on shell init instead of lazily
+ 
++        NightLight;
+         IdleInhibitor;
+         GameMode;
+         Notifs;
+diff --git a/modules/nexus/pages/ServicesPage.qml b/modules/nexus/pages/ServicesPage.qml
+--- a/modules/nexus/pages/ServicesPage.qml
++++ b/modules/nexus/pages/ServicesPage.qml
+@@ -1,4 +1,5 @@
+ import QtQuick
++import qs.custom as Custom
+ import QtQuick.Layouts
+ import Quickshell
+ import Caelestia.Config
+@@ -199,6 +200,10 @@
+             onMoved: v => GlobalConfig.services.visualiserBars = v
+         }
+ 
++        Custom.NightLightToggle {
++            service: NightLight
++        }
++
+         ToggleRow {
+             text: Tr.tr("Smart colour scheme")
+             subtext: Tr.tr("Derive theme mode and variant from the wallpaper")
+diff --git a/services/NightLight.qml b/services/NightLight.qml
+new file mode 100644
+--- /dev/null
++++ b/services/NightLight.qml
+@@ -0,0 +1,74 @@
++pragma Singleton
++
++import QtQuick
++import Quickshell
++import Quickshell.Io
++
++Singleton {
++    id: root
++
++    readonly property alias enabled: props.enabled
++    property bool available: false
++    readonly property bool busy: apply.running
++
++    function refresh(): void {
++        if (!status.running)
++            status.running = true;
++    }
++
++    function toggle(): void {
++        if (available && !busy) {
++            apply.requestedEnabled = !enabled;
++            apply.command = enabled ? ["hyprctl", "hyprsunset", "identity"] : ["hyprctl", "hyprsunset", "temperature", "5200"];
++            apply.running = true;
++        }
++    }
++
++    PersistentProperties {
++        id: props
++        reloadableId: "nightLight"
++        property bool enabled: false
++        property string lastProfile: ""
++    }
++
++    Component.onCompleted: refresh()
++
++    Timer {
++        interval: 30000
++        running: true
++        repeat: true
++        onTriggered: root.refresh()
++    }
++
++    Process {
++        id: status
++        command: ["hyprctl", "hyprsunset", "profile"]
++        stdout: StdioCollector {
++            onStreamFinished: {
++                root.available = text.includes("Identity:");
++                // Profile reports the schedule, not current manual overrides.
++                // Only a schedule boundary should supersede the manual choice.
++                if (root.available && text !== props.lastProfile) {
++                    props.lastProfile = text;
++                    props.enabled = text.includes("Identity: false");
++                }
++            }
++        }
++    }
++
++    Process {
++        id: apply
++        property bool requestedEnabled: false
++        onExited: (exitCode, exitStatus) => {
++            if (exitCode === 0)
++                props.enabled = requestedEnabled;
++            root.refresh();
++        }
++    }
++
++    IpcHandler {
++        target: "nightlight"
++        function toggle(): void { root.toggle(); }
++        function isEnabled(): bool { return root.enabled; }
++    }
++}
+diff --git a/custom/NightLightToggle.qml b/custom/NightLightToggle.qml
+new file mode 100644
+--- /dev/null
++++ b/custom/NightLightToggle.qml
+@@ -0,0 +1,14 @@
++import Caelestia.I18n
++import qs.modules.nexus.common
++
++ToggleRow {
++    id: root
++
++    required property var service
++
++    text: Tr.tr("Night light")
++    subtext: Tr.tr("Warm screen colours · 5200K · automatic 19:00–07:00")
++    checked: service.enabled
++    disabled: !service.available || service.busy
++    onToggled: root.service.toggle()
++}

@@ -2,10 +2,9 @@ const fs = require('fs');
 const assert = require('assert');
 const path = require('path');
 const base = process.env.SHELL_CONFIG || path.join(__dirname, '..', 'quickshell', 'caelestia');
-const titleSource = fs.readFileSync(path.join(base,'modules/bar/components/ActiveWindow.qml'),'utf8');
-const hyprSource = fs.readFileSync(path.join(base,'services/Hypr.qml'),'utf8');
-const titleBody = titleSource.split('readonly property string windowTitle: {')[1].split('\n    readonly property int maxHeight:')[0].replace(/\}\s*$/, '');
-const title = new Function('Hypr','DesktopEntries','Tr',titleBody);
+const titleSource = fs.readFileSync(path.join(base,'custom/AppLabel.js'),'utf8');
+const hyprSource = fs.readFileSync(path.join(base,'custom/Scratchpads.qml'),'utf8');
+const title = new Function(titleSource+'\nreturn title;')();
 const lookup = {heuristicLookup: c => c === 'google-chrome' ? {name:'Google Chrome'} : null};
 const tr = {trCtx: text => text};
 function populated(values) {
@@ -28,7 +27,7 @@ const values=[w('special:music'),w('special:magic'),w('special:communication'),w
 eq(title(state([w('special:magic')],'special:magic'),lookup,tr),'Scratchpad 1 · kitty');
 eq(title(state(values,'special:magic'),lookup,tr),'Scratchpad 1 · kitty');
 eq(title(state(values,'special:special'),lookup,tr),'Scratchpad 2 · kitty');
-const body=hyprSource.split('function cycleSpecialWorkspace(direction: string): void {')[1].split('\n    function monitorNames')[0].replace(/\}\s*$/, '');
+const body=hyprSource.split('function cycleSpecialWorkspace(direction: string): void {')[1].split('\n}')[0].replace(/\}\s*$/, '');
 const cycle = new Function('workspaces','focusedMonitor','lastSpecialWorkspace','focusWorkspace','root','direction',body);
 function step(hypr, direction, last = '') {
     let focused=hypr.focusedMonitor.lastIpcObject.specialWorkspace.name;
@@ -77,7 +76,7 @@ eq(action[0],'special:special'); eq(action[2],true);
 new Function('focusedMonitor','lastSpecialWorkspace','root',toggleBody)({lastIpcObject:{specialWorkspace:{name:'special:scratchpad3'}}},'special:special',controller);
 eq(action[0],'special:scratchpad3');
 // An empty scratchpad must not inherit the underlying or previously focused app.
-const activeBody=hyprSource.split('readonly property HyprlandToplevel activeToplevel: {')[1].split('\n    readonly property HyprlandWorkspace focusedWorkspace:')[0].replace(/\}\s*$/, '');
+const activeBody=hyprSource.split('readonly property HyprlandToplevel activeToplevel: {')[1].split('\n    property string lastSpecialWorkspace:')[0].replace(/\}\s*$/, '');
 const active=new Function('Hyprland','focusedMonitor',activeBody);
 const top=name=>({workspace:{name}});
 const focused=special=>({lastIpcObject:{specialWorkspace:{name:special}}});

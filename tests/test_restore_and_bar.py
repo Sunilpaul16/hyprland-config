@@ -49,5 +49,30 @@ class RestoreTests(unittest.TestCase):
             system=next(g for g in data if g['title']=='System')
             self.assertTrue(any(row['key']=='Super + B' for row in system['rows']))
             self.assertIn('%h/',(home/'.config/systemd/user/caelestia-wallpaper.service').read_text())
+            custom=REPO/'customisations/standalone'
+            links=json.loads((custom/'links.json').read_text())
+            for relative in links['files']:
+                with self.subTest(standalone=relative):
+                    source=custom/relative
+                    link=REPO/relative
+                    installed=home/'.config'/relative
+                    self.assertTrue(link.is_symlink())
+                    self.assertEqual(link.resolve(),source.resolve())
+                    if relative in links['manual_install']:
+                        self.assertFalse(installed.exists())
+                        continue
+                    self.assertTrue(installed.is_file())
+                    self.assertFalse(installed.is_symlink())
+                    self.assertEqual(installed.read_bytes(),source.read_bytes())
+            shell=REPO/'customisations/shell'
+            for entry in json.loads((shell/'manifest.json').read_text())['files']:
+                with self.subTest(shell_customisation=entry['path']):
+                    source=shell/entry['source']
+                    path='quickshell/caelestia/'+entry['path']
+                    installed=home/'.config'/path
+                    self.assertEqual((REPO/path).resolve(),source.resolve())
+                    self.assertTrue(installed.is_file())
+                    self.assertFalse(installed.is_symlink())
+                    self.assertEqual(installed.read_bytes(),source.read_bytes())
 
 if __name__=='__main__':unittest.main(verbosity=2)
