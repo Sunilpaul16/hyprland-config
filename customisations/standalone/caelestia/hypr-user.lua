@@ -21,9 +21,8 @@ hl.window_rule({
 })
 
 
--- Restore the selected animated wallpaper at login.
+-- Load the optional Files gesture plugin at login.
 hl.on("hyprland.start", function()
-    hl.exec_cmd("python3 ~/.config/caelestia/animated-wallpaper.py restore")
     hl.exec_cmd("python3 ~/.config/caelestia/load-files-gestures.py")
 end)
 

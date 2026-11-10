@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-SOURCE = Path(os.environ.get('WALLPAPER_SCRIPT', Path(__file__).resolve().parents[1] / 'caelestia/animated-wallpaper.py'))
+SOURCE = Path(os.environ.get('WALLPAPER_SCRIPT', Path(__file__).resolve().parents[1] / 'customisations/shell/archive/5cbf60e7/standalone/caelestia/animated-wallpaper.py'))
 spec = importlib.util.spec_from_file_location('wallpaper', SOURCE)
 wall = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(wall)

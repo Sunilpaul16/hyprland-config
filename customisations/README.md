@@ -10,13 +10,16 @@ into `~/.config`, preserving the existing runtime paths.
   feature patches and upstream baseline information.
 
 Start with `shell/patches/` when comparing an upstream feature with our version.
-The patches are grouped into wallpapers, scratchpads/bar, sidebar, network,
-night light, settings, screenshots and shell settings. Their implementation
+The active patches cover the wallpaper shortcut, scratchpads/bar, network,
+night light, settings, screenshots and shell settings. Old wallpaper and sidebar
+patches are archived. Their implementation
 sources and upstream integration points are listed in `shell/manifest.json`.
 
-This organisation still targets upstream v2.5.0. It does not install the latest
-shell or automatically retire personal features when upstream adds equivalents.
+The source now targets upstream `5cbf60e7`. Overlapping personal wallpaper,
+game-mode and sidebar implementations are preserved in the archive with their
+links removed. See [`../UPSTREAM-MERGE.md`](../UPSTREAM-MERGE.md) for accepted
+changes and runtime requirements. The historical live report below refers to
+the previous configuration, which remains the running desktop.
 
-The reorganised configuration was activated on the laptop on 2026-11-09.
-See the [live test report](LIVE-TEST-REPORT.md) for results, backup location and
-remaining session issues.
+The previous reorganised configuration was activated on 2026-11-09.
+See the [historical live test report](LIVE-TEST-REPORT.md) for that deployment.

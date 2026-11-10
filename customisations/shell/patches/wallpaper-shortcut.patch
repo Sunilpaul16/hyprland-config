@@ -1,0 +1,50 @@
+diff --git a/daemons/Shortcuts.qml b/daemons/Shortcuts.qml
+--- a/daemons/Shortcuts.qml
++++ b/daemons/Shortcuts.qml
+@@ -1,4 +1,5 @@
+ import QtQuick
++import qs.custom as Custom
+ import Quickshell
+ import Quickshell.Io
+ import Caelestia
+@@ -109,6 +110,8 @@
+         }
+     }
+ 
++    Custom.WallpaperLauncher {}
++
+     IpcHandler {
+         function toggle(drawer: string): void {
+             if (list().split("\n").includes(drawer)) {
+diff --git a/custom/WallpaperLauncher.qml b/custom/WallpaperLauncher.qml
+new file mode 100644
+--- /dev/null
++++ b/custom/WallpaperLauncher.qml
+@@ -0,0 +1,27 @@
++import QtQuick
++import Quickshell
++import Quickshell.Io
++import Caelestia.Config
++import qs.services
++
++Scope {
++    IpcHandler {
++        target: "launcher"
++
++        function wallpaper(): void {
++            const state = ShellState.forActive();
++            const components = ShellState.componentsForActive();
++            if (!state || !components)
++                return;
++            state.launcher = true;
++            Qt.callLater(() => {
++                const search = components.find("launcherSearch");
++                if (search) {
++                    search.text = `${GlobalConfig.launcher.actionPrefix}wallpaper `;
++                    search.forceActiveFocus();
++                }
++            });
++        }
++    }
++
++}

@@ -1,12 +1,16 @@
 diff --git a/shell.qml b/shell.qml
 --- a/shell.qml
 +++ b/shell.qml
-@@ -16,7 +16,7 @@
+@@ -17,10 +17,11 @@
  ShellRoot {
      id: root
  
 -    settings.watchFiles: true
 +    settings.watchFiles: false
  
-     Binding {
-         target: ShellState
+     Component.onCompleted: {
+         // Force certain singletons to load on shell init instead of lazily
++        NightLight;
+         Notifs;
+         Players;
+         Brightness;

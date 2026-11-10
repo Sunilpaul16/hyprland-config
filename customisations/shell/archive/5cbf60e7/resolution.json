@@ -1,0 +1,398 @@
+{
+  "upstream_repository": "https://github.com/caelestia-dots/shell.git",
+  "previous_base": "96470e43def69ceb5be106a1e53fa62beeed3fb9",
+  "upstream_commit": "5cbf60e7c6dbdd2b94faa5444435b8d9cac7bd46",
+  "saved_configuration_commit": "3197e0c",
+  "archive": "customisations/shell/archive/5cbf60e7",
+  "state": "source conflicts resolved; native runtime and CLI upgrade required before activation",
+  "files": [
+    {
+      "path": "modules/ServiceLoader.qml",
+      "added": false,
+      "feature": "night-light",
+      "source": "integrations/modules/ServiceLoader.qml",
+      "target": "modules/ServiceLoader.qml",
+      "status": "removed upstream",
+      "resolution": "NightLight initialisation moved to the new shell.qml startup block"
+    },
+    {
+      "path": "modules/Shortcuts.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/modules/Shortcuts.qml",
+      "target": "daemons/Shortcuts.qml",
+      "status": "merged"
+    },
+    {
+      "path": "modules/areapicker/Picker.qml",
+      "added": false,
+      "feature": "screenshots",
+      "source": "integrations/modules/areapicker/Picker.qml",
+      "target": "modules/areapicker/Picker.qml",
+      "status": "merged"
+    },
+    {
+      "path": "modules/background/Background.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/modules/background/Background.qml",
+      "target": "modules/background/Background.qml",
+      "status": "merged"
+    },
+    {
+      "path": "modules/bar/components/ActiveWindow.qml",
+      "added": false,
+      "feature": "scratchpads-and-bar",
+      "source": "integrations/modules/bar/components/ActiveWindow.qml",
+      "target": "modules/bar/components/ActiveWindow.qml",
+      "status": "merged"
+    },
+    {
+      "path": "modules/drawers/ContentWindow.qml",
+      "added": false,
+      "feature": "sidebar",
+      "source": "integrations/modules/drawers/ContentWindow.qml",
+      "target": "modules/drawers/ContentWindow.qml",
+      "status": "merged"
+    },
+    {
+      "path": "modules/drawers/Interactions.qml",
+      "added": false,
+      "feature": "sidebar",
+      "source": "integrations/modules/drawers/Interactions.qml",
+      "target": "modules/drawers/Interactions.qml",
+      "status": "text conflict"
+    },
+    {
+      "path": "modules/drawers/Regions.qml",
+      "added": false,
+      "feature": "sidebar",
+      "source": "integrations/modules/drawers/Regions.qml",
+      "target": "modules/drawers/Regions.qml",
+      "status": "merged"
+    },
+    {
+      "path": "modules/launcher/items/WallpaperItem.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/modules/launcher/items/WallpaperItem.qml",
+      "target": "modules/launcher/items/WallpaperItem.qml",
+      "status": "merged"
+    },
+    {
+      "path": "modules/nexus/Nexus.qml",
+      "added": false,
+      "feature": "settings",
+      "source": "integrations/modules/nexus/Nexus.qml",
+      "target": "modules/nexus/Nexus.qml",
+      "status": "merged"
+    },
+    {
+      "path": "modules/nexus/pages/NetworkPage.qml",
+      "added": false,
+      "feature": "network",
+      "source": "integrations/modules/nexus/pages/NetworkPage.qml",
+      "target": "modules/nexus/pages/NetworkPage.qml",
+      "status": "merged"
+    },
+    {
+      "path": "modules/nexus/pages/ServicesPage.qml",
+      "added": false,
+      "feature": "night-light",
+      "source": "integrations/modules/nexus/pages/ServicesPage.qml",
+      "target": "modules/nexus/pages/ServicesPage.qml",
+      "status": "merged"
+    },
+    {
+      "path": "modules/nexus/pages/WallpaperAndStyle.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/modules/nexus/pages/WallpaperAndStyle.qml",
+      "target": "modules/nexus/pages/WallpaperAndStyle.qml",
+      "status": "merged"
+    },
+    {
+      "path": "modules/nexus/pages/network/AllNetworksPage.qml",
+      "added": false,
+      "feature": "network",
+      "source": "integrations/modules/nexus/pages/network/AllNetworksPage.qml",
+      "target": "modules/nexus/pages/network/AllNetworksPage.qml",
+      "status": "merged"
+    },
+    {
+      "path": "modules/nexus/pages/wallandstyle/WallpaperCategory.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/modules/nexus/pages/wallandstyle/WallpaperCategory.qml",
+      "target": "modules/nexus/pages/wallandstyle/WallpaperCategory.qml",
+      "status": "merged"
+    },
+    {
+      "path": "modules/nexus/pages/wallandstyle/WallpaperSelect.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/modules/nexus/pages/wallandstyle/WallpaperSelect.qml",
+      "target": "modules/nexus/pages/wallandstyle/WallpaperSelect.qml",
+      "status": "merged"
+    },
+    {
+      "path": "services/GameMode.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/services/GameMode.qml",
+      "target": "services/GameMode.qml",
+      "status": "removed upstream"
+    },
+    {
+      "path": "services/Hypr.qml",
+      "added": false,
+      "feature": "scratchpads-and-bar",
+      "source": "integrations/services/Hypr.qml",
+      "target": "services/Hypr.qml",
+      "status": "merged"
+    },
+    {
+      "path": "services/NightLight.qml",
+      "added": true,
+      "feature": "night-light",
+      "source": "../standalone/quickshell/caelestia/services/NightLight.qml",
+      "target": "services/NightLight.qml",
+      "status": "local addition retained"
+    },
+    {
+      "path": "services/Nmcli.qml",
+      "added": false,
+      "feature": "network",
+      "source": "integrations/services/Nmcli.qml",
+      "target": "services/Nmcli.qml",
+      "status": "merged"
+    },
+    {
+      "path": "services/Wallpapers.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/services/Wallpapers.qml",
+      "target": "services/Wallpapers.qml",
+      "status": "text conflict"
+    },
+    {
+      "path": "shell.qml",
+      "added": false,
+      "feature": "shell-settings",
+      "source": "integrations/shell.qml",
+      "target": "shell.qml",
+      "status": "merged"
+    },
+    {
+      "path": "custom/AppLabel.js",
+      "added": true,
+      "source": "components/AppLabel.js",
+      "feature": "scratchpads-and-bar",
+      "target": "custom/AppLabel.js",
+      "status": "local addition retained"
+    },
+    {
+      "path": "custom/NetworkScanButton.qml",
+      "added": true,
+      "source": "components/NetworkScanButton.qml",
+      "feature": "network",
+      "target": "custom/NetworkScanButton.qml",
+      "status": "local addition retained"
+    },
+    {
+      "path": "custom/NightLightToggle.qml",
+      "added": true,
+      "source": "components/NightLightToggle.qml",
+      "feature": "night-light",
+      "target": "custom/NightLightToggle.qml",
+      "status": "local addition retained"
+    },
+    {
+      "path": "custom/Scratchpads.qml",
+      "added": true,
+      "source": "components/Scratchpads.qml",
+      "feature": "scratchpads-and-bar",
+      "target": "custom/Scratchpads.qml",
+      "status": "local addition retained"
+    },
+    {
+      "path": "custom/SettingsEscape.qml",
+      "added": true,
+      "source": "components/SettingsEscape.qml",
+      "feature": "settings",
+      "target": "custom/SettingsEscape.qml",
+      "status": "local addition retained"
+    },
+    {
+      "path": "custom/SidebarHotspot.qml",
+      "added": true,
+      "source": "components/SidebarHotspot.qml",
+      "feature": "sidebar",
+      "target": "custom/SidebarHotspot.qml",
+      "status": "local addition retained"
+    },
+    {
+      "path": "custom/SidebarRegion.qml",
+      "added": true,
+      "source": "components/SidebarRegion.qml",
+      "feature": "sidebar",
+      "target": "custom/SidebarRegion.qml",
+      "status": "local addition retained"
+    },
+    {
+      "path": "custom/WallpaperBridge.qml",
+      "added": true,
+      "source": "components/WallpaperBridge.qml",
+      "feature": "wallpapers",
+      "target": "custom/WallpaperBridge.qml",
+      "status": "local addition retained"
+    },
+    {
+      "path": "custom/WallpaperGameMode.qml",
+      "added": true,
+      "source": "components/WallpaperGameMode.qml",
+      "feature": "wallpapers",
+      "target": "custom/WallpaperGameMode.qml",
+      "status": "local addition retained"
+    },
+    {
+      "path": "custom/WallpaperLauncher.qml",
+      "added": true,
+      "source": "components/WallpaperLauncher.qml",
+      "feature": "wallpapers",
+      "target": "custom/WallpaperLauncher.qml",
+      "status": "local addition retained"
+    }
+  ],
+  "conflicts": [
+    {
+      "path": "modules/ServiceLoader.qml",
+      "target": "modules/ServiceLoader.qml",
+      "feature": "night-light",
+      "kind": "removed upstream",
+      "resolved": true,
+      "resolution": "NightLight initialisation moved to the new shell.qml startup block"
+    },
+    {
+      "path": "modules/drawers/Interactions.qml",
+      "target": "modules/drawers/Interactions.qml",
+      "feature": "sidebar",
+      "kind": "text conflict",
+      "resolved": true,
+      "resolution": "Accepted incoming upstream implementation; custom source retained in archive"
+    },
+    {
+      "path": "services/GameMode.qml",
+      "target": "services/GameMode.qml",
+      "feature": "wallpapers",
+      "kind": "removed upstream",
+      "resolved": true,
+      "resolution": "Accepted incoming upstream implementation; custom source retained in archive"
+    },
+    {
+      "path": "services/Wallpapers.qml",
+      "target": "services/Wallpapers.qml",
+      "feature": "wallpapers",
+      "kind": "text conflict",
+      "resolved": true,
+      "resolution": "Accepted incoming upstream implementation; custom source retained in archive"
+    }
+  ],
+  "resolution": "Use upstream implementations for overlapping wallpaper/game-mode/sidebar features; preserve custom sources in archive",
+  "retired_customisations": [
+    {
+      "path": "modules/ServiceLoader.qml",
+      "added": false,
+      "feature": "night-light",
+      "source": "integrations/modules/ServiceLoader.qml"
+    },
+    {
+      "path": "modules/background/Background.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/modules/background/Background.qml"
+    },
+    {
+      "path": "modules/drawers/ContentWindow.qml",
+      "added": false,
+      "feature": "sidebar",
+      "source": "integrations/modules/drawers/ContentWindow.qml"
+    },
+    {
+      "path": "modules/drawers/Interactions.qml",
+      "added": false,
+      "feature": "sidebar",
+      "source": "integrations/modules/drawers/Interactions.qml"
+    },
+    {
+      "path": "modules/drawers/Regions.qml",
+      "added": false,
+      "feature": "sidebar",
+      "source": "integrations/modules/drawers/Regions.qml"
+    },
+    {
+      "path": "modules/launcher/items/WallpaperItem.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/modules/launcher/items/WallpaperItem.qml"
+    },
+    {
+      "path": "modules/nexus/pages/WallpaperAndStyle.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/modules/nexus/pages/WallpaperAndStyle.qml"
+    },
+    {
+      "path": "modules/nexus/pages/wallandstyle/WallpaperCategory.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/modules/nexus/pages/wallandstyle/WallpaperCategory.qml"
+    },
+    {
+      "path": "modules/nexus/pages/wallandstyle/WallpaperSelect.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/modules/nexus/pages/wallandstyle/WallpaperSelect.qml"
+    },
+    {
+      "path": "services/GameMode.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/services/GameMode.qml"
+    },
+    {
+      "path": "services/Wallpapers.qml",
+      "added": false,
+      "feature": "wallpapers",
+      "source": "integrations/services/Wallpapers.qml"
+    },
+    {
+      "path": "custom/SidebarHotspot.qml",
+      "added": true,
+      "source": "components/SidebarHotspot.qml",
+      "feature": "sidebar"
+    },
+    {
+      "path": "custom/SidebarRegion.qml",
+      "added": true,
+      "source": "components/SidebarRegion.qml",
+      "feature": "sidebar"
+    },
+    {
+      "path": "custom/WallpaperBridge.qml",
+      "added": true,
+      "source": "components/WallpaperBridge.qml",
+      "feature": "wallpapers"
+    },
+    {
+      "path": "custom/WallpaperGameMode.qml",
+      "added": true,
+      "source": "components/WallpaperGameMode.qml",
+      "feature": "wallpapers"
+    }
+  ],
+  "retired_standalone": [
+    "caelestia/animated-wallpaper.py",
+    "systemd/user/caelestia-wallpaper.service"
+  ]
+}

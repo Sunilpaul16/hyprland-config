@@ -1,14 +1,3 @@
-diff --git a/modules/ServiceLoader.qml b/modules/ServiceLoader.qml
---- a/modules/ServiceLoader.qml
-+++ b/modules/ServiceLoader.qml
-@@ -7,6 +7,7 @@
-     Component.onCompleted: {
-         // Force certain singletons to load on shell init instead of lazily
- 
-+        NightLight;
-         IdleInhibitor;
-         GameMode;
-         Notifs;
 diff --git a/modules/nexus/pages/ServicesPage.qml b/modules/nexus/pages/ServicesPage.qml
 --- a/modules/nexus/pages/ServicesPage.qml
 +++ b/modules/nexus/pages/ServicesPage.qml

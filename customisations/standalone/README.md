@@ -7,7 +7,7 @@ working without copies that can drift apart. `links.json` lists every moved file
 
 | Feature | Source in this folder | Existing connection |
 |---|---|---|
-| Video wallpapers | `caelestia/animated-wallpaper.py`, `systemd/user/caelestia-wallpaper.service` | Wallpaper QML, personal shortcuts and the startup hook call the helper |
+| Wallpapers | Native upstream implementation | Personal shortcuts open the native picker or run `caelestia wallpaper -r`; old helper/service are archived |
 | Screenshot saving | `caelestia/screenshot-save.py` | Personal shortcuts and the area picker call the helper |
 | Bar toggle | `caelestia/toggle-bar.py` | Personal shortcut calls the helper |
 | Personal keyboard bindings | `caelestia/my-shortcuts.lua`, `caelestia/my-shortcut-vars.lua` | Loaded by `hypr-user.lua` |
@@ -29,5 +29,5 @@ install it into `~/.config` or change system permissions.
 
 The custom QML/JavaScript implementations and their remaining upstream integration
 hooks live in [`../shell/`](../shell/README.md). NightLight's existing service path
-links directly to its standalone source here. The latest upstream shell migration
-remains a separate step.
+links directly to its standalone source here. The source update is accepted; activating it with matching native modules and
+a video-capable CLI remains a separate step.

@@ -1,19 +1,13 @@
 {
   "repository": "https://github.com/caelestia-dots/shell.git",
-  "base_ref": "v2.5.0",
-  "base_commit": "96470e43def69ceb5be106a1e53fa62beeed3fb9",
+  "base_ref": "5cbf60e7",
+  "base_commit": "5cbf60e7c6dbdd2b94faa5444435b8d9cac7bd46",
   "files": [
     {
-      "path": "modules/ServiceLoader.qml",
+      "path": "daemons/Shortcuts.qml",
       "added": false,
-      "feature": "night-light",
-      "source": "integrations/modules/ServiceLoader.qml"
-    },
-    {
-      "path": "modules/Shortcuts.qml",
-      "added": false,
-      "feature": "wallpapers",
-      "source": "integrations/modules/Shortcuts.qml"
+      "feature": "wallpaper-shortcut",
+      "source": "integrations/daemons/Shortcuts.qml"
     },
     {
       "path": "modules/areapicker/Picker.qml",
@@ -22,40 +16,10 @@
       "source": "integrations/modules/areapicker/Picker.qml"
     },
     {
-      "path": "modules/background/Background.qml",
-      "added": false,
-      "feature": "wallpapers",
-      "source": "integrations/modules/background/Background.qml"
-    },
-    {
       "path": "modules/bar/components/ActiveWindow.qml",
       "added": false,
       "feature": "scratchpads-and-bar",
       "source": "integrations/modules/bar/components/ActiveWindow.qml"
-    },
-    {
-      "path": "modules/drawers/ContentWindow.qml",
-      "added": false,
-      "feature": "sidebar",
-      "source": "integrations/modules/drawers/ContentWindow.qml"
-    },
-    {
-      "path": "modules/drawers/Interactions.qml",
-      "added": false,
-      "feature": "sidebar",
-      "source": "integrations/modules/drawers/Interactions.qml"
-    },
-    {
-      "path": "modules/drawers/Regions.qml",
-      "added": false,
-      "feature": "sidebar",
-      "source": "integrations/modules/drawers/Regions.qml"
-    },
-    {
-      "path": "modules/launcher/items/WallpaperItem.qml",
-      "added": false,
-      "feature": "wallpapers",
-      "source": "integrations/modules/launcher/items/WallpaperItem.qml"
     },
     {
       "path": "modules/nexus/Nexus.qml",
@@ -76,34 +40,10 @@
       "source": "integrations/modules/nexus/pages/ServicesPage.qml"
     },
     {
-      "path": "modules/nexus/pages/WallpaperAndStyle.qml",
-      "added": false,
-      "feature": "wallpapers",
-      "source": "integrations/modules/nexus/pages/WallpaperAndStyle.qml"
-    },
-    {
       "path": "modules/nexus/pages/network/AllNetworksPage.qml",
       "added": false,
       "feature": "network",
       "source": "integrations/modules/nexus/pages/network/AllNetworksPage.qml"
-    },
-    {
-      "path": "modules/nexus/pages/wallandstyle/WallpaperCategory.qml",
-      "added": false,
-      "feature": "wallpapers",
-      "source": "integrations/modules/nexus/pages/wallandstyle/WallpaperCategory.qml"
-    },
-    {
-      "path": "modules/nexus/pages/wallandstyle/WallpaperSelect.qml",
-      "added": false,
-      "feature": "wallpapers",
-      "source": "integrations/modules/nexus/pages/wallandstyle/WallpaperSelect.qml"
-    },
-    {
-      "path": "services/GameMode.qml",
-      "added": false,
-      "feature": "wallpapers",
-      "source": "integrations/services/GameMode.qml"
     },
     {
       "path": "services/Hypr.qml",
@@ -122,12 +62,6 @@
       "added": false,
       "feature": "network",
       "source": "integrations/services/Nmcli.qml"
-    },
-    {
-      "path": "services/Wallpapers.qml",
-      "added": false,
-      "feature": "wallpapers",
-      "source": "integrations/services/Wallpapers.qml"
     },
     {
       "path": "shell.qml",
@@ -166,34 +100,10 @@
       "feature": "settings"
     },
     {
-      "path": "custom/SidebarHotspot.qml",
-      "added": true,
-      "source": "components/SidebarHotspot.qml",
-      "feature": "sidebar"
-    },
-    {
-      "path": "custom/SidebarRegion.qml",
-      "added": true,
-      "source": "components/SidebarRegion.qml",
-      "feature": "sidebar"
-    },
-    {
-      "path": "custom/WallpaperBridge.qml",
-      "added": true,
-      "source": "components/WallpaperBridge.qml",
-      "feature": "wallpapers"
-    },
-    {
-      "path": "custom/WallpaperGameMode.qml",
-      "added": true,
-      "source": "components/WallpaperGameMode.qml",
-      "feature": "wallpapers"
-    },
-    {
       "path": "custom/WallpaperLauncher.qml",
       "added": true,
       "source": "components/WallpaperLauncher.qml",
-      "feature": "wallpapers"
+      "feature": "wallpaper-shortcut"
     }
   ]
 }

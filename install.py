@@ -8,6 +8,8 @@ import subprocess
 
 def main():
     repo = Path(__file__).resolve().parent
+    if (repo / 'customisations/shell/pending-update.json').exists():
+        raise SystemExit('Upstream shell merge needs review. See UPSTREAM-MERGE.md before installing.')
     home = Path.home()
     backup = home / '.local/state/caelestia-config-backups' / datetime.now().strftime('%Y%m%d-%H%M%S-%f')
 
@@ -29,6 +31,7 @@ def main():
 
     for name in ('hypr', 'caelestia', 'kitty'):
         replace_dir(repo / name, home / '.config' / name)
+    replace_file(repo / 'bin/caelestia', home / '.local/bin/caelestia')
     for name in ('gtk-3.0', 'gtk-4.0'):
         replace_file(repo / name / 'settings.ini', home / '.config' / name / 'settings.ini')
     replace_file(repo / 'inputactions/config.yaml', home / '.config/inputactions/config.yaml')
@@ -42,7 +45,10 @@ def main():
     replace_file(repo / '.zshenv', home / '.zshenv')
     for source in (repo / 'autostart').iterdir():
         replace_file(source, home / '.config/autostart' / source.name)
-    replace_file(repo / 'systemd/user/caelestia-wallpaper.service', home / '.config/systemd/user/caelestia-wallpaper.service')
+    legacy_wallpaper_unit = home / '.config/systemd/user/caelestia-wallpaper.service'
+    if legacy_wallpaper_unit.exists() or legacy_wallpaper_unit.is_symlink():
+        subprocess.run(['systemctl', '--user', 'stop', 'caelestia-wallpaper.service'], check=True)
+        preserve(legacy_wallpaper_unit)
     replace_file(repo / 'systemd/user/xdg-desktop-portal-gtk.service.d/appearance.conf', home / '.config/systemd/user/xdg-desktop-portal-gtk.service.d/appearance.conf')
     subprocess.run(['python3', str(home / '.config/quickshell/caelestia-cheatsheet/refresh.py')], check=True)
     subprocess.run(['systemctl', '--user', 'daemon-reload'], check=True)

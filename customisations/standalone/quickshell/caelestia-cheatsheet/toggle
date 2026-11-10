@@ -2,5 +2,5 @@
 set -eu
 python3 "$HOME/.config/quickshell/caelestia-cheatsheet/refresh.py"
 if ! qs -c caelestia-cheatsheet ipc call cheatsheet toggle >/dev/null 2>&1; then
-    qs -c caelestia-cheatsheet -n -d
+    python3 "$HOME/.config/caelestia/runtime.py" qs -c caelestia-cheatsheet -n -d
 fi

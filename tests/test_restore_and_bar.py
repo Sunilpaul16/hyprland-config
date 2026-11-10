@@ -36,6 +36,8 @@ class RestoreTests(unittest.TestCase):
             home=Path(td);bin_dir=home/'bin';bin_dir.mkdir()
             fake=bin_dir/'systemctl';fake.write_text('#!/bin/sh\nexit 0\n');fake.chmod(0o755)
             old=home/'.config/hypr';old.mkdir(parents=True);(old/'old.conf').write_text('old setup')
+            legacy_unit=home/'.config/systemd/user/caelestia-wallpaper.service'
+            legacy_unit.parent.mkdir(parents=True);legacy_unit.write_text('old wallpaper unit')
             third=home/'.config/zsh/oh-my-zsh';third.mkdir(parents=True);(third/'keep').write_text('third-party')
             env={**os.environ,'HOME':str(home),'PATH':str(bin_dir)+':'+os.environ['PATH']}
             subprocess.run(['python3',str(REPO/'install.py')],env=env,capture_output=True,text=True,check=True)
@@ -48,14 +50,17 @@ class RestoreTests(unittest.TestCase):
             self.assertFalse({'Record','Media','Help','Shell','Inactive · unassigned'} & titles)
             system=next(g for g in data if g['title']=='System')
             self.assertTrue(any(row['key']=='Super + B' for row in system['rows']))
-            self.assertIn('%h/',(home/'.config/systemd/user/caelestia-wallpaper.service').read_text())
+            self.assertFalse((home/'.config/systemd/user/caelestia-wallpaper.service').exists())
+            saved_units=list((home/'.local/state/caelestia-config-backups').glob('*/.config/systemd/user/caelestia-wallpaper.service'))
+            self.assertEqual(len(saved_units),1)
+            self.assertEqual(saved_units[0].read_text(),'old wallpaper unit')
             custom=REPO/'customisations/standalone'
             links=json.loads((custom/'links.json').read_text())
             for relative in links['files']:
                 with self.subTest(standalone=relative):
                     source=custom/relative
                     link=REPO/relative
-                    installed=home/'.config'/relative
+                    installed=home/links.get('destinations',{}).get(relative,'.config/'+relative)
                     self.assertTrue(link.is_symlink())
                     self.assertEqual(link.resolve(),source.resolve())
                     if relative in links['manual_install']:

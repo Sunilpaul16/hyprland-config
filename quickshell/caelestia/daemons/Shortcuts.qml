@@ -1,0 +1,1 @@
+../../../customisations/shell/integrations/daemons/Shortcuts.qml

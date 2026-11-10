@@ -1,0 +1,1 @@
+../../../customisations/shell/components/AppLabel.js

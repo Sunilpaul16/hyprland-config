@@ -1,1 +1,0 @@
-../../../customisations/shell/integrations/services/GameMode.qml

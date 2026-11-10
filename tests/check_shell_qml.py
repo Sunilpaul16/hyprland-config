@@ -1,6 +1,7 @@
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import tempfile
@@ -16,13 +17,12 @@ def main():
         config = temporary / "config"
         shutil.copytree(ROOT / "quickshell/caelestia", config)
         (config / "original-shell.qml").write_bytes((config / "shell.qml").read_bytes())
-        paths = [str(config / ("original-shell.qml" if entry["path"] == "shell.qml" else entry["path"]))
-                 for entry in manifest["files"] if entry["path"].endswith(".qml")]
+        sources = sorted(p for p in config.rglob("*.qml") if p.name != "original-shell.qml")
+        paths = [str(config / "original-shell.qml" if p == config / "shell.qml" else p) for p in sources]
+        imports = sorted({match for p in sources for match in re.findall(r"^import (qs[.][\w.]+)", p.read_text(), re.MULTILINE)})
         runner = """import QtQuick
 import Quickshell
-import qs.services
-import qs.custom
-import qs.modules.lock
+IMPORTS
 ShellRoot {
     settings.watchFiles: false
     Component.onCompleted: Qt.callLater(() => {
@@ -38,7 +38,8 @@ ShellRoot {
         Qt.quit();
     })
 }
-""".replace("PATHS", json.dumps(paths))
+""".replace("PATHS", json.dumps(paths)).replace("IMPORTS", "\n".join(
+            f"import {name} as Check{index}" for index, name in enumerate(imports)))
         (config / "shell.qml").write_text(runner)
         runtime = temporary / "run"
         runtime.mkdir(mode=0o700)

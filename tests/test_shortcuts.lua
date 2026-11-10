@@ -36,8 +36,8 @@ local function check(condition, label)
     assert(condition, label)
     checks = checks + 1
 end
-check(binds["SUPER + T"].action.args:match("animated%-wallpaper.py picker"), "wallpaper picker")
-check(binds["SUPER + SHIFT + T"].action.args:match("animated%-wallpaper.py random"), "random wallpaper")
+check(binds["SUPER + T"].action.args=="qs -c caelestia ipc call launcher wallpaper", "native wallpaper picker")
+check(binds["SUPER + SHIFT + T"].action.args=="python3 ~/.config/caelestia/runtime.py caelestia wallpaper -r", "native random wallpaper")
 check(binds["SUPER + mouse_down"].action.args.workspace == "+1", "next workspace includes empty")
 check(binds["SUPER + mouse_up"].action.args.workspace == "-1", "previous workspace includes empty")
 check(binds["Print"].action.args == "python3 ~/.config/caelestia/screenshot-save.py", "Print full capture")

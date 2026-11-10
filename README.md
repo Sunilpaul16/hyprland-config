@@ -30,8 +30,7 @@ wallpapers and compiled plugins are not bundled.
 ## Included
 
 - Hyprland Lua configuration: eDP-1, 2560×1600 at 60 Hz, scale 1.25, GB keyboard.
-- Caelestia shell 2.5.0 with local QML customizations and its upstream license.
-- Invisible 20 × 20 top-right click target toggles the sidebar; replaces sidebar drag/hover triggers.
+- Caelestia shell source at `5cbf60e7`, with retained personal QML hooks and its upstream license.
 - Japanese and simplified/traditional Chinese font fallback using Noto CJK fonts.
 - App names in the bar; populated special workspaces labelled as scratchpads.
 - Manual Wi-Fi scan buttons; routine network updates use cached results.
@@ -39,13 +38,9 @@ wallpapers and compiled plugins are not bundled.
 - Kitty, Zsh, Powerlevel10k configuration and fuzzy history search.
 - Case-insensitive Zsh file/folder completion and a `y` command that returns the
   shell to the directory selected in Yazi.
-- Animated wallpapers through mpvpaper, with frame thumbnails and dynamic colours.
-- Use static wallpaper enabled: show the still image and stop video playback.
-  Disabled: play the selected video, unless game mode is enabled.
-- Game mode stops playback and shows a still image; leaving game mode restores
-  playback only when Use static wallpaper remains disabled.
-- Wallpaper & style keeps the saved image/frame preview and wallpaper picker
-  available in both static and video modes.
+- Native upstream video wallpapers, moving previews, transition effects and a separate play/pause toggle.
+- Upstream game-mode and sidebar interaction behaviour. The previous custom
+  player, game-mode wallpaper coupling and click-only sidebar are archived.
 - Night light: Hyprsunset at 5200K from 19:00–07:00, with one on/off switch in Settings → Services.
   Manual toggles last until the next scheduled profile change.
 - Autostart overrides hiding duplicate Blueman and NetworkManager tray applets.
@@ -56,7 +51,7 @@ wallpapers and compiled plugins are not bundled.
 - Two-finger sideways swipes in Files navigate folder history: right goes back,
   left goes forward, after lifting fingers. InputActions handles these gestures.
 
-The vendored shell is the installed 2.5.0 configuration with our edits. Compiled
+The vendored shell is the accepted upstream source at `5cbf60e7` with retained personal hooks. Compiled
 Caelestia plugins and Quickshell are supplied by system packages, not this repo.
 Standalone personal files live in [`customisations/standalone/`](customisations/standalone/README.md).
 Their original repository paths are relative links; the installer follows them
@@ -83,7 +78,10 @@ login. Hyprland must support the Lua configuration API used by this branch.
 An existing desktop setup should be backed up before restoring.
 
 1. Install Arch Linux, networking, Git, Python, `base-devel`, and an AUR helper.
-2. Install Hyprland, `caelestia-shell`, `caelestia-cli` and their dependencies.
+2. Install Hyprland and Caelestia shell/CLI builds compatible with the recorded
+   upstream revision, including the Multimedia, State and Shaders QML modules.
+   The previously recorded shell 2.5.0 and CLI 1.1.3 are insufficient for native
+   video wallpapers; the old CLI rejects video files. Install their dependencies.
    This setup uses `quickshell-git`; it conflicts with the stable `quickshell`
    package. The exact installed package versions are recorded under `packages/`.
 3. Install `kitty`, `zsh`, `fzf`, `yazi`, `ffmpeg`, `mpvpaper`, `wl-clipboard`,
@@ -132,16 +130,11 @@ An existing desktop setup should be backed up before restoring.
    Log into Hyprland using UWSM so user services receive the Wayland environment.
    The Hyprland startup hook starts Caelestia and `hyprsunset.service`.
    Wallpaper playback is managed by the supplied user service and script.
-7. Put your own videos or images in `~/Pictures/Wallpapers`, then run:
-
-   ```sh
-   caelestia scheme set -n dynamic
-   python3 ~/.config/caelestia/animated-wallpaper.py random
-   ```
-
-   Video frames are generated once and cached. New files appear when opening the
-   wallpaper picker or choosing a random wallpaper. The original videos remain
-   in your Pictures folder. The selected wallpaper restores on the next login.
+7. Put your images or videos in `~/Pictures/Wallpapers`. Use Settings →
+   Wallpaper & style or Super + T to select one. Super + Shift + T uses the
+   upstream random command. Use the utilities wallpaper play/pause control
+   for video playback. The Display wallpaper setting shows/hides the background.
+   The old mpvpaper service and frame-cache helper are no longer installed.
 
 8. If using the optional two-finger Files gestures, build and load InputActions
    using [Files touchpad gestures](#files-touchpad-gestures). This is separate
@@ -159,11 +152,9 @@ and application settings in the checkout before running `install.py`, or in
    monitor, workspace and cursor settings; adjust resolution, refresh rate,
    position and scale. Add monitor declarations for additional screens. Review
    the laptop's 1000 × 700 file-dialog size rule too.
-2. In [`caelestia/animated-wallpaper.py`](caelestia/animated-wallpaper.py), replace
-   `eDP-1` in both the per-monitor settings path and the `mpvpaper` output.
-   Move or copy `caelestia/monitors/eDP-1/shell.json` into a directory named for
-   that output. The current wallpaper helper targets one output; it does not
-   automatically configure independent animated wallpapers on multiple screens.
+2. Configure each monitor using Caelestia's normal per-monitor preferences under
+   `caelestia/monitors/`. The archived mpvpaper helper's hard-coded `eDP-1` output
+   is no longer active.
 3. Change `kb_layout = "gb"` in `caelestia/hypr-user.lua` if needed. Copilot and
    AltGr + Copilot bindings assume the laptop's key events. Super + S and
    Super + Alt + S provide scratchpad controls on a keyboard without Copilot.
@@ -316,7 +307,8 @@ See [`TEST-REPORT.md`](TEST-REPORT.md) for the dated live audit and remaining
 physical-device checks. It describes the state at that audit; screenshot saving,
 night light and Files gesture changes were added in later commits.
 
-`python3 tests/live_wallpaper.py` exercises the running desktop: it temporarily
-changes Display wallpaper and game mode, restarts the shell, and restores those
-preferences in a `finally` block. Run it only while logged into this Hyprland
-session and after saving work in settings dialogs.
+The old mpvpaper live test is archived with that implementation. See
+[`UPSTREAM-MERGE.md`](UPSTREAM-MERGE.md) for accepted upstream behaviour,
+archived features and native runtime/CLI requirements. The historical
+[`customisations/LIVE-TEST-REPORT.md`](customisations/LIVE-TEST-REPORT.md)
+records the previous 2.5.0 deployment, not a live test of this incoming revision.

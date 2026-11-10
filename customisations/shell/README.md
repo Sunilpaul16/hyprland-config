@@ -1,14 +1,14 @@
 # Personal Caelestia shell features
 
 This folder is the source of the personal shell changes. The recorded upstream
-baseline is **v2.5.0**. The latest upstream shell has not been installed or fully
-ported yet.
+baseline is **5cbf60e7**. Overlapping wallpaper/game-mode/sidebar implementations
+are archived and disconnected; see [`../../UPSTREAM-MERGE.md`](../../UPSTREAM-MERGE.md).
 
 | Folder | Purpose |
 |---|---|
 | `components/` | Independent custom QML and JavaScript implementations |
 | `integrations/` | Upstream QML with the hooks and remaining edits required to use those implementations |
-| `patches/` | Reviewable upstream changes grouped into eight feature patches |
+| `patches/` | Reviewable upstream changes grouped into seven active feature patches |
 | `base/` | Original upstream files used for three-way conflict checks |
 | `manifest.json` | Baseline commit, source paths and feature ownership |
 
@@ -19,28 +19,17 @@ follows those links and installs regular files, so the installed shell does not
 depend on the checkout's location. Editing here changes the checkout immediately;
 it does not automatically change the installed desktop.
 
-## Features
+## Active features
 
-| Feature patch | Independent implementation | Remaining integration |
-|---|---|---|
-| `wallpapers` | `WallpaperBridge.qml`, `WallpaperGameMode.qml`, `WallpaperLauncher.qml` and the standalone Python helper/service | Picker directory, preview labels, static/video controls, background and game-mode hooks |
-| `scratchpads-and-bar` | `Scratchpads.qml`, `AppLabel.js` | Hypr service delegates to the controller; the bar delegates its label |
-| `sidebar` | `SidebarHotspot.qml`, `SidebarRegion.qml` | Drawer embeds the click target and input region; hover/drag removal remains a patch |
-| `network` | `NetworkScanButton.qml` | Settings embed the button; automatic rescans are removed and routine queries use cached results |
-| `night-light` | `NightLightToggle.qml` and the standalone NightLight service/configuration | Service startup and Settings embed the control |
-| `settings` | `SettingsEscape.qml` | Settings embeds the Escape shortcut |
-| `screenshots` | Standalone `screenshot-save.py` | Area picker calls the helper instead of Swappy directly |
-| `shell-settings` | One setting in `integrations/shell.qml` | Disables automatic QML file watching |
+The active manifest retains scratchpads/bar labels, manual Wi-Fi scanning,
+NightLight, Settings Escape, screenshot saving, shell file-watching preference
+and the native wallpaper-picker shortcut. Their implementation sources and
+integration paths are recorded in `manifest.json`. Generated patches cover only
+these active features. The archived implementations have no runtime links.
 
-Hooks in `integrations/` still include upstream scaffolding; these files are not
-independent replacements for the entire upstream implementation. The patches
-show exactly where our setup still differs. A separate component cannot disable
-or replace upstream behaviour without those hooks. No general-purpose Caelestia
-extension mechanism has been assumed.
-
-The independent scripts, preferences, Lua overrides, cheatsheet and NightLight
-service live in [`../standalone/`](../standalone/README.md). Existing paths such
-as `caelestia/my-shortcuts.lua` and `services/NightLight.qml` link to them.
+Native wallpaper playback, previews, game mode and sidebar interactions now use
+upstream source. Standalone shortcuts/preferences remain in `../standalone/`.
+The installer follows source links and copies regular files into the live config.
 
 ## Check a future update
 

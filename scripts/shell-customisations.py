@@ -96,6 +96,8 @@ def main():
     parser.add_argument("--output", type=Path, help="New directory for the generated shell")
     args = parser.parse_args()
     manifest = json.loads((CUSTOM / "manifest.json").read_text())
+    if args.action in {"build", "patches"} and (CUSTOM / "pending-update.json").exists():
+        parser.error("upstream merge is pending; see UPSTREAM-MERGE.md before building or refreshing patches")
     if args.action == "patches":
         write_patches(manifest)
         return

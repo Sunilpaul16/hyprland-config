@@ -1,1 +1,0 @@
-../customisations/standalone/caelestia/animated-wallpaper.py
