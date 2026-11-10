@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Restore the configuration files; preserve replaced files in a dated backup."""
 from datetime import datetime
+import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -52,6 +53,9 @@ def main():
     replace_file(repo / 'systemd/user/xdg-desktop-portal-gtk.service.d/appearance.conf', home / '.config/systemd/user/xdg-desktop-portal-gtk.service.d/appearance.conf')
     subprocess.run(['python3', str(home / '.config/quickshell/caelestia-cheatsheet/refresh.py')], check=True)
     subprocess.run(['systemctl', '--user', 'daemon-reload'], check=True)
+    custom = json.loads((repo / 'customisations/standalone/links.json').read_text())
+    for unit in custom.get('service_masks', []):
+        subprocess.run(['systemctl', '--user', 'mask', '--now', unit], check=True)
     print(f'Configuration restored. Backups: {backup}')
     print('See README.md for dependencies and first wallpaper setup. Log out and back in to apply everything.')
 

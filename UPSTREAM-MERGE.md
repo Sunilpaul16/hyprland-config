@@ -3,7 +3,7 @@
 The update branch accepts upstream shell commit
 `5cbf60e7c6dbdd2b94faa5444435b8d9cac7bd46`. All four source conflicts are
 resolved. The previous live-tested setup remains committed as `3197e0c` in the
-clean `laptop-caelestia` working copy. This update has not been installed live.
+clean `laptop-caelestia` working copy. The accepted update was activated on 2026-11-10; see the native upgrade report.
 
 ## Archived and disconnected
 
@@ -31,9 +31,11 @@ The small wallpaper-picker shortcut remains, but it opens the native picker.
 Super + Shift + T now uses `caelestia wallpaper -r`. Login no longer launches the
 old wallpaper script, and the installer no longer installs its systemd unit.
 
-The custom manifest/baseline now records the incoming upstream commit. Seventeen
-active custom source files remain, grouped into seven feature patches. The
-native wallpaper/game-mode/sidebar files match the incoming upstream source.
+The custom manifest/baseline now records the incoming upstream commit. Twenty-one
+active custom source files are now tracked in eight feature patches. Native
+wallpaper/game-mode files and the sidebar interaction controller use upstream
+source. The corner-click hook was subsequently restored as a separate feature;
+see `customisations/SIDEBAR-CORNER.md`.
 
 ## Validation and activation status
 
@@ -46,12 +48,14 @@ native wallpaper/game-mode/sidebar files match the incoming upstream source.
 - Matching native modules were built successfully at upstream `5cbf60e7`, and
   the video-capable CLI was built from `cd85cd7b`. Using those private builds,
   all 285 QML files compiled successfully without instantiating the live shell.
-- The runtime launcher and startup/restart/cheatsheet wiring are prepared. The
-  private build currently resides under `Projects/caelestia-runtime/5cbf60e7`;
-  it has not been deployed to the launcher's default per-user runtime directory.
+- The private runtime was installed under
+  `~/.local/share/caelestia/runtime/5cbf60e7` and the targeted live upgrade passed.
+  Native playback/resource release, game-mode restart persistence and retained
+  custom-feature interaction checks passed; original preferences were restored.
 
-This is a saved preparation checkpoint. Live activation and interaction testing
-of the new shell remain outstanding. No system packages or running desktop were
-changed by these builds. The accepted update and archived customisations are
-saved on `caelestia-shell-update-20261109`; no push was performed. Build artifacts
-and the separate upstream source clones are outside this dotfiles repository.
+The new shell is now live. System packages remain available, and the old custom
+implementations remain archived and disconnected. See
+[`customisations/NATIVE-UPGRADE-REPORT.md`](customisations/NATIVE-UPGRADE-REPORT.md)
+for exact versions, test limits and the rollback backup. Build artifacts and
+upstream source clones remain outside this dotfiles repository. No push was
+performed; the new live test/report files have not been committed.

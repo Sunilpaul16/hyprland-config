@@ -104,6 +104,30 @@
       "added": true,
       "source": "components/WallpaperLauncher.qml",
       "feature": "wallpaper-shortcut"
+    },
+    {
+      "path": "custom/SidebarHotspot.qml",
+      "added": true,
+      "source": "components/SidebarHotspot.qml",
+      "feature": "sidebar-corner"
+    },
+    {
+      "path": "custom/SidebarRegion.qml",
+      "added": true,
+      "source": "components/SidebarRegion.qml",
+      "feature": "sidebar-corner"
+    },
+    {
+      "path": "modules/drawers/ContentWindow.qml",
+      "added": false,
+      "source": "integrations/modules/drawers/ContentWindow.qml",
+      "feature": "sidebar-corner"
+    },
+    {
+      "path": "modules/drawers/Regions.qml",
+      "added": false,
+      "source": "integrations/modules/drawers/Regions.qml",
+      "feature": "sidebar-corner"
     }
   ]
 }

@@ -65,5 +65,8 @@
             "capsLockChanged": false,
             "kbLayoutChanged": false
         }
+    },
+    "sidebar": {
+        "showOnHover": false
     }
 }

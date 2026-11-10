@@ -28,5 +28,8 @@
   ],
   "destinations": {
     "bin/caelestia": ".local/bin/caelestia"
-  }
+  },
+  "service_masks": [
+    "dunst.service"
+  ]
 }

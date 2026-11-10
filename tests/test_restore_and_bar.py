@@ -34,7 +34,7 @@ class RestoreTests(unittest.TestCase):
     def test_restore_backs_up_old_setup_and_preserves_zsh(self):
         with tempfile.TemporaryDirectory() as td:
             home=Path(td);bin_dir=home/'bin';bin_dir.mkdir()
-            fake=bin_dir/'systemctl';fake.write_text('#!/bin/sh\nexit 0\n');fake.chmod(0o755)
+            fake=bin_dir/'systemctl';fake.write_text('#!/bin/sh\nprintf "%s\\n" "$*" >> "$HOME/systemctl-calls"\nexit 0\n');fake.chmod(0o755)
             old=home/'.config/hypr';old.mkdir(parents=True);(old/'old.conf').write_text('old setup')
             legacy_unit=home/'.config/systemd/user/caelestia-wallpaper.service'
             legacy_unit.parent.mkdir(parents=True);legacy_unit.write_text('old wallpaper unit')
@@ -54,6 +54,7 @@ class RestoreTests(unittest.TestCase):
             saved_units=list((home/'.local/state/caelestia-config-backups').glob('*/.config/systemd/user/caelestia-wallpaper.service'))
             self.assertEqual(len(saved_units),1)
             self.assertEqual(saved_units[0].read_text(),'old wallpaper unit')
+            self.assertIn('--user mask --now dunst.service',(home/'systemctl-calls').read_text())
             custom=REPO/'customisations/standalone'
             links=json.loads((custom/'links.json').read_text())
             for relative in links['files']:

@@ -1,5 +1,10 @@
 # Caelestia laptop setup
 
+The accepted upstream shell is live as of 2026-11-10. See the
+[native upgrade report](customisations/NATIVE-UPGRADE-REPORT.md) for its private
+runtime, validation and rollback backup. The full installer was not used for
+this targeted upgrade.
+
 Current Arch Linux laptop configuration, saved on the `laptop-caelestia` branch.
 This branch replaces the previous custom shell with Caelestia while keeping
 personal Kitty, Zsh, keyboard shortcuts and touchpad gestures.

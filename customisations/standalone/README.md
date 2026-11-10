@@ -5,6 +5,10 @@ directories. Edit them here. Their original repository paths are relative
 symbolic links to these files, so existing imports, commands and tests keep
 working without copies that can drift apart. `links.json` lists every moved file.
 
+`service_masks` in that manifest also records `dunst.service`: Caelestia owns
+desktop notifications, and the installer prevents Dunst from auto-activating.
+The gesture loader waits for that ownership before emitting startup warnings.
+
 | Feature | Source in this folder | Existing connection |
 |---|---|---|
 | Wallpapers | Native upstream implementation | Personal shortcuts open the native picker or run `caelestia wallpaper -r`; old helper/service are archived |

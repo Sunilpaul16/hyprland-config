@@ -1,0 +1,84 @@
+diff --git a/custom/SidebarHotspot.qml b/custom/SidebarHotspot.qml
+new file mode 100644
+--- /dev/null
++++ b/custom/SidebarHotspot.qml
+@@ -0,0 +1,15 @@
++import QtQuick
++
++MouseArea {
++    id: root
++
++    required property var screenState
++
++    anchors.top: parent.top
++    anchors.right: parent.right
++    width: 20
++    height: 20
++    z: 1000
++    acceptedButtons: Qt.LeftButton
++    onClicked: root.screenState.sidebar = !root.screenState.sidebar
++}
+diff --git a/custom/SidebarRegion.qml b/custom/SidebarRegion.qml
+new file mode 100644
+--- /dev/null
++++ b/custom/SidebarRegion.qml
+@@ -0,0 +1,13 @@
++import Quickshell
++
++Region {
++    required property var win
++
++    property bool active: true
++
++    x: win.width - width
++    y: 0
++    width: active ? 20 : 0
++    height: active ? 20 : 0
++    intersection: Intersection.Subtract
++}
+diff --git a/modules/drawers/ContentWindow.qml b/modules/drawers/ContentWindow.qml
+--- a/modules/drawers/ContentWindow.qml
++++ b/modules/drawers/ContentWindow.qml
+@@ -1,6 +1,7 @@
+ pragma ComponentBehavior: Bound
+ 
+ import QtQuick
++import qs.custom as Custom
+ import QtQuick.Controls
+ import QtQuick.Effects
+ import Quickshell
+@@ -311,6 +312,11 @@
+         }
+     }
+ 
++    Custom.SidebarHotspot {
++        screenState: root.screenState
++        enabled: !root.hasFullscreen && root.contentItem.Config.sidebar.enabled
++    }
++
+     ShellState.ComponentRef {
+         screen: root.screen
+         slot: "rootWindow"
+diff --git a/modules/drawers/Regions.qml b/modules/drawers/Regions.qml
+--- a/modules/drawers/Regions.qml
++++ b/modules/drawers/Regions.qml
+@@ -1,6 +1,7 @@
+ pragma ComponentBehavior: Bound
+ 
+ import QtQuick
++import qs.custom as Custom
+ import Quickshell
+ import Caelestia.Config
+ import qs.modules.bar as Bar
+@@ -72,6 +73,11 @@
+         width: panel.width * (1 - root.panels.popoutsWrapper.offsetScale)
+     }
+ 
++    Custom.SidebarRegion {
++        win: root.win
++        active: root.win.contentItem.Config.sidebar.enabled
++    }
++
+     component R: Region {
+         required property Item panel
+ 

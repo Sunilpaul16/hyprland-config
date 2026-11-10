@@ -8,7 +8,7 @@ are archived and disconnected; see [`../../UPSTREAM-MERGE.md`](../../UPSTREAM-ME
 |---|---|
 | `components/` | Independent custom QML and JavaScript implementations |
 | `integrations/` | Upstream QML with the hooks and remaining edits required to use those implementations |
-| `patches/` | Reviewable upstream changes grouped into seven active feature patches |
+| `patches/` | Reviewable upstream changes grouped into eight active feature patches |
 | `base/` | Original upstream files used for three-way conflict checks |
 | `manifest.json` | Baseline commit, source paths and feature ownership |
 
@@ -23,7 +23,7 @@ it does not automatically change the installed desktop.
 
 The active manifest retains scratchpads/bar labels, manual Wi-Fi scanning,
 NightLight, Settings Escape, screenshot saving, shell file-watching preference
-and the native wallpaper-picker shortcut. Their implementation sources and
+the restored sidebar corner click, and the native wallpaper-picker shortcut. Their implementation sources and
 integration paths are recorded in `manifest.json`. Generated patches cover only
 these active features. The archived implementations have no runtime links.
 
