@@ -19,8 +19,8 @@ Variants {
         screen: modelData
         name: "background"
         WlrLayershell.exclusionMode: ExclusionMode.Ignore
-        WlrLayershell.layer: (contentItem.Config.background.wallpaperEnabled || GameMode.enabled) ? WlrLayer.Background : WlrLayer.Bottom
-        color: (contentItem.Config.background.wallpaperEnabled || GameMode.enabled) ? "black" : "transparent"
+        WlrLayershell.layer: contentItem.Config.background.wallpaperEnabled ? WlrLayer.Background : WlrLayer.Bottom
+        color: contentItem.Config.background.wallpaperEnabled ? "black" : "transparent"
         surfaceFormat.opaque: false
 
         anchors.top: true
@@ -45,7 +45,7 @@ Variants {
                 asynchronous: true
 
                 anchors.fill: parent
-                active: Config.background.wallpaperEnabled || GameMode.enabled
+                active: Config.background.wallpaperEnabled
 
                 sourceComponent: Wallpaper {}
             }

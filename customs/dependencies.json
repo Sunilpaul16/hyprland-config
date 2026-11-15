@@ -1,0 +1,11 @@
+{
+  "quickshell": {
+    "url": "https://git.outfoxxed.me/quickshell/quickshell.git",
+    "commit": "4f508be500dea6e5732cc3d50382a0048b17e7b1",
+    "qt": "6.12.0"
+  },
+  "cli": {
+    "url": "https://github.com/caelestia-dots/cli.git",
+    "commit": "aa6b0c349b648127345b8b4a33ad9cf9090a5a2f"
+  }
+}

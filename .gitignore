@@ -14,3 +14,11 @@ zsh/oh-my-zsh/
 zsh/.zsh_history
 quickshell/caelestia-cheatsheet/data.json
 hypr/scheme/current.lua
+
+/generated/
+/build/
+/customs/files/quickshell/caelestia-cheatsheet/data.json
+/customs/files/caelestia/personal-setup.md
+/customs/files/zsh/oh-my-zsh/
+/customs/files/zsh/.zsh_history
+*.before-*

@@ -41,7 +41,7 @@ PageBase {
                 enabled: modelData
 
                 source: String(modelData?.path ?? "")
-                text: (modelData?.name ?? "").replace(/ \[[0-9a-f]{12}\]\.jpg$/, "")
+                text: modelData?.name ?? ""
                 onClicked: {
                     Wallpapers.setWallpaper(modelData.path);
                     root.nState.closeSubPage();

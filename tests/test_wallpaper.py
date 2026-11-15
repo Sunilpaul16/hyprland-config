@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-SOURCE = Path(os.environ.get('WALLPAPER_SCRIPT', Path(__file__).resolve().parents[1] / 'caelestia/animated-wallpaper.py'))
+SOURCE = Path(os.environ.get('WALLPAPER_SCRIPT', Path(__file__).resolve().parents[1] / 'customs/files/caelestia/animated-wallpaper.py'))
 spec = importlib.util.spec_from_file_location('wallpaper', SOURCE)
 wall = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(wall)
@@ -43,7 +43,7 @@ class WallpaperTests(unittest.TestCase):
         self.setting(False);self.assertTrue(wall.video_allowed())
         wall.GAME_MODE.touch();self.assertFalse(wall.video_allowed())
     def test_monitor_setting_overrides_global(self):
-        self.setting(False);p=self.home/'.config/caelestia/monitors/eDP-1/shell.json';p.parent.mkdir(parents=True)
+        self.setting(False);p=self.home/'.config/caelestia/monitors/DP-3/shell.json';p.parent.mkdir(parents=True)
         p.write_text('{"background":{"wallpaperEnabled":true}}');self.assertFalse(wall.video_allowed())
     def test_select_image_before_first_sync(self):
         self.setting(True);p=self.image();wall.select(str(p))

@@ -1,0 +1,210 @@
+--- a/services/Wallpapers.qml
++++ b/services/Wallpapers.qml
+@@ -3,6 +3,7 @@
+ import QtQuick
+ import Quickshell
+ import Quickshell.Io
++import Caelestia.State
+ import Caelestia.Config
+ import Caelestia.Models
+ import qs.services
+@@ -15,6 +16,18 @@
+     readonly property list<string> smartArg: GlobalConfig.services.smartScheme ? [] : ["--no-smart"]
+     readonly property string fallback: Quickshell.shellPath("assets/wallpaper.webp")
+ 
++    readonly property string pickerDir: Quickshell.env("HOME") + "/.cache/caelestia/video-picker"
++
++    readonly property bool videoPlaybackEnabled: !GlobalConfig.forScreen("DP-3").background.wallpaperEnabled && !RuntimeState.gameMode
++    onVideoPlaybackEnabledChanged: playbackSync.restart()
++    Component.onCompleted: playbackSync.restart()
++
++    Timer {
++        id: playbackSync
++        interval: 200
++        onTriggered: Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/animated-wallpaper.py", "playback-sync"])
++    }
++
+     property bool showPreview: false
+     readonly property string current: showPreview ? previewPath : actualCurrent
+     property string previewPath
+@@ -23,19 +36,19 @@
+     property bool pendingPreviewClear
+ 
+     function getCategoryFor(w: FileSystemEntry): string {
+-        let category = w.parentDir.slice(Paths.wallsdir.length + 1);
++        let category = w.parentDir.slice(root.pickerDir.length + 1);
+         if (category.includes("/"))
+             category = category.slice(0, category.indexOf("/"));
+         return category;
+     }
+ 
+     function setRandom(): void {
+-        Quickshell.execDetached(["caelestia", "wallpaper", "-r", ...smartArg]);
++        Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/animated-wallpaper.py", "random"]);
+     }
+ 
+     function setWallpaper(path: string): void {
+         actualCurrent = path;
+-        Quickshell.execDetached(["caelestia", "wallpaper", "-f", path, ...smartArg]);
++        Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/animated-wallpaper.py", "set", path]);
+     }
+ 
+     function preview(path: string): void {
+@@ -67,6 +80,8 @@
+         })
+ 
+     IpcHandler {
++        function shouldAnimate(): bool { return root.videoPlaybackEnabled; }
++
+         function get(): string {
+             return root.actualCurrent;
+         }
+@@ -107,8 +122,8 @@
+         id: wallpapers
+ 
+         recursive: true
+-        path: Paths.wallsdir
+-        filter: FileSystemModel.Images | FileSystemModel.Videos
++        path: root.pickerDir
++        filter: FileSystemModel.Images
+     }
+ 
+     Process {
+--- a/modules/background/Background.qml
++++ b/modules/background/Background.qml
+@@ -3,6 +3,7 @@
+ import QtQuick
+ import Quickshell
+ import Quickshell.Wayland
++import Caelestia.State
+ import Caelestia.Config
+ import qs.components
+ import qs.components.containers
+@@ -19,8 +20,8 @@
+         screen: modelData
+         name: "background"
+         WlrLayershell.exclusionMode: ExclusionMode.Ignore
+-        WlrLayershell.layer: contentItem.Config.background.wallpaperEnabled ? WlrLayer.Background : WlrLayer.Bottom
+-        color: contentItem.Config.background.wallpaperEnabled ? "black" : "transparent"
++        WlrLayershell.layer: (contentItem.Config.background.wallpaperEnabled || RuntimeState.gameMode) ? WlrLayer.Background : WlrLayer.Bottom
++        color: (contentItem.Config.background.wallpaperEnabled || RuntimeState.gameMode) ? "black" : "transparent"
+         surfaceFormat.opaque: false
+ 
+         anchors.top: true
+@@ -45,7 +46,7 @@
+                 asynchronous: true
+ 
+                 anchors.fill: parent
+-                active: Config.background.wallpaperEnabled
++                active: Config.background.wallpaperEnabled || RuntimeState.gameMode
+ 
+                 sourceComponent: Wallpaper {}
+             }
+--- a/daemons/GameMode.qml
++++ b/daemons/GameMode.qml
+@@ -15,6 +15,7 @@
+     }
+ 
+     function syncState(enableDisable: bool): void {
++        Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/animated-wallpaper.py", "game-sync"]);
+         if (RuntimeState.gameMode) {
+             root.applyGameMode();
+             if (GlobalConfig.utilities.toasts.gameModeChanged)
+--- a/modules/nexus/pages/wallandstyle/WallpaperSelect.qml
++++ b/modules/nexus/pages/wallandstyle/WallpaperSelect.qml
+@@ -101,7 +101,7 @@
+ 
+                 model: {
+                     const walls = Wallpapers.list;
+-                    const baseDir = Paths.wallsdir;
++                    const baseDir = Wallpapers.pickerDir;
+                     const categories = {};
+                     const list = [];
+                     for (const w of walls) {
+@@ -132,14 +132,14 @@
+                         if (!modelData)
+                             return "";
+ 
+-                        if (modelData.parentDir !== Paths.wallsdir) {
++                        if (modelData.parentDir !== Wallpapers.pickerDir) {
+                             const category = Wallpapers.getCategoryFor(modelData);
+                             return category.slice(0, 1).toUpperCase() + category.slice(1);
+                         }
+-                        return modelData.name;
++                        return modelData.name.replace(/ \[[0-9a-f]{12}\]\.jpg$/, "");
+                     }
+                     onClicked: {
+-                        if (modelData.parentDir !== Paths.wallsdir) {
++                        if (modelData.parentDir !== Wallpapers.pickerDir) {
+                             root.nState.selectedWallpaperCategory = Wallpapers.getCategoryFor(modelData);
+                             root.nState.openSubPage(2); // Category page
+                         } else {
+--- a/modules/nexus/pages/wallandstyle/WallpaperCategory.qml
++++ b/modules/nexus/pages/wallandstyle/WallpaperCategory.qml
+@@ -41,7 +41,7 @@
+                 enabled: modelData
+ 
+                 source: String(modelData?.path ?? "")
+-                text: modelData?.name ?? ""
++                text: (modelData?.name ?? "").replace(/ \[[0-9a-f]{12}\]\.jpg$/, "")
+                 onClicked: {
+                     Wallpapers.setWallpaper(modelData.path);
+                     root.nState.closeSubPage();
+--- a/modules/launcher/items/WallpaperItem.qml
++++ b/modules/launcher/items/WallpaperItem.qml
+@@ -84,7 +84,7 @@
+         horizontalAlignment: Text.AlignHCenter
+         elide: Text.ElideRight
+         renderType: Text.QtRendering
+-        text: root.modelData.relativePath
++        text: root.modelData.relativePath.replace(/ \[[0-9a-f]{12}\]\.jpg$/, "")
+         font: Tokens.font.label.medium
+     }
+ 
+--- a/modules/nexus/pages/WallpaperAndStyle.qml
++++ b/modules/nexus/pages/WallpaperAndStyle.qml
+@@ -41,7 +41,7 @@
+ 
+             Loader {
+                 anchors.centerIn: parent
+-                opacity: Config.background.wallpaperEnabled ? 0 : 1
++                opacity: Wallpapers.current ? 0 : 1
+                 active: opacity > 0
+ 
+                 sourceComponent: ColumnLayout {
+@@ -56,7 +56,7 @@
+ 
+                     StyledText {
+                         Layout.alignment: Qt.AlignHCenter
+-                        text: Tr.tr("Wallpaper disabled")
++                        text: Tr.tr("No wallpaper selected")
+                         color: Colours.palette.m3onSurfaceVariant
+                         font: Tokens.font.body.large
+                     }
+@@ -71,7 +71,7 @@
+ 
+             WallpaperImpl {
+                 anchors.fill: parent
+-                opacity: Config.background.wallpaperEnabled ? 1 : 0
++                opacity: Wallpapers.current ? 1 : 0
+ 
+                 Behavior on opacity {
+                     Anim {
+@@ -94,7 +94,6 @@
+                 type: IconTextButton.Tonal
+                 horizontalPadding: Tokens.padding.extraLarge
+                 verticalPadding: Tokens.padding.medium
+-                disabled: !Config.background.wallpaperEnabled
+                 onClicked: root.nState.openSubPage(1) // Wallpaper page
+             }
+ 
+@@ -113,7 +112,8 @@
+ 
+         ToggleRow {
+             first: true
+-            text: Tr.tr("Display wallpaper")
++            text: Tr.tr("Use static wallpaper")
++            subtext: Tr.tr("On: still image. Off: video wallpaper.")
+             checked: Config.background.wallpaperEnabled
+             onToggled: GlobalConfig.background.wallpaperEnabled = checked
+         }

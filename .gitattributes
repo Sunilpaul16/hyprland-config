@@ -1,0 +1,2 @@
+customs/patches/*.patch -whitespace
+quickshell/caelestia/** -whitespace

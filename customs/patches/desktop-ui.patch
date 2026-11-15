@@ -1,0 +1,92 @@
+--- a/modules/lock/LockSurface.qml
++++ b/modules/lock/LockSurface.qml
+@@ -20,7 +20,7 @@
+     contentItem.Config.screen: screen.name
+     contentItem.Tokens.screen: screen.name
+ 
+-    color: "transparent"
++    color: Config.lock.enabled ? "transparent" : "black"
+ 
+     Connections {
+         function onUnlock(): void {
+@@ -160,6 +160,7 @@
+         id: background
+ 
+         anchors.fill: parent
++        visible: Config.lock.enabled
+         opacity: 0
+ 
+         layer.enabled: true
+--- a/modules/areapicker/Picker.qml
++++ b/modules/areapicker/Picker.qml
+@@ -87,7 +87,7 @@
+                 Quickshell.execDetached(["sh", "-c", "wl-copy --type image/png < " + path]);
+                 Quickshell.execDetached(["notify-send", "-a", "caelestia-cli", "-i", path, Tr.tr("Screenshot taken"), Tr.tr("Screenshot copied to clipboard")]);
+             } else {
+-                Quickshell.execDetached(["swappy", "-f", path]);
++                Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/screenshot-save.py", "--file", path, "--edit"]);
+             }
+             closeAnim.start();
+         });
+--- a/modules/nexus/Nexus.qml
++++ b/modules/nexus/Nexus.qml
+@@ -20,8 +20,16 @@
+ 
+     signal close
+ 
+-    implicitWidth: Math.round(implicitHeight * Tokens.sizes.nexus.ratio)
+-    implicitHeight: Math.round(nState.screen.height * Tokens.sizes.nexus.heightMult)
++    Shortcut {
++        sequence: "Escape"
++        context: Qt.WindowShortcut
++        enabled: root.visible
++        autoRepeat: false
++        onActivated: root.close()
++    }
++
++    implicitWidth: Math.round(Math.min(1000, (nState.screen?.width ?? 1200) * 0.85, implicitHeight * Tokens.sizes.nexus.ratio))
++    implicitHeight: Math.round(Math.min(720, (nState.screen?.height ?? 900) * Math.min(0.85, Tokens.sizes.nexus.heightMult)))
+ 
+     Behavior on blobColour {
+         CAnim {}
+--- a/modules/nexus/WindowFactory.qml
++++ b/modules/nexus/WindowFactory.qml
+@@ -36,8 +36,8 @@
+             implicitWidth: nexus.implicitWidth
+             implicitHeight: nexus.implicitHeight
+ 
+-            minimumSize.width: contentItem.Tokens.sizes.nexus.minWidth
+-            minimumSize.height: contentItem.Tokens.sizes.nexus.minHeight
++            minimumSize.width: Math.min(contentItem.Tokens.sizes.nexus.minWidth, nexus.implicitWidth)
++            minimumSize.height: Math.min(contentItem.Tokens.sizes.nexus.minHeight, nexus.implicitHeight)
+ 
+             contentItem.Config.screen: screen.name
+             contentItem.Tokens.screen: screen.name
+--- a/daemons/Shortcuts.qml
++++ b/daemons/Shortcuts.qml
+@@ -110,6 +110,25 @@
+     }
+ 
+     IpcHandler {
++        target: "launcher"
++
++        function wallpaper(): void {
++            const state = ShellState.forActive();
++            const components = ShellState.componentsForActive();
++            if (!state || !components)
++                return;
++            state.launcher = true;
++            Qt.callLater(() => {
++                const search = components.find("launcherSearch");
++                if (search) {
++                    search.text = `${GlobalConfig.launcher.actionPrefix}wallpaper `;
++                    search.forceActiveFocus();
++                }
++            });
++        }
++    }
++
++    IpcHandler {
+         function toggle(drawer: string): void {
+             if (list().split("\n").includes(drawer)) {
+                 if (root.hasFullscreen && ["launcher", "session", "dashboard"].includes(drawer))

@@ -1,0 +1,10 @@
+{
+    "bar": {
+        "excludedScreens": [
+            "DP-2"
+        ]
+    },
+    "lock": {
+        "enabled": false
+    }
+}

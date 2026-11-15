@@ -1,0 +1,7 @@
+#!/bin/sh
+runtime="${CAELESTIA_CUSTOM_RUNTIME:-$HOME/.local/share/caelestia-custom}"
+export PYTHONPATH="$runtime/python${PYTHONPATH:+:$PYTHONPATH}"
+export QML_IMPORT_PATH="$runtime/lib/qt6/qml${QML_IMPORT_PATH:+:$QML_IMPORT_PATH}"
+export CAELESTIA_LIB_DIR="$runtime/lib/caelestia"
+export PATH="$runtime/bin:$PATH"
+exec /usr/bin/python3 -m caelestia "$@"

@@ -1,0 +1,26 @@
+# Back/forward history navigation in GNOME Files, matching browser gestures.
+touchpad:
+  gestures:
+    - type: swipe
+      fingers: 2
+      direction: right
+      threshold: 70
+      conditions:
+        - $window_class == org.gnome.Nautilus
+        - $keyboard_modifiers == []
+      actions:
+        - on: end
+          input:
+            - keyboard: [leftalt+left]
+
+    - type: swipe
+      fingers: 2
+      direction: left
+      threshold: 70
+      conditions:
+        - $window_class == org.gnome.Nautilus
+        - $keyboard_modifiers == []
+      actions:
+        - on: end
+          input:
+            - keyboard: [leftalt+right]

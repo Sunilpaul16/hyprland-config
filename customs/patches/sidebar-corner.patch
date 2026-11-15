@@ -1,0 +1,135 @@
+--- a/modules/drawers/Interactions.qml
++++ b/modules/drawers/Interactions.qml
+@@ -87,8 +87,7 @@
+             if (Config.bar.showOnHover)
+                 bar.isHovered = false;
+ 
+-            if (Config.sidebar.showOnHover && !sidebarShortcutActive)
+-                screenState.sidebar = false;
++
+         }
+     }
+ 
+@@ -132,29 +131,12 @@
+                 root.panels.osd.hovered = true;
+             }
+ 
+-            const showSidebar = pressed && dragStart.x > Math.min(width - Config.border.minThickness, bar.implicitWidth + panels.sidebar.x);
+-
+-            // Show sidebar on hover (top-right corner, bounded by notification panel height)
+-            if (Config.sidebar.showOnHover && Config.sidebar.enabled) {
+-                const sidebarTriggerY = Math.max(Config.sidebar.minHoverThreshold, panels.notifications.y + panels.notifications.height + borderThickness);
+-                const showSidebarHover = x > Math.min(width - Config.border.minThickness, bar.implicitWidth + panels.sidebar.x) && y <= sidebarTriggerY;
+-                if (showSidebarHover && !screenState.sidebar)
+-                    screenState.sidebar = true;
+-            }
+-
+             // Show/hide session on drag
+             if (pressed && inRightPanel(panels.sessionWrapper, dragStart.x, dragStart.y) && withinPanelHeight(panels.sessionWrapper, x, y)) {
+                 if (dragX < -Config.session.dragThreshold)
+                     screenState.session = true;
+                 else if (dragX > Config.session.dragThreshold)
+                     screenState.session = false;
+-
+-                // Show sidebar on drag if in session area and session is nearly fully visible
+-                if (showSidebar && panels.session.offsetScale <= 0 && dragX < -Config.sidebar.dragThreshold)
+-                    screenState.sidebar = true;
+-            } else if (showSidebar && dragX < -Config.sidebar.dragThreshold) {
+-                // Show sidebar on drag if not in session area
+-                screenState.sidebar = true;
+             }
+         } else {
+             const outOfSidebar = x < width - panels.sidebar.width * (1 - panels.sidebar.offsetScale);
+@@ -178,26 +160,6 @@
+                 else if (dragX > Config.session.dragThreshold)
+                     screenState.session = false;
+             }
+-
+-            // Show/hide sidebar on hover
+-            if (Config.sidebar.showOnHover && Config.sidebar.enabled && !pressed) {
+-                const sidebarTriggerY = Math.max(Config.sidebar.minHoverThreshold, panels.notifications.y + panels.notifications.height + borderThickness);
+-                const showSidebarHover = x > Math.min(width - Config.border.minThickness, bar.implicitWidth + panels.sidebar.x) && y <= sidebarTriggerY;
+-                if (showSidebarHover && !screenState.sidebar) {
+-                    screenState.sidebar = true;
+-                } else if (!sidebarShortcutActive) {
+-                    const inSidebarArea = inRightPanel(panels.sidebar, x, y) || inRightPanel(panels.sessionWrapper, x, y) || inRightPanel(panels.utilities, x, y);
+-                    if (!inSidebarArea)
+-                        screenState.sidebar = false;
+-                } else if (showSidebarHover) {
+-                    // If hovering over sidebar area while in shortcut mode, transition to hover control
+-                    sidebarShortcutActive = false;
+-                }
+-            }
+-
+-            // Hide sidebar on drag
+-            if (pressed && inRightPanel(panels.sidebar, dragStart.x, 0) && dragX > Config.sidebar.dragThreshold)
+-                screenState.sidebar = false;
+         }
+ 
+         // Show launcher on hover, or show/hide on drag if hover is disabled
+@@ -231,7 +193,7 @@
+         }
+ 
+         // Show utilities on hover
+-        const showUtilities = inBottomPanel(panels.utilities, x, y, true);
++        const showUtilities = screen.name !== "DP-3" && inBottomPanel(panels.utilities, x, y, true);
+ 
+         // Always update visibility based on hover if not in shortcut mode
+         if (!utilitiesShortcutActive) {
+@@ -303,7 +265,7 @@
+         function onUtilitiesChanged() {
+             if (root.screenState.utilities) {
+                 // Utilities became visible, immediately check if this should be shortcut mode
+-                const inUtilitiesArea = root.inBottomPanel(root.panels.utilities, root.mouseX, root.mouseY);
++                const inUtilitiesArea = root.screen.name !== "DP-3" && root.inBottomPanel(root.panels.utilities, root.mouseX, root.mouseY);
+                 if (!inUtilitiesArea) {
+                     root.utilitiesShortcutActive = true;
+                 }
+--- a/modules/drawers/ContentWindow.qml
++++ b/modules/drawers/ContentWindow.qml
+@@ -49,7 +49,7 @@
+         if (focusGrab.active || panels.popouts.isDetached)
+             return 0;
+ 
+-        if (monitor?.lastIpcObject.specialWorkspace?.name || monitor?.activeWorkspace?.toplevels.values.length > 0)
++        if (monitor?.lastIpcObject.specialWorkspace?.name || monitor?.activeWorkspace?.lastIpcObject.windows > 0)
+             return 0;
+ 
+         const thresholds = [];
+@@ -311,6 +311,18 @@
+         }
+     }
+ 
++    // Top-right click target for the sidebar.
++    MouseArea {
++        anchors.top: parent.top
++        anchors.right: parent.right
++        width: 20
++        height: 20
++        z: 1000
++        enabled: !root.hasFullscreen
++        acceptedButtons: Qt.LeftButton
++        onClicked: root.screenState.sidebar = !root.screenState.sidebar
++    }
++
+     ShellState.ComponentRef {
+         screen: root.screen
+         slot: "rootWindow"
+--- a/modules/drawers/Regions.qml
++++ b/modules/drawers/Regions.qml
+@@ -72,6 +72,15 @@
+         width: panel.width * (1 - root.panels.popoutsWrapper.offsetScale)
+     }
+ 
++    // Keep the entire corner target interactive even when the sidebar is hidden.
++    Region {
++        x: root.win.width - 20
++        y: 0
++        width: 20
++        height: 20
++        intersection: Intersection.Subtract
++    }
++
+     component R: Region {
+         required property Item panel
+ 

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const assert = require('assert');
 const path = require('path');
-const base = process.env.SHELL_CONFIG || path.join(__dirname, '..', 'quickshell', 'caelestia');
+const base = process.env.SHELL_CONFIG || path.join(__dirname, '..', 'generated', 'caelestia');
 const titleSource = fs.readFileSync(path.join(base,'modules/bar/components/ActiveWindow.qml'),'utf8');
 const hyprSource = fs.readFileSync(path.join(base,'services/Hypr.qml'),'utf8');
 const titleBody = titleSource.split('readonly property string windowTitle: {')[1].split('\n    readonly property int maxHeight:')[0].replace(/\}\s*$/, '');
