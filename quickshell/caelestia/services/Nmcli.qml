@@ -966,7 +966,7 @@ Singleton {
     }
 
     function getNetworks(callback: var): void {
-        executeCommand(["-g", root.networkDetailFields, "d", "w"], result => {
+        executeCommand(["-g", root.networkDetailFields, "d", "w", "list", "--rescan", "no"], result => {
             if (!result.success) {
                 if (callback)
                     callback([]);
@@ -1012,7 +1012,7 @@ Singleton {
     }
 
     function getWirelessSSIDs(interfaceName: string, callback: var): void {
-        let cmd = ["-t", "-f", root.networkListFields, root.nmcliCommandDevice, root.nmcliCommandWifi, "list"];
+        let cmd = ["-t", "-f", root.networkListFields, root.nmcliCommandDevice, root.nmcliCommandWifi, "list", "--rescan", "no"];
         if (interfaceName && interfaceName.length > 0) {
             cmd.push(root.connectionParamIfname, interfaceName);
         }
@@ -1487,7 +1487,7 @@ Singleton {
                 id: stderrCollector
             }
 
-            onExited: code => {
+            onExited: code => { // qmllint disable signal-handler-parameters
                 Qt.callLater(() => {
                     const callback = proc.callback;
                     const result = {
@@ -1695,7 +1695,7 @@ Singleton {
         id: rescanProc
 
         command: ["nmcli", "dev", root.nmcliCommandWifi, "list", "--rescan", "yes"]
-        onExited: root.getNetworks()
+        onExited: root.getNetworks() // qmllint disable signal-handler-parameters
     }
 
     Process {
@@ -1710,7 +1710,7 @@ Singleton {
         stdout: SplitParser {
             onRead: root.refreshOnConnectionChange()
         }
-        onExited: monitorRestartTimer.start()
+        onExited: monitorRestartTimer.start() // qmllint disable signal-handler-parameters
     }
 
     Timer {
@@ -1760,7 +1760,7 @@ Singleton {
             }
         }
 
-        onExited: code => {
+        onExited: code => { // qmllint disable signal-handler-parameters
             exitCode = code;
 
             Qt.callLater(() => {

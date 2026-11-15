@@ -2,11 +2,10 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import M3Shapes
-import Caelestia
 import Caelestia.Config
-import Caelestia.Multimedia
 import qs.components
 import qs.components.effects
+import qs.components.images
 import qs.services
 import qs.utils
 
@@ -18,7 +17,7 @@ Item {
 
     implicitWidth: Math.round(centerWidth * 0.7)
     implicitHeight: {
-        CUtils.dependency(shape.height); // Force update when shape height changes
+        shape.height; // Force update when shape height changes
         return shape.pathBounds().height;
     }
 
@@ -40,14 +39,14 @@ Item {
         text: "person"
         color: Colours.palette.m3onSurfaceVariant
         fontStyle: Tokens.font.icon.size(root.centerWidth / 4).build()
-        visible: !pfp.ready
+        visible: pfp.status !== Image.Ready
     }
 
-    Visual {
+    CachingImage {
         id: pfp
 
         anchors.fill: shape
-        source: `${Paths.home}/.face`
+        path: `${Paths.home}/.face`
 
         layer.enabled: true
         layer.effect: Mask {

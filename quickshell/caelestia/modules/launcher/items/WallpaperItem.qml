@@ -1,10 +1,10 @@
 import QtQuick
+import Quickshell
 import Caelestia.Config
 import Caelestia.Models
-import Caelestia.Multimedia
-import Caelestia.State
 import qs.components
 import qs.components.effects
+import qs.components.images
 import qs.services
 
 Item {
@@ -26,8 +26,6 @@ Item {
     implicitHeight: image.height + label.height + Tokens.spacing.extraSmall + Tokens.padding.large + Tokens.padding.medium
 
     StateLayer {
-        id: stateLayer
-
         radius: Tokens.rounding.large
         onClicked: {
             Wallpapers.setWallpaper(root.modelData.path);
@@ -48,7 +46,7 @@ Item {
         }
     }
 
-    ClipRect {
+    StyledClippingRect {
         id: image
 
         anchors.horizontalCenter: parent.horizontalCenter
@@ -66,10 +64,14 @@ Item {
             fontStyle: Tokens.font.icon.builders.extraLarge.scale(2).weight(Font.DemiBold).build()
         }
 
-        Visual {
+        CachingImage {
             anchors.fill: parent
-            source: root.modelData.path
-            playing: (root.PathView.isCurrentItem && PersistentState.wallpaperPlaying) || stateLayer.containsMouse
+            path: root.modelData.path
+            smooth: !root.PathView.view.moving
+            sourceSize: {
+                const dpr = (QsWindow.window as QsWindow)?.devicePixelRatio ?? 1;
+                return Qt.size(image.implicitWidth * dpr, image.implicitHeight * dpr);
+            }
         }
     }
 
@@ -84,7 +86,7 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideRight
         renderType: Text.QtRendering
-        text: root.modelData.relativePath
+        text: root.modelData.relativePath.replace(/ \[[0-9a-f]{12}\]\.jpg$/, "")
         font: Tokens.font.label.medium
     }
 

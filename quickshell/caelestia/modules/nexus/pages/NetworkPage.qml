@@ -21,30 +21,6 @@ PageBase {
         width: root.cappedWidth
         spacing: Tokens.spacing.extraSmall / 2
 
-        Timer {
-            running: root.visible && Nmcli.wifiEnabled
-            repeat: true
-            triggeredOnStart: true
-            interval: GlobalConfig.nexus.networkRescanInterval
-            onTriggered: Nmcli.rescanWifi()
-        }
-
-        Timer {
-            id: wifiScanDelay
-
-            interval: 100
-            onTriggered: Nmcli.rescanWifi()
-        }
-
-        Connections {
-            function onWifiEnabledChanged(): void {
-                if (Nmcli.wifiEnabled)
-                    wifiScanDelay.start();
-            }
-
-            target: Nmcli
-        }
-
         Loader {
             Layout.fillWidth: true
             active: Nmcli.hasAvailableEthernet
@@ -65,6 +41,13 @@ PageBase {
             horizontalPadding: Tokens.padding.largeIncreased
             checked: Nmcli.wifiEnabled
             onToggled: Nmcli.enableWifi(checked)
+        }
+
+        RowButton {
+            icon: "wifi_find"
+            text: Nmcli.scanning ? Tr.tr("Scanning…") : Tr.tr("Scan for networks")
+            disabled: !Nmcli.wifiEnabled || Nmcli.scanning
+            onClicked: Nmcli.rescanWifi()
         }
 
         NetworkList {

@@ -200,6 +200,14 @@ PageBase {
         }
 
         ToggleRow {
+            text: Tr.tr("Night light")
+            subtext: Tr.tr("Warm screen colours · 5200K · automatic 19:00–07:00")
+            checked: NightLight.enabled
+            disabled: !NightLight.available || NightLight.busy
+            onToggled: NightLight.toggle()
+        }
+
+        ToggleRow {
             text: Tr.tr("Smart colour scheme")
             subtext: Tr.tr("Derive theme mode and variant from the wallpaper")
             checked: GlobalConfig.services.smartScheme

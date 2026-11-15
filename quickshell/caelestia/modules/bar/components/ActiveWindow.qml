@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell
 import Caelestia.Config
 import Caelestia.I18n
 import qs.components
@@ -15,16 +16,17 @@ Item {
     property color colour: Colours.palette.m3primary
 
     readonly property string windowTitle: {
-        const title = Hypr.activeToplevel?.title;
-        if (!title)
-            return Tr.trCtx("Desktop", "shown when no window is focused");
-        if (Config.bar.activeWindow.compact) {
-            // " - " (standard hyphen), " — " (em dash), " – " (en dash)
-            const parts = title.split(/\s+[\-\u2013\u2014]\s+/);
-            if (parts.length > 1)
-                return parts[parts.length - 1].trim();
+        const appClass = Hypr.activeToplevel?.lastIpcObject.class ?? "";
+        const appName = appClass ? (DesktopEntries.heuristicLookup(appClass)?.name || appClass)
+                                 : Tr.trCtx("Desktop", "shown when no window is focused");
+        const special = Hypr.focusedMonitor?.lastIpcObject.specialWorkspace?.name ?? "";
+        if (special) {
+            const scratchpads = Hypr.scratchpadNames;
+            const index = scratchpads.indexOf(special);
+            const label = scratchpads.length > 1 && index >= 0 ? "Scratchpad " + (index + 1) : "Scratchpad";
+            return label + " · " + appName;
         }
-        return title;
+        return appName;
     }
 
     readonly property int maxHeight: {

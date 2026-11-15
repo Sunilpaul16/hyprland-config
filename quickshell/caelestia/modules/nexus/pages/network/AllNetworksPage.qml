@@ -22,18 +22,17 @@ PageBase {
         width: root.cappedWidth
         spacing: Tokens.spacing.extraSmall / 2
 
-        Timer {
-            running: root.visible && Nmcli.wifiEnabled
-            repeat: true
-            triggeredOnStart: true
-            interval: GlobalConfig.nexus.networkRescanInterval
-            onTriggered: Nmcli.rescanWifi()
+        RowButton {
+            first: true
+            icon: "wifi_find"
+            text: Nmcli.scanning ? Tr.tr("Scanning…") : Tr.tr("Scan for networks")
+            disabled: !Nmcli.wifiEnabled || Nmcli.scanning
+            onClicked: Nmcli.rescanWifi()
         }
 
         ConnectedRect {
             Layout.fillWidth: true
             implicitHeight: headerLayout.implicitHeight + Tokens.padding.medium * 2
-            first: true
 
             RowLayout {
                 id: headerLayout

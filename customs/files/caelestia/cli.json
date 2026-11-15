@@ -1,5 +1,0 @@
-{
-    "theme": {
-        "postHook": "python3 \"$HOME/.config/caelestia/gtk4-colours.py\""
-    }
-}

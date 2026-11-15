@@ -5,7 +5,6 @@ import QtQuick.Effects
 import QtQuick.Layouts
 import Caelestia.Config
 import Caelestia.I18n
-import Caelestia.State
 import qs.components
 import qs.services
 
@@ -18,7 +17,7 @@ Item {
 
     property real clockScale: Config.background.desktopClock.scale
     readonly property bool bgEnabled: Config.background.desktopClock.background.enabled
-    readonly property bool blurEnabled: bgEnabled && Config.background.desktopClock.background.blur && !RuntimeState.gameMode
+    readonly property bool blurEnabled: bgEnabled && Config.background.desktopClock.background.blur && !GameMode.enabled
     readonly property bool invertColors: Config.background.desktopClock.invertColors
     readonly property bool useLightSet: Colours.light ? !invertColors : invertColors
     readonly property color safePrimary: useLightSet ? Colours.palette.m3primaryContainer : Colours.palette.m3primary

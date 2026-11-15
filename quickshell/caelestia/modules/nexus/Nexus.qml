@@ -20,6 +20,14 @@ Item {
 
     signal close
 
+    Shortcut {
+        sequence: "Escape"
+        context: Qt.WindowShortcut
+        enabled: root.visible
+        autoRepeat: false
+        onActivated: root.close()
+    }
+
     implicitWidth: Math.round(implicitHeight * Tokens.sizes.nexus.ratio)
     implicitHeight: Math.round(nState.screen.height * Tokens.sizes.nexus.heightMult)
 

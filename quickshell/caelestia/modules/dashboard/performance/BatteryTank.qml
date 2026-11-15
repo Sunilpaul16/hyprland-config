@@ -8,7 +8,7 @@ import qs.components
 import qs.services
 import qs.utils
 
-ClipRect {
+StyledClippingRect {
     id: root
 
     property real animPerc: UPower.displayDevice.percentage

@@ -1,3 +1,4 @@
+import "performance"
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.UPower
@@ -6,7 +7,6 @@ import Caelestia.I18n
 import Caelestia.Services
 import qs.components
 import qs.services
-import qs.modules.dashboard.performance
 
 Item {
     id: root

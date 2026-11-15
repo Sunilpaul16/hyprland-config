@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import patch
 
 REPO=Path(__file__).resolve().parents[1]
-BAR=Path(os.environ.get('BAR_SCRIPT',REPO/'customs/files/caelestia/toggle-bar.py'))
+BAR=Path(os.environ.get('BAR_SCRIPT',REPO/'caelestia/toggle-bar.py'))
 
 class BarTests(unittest.TestCase):
     def setUp(self):

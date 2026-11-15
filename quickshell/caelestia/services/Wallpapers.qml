@@ -15,6 +15,18 @@ Searcher {
     readonly property list<string> smartArg: GlobalConfig.services.smartScheme ? [] : ["--no-smart"]
     readonly property string fallback: Quickshell.shellPath("assets/wallpaper.webp")
 
+    readonly property string pickerDir: Quickshell.env("HOME") + "/.cache/caelestia/video-picker"
+
+    readonly property bool videoPlaybackEnabled: GameMode.initialized && !GlobalConfig.forScreen("eDP-1").background.wallpaperEnabled && !GameMode.enabled
+    onVideoPlaybackEnabledChanged: playbackSync.restart()
+    Component.onCompleted: playbackSync.restart()
+
+    Timer {
+        id: playbackSync
+        interval: 200
+        onTriggered: Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/animated-wallpaper.py", "playback-sync"])
+    }
+
     property bool showPreview: false
     readonly property string current: showPreview ? previewPath : actualCurrent
     property string previewPath
@@ -23,19 +35,19 @@ Searcher {
     property bool pendingPreviewClear
 
     function getCategoryFor(w: FileSystemEntry): string {
-        let category = w.parentDir.slice(Paths.wallsdir.length + 1);
+        let category = w.parentDir.slice(root.pickerDir.length + 1);
         if (category.includes("/"))
             category = category.slice(0, category.indexOf("/"));
         return category;
     }
 
     function setRandom(): void {
-        Quickshell.execDetached(["caelestia", "wallpaper", "-r", ...smartArg]);
+        Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/animated-wallpaper.py", "random"]);
     }
 
     function setWallpaper(path: string): void {
         actualCurrent = path;
-        Quickshell.execDetached(["caelestia", "wallpaper", "-f", path, ...smartArg]);
+        Quickshell.execDetached(["python3", Quickshell.env("HOME") + "/.config/caelestia/animated-wallpaper.py", "set", path]);
     }
 
     function preview(path: string): void {
@@ -67,6 +79,8 @@ Searcher {
         })
 
     IpcHandler {
+        function shouldAnimate(): bool { return root.videoPlaybackEnabled; }
+
         function get(): string {
             return root.actualCurrent;
         }
@@ -107,8 +121,8 @@ Searcher {
         id: wallpapers
 
         recursive: true
-        path: Paths.wallsdir
-        filter: FileSystemModel.Images | FileSystemModel.Videos
+        path: root.pickerDir
+        filter: FileSystemModel.Images
     }
 
     Process {

@@ -9,7 +9,7 @@ import qs.components.controls
 import qs.components.images
 import qs.services
 
-ClipRect {
+StyledClippingRect {
     id: root
 
     required property var lock

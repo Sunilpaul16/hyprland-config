@@ -173,7 +173,7 @@ Item {
         anchors.margins: Tokens.padding.extraLargeIncreased
 
         playing: Players.active?.isPlaying ?? false
-        speed: Audio.beatTracker.bpm / Config.general.mediaGifSpeedAdjustment
+        speed: Audio.beatTracker.bpm / Config.general.mediaGifSpeedAdjustment // qmllint disable unresolved-type
         source: Paths.absolutePath(Config.paths.mediaGif)
         asynchronous: true
         fillMode: AnimatedImage.PreserveAspectFit

@@ -47,10 +47,12 @@ Scope {
 
         if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
             passwd.start();
-        } else if ((event.key === Qt.Key_Backspace || event.key === Qt.Key_U) && (event.modifiers & Qt.ControlModifier)) {
-            buffer = "";
         } else if (event.key === Qt.Key_Backspace) {
-            buffer = buffer.slice(0, -1);
+            if (event.modifiers & Qt.ControlModifier) {
+                buffer = "";
+            } else {
+                buffer = buffer.slice(0, -1);
+            }
         } else if (/^[^\x00-\x1F\x7F-\x9F]+$/.test(event.text)) {
             // Allow anything except control characters
             buffer += event.text;
@@ -281,7 +283,7 @@ Scope {
         Process {
             id: availProc
 
-            onExited: code => {
+            onExited: code => { // qmllint disable signal-handler-parameters
                 ctx.available = code === 0;
                 ctx.availProcExited(code);
             }

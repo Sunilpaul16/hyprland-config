@@ -10,7 +10,7 @@ import Caelestia.Config
 import qs.components
 import qs.services
 
-ClipRect {
+StyledClippingRect {
     id: root
 
     required property ShellScreen screen
@@ -42,7 +42,7 @@ ClipRect {
     }
 
     readonly property var workspaces: {
-        CUtils.dependency(workspaces.itemsDirty);
+        workspaces.itemsDirty;
         return wsIds.map(id => workspaces.itemAtIndex(workspaceIndex(id)));
     }
 
@@ -162,7 +162,7 @@ ClipRect {
 
             sourceComponent: ActiveIndicator {
                 activeWs: {
-                    CUtils.dependency(workspaces.itemsDirty);
+                    workspaces.itemsDirty;
                     return workspaces.itemAtIndex(root.activeWsIdx) as Workspace;
                 }
                 mask: workspaces
