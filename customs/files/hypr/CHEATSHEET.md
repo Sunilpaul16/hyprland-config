@@ -4,6 +4,9 @@ Super + / toggles the graphical cheatsheet. Press Esc or use the close button to
 
 Super = Windows key. Brightness shortcuts use the physical brightness keys, if available.
 
+Right Win and AltGr (right Alt) act on key press. Right Win shows or hides the last
+scratchpad; AltGr moves the active window into the scratchpad or back to the normal workspace.
+
 ## Active Hyprland shortcuts
 
 | Keys | Action |
@@ -26,6 +29,8 @@ Super = Windows key. Brightness shortcuts use the physical brightness keys, if a
 | SUPER + down | Window: focus down |
 | SUPER + SHIFT + F23 | Workspace: Copilot toggle scratchpad |
 | SUPER + S | Workspace: toggle scratchpad |
+| Right Win | Workspace: show / hide last scratchpad (on press) |
+| AltGr / right Alt | Workspace: move active window into / out of scratchpad (on press) |
 | SUPER + ALT + S | Workspace: move window to scratchpad |
 | SUPER + mouse_down | Workspace: next |
 | SUPER + mouse_up | Workspace: previous |
@@ -43,17 +48,6 @@ Super = Windows key. Brightness shortcuts use the physical brightness keys, if a
 | SUPER + Equal | Screen: zoom in |
 | SUPER + 1–9 / 0 | Switch to workspace 1–9 / 10 |
 | SUPER + SHIFT + 1–9 / 0 | Move window to workspace 1–9 / 10 |
-
-## Touchpad
-
-- Three fingers horizontally: switch workspace.
-- Three fingers up: open the magic scratchpad (same as Super + S).
-- Three fingers down: toggle the active special workspace, or magic scratchpad.
-- Four fingers up: enter fullscreen.
-- Four fingers down: leave fullscreen.
-- Four fingers left/right: next/previous populated scratchpad.
-- Bar highlight uses the theme primary colour for normal workspaces and tertiary colour for scratchpads.
-- Natural scrolling, scroll factor 0.8, disable while typing.
 
 ## Kitty
 
@@ -74,6 +68,7 @@ Super = Windows key. Brightness shortcuts use the physical brightness keys, if a
 | SUPER + D | Launcher: dashboard |
 | SUPER + I | Launcher: Caelestia settings |
 | SUPER + B | Shell: toggle bar |
+| Top-right corner click | Shell: show / hide sidebar (outside fullscreen) |
 | SUPER + T | Launcher: wallpaper picker |
 | SUPER + SHIFT + T | Launcher: random wallpaper |
 | Print / SUPER + SHIFT + S | Screenshot: focused monitor |
@@ -114,6 +109,6 @@ qs -c caelestia ipc call nexus open
 - Personal shortcuts: ~/.config/caelestia/my-shortcuts.lua.
 - Shortcut variables: ~/.config/caelestia/my-shortcut-vars.lua.
 - Desktop overrides: ~/.config/caelestia/hypr-user.lua.
-- DP-3's wallpaper setting controls animated playback on both monitors.
+- Native Caelestia handles image and video wallpapers; playback can be paused in quick toggles.
 
-Copilot toggles the magic scratchpad. AltGr + Copilot moves the focused window into magic, or back to the normal workspace.
+Copilot also shows or hides the last scratchpad. AltGr + Copilot moves the focused window into magic, or back to the normal workspace.

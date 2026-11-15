@@ -45,9 +45,18 @@ class RestoreTests(unittest.TestCase):
             data=json.loads((home/'.config/quickshell/caelestia-cheatsheet/data.json').read_text())
             titles={g['title'] for g in data}
             self.assertTrue({'Workspace','Window','System','Kitty'}<=titles)
-            self.assertFalse({'Record','Media','Help','Shell','Inactive · unassigned'} & titles)
+            self.assertFalse({'Record','Media','Help','Shell','Touchpad','Inactive · unassigned'} & titles)
             system=next(g for g in data if g['title']=='System')
             self.assertTrue(any(row['key']=='Super + B' for row in system['rows']))
+            workspace=next(g for g in data if g['title']=='Workspace')
+            keys=[row['key'] for row in workspace['rows']]
+            self.assertEqual(keys.count('Right Win'), 1)
+            self.assertEqual(keys.count('AltGr'), 1)
+            self.assertEqual(keys.count('AltGr + Copilot'), 1)
+            self.assertTrue(any(row['key']=='AltGr' and 'on press' in row['label'] for row in workspace['rows']))
+            self.assertFalse(any('_R' in row['key'] for row in workspace['rows']))
+            corner_enabled=json.loads((REPO/'customs/features.json').read_text())['sidebar-corner']
+            self.assertEqual(any(row['key']=='Top-right corner click' for row in system['rows']), corner_enabled)
             self.assertIn('%h/',(home/'.config/systemd/user/caelestia-wallpaper.service').read_text())
 
 if __name__=='__main__':unittest.main(verbosity=2)

@@ -17,7 +17,7 @@ ShellRoot {
         Window: "web_asset", Workspace: "grid_view", App: "apps",
         Launcher: "rocket_launch", Screenshot: "photo_camera", Record: "videocam",
         System: "settings", Screen: "desktop_windows", Shell: "terminal",
-        Help: "help", Touchpad: "touchpad_mouse", Kitty: "terminal"
+        Help: "help", Kitty: "terminal"
     })
     function keyLabel(key) {
         const labels = {left: "←", right: "→", up: "↑", down: "↓",
