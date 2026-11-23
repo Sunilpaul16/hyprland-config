@@ -51,7 +51,7 @@ for i = 1, 10 do
 end
 
 -- Scratchpad
-hl.bind("SUPER + SHIFT + F23", hl.dsp.exec_cmd("qs -c caelestia ipc call hypr toggleLastSpecialWorkspace"), { description = "Workspace: Copilot toggle scratchpad" })
+hl.bind("SUPER + SHIFT + code:201", hl.dsp.exec_cmd("qs -c caelestia ipc call hypr toggleLastSpecialWorkspace"), { description = "Workspace: Copilot toggle scratchpad" })
 hl.bind(v.kbSpecialWs,             hl.dsp.exec_cmd("qs -c caelestia ipc call hypr toggleLastSpecialWorkspace"), { description = "Workspace: toggle scratchpad" })
 hl.bind(v.kbMoveWinToScratchpad,   hl.dsp.window.move({ workspace = "special:magic" }), { description = "Workspace: move window to scratchpad" })
 
@@ -101,8 +101,8 @@ hl.bind("SUPER + CTRL + SHIFT + S", hl.dsp.exec_cmd("caelestia screenshot -r"), 
 
 
 
--- AltGr is Mod5 on the GB keyboard; Copilot sends Super + Shift + F23.
-hl.bind("SUPER + SHIFT + MOD5 + F23", function()
+-- AltGr is Mod5 on the GB keyboard; Copilot sends Super + Shift + code:201.
+hl.bind("SUPER + SHIFT + MOD5 + code:201", function()
     local win = hl.get_active_window()
     if not win then return end
     local workspace = win.workspace

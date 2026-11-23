@@ -44,9 +44,9 @@ check(binds["Print"].action.args == "python3 ~/.config/caelestia/screenshot-save
 check(binds["SHIFT + Print"].action.args == "caelestia screenshot -r", "Shift Print region")
 check(binds["SUPER + SHIFT + S"].action.args == "python3 ~/.config/caelestia/screenshot-save.py", "restored full screenshot shortcut")
 check(binds["SUPER + CTRL + SHIFT + S"].action.args == "caelestia screenshot -r", "restored region shortcut")
-check(binds["SUPER + SHIFT + F23"] ~= nil, "Copilot toggle exists")
-check(binds["SUPER + CTRL + SHIFT + F23"] == nil, "removed Ctrl Copilot")
-local move = binds["SUPER + SHIFT + MOD5 + F23"].action
+check(binds["SUPER + SHIFT + code:201"] ~= nil, "Copilot toggle exists")
+check(binds["SUPER + CTRL + SHIFT + code:201"] == nil, "removed Ctrl Copilot")
+local move = binds["SUPER + SHIFT + MOD5 + code:201"].action
 move();check(#dispatches == 0, "Copilot safely handles no active window")
 active_window = {workspace={id=2,name="2"}};move()
 check(dispatches[#dispatches].args.workspace == "special:magic", "move normal window to scratchpad")
